@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Cosmere-inspired symbol: a simple dawnshard/diamond shape -->
+  <polygon points="50,5 95,50 50,95 5,50" fill="none" stroke="#a78bfa" stroke-width="4"/>
+  <circle cx="50" cy="50" r="15" fill="none" stroke="#f59e0b" stroke-width="3"/>
+</svg>

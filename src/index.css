@@ -1,0 +1,3 @@
+/* Tailwind CSS v4: the "@import" replaces the old "@tailwind" directives.
+   This single line pulls in all of Tailwind's utility classes. */
+@import "tailwindcss";
