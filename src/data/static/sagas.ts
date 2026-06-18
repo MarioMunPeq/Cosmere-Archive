@@ -1,20 +1,8 @@
-// Sagas: metadatos de cada saga del Cosmere.
-// El campo "order" define el orden de lectura recomendado.
-
 export interface Saga {
-  /** Identificador único, ej. "mistborn-era-1" */
   id: string
-
-  /** Nombre para mostrar */
   name: string
-
-  /** Clase de color de Tailwind para el color de acento de la saga */
   color: string
-
-  /** Posición en el orden de lectura sugerido (1 = leer primero) */
   order: number
-
-  /** Descripción opcional */
   description?: string
 }
 
@@ -24,55 +12,55 @@ export const SAGAS: Saga[] = [
     name: "Mistborn Era 1",
     color: "red",
     order: 1,
-    description: "La saga original de Mistborn: El Imperio Final, El Pozo de la Ascensión, El Héroe de las Eras.",
+    description: "The original Mistborn trilogy: The Final Empire, The Well of Ascension, The Hero of Ages.",
   },
   {
     id: "mistborn-era-2",
     name: "Mistborn Era 2",
     color: "amber",
     order: 5,
-    description: "Wax & Wayne: una mezcla de western y steampunk en Scadrial.",
+    description: "Wax & Wayne: a mix of western and steampunk on Scadrial.",
   },
   {
     id: "elantris",
     name: "Elantris",
     color: "teal",
     order: 2,
-    description: "La primera novela publicada de Sanderson. Una ciudad maldita y un príncipe caído.",
+    description: "Sanderson's first published novel. A cursed city and a fallen prince.",
   },
   {
     id: "warbreaker",
     name: "Warbreaker",
     color: "fuchsia",
     order: 3,
-    description: "Dioses, alientos y espadas parlantes en el mundo de Nalthis.",
+    description: "Gods, breaths, and talking swords on the world of Nalthis.",
   },
   {
     id: "stormlight",
-    name: "Archivo de las Tormentas",
+    name: "The Stormlight Archive",
     color: "cyan",
     order: 6,
-    description: "La épica central del Cosmere. Caballeros Radiantes, tormentas y guerreros.",
+    description: "The central epic of the Cosmere. Knights Radiant, storms, and warriors.",
   },
   {
     id: "white-sand",
-    name: "Arena Blanca",
+    name: "White Sand",
     color: "yellow",
     order: 4,
-    description: "Novela gráfica ambientada en el planeta Taldain, lleno de desiertos.",
+    description: "Graphic novel set on the planet Taldain, filled with deserts.",
   },
   {
     id: "arcanum-unbounded",
-    name: "Arcanum Ilimitado",
+    name: "Arcanum Unbounded",
     color: "violet",
     order: 7,
-    description: "Colección de relatos cortos del Cosmere, con información de cada sistema.",
+    description: "Collection of Cosmere short stories with information about each system.",
   },
   {
     id: "secret-projects",
-    name: "Proyectos Secretos",
+    name: "Secret Projects",
     color: "sky",
     order: 8,
-    description: "Las novelas secretas de Sanderson: Tress, Yumi, El Hombre Iluminado y más.",
+    description: "Sanderson's secret novels: Tress, Yumi, The Sunlit Man, and more.",
   },
 ]

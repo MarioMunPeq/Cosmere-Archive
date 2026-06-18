@@ -1,27 +1,36 @@
-import { Outlet, NavLink } from 'react-router-dom'
+import { Outlet, Link } from 'react-router-dom'
+import SearchBar from './SearchBar'
 
 export default function Layout() {
   return (
-    <div className="flex min-h-screen flex-col bg-gray-950 text-gray-100">
-      <nav className="sticky top-0 z-10 border-b border-purple-900/50 bg-gray-950/80 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-          <NavLink to="/" className="text-xl font-bold tracking-wider text-purple-400">
-            COSMERE ARCHIVE
-          </NavLink>
+    <div className="flex h-screen flex-col bg-gray-950 text-gray-100">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-purple-700 focus:px-3 focus:py-2 focus:text-sm focus:text-white"
+      >
+        Skip to content
+      </a>
 
-          <div className="text-sm font-medium">
-            <span className="text-gray-500">Mapa y Cronología</span>
+      <nav className="sticky top-0 z-10 shrink-0 border-b border-purple-900/50 bg-gray-950/80 backdrop-blur-sm">
+        <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
+          <Link to="/" className="shrink-0 text-sm font-bold tracking-wider text-purple-400 sm:text-base sm:tracking-wider lg:text-xl">
+            COSMERE ARCHIVE
+          </Link>
+
+          <div className="ml-auto flex items-center gap-3">
+            <Link to="/about" className="hidden text-sm text-gray-500 transition-colors hover:text-gray-300 sm:inline">
+              About
+            </Link>
+            <div className="w-48 sm:w-64">
+              <SearchBar />
+            </div>
           </div>
         </div>
       </nav>
 
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
+      <main id="main-content" className="flex min-h-0 flex-1 flex-col">
         <Outlet />
       </main>
-
-      <footer className="border-t border-purple-900/30 py-4 text-center text-xs text-gray-600">
-        Cosmere Archive — Explorador visual del Cosmere de Brandon Sanderson
-      </footer>
     </div>
   )
 }

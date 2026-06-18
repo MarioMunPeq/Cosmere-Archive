@@ -1,205 +1,44 @@
 [
-  {
-    "id": "vin",
-    "name": "Vin",
-    "description": "Una joven ladrona de los suburbios de Luthadel que descubre ser una Nacida de la Bruma. Se une a Kelsier para derrocar al Lord Legislador.",
-    "planet": "scadrial",
-    "requiredBooks": ["the_final_empire"]
-  },
-  {
-    "id": "kelsier",
-    "name": "Kelsier",
-    "description": "El Superviviente de Hathsin. Un Nacido de la Bruma que lidera la rebelión contra el Lord Legislador.",
-    "planet": "scadrial",
-    "requiredBooks": ["the_final_empire"]
-  },
-  {
-    "id": "elend_venture",
-    "name": "Elend Venture",
-    "description": "Heredero de la Casa Venture y posterior rey. Filósofo e idealista que sueña con un gobierno democrático.",
-    "planet": "scadrial",
-    "requiredBooks": ["the_final_empire"]
-  },
-  {
-    "id": "sazed",
-    "name": "Sazed",
-    "description": "Un Guardador terrisano, erudito y feruquimista. Sirve como consejero y portador del conocimiento de las religiones.",
-    "planet": "scadrial",
-    "requiredBooks": ["the_final_empire"]
-  },
-  {
-    "id": "marsh",
-    "name": "Marsh",
-    "description": "El hermano mayor de Kelsier, dedicado a la rebelión skaa. Más tarde se convierte en Inquisidor de Acero.",
-    "planet": "scadrial",
-    "requiredBooks": ["the_final_empire"]
-  },
-  {
-    "id": "lord_legislador",
-    "name": "Lord Legislador",
-    "description": "El gobernante inmortal del Imperio Final. Su verdadera identidad y orígenes están envueltos en misterio.",
-    "planet": "scadrial",
-    "requiredBooks": ["the_final_empire"]
-  },
-  {
-    "id": "fantasma",
-    "name": "Fantasma",
-    "description": "Un joven Ojo de Estaño miembro de la banda de Kelsier. Conocido por su lealtad y su carácter callado.",
-    "planet": "scadrial",
-    "requiredBooks": ["the_final_empire"]
-  },
-  {
-    "id": "waxillium_ladrian",
-    "name": "Waxillium Ladrian",
-    "description": "Un Nacido de la Bruma y hombre de la ley del Árido. Hereda el título de lord de la Casa Ladrian.",
-    "planet": "scadrial",
-    "requiredBooks": ["the_alloy_of_law"]
-  },
-  {
-    "id": "wayne",
-    "name": "Wayne",
-    "description": "El compañero de Wax. Un Feruquimista excéntrico con talento para los disfraces y el robo.",
-    "planet": "scadrial",
-    "requiredBooks": ["the_alloy_of_law"]
-  },
-  {
-    "id": "marasi",
-    "name": "Marasi Colms",
-    "description": "Medio hermana de Steris. Estudiosa de la ley y Nacida de la Bruma, busca justicia en Elendel.",
-    "planet": "scadrial",
-    "requiredBooks": ["the_alloy_of_law"]
-  },
-  {
-    "id": "steris",
-    "name": "Steris Harms",
-    "description": "La prometida de Waxillium. Una mujer meticulosa, organizada y sorprendentemente valiente.",
-    "planet": "scadrial",
-    "requiredBooks": ["the_alloy_of_law"]
-  },
-  {
-    "id": "kaladin",
-    "name": "Kaladin",
-    "description": "Médico de batalla convertido en esclavo y luego en Radiante. Juramentado del orden de los Corredores del Viento.",
-    "planet": "roshar",
-    "requiredBooks": ["the_way_of_kings"]
-  },
-  {
-    "id": "shallan_davar",
-    "name": "Shallan Davar",
-    "description": "Una joven erudita de la casa Davar. Viaja a conocer a la princesa Jasnah para convertirse en su pupila.",
-    "planet": "roshar",
-    "requiredBooks": ["the_way_of_kings"]
-  },
-  {
-    "id": "dalinar_kholin",
-    "name": "Dalinar Kholin",
-    "description": "Príncipe de Alto Príncipe de la casa Kholin. El Portador de la Vínculo, conocido como el Puño Negro.",
-    "planet": "roshar",
-    "requiredBooks": ["the_way_of_kings"]
-  },
-  {
-    "id": "jasnah_kholin",
-    "name": "Jasnah Kholin",
-    "description": "Princesa de Alezkar y erudita de renombre. Descubridora de los secretos de los Caballeros Radiantes.",
-    "planet": "roshar",
-    "requiredBooks": ["the_way_of_kings"]
-  },
-  {
-    "id": "adolin_kholin",
-    "name": "Adolin Kholin",
-    "description": "Primer hijo de Dalinar. Talentoso duelista y guerrero, conocido por su carisma y estilo.",
-    "planet": "roshar",
-    "requiredBooks": ["the_way_of_kings"]
-  },
-  {
-    "id": "sylphrena",
-    "name": "Sylphrena",
-    "description": "Un honor spren que se vincula con Kaladin. Conocida como Syl, es curiosa y leal.",
-    "planet": "roshar",
-    "requiredBooks": ["the_way_of_kings"]
-  },
-  {
-    "id": "szeth",
-    "name": "Szeth",
-    "description": "El Asesino de Reyes. Un silabre de Shinovar obligado a cumplir las órdenes de quien posee su espada.",
-    "planet": "roshar",
-    "requiredBooks": ["the_way_of_kings"]
-  },
-  {
-    "id": "raoden",
-    "name": "Raoden",
-    "description": "Príncipe de Arelon, transformado por la maldición de Elantris. Encuentra un propósito entre los caídos.",
-    "planet": "sel",
-    "requiredBooks": ["elantris"]
-  },
-  {
-    "id": "sarene",
-    "name": "Sarene",
-    "description": "Princesa de Teod, inteligente y diplomática. Llega a Arelon para un matrimonio político.",
-    "planet": "sel",
-    "requiredBooks": ["elantris"]
-  },
-  {
-    "id": "hrathen",
-    "name": "Hrathen",
-    "description": "Un sumo sacerdote de Fjordell enviado a convertir Arelon. Firme en su fe pero atormentado por la duda.",
-    "planet": "sel",
-    "requiredBooks": ["elantris"]
-  },
-  {
-    "id": "vivenna",
-    "name": "Vivenna",
-    "description": "Princesa de Idris, entrenada desde pequeña para salvar su reino casándose con el dios-rey.",
-    "planet": "nalthis",
-    "requiredBooks": ["warbreaker"]
-  },
-  {
-    "id": "siri",
-    "name": "Siri",
-    "description": "La hermana menor de Vivenna, enviada inesperadamente a T'Telir en lugar de su hermana.",
-    "planet": "nalthis",
-    "requiredBooks": ["warbreaker"]
-  },
-  {
-    "id": "lightsong",
-    "name": "Luzcantante",
-    "description": "Un dios de la Corte de los Dioses que duda de su propio propósito y busca respuestas.",
-    "planet": "nalthis",
-    "requiredBooks": ["warbreaker"]
-  },
-  {
-    "id": "hoid",
-    "name": "Hoid",
-    "description": "Un misterioso vagabundo que aparece a lo largo del Cosmere. Cuenta historias y busca algo que perdió.",
-    "planet": "roshar",
-    "requiredBooks": ["the_way_of_kings"]
-  },
-  {
-    "id": "vasher",
-    "name": "Vasher",
-    "description": "El Siniestro. Un guerrero experto en el Despertar que porta una espada parlante.",
-    "planet": "nalthis",
-    "requiredBooks": ["warbreaker"]
-  },
-  {
-    "id": "nightblood",
-    "name": "Rompespadas",
-    "description": "Una espada consciente forjada con el propósito de destruir el mal. Peligrosamente literal.",
-    "planet": "nalthis",
-    "requiredBooks": ["warbreaker"]
-  },
-  {
-    "id": "khriss",
-    "name": "Khriss",
-    "description": "Una erudita de Taldain que estudia los sistemas de investidura del Cosmere.",
-    "planet": "taldain",
-    "requiredBooks": []
-  },
-  {
-    "id": "nazh",
-    "name": "Nazh",
-    "description": "Un misterioso recolector de mapas e información que trabaja para Khriss.",
-    "planet": "threnody",
-    "requiredBooks": []
-  }
+  { "id": "kaladin", "name": "Kaladin", "description": "A battle medic turned slave turned Knight Radiant. Windrunner of the order of the Knights Radiant.", "planet": "roshar", "requiredBooks": ["the_way_of_kings"] },
+  { "id": "shallan", "name": "Shallan Davar", "description": "A young scholar from House Davar. Travels to meet Princess Jasnah to become her ward.", "planet": "roshar", "requiredBooks": ["the_way_of_kings"] },
+  { "id": "dalinar", "name": "Dalinar Kholin", "description": "Highprince of House Kholin. The Bondsmith, known as the Blackthorn.", "planet": "roshar", "requiredBooks": ["the_way_of_kings"] },
+  { "id": "adalinar", "name": "Adolin Kholin", "description": "Dalinar's eldest son. A talented duelist and warrior, known for his charisma and style.", "planet": "roshar", "requiredBooks": ["the_way_of_kings"] },
+  { "id": "jasnah", "name": "Jasnah Kholin", "description": "Princess of Alethkar and renowned scholar. Discoverer of the Knights Radiant secrets.", "planet": "roshar", "requiredBooks": ["the_way_of_kings"] },
+  { "id": "szeth", "name": "Szeth", "description": "The Assassin in White. A Skybreaker from Shinovar forced to obey whoever holds his oathblade.", "planet": "roshar", "requiredBooks": ["the_way_of_kings"] },
+  { "id": "navani", "name": "Navani Kholin", "description": "Widow of King Gavilar, mother of Jasnah. A brilliant scholar and engineer of fabrials and anti-light.", "planet": "roshar", "requiredBooks": ["the_way_of_kings"] },
+  { "id": "sigzil", "name": "Sigzil (Nomad)", "description": "A former Windrunner from Roshar, now known as Nomad, fleeing across the Cosmere.", "planet": "roshar", "requiredBooks": ["the_way_of_kings"] },
+  { "id": "venli", "name": "Venli", "description": "A singer who becomes a Knight Radiant of the order of Willshapers.", "planet": "roshar", "requiredBooks": ["rhythm_of_war"] },
+  { "id": "taravangian", "name": "Taravangian", "description": "King of Kharbranth. A complex figure who becomes the new Vessel of Odium.", "planet": "roshar", "requiredBooks": ["the_way_of_kings"] },
+  { "id": "lift", "name": "Lift", "description": "A young Radiant who can use stormlight to fuel her abilities in unusual ways.", "planet": "roshar", "requiredBooks": ["words_of_radiance"] },
+  { "id": "taln", "name": "Taln", "description": "Herald of War. The Unbroken. Endured millennia of torture on Braize without breaking.", "planet": "roshar", "requiredBooks": ["oathbringer"] },
+  { "id": "asha", "name": "Ash (Shalash)", "description": "Herald of Beauty. Known for destroying artwork depicting herself.", "planet": "roshar", "requiredBooks": ["oathbringer"] },
+  { "id": "nale", "name": "Nale", "description": "Herald of Justice. Leader of the Skybreaker order.", "planet": "roshar", "requiredBooks": ["words_of_radiance"] },
+  { "id": "vin", "name": "Vin", "description": "A street urchin from Luthadel who discovers she is a Mistborn. Joins Kelsier to overthrow the Lord Ruler.", "planet": "scadrial", "requiredBooks": ["the_final_empire"] },
+  { "id": "kelsier", "name": "Kelsier", "description": "The Survivor of Hathsin. A Mistborn who leads the rebellion against the Lord Ruler.", "planet": "scadrial", "requiredBooks": ["the_final_empire"] },
+  { "id": "elend", "name": "Elend Venture", "description": "Heir to House Venture and later king. A philosopher and idealist who dreams of democracy.", "planet": "scadrial", "requiredBooks": ["the_final_empire"] },
+  { "id": "sazed", "name": "Sazed", "description": "A Terris Keeper, scholar and feruchemist. Serves as advisor and bearer of religious knowledge.", "planet": "scadrial", "requiredBooks": ["the_final_empire"] },
+  { "id": "marsh", "name": "Marsh", "description": "Kelsier's older brother. Dedicated to the skaa rebellion. Later becomes a Steel Inquisitor.", "planet": "scadrial", "requiredBooks": ["the_final_empire"] },
+  { "id": "rashek", "name": "The Lord Ruler", "description": "The immortal ruler of the Final Empire. His true identity and origins are shrouded in mystery.", "planet": "scadrial", "requiredBooks": ["the_final_empire"] },
+  { "id": "spook", "name": "Spook", "description": "A young Tineye from Kelsier's crew. Known for his loyalty and quiet nature.", "planet": "scadrial", "requiredBooks": ["the_final_empire"] },
+  { "id": "wax", "name": "Waxillium Ladrian", "description": "A Mistborn and lawman from the Roughs. Inherits the title of lord of House Ladrian.", "planet": "scadrial", "requiredBooks": ["the_alloy_of_law"] },
+  { "id": "wayne", "name": "Wayne", "description": "Wax's partner. An eccentric feruchemist with a talent for disguises and thievery.", "planet": "scadrial", "requiredBooks": ["the_alloy_of_law"] },
+  { "id": "marasi", "name": "Marasi Colms", "description": "Steris's half-sister. A student of the law and Mistborn, seeking justice in Elendel.", "planet": "scadrial", "requiredBooks": ["the_alloy_of_law"] },
+  { "id": "steris", "name": "Steris Harms", "description": "Waxillium's fiancée. A meticulous, organized, and surprisingly brave woman.", "planet": "scadrial", "requiredBooks": ["the_alloy_of_law"] },
+  { "id": "tenSoon", "name": "TenSoon", "description": "A kandra of the Third Generation who helps Vin and eventually gains his freedom.", "planet": "scadrial", "requiredBooks": ["the_hero_of_ages"] },
+  { "id": "raoden", "name": "Raoden", "description": "Prince of Arelon, transformed by the Shaod of Elantris. Finds purpose among the fallen.", "planet": "sel", "requiredBooks": ["elantris"] },
+  { "id": "sarene", "name": "Sarene", "description": "Princess of Teod. Intelligent and diplomatic. Arrives in Arelon for a political marriage.", "planet": "sel", "requiredBooks": ["elantris"] },
+  { "id": "shai", "name": "Wan ShaiLu", "description": "A master Forger from Sel, skilled in the art of soulforging.", "planet": "sel", "requiredBooks": ["arcanum_unbounded"] },
+  { "id": "hrathen", "name": "Hrathen", "description": "A high priest of Fjordell sent to convert Arelon. Fierce in his faith but tormented by doubt.", "planet": "sel", "requiredBooks": ["elantris"] },
+  { "id": "vasher", "name": "Vasher", "description": "Kalad the Usurper. A warrior skilled in Awakening who carries a sentient sword.", "planet": "nalthis", "requiredBooks": ["warbreaker"] },
+  { "id": "nightblood", "name": "Nightblood", "description": "A sentient sword forged with the purpose of destroying evil. Dangerously literal.", "planet": "nalthis", "requiredBooks": ["warbreaker"] },
+  { "id": "siri", "name": "Siri", "description": "The younger princess of Idris, unexpectedly sent to T'Telir in her sister's place.", "planet": "nalthis", "requiredBooks": ["warbreaker"] },
+  { "id": "vivenna", "name": "Vivenna", "description": "Princess of Idris, trained from childhood to save her kingdom by marrying the god-king.", "planet": "nalthis", "requiredBooks": ["warbreaker"] },
+  { "id": "susebron", "name": "Susebron", "description": "The God-King of T'Telir, whose breath is the key to Nalthis's power.", "planet": "nalthis", "requiredBooks": ["warbreaker"] },
+  { "id": "lightsong", "name": "Lightsong", "description": "A god of the Court of Gods who doubts his own purpose and seeks answers.", "planet": "nalthis", "requiredBooks": ["warbreaker"] },
+  { "id": "khriss", "name": "Khriss", "description": "A scholar from Taldain who studies the investiture systems of the Cosmere.", "planet": "taldain", "requiredBooks": [] },
+  { "id": "kenton", "name": "Kenton", "description": "A sand master of Taldain, the last of the Diem.", "planet": "taldain", "requiredBooks": ["white_sand_vol_1"] },
+  { "id": "hoid", "name": "Hoid", "description": "A mysterious wanderer who appears throughout the Cosmere. Tells stories and seeks something he lost.", "planet": "roshar", "requiredBooks": ["the_way_of_kings"] },
+  { "id": "silence", "name": "Silence Montane", "description": "A shadow hunter and innkeeper on Threnody, fighting to survive in a world of deadly shades.", "planet": "threnody", "requiredBooks": ["arcanum_unbounded"] },
+  { "id": "nazh", "name": "Nazh", "description": "A mysterious collector of maps and information who works for Khriss.", "planet": "threnody", "requiredBooks": [] },
+  { "id": "tress", "name": "Tress", "description": "A young woman from a remote island who crosses spore seas to rescue her love.", "planet": "lumar", "requiredBooks": ["tress_of_the_emerald_sea"] }
 ]

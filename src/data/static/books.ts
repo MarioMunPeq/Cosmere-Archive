@@ -1,84 +1,74 @@
-// Libros: catálogo completo de libros del Cosmere con títulos en español.
-// Esta es la fuente de verdad de qué libros existen y su metadata.
-// En sesiones posteriores, el sistema de progreso de lectura comparará contra esta lista.
-
 import type { Book } from '@/types'
 
 export const BOOKS: Book[] = [
-  // ═══════════════════════════════════════════
   // Mistborn Era 1
-  // ═══════════════════════════════════════════
   {
     id: "the_final_empire",
-    title: "El Imperio Final",
+    title: "The Final Empire",
     saga: "mistborn-era-1",
     order: 1,
     year: 2006,
     description:
-      "Vin, una joven ladrona de los suburbios, descubre que tiene poderes alománticos y se une al enigmático Kelsier para derrocar al Lord Legislador.",
+      "Vin, a young street urchin from the skaa class, discovers she has allomantic powers and joins the enigmatic Kelsier to overthrow the Lord Ruler.",
   },
   {
     id: "the_well_of_ascension",
-    title: "El Pozo de la Ascensión",
+    title: "The Well of Ascension",
     saga: "mistborn-era-1",
     order: 2,
     year: 2007,
     description:
-      "Un año después de la caída del Lord Legislador, Elend Venture lucha por mantener unido el nuevo gobierno mientras fuerzas desconocidas se acercan.",
+      "A year after the Lord Ruler's fall, Elend Venture struggles to hold the new government together while unknown forces approach.",
   },
   {
     id: "the_hero_of_ages",
-    title: "El Héroe de las Eras",
+    title: "The Hero of Ages",
     saga: "mistborn-era-1",
     order: 3,
     year: 2008,
     description:
-      "Vin y Elend se enfrentan a la amenaza final mientras la Profundidad se acerca. El héroe de las eras debe levantarse.",
+      "Vin and Elend face the final threat as the Deepness approaches. The hero of ages must rise.",
   },
 
-  // ═══════════════════════════════════════════
   // Mistborn Era 2 (Wax & Wayne)
-  // ═══════════════════════════════════════════
   {
     id: "the_alloy_of_law",
-    title: "Aleación de Ley",
+    title: "The Alloy of Law",
     saga: "mistborn-era-2",
     order: 1,
     year: 2011,
     description:
-      "Trescientos años después de los eventos de la Era 1, Waxillium Ladrian, un nacido de la bruma, regresa a la ciudad para enfrentarse a una nueva amenaza.",
+      "Three hundred years after Era 1, Waxillium Ladrian, a Mistborn, returns to the city to face a new threat.",
   },
   {
     id: "shadows_of_self",
-    title: "Sombras de Identidad",
+    title: "Shadows of Self",
     saga: "mistborn-era-2",
     order: 2,
     year: 2015,
     description:
-      "Wax y Wayne investigan una serie de asesinatos en Elendel que podrían estar conectados con una figura del pasado.",
+      "Wax and Wayne investigate a series of murders in Elendel that may be connected to a figure from the past.",
   },
   {
     id: "the_bands_of_mourning",
-    title: "Brazales de Duelo",
+    title: "The Bands of Mourning",
     saga: "mistborn-era-2",
     order: 3,
     year: 2016,
     description:
-      "Wax viaja al norte en busca de los míticos Brazales de la Lamentación, artefactos de increíble poder alomántico.",
+      "Wax travels north in search of the mythical Bands of Mourning, artifacts of incredible allomantic power.",
   },
   {
     id: "the_lost_metal",
-    title: "El Metal Perdido",
+    title: "The Lost Metal",
     saga: "mistborn-era-2",
     order: 4,
     year: 2022,
     description:
-      "El final de la era de Wax y Wayne. Amenazas del más allá del Cosmere llegan a Scadrial.",
+      "The finale of Wax and Wayne's era. Threats from beyond the Cosmere arrive on Scadrial.",
   },
 
-  // ═══════════════════════════════════════════
   // Elantris
-  // ═══════════════════════════════════════════
   {
     id: "elantris",
     title: "Elantris",
@@ -86,12 +76,10 @@ export const BOOKS: Book[] = [
     order: 1,
     year: 2005,
     description:
-      "La ciudad de Elantris, antaño un lugar de dioses, ahora es una ruina maldita. El príncipe Raoden es transformado y debe descubrir el misterio.",
+      "The city of Elantris, once a place of gods, is now a cursed ruin. Prince Raoden is transformed and must uncover the mystery.",
   },
 
-  // ═══════════════════════════════════════════
   // Warbreaker
-  // ═══════════════════════════════════════════
   {
     id: "warbreaker",
     title: "Warbreaker",
@@ -99,145 +87,130 @@ export const BOOKS: Book[] = [
     order: 1,
     year: 2009,
     description:
-      "Dos princesas de Idris viajan a T'Telir. Una para casarse con el dios-rey, la otra para salvar a su hermana. Los alientos y el despertar cambian todo.",
+      "Two princesses from Idris travel to T'Telir. One to marry the god-king, the other to save her sister. Breaths and Awakening change everything.",
   },
 
-  // ═══════════════════════════════════════════
-  // Archivo de las Tormentas (Stormlight Archive)
-  // ═══════════════════════════════════════════
+  // The Stormlight Archive
   {
     id: "the_way_of_kings",
-    title: "El Camino de los Reyes",
+    title: "The Way of Kings",
     saga: "stormlight",
     order: 1,
     year: 2010,
     description:
-      "En un mundo de tormentas, el médico de batalla Kaladin es esclavizado, mientras la princesa Jasnah investiga los secretos de los Caballeros Radiantes.",
+      "In a world of storms, battle medic Kaladin is enslaved, while Princess Jasnah investigates the secrets of the Knights Radiant.",
   },
   {
     id: "words_of_radiance",
-    title: "Palabras Radiantes",
+    title: "Words of Radiance",
     saga: "stormlight",
     order: 2,
     year: 2014,
     description:
-      "Kaladin y Shallan se convierten en Radiantes mientras la amenaza de los Portadores del Vacío crece en Roshar.",
+      "Kaladin and Shallan become Radiants as the Voidbringer threat grows on Roshar.",
   },
   {
     id: "oathbringer",
-    title: "Juramentada",
+    title: "Oathbringer",
     saga: "stormlight",
     order: 3,
     year: 2017,
     description:
-      "Dalinar Kholin debe enfrentar su oscuro pasado mientras la Tormenta Eterna asola Roshar y los ejércitos se preparan para la guerra final.",
+      "Dalinar Kholin must face his dark past while the Everstorm ravages Roshar and armies prepare for the final war.",
   },
   {
     id: "rhythm_of_war",
-    title: "El Ritmo de la Guerra",
+    title: "Rhythm of War",
     saga: "stormlight",
     order: 4,
     year: 2020,
     description:
-      "La guerra continúa. Los científicos descubren nuevos peligros, y los prisioneros Radiantes luchan por sobrevivir en las profundidades.",
+      "The war continues. Scientists discover new dangers, and Radiant prisoners fight to survive in the depths.",
   },
   {
     id: "wind_and_truth",
-    title: "Viento y Verdad",
+    title: "Wind and Truth",
     saga: "stormlight",
     order: 5,
     year: 2024,
     description:
-      "La conclusión del primer arco del Archivo de las Tormentas. Los héroes de Roshar se enfrentan a la batalla definitiva.",
+      "The conclusion of the first Stormlight Archive arc. Roshar's heroes face the ultimate battle.",
   },
 
-  // ═══════════════════════════════════════════
-  // Arena Blanca (White Sand)
-  // ═══════════════════════════════════════════
+  // White Sand
   {
     id: "white_sand_vol_1",
-    title: "Arena Blanca Vol. 1",
+    title: "White Sand Vol. 1",
     saga: "white-sand",
     order: 1,
     year: 2016,
     description:
-      "Kenton, un joven maestro de la arena, lucha por sobrevivir en el despiadado desierto de Taldain.",
+      "Kenton, a young sand master, fights to survive in the merciless Taldain desert.",
   },
   {
     id: "white_sand_vol_2",
-    title: "Arena Blanca Vol. 2",
+    title: "White Sand Vol. 2",
     saga: "white-sand",
     order: 2,
     year: 2018,
     description:
-      "Kenton continúa su viaje mientras las facciones políticas de Taldain compiten por el control.",
+      "Kenton continues his journey as Taldain's political factions compete for control.",
   },
   {
     id: "white_sand_vol_3",
-    title: "Arena Blanca Vol. 3",
+    title: "White Sand Vol. 3",
     saga: "white-sand",
     order: 3,
     year: 2019,
     description:
-      "La conclusión de la historia gráfica de Taldain.",
+      "The conclusion of the Taldain graphic novel story.",
   },
 
-  // ═══════════════════════════════════════════
-  // Arcanum Ilimitado
-  // ═══════════════════════════════════════════
+  // Arcanum Unbounded
   {
     id: "arcanum_unbounded",
-    title: "Arcanum Ilimitado",
+    title: "Arcanum Unbounded",
     saga: "arcanum-unbounded",
     order: 1,
     year: 2016,
     description:
-      "Colección de relatos del Cosmere: El Sistema de Sel, Esperanza de Elantris, El Alma del Emperador, El Onceno Metal, Alomancia Jak, Sombras por Silencio, y Danzante del Filo.",
+      "Collection of Cosmere stories: The Sel System, The Hope of Elantris, The Emperor's Soul, The Eleventh Metal, Allomancer Jak, Shadows for Silence, and Edgedancer.",
   },
 
-  // ═══════════════════════════════════════════
-  // Proyectos Secretos
-  // ═══════════════════════════════════════════
+  // Secret Projects
   {
     id: "tress_of_the_emerald_sea",
-    title: "Tress del Mar Esmeralda",
+    title: "Tress of the Emerald Sea",
     saga: "secret-projects",
     order: 1,
     year: 2023,
     description:
-      "Tress vive en una isla remota. Cuando su amor es secuestrado, se embarca en un viaje a través de mares de escamas, brujas y dragones.",
+      "Tress lives on a remote island. When her love is kidnapped, she embarks on a journey across seas of spores, witches, and dragons.",
   },
   {
     id: "yumi_and_the_nightmare_painter",
-    title: "Yumi y el Pintor de Pesadillas",
+    title: "Yumi and the Nightmare Painter",
     saga: "secret-projects",
     order: 2,
     year: 2023,
     description:
-      "Una joven que invoca espíritus y un pintor que lucha contra pesadillas intercambian lugares misteriosamente.",
+      "A young spirit summoner and a nightmare painter mysteriously swap places.",
   },
   {
     id: "the_sunlit_man",
-    title: "El Hombre Iluminado",
+    title: "The Sunlit Man",
     saga: "secret-projects",
     order: 3,
     year: 2023,
     description:
-      "Un hombre que huye a través de un sistema estelar, perseguido por enemigos implacables, en un mundo que se acerca al sol.",
+      "A man fleeing across a star system, pursued by relentless enemies on a world that approaches the sun.",
   },
 ]
 
-/**
- * Busca un libro por su ID.
- * Útil para el sistema anti-spoilers cuando necesitamos mirar metadatos de libros desde personajes.
- */
 export function getBookById(id: string): Book | undefined {
   return BOOKS.find((book) => book.id === id)
 }
 
-/**
- * Devuelve todos los libros de una saga, ordenados por su orden dentro de ella.
- */
 export function getBooksBySaga(sagaId: string): Book[] {
   return BOOKS.filter((book) => book.saga === sagaId).sort(
     (a, b) => a.order - b.order,
