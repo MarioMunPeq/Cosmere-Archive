@@ -1,99 +1,189 @@
 # Cosmere Archive
 
-Interactive visual archive for Brandon Sanderson's Cosmere, built as a static React app.
+<p align="center">
+  <img src="./screenshots/home.png" alt="Cosmere Archive Home" width="900"/>
+</p>
 
-The project focuses on browsing the known Cosmere through a galaxy map, timeline, character views,
-book panels, Shard filters, and worldhopper travel animations. All data is bundled with the app;
-there is no backend service or database.
+<p align="center">
+  Interactive visual archive for Brandon Sanderson's Cosmere universe.
+</p>
+
+---
+
+## About the project
+
+Cosmere Archive es un proyecto personal creado como una forma de mejorar mis habilidades en desarrollo web moderno, experimentar con nuevas tecnologías y construir una aplicación completa desde cero.
+
+El objetivo principal de este proyecto fue practicar y profundizar en tecnologías como React, TypeScript, Vite y Tailwind CSS, además de trabajar conceptos como arquitectura frontend, modelado de datos, componentes reutilizables y despliegue continuo.
+
+Durante el desarrollo he explorado diferentes áreas como:
+
+- Creación de interfaces interactivas y visuales
+- Diseño de arquitecturas frontend escalables
+- Gestión de datos estáticos y modelos complejos
+- Creación de componentes reutilizables
+- Testing y buenas prácticas de código
+- Automatización de despliegues con GitHub Actions
+
+El proyecto está basado en uno de mis universos de ficción favoritos: el Cosmere de Brandon Sanderson, utilizando esa temática como motivación para crear una herramienta visual e interactiva.
+
+---
+
+## Screenshots
+
+### Home / Galaxy Map
+
+<img src="./screenshots/home.png" alt="Home" width="900"/>
+
+### Characters
+
+<img src="./screenshots/characters.png" alt="Characters" width="900"/>
+
+### Timeline
+
+<img src="./screenshots/timeline.png" alt="Timeline" width="900"/>
+
+---
 
 ## Tech Stack
 
 - React 19
-- TypeScript 6
-- Vite 8
+- TypeScript
+- Vite
 - Tailwind CSS 4
 - React Router 7
-- Vitest and Testing Library
+- Vitest
+- Testing Library
+
+---
 
 ## Getting Started
 
-```bash
-corepack enable
-corepack pnpm install
-corepack pnpm dev
-```
+Clone the repository:
 
-The development server is provided by Vite.
+git clone https://github.com/MarioMunPeq/Cosmere-Archive.git
+
+cd Cosmere-Archive
+
+Install dependencies:
+
+corepack pnpm install
+
+Start development server:
+
+corepack pnpm dev
+
+The development server is powered by Vite.
+
+---
 
 ## Scripts
 
-```bash
-corepack pnpm dev           # Start local development
-corepack pnpm build         # Type-check and build production assets
-corepack pnpm preview       # Preview the production build
-corepack pnpm test          # Run the Vitest suite once
-corepack pnpm test:watch    # Run Vitest in watch mode
-corepack pnpm lint          # Run ESLint
-corepack pnpm format        # Format source files with Prettier
-corepack pnpm format:check  # Check formatting
-```
+Development:
+
+corepack pnpm dev
+
+Build production assets:
+
+corepack pnpm build
+
+Preview production build:
+
+corepack pnpm preview
+
+Run tests:
+
+corepack pnpm test
+
+Run lint:
+
+corepack pnpm lint
+
+Format code:
+
+corepack pnpm format
+
+Check formatting:
+
+corepack pnpm format:check
+
+---
 
 ## Project Structure
 
 ```text
 src/
-  components/
-    common/      Shared layout, search, skeletons, icons, error boundary
-    detail/      Detail panels for books and characters
-    map/         Galaxy map, planet panels, worldhopper UI, renderers
-    timeline/    SVG timeline renderer
-  data/
-    generated/   Generated character data and validation
-    static/      Books, planets, sagas, timeline events, journeys
-  hooks/         Shared React hooks
-  pages/         Main map shell, timeline view, about page, 404
-  test/          Vitest setup and test suites
-  types/         Shared TypeScript types
-  utils/         Timeline and journey calculations
+├─ components/
+│  ├─ common/       Shared UI components
+│  ├─ detail/       Book and character panels
+│  ├─ map/          Galaxy map and worldhopper systems
+│  └─ timeline/     Timeline renderer
+│
+├─ data/
+│  ├─ static/       Books, planets, eras and events
+│  └─ generated/    Generated character datasets
+│
+├─ hooks/           Shared React hooks
+├─ pages/           Application pages
+├─ types/           TypeScript definitions
+└─ utils/           Timeline and journey calculations
 ```
+---
 
 ## Data Model
 
-The app uses static TypeScript and JSON data:
+The application uses static TypeScript and JSON data.
 
-- `src/data/static/planets.ts` for planetary metadata.
-- `src/data/static/books.ts` for books and sagas.
-- `src/data/static/timeline/` for eras, events, lifespans, and worldhopper journeys.
-- `src/data/generated/characters.json` for generated character data.
-- `src/data/generated/validate.ts` for runtime validation of generated character records.
+Main datasets:
 
-When adding or editing data, keep identifiers stable because search, panels, routes, and tests rely
-on those IDs.
+- Planets and locations
+- Books and sagas
+- Timeline events
+- Character records
+- Worldhopper journeys
+
+Data identifiers are kept stable because they are used by:
+
+- Search
+- Routing
+- Filters
+- Tests
+
+---
 
 ## Deployment
 
-The repository includes:
+The project is deployed using GitHub Pages.
 
-- GitHub Pages workflow: `.github/workflows/deploy.yml`
-- Docker production image: `Dockerfile`
-- Nginx static config: `nginx.conf`
+Deployment flow:
 
-Routing uses hash-based URLs so the static GitHub Pages deployment can refresh and deep-link
-without server-side fallback rules.
+Push to main
 
-## Quality Gates
+↓
 
-Before publishing changes, run:
+GitHub Actions
 
-```bash
-corepack pnpm lint
-corepack pnpm test
-corepack pnpm build
-corepack pnpm format:check
-```
+↓
+
+Vite production build
+
+↓
+
+Deploy to GitHub Pages
+
+Live version:
+
+https://mariomunpeq.github.io/Cosmere-Archive/
+
+---
 
 ## Attribution
 
-This is an unofficial fan project. Cosmere, related worlds, characters, and book titles belong to
-Brandon Sanderson and Dragonsteel Entertainment. Data references include The Coppermind and Brandon
-Sanderson's official website.
+This is an unofficial fan project.
+
+Cosmere, related worlds, characters and book titles belong to Brandon Sanderson and Dragonsteel Entertainment.
+
+Data references include:
+
+- The Coppermind
+- Brandon Sanderson official resources
