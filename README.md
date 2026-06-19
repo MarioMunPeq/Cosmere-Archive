@@ -1,7 +1,7 @@
 # Cosmere Archive
 
 <p align="center">
-  <img src="./screenshots/home.png" alt="Cosmere Archive Home" width="900"/>
+  <img src="https://raw.githubusercontent.com/MarioMunPeq/Cosmere-Archive/main/public/screenshots/home.png" alt="Cosmere Archive Home" width="900"/>
 </p>
 
 <p align="center">
@@ -33,15 +33,17 @@ El proyecto está basado en uno de mis universos de ficción favoritos: el Cosme
 
 ### Home / Galaxy Map
 
-<img src="./screenshots/home.png" alt="Home" width="900"/>
+<img src="https://raw.githubusercontent.com/MarioMunPeq/Cosmere-Archive/main/public/screenshots/home.png" alt="Cosmere Archive Home" width="900"/>
 
 ### Characters
 
-<img src="./screenshots/characters.png" alt="Characters" width="900"/>
+<img src="https://raw.githubusercontent.com/MarioMunPeq/Cosmere-Archive/main/public/screenshots/characters.png" alt="Characters" width="900"/>
+
+
 
 ### Timeline
 
-<img src="./screenshots/timeline.png" alt="Timeline" width="900"/>
+<img src="https://raw.githubusercontent.com/MarioMunPeq/Cosmere-Archive/main/public/screenshots/timeline.png" alt="Timeline" width="900"/>
 
 ---
 
