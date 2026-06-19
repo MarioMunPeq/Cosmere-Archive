@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import type { Book } from '@/types'
 import type { Saga } from '@/data/static/sagas'
 import { SAGAS } from '@/data/static'
@@ -7,7 +8,7 @@ interface Props {
   onClose: () => void
 }
 
-export default function BookPanel({ book, onClose }: Props) {
+function BookPanel({ book, onClose }: Props) {
   const saga = SAGAS.find((s: Saga) => s.id === book.saga)
 
   return (
@@ -47,3 +48,5 @@ export default function BookPanel({ book, onClose }: Props) {
     </div>
   )
 }
+
+export default memo(BookPanel)

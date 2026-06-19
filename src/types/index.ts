@@ -1,5 +1,3 @@
 export type { Book } from './book'
 export type { Character } from './character'
-export type { Worldhopper } from './worldhopper'
-export type { CosmereEvent } from './event'
 export type { Planet } from './planet'

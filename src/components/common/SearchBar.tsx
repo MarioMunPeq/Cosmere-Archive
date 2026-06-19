@@ -156,6 +156,10 @@ export default function SearchBar() {
         )}
       </div>
 
+      <div aria-live="polite" aria-atomic="true" className="sr-only">
+        {open ? `${results.length} result${results.length === 1 ? '' : 's'} found.` : ''}
+      </div>
+
       {open && (
         <div
           id="search-results"

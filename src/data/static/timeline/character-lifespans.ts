@@ -15,7 +15,7 @@ export const CHARACTER_SPANS: CharacterSpan[] = [
   { id: "kaladin",     name: "Kaladin",        planet: "Roshar",      color: "#06b6d4", birthYear: 1475, deathYear: null,  isAlive: true,  group: "radiant",    titles: ["Windrunner", "Son of Honor", "Captain"] },
   { id: "shallan",     name: "Shallan Davar",  planet: "Roshar",      color: "#8b5cf6", birthYear: 1478, deathYear: null,  isAlive: true,  group: "radiant",    titles: ["Lightweaver", "Truthwatcher", "Illuminator"] },
   { id: "dalinar",     name: "Dalinar Kholin", planet: "Roshar",      color: "#f59e0b", birthYear: 1460, deathYear: null,  isAlive: true,  group: "radiant",    titles: ["Bondsmith", "Highprince", "Champion of Honor"] },
-  { id: "adalinar",    name: "Adolin Kholin",  planet: "Roshar",      color: "#f97316", birthYear: 1476, deathYear: null,  isAlive: true,  group: "radiant",    titles: ["Duelist", "Prince", "Sword Bearer"] },
+  { id: "adolin",      name: "Adolin Kholin",  planet: "Roshar",      color: "#f97316", birthYear: 1476, deathYear: null,  isAlive: true,  group: "radiant",    titles: ["Duelist", "Prince", "Sword Bearer"] },
   { id: "jasnah",      name: "Jasnah Kholin",  planet: "Roshar",      color: "#a78bfa", birthYear: 1465, deathYear: null,  isAlive: true,  group: "radiant",    titles: ["Lightweaver", "Queen of Alethkar", "Scholar"] },
   { id: "szeth",       name: "Szeth",          planet: "Roshar",      color: "#9ca3af", birthYear: 1470, deathYear: null,  isAlive: true,  group: "radiant",    titles: ["Assassin of Kings", "True Windrunner", "Shin"] },
   { id: "navani",      name: "Navani Kholin",  planet: "Roshar",      color: "#06b6d4", birthYear: 1440, deathYear: null,  isAlive: true,  group: "radiant",    titles: ["Scholar", "Light Engineer", "Widow Queen"] },
@@ -67,7 +67,7 @@ export const CHARACTER_SPANS: CharacterSpan[] = [
   { id: "silence",     name: "Silence Montane",       planet: "Threnody",      color: "#8b5cf6", birthYear: 130,  deathYear: null, isAlive: true,  group: "other", titles: ["Shadow Hunter", "Innkeeper", "Survivor"] },
   { id: "tress",       name: "Tress",                 planet: "Lumar",         color: "#f472b6", birthYear: 1580, deathYear: null, isAlive: true,  group: "other", titles: ["Navigator", "Heroine of Lumar", "Captain"] },
   { id: "hoid",        name: "Hoid",                  planet: "Roshar",        color: "#a78bfa", birthYear: null,  deathYear: null, isAlive: true,  group: "other", titles: ["Immortal Wanderer", "Storyteller", "Refused the Shard"] },
-  { id: "nazh",        name: "Nazh",                  planet: "Threnody",      color: "#eab308", birthYear: 700,  deathYear: null,  isAlive: true,  group: "other", titles: ["Cartógrafo", "Espía de Khriss"] },
+  { id: "nazh",        name: "Nazh",                  planet: "Threnody",      color: "#eab308", birthYear: 700,  deathYear: null,  isAlive: true,  group: "other", titles: ["Cartographer", "Khriss's Agent"] },
 ]
 
 export const CHARACTER_GROUPS: { id: string; label: string; color: string }[] = [

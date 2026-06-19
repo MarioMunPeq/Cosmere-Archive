@@ -1,7 +1,19 @@
+import { useEffect } from 'react'
 import { Outlet, Link } from 'react-router-dom'
 import SearchBar from './SearchBar'
 
 export default function Layout() {
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === '/' && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)) {
+        e.preventDefault()
+        document.getElementById('cosmere-search')?.focus()
+      }
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [])
+
   return (
     <div className="flex h-screen flex-col bg-gray-950 text-gray-100">
       <a

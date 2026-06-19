@@ -2,7 +2,7 @@
   { "id": "kaladin", "name": "Kaladin", "description": "A battle medic turned slave turned Knight Radiant. Windrunner of the order of the Knights Radiant.", "planet": "roshar", "requiredBooks": ["the_way_of_kings"] },
   { "id": "shallan", "name": "Shallan Davar", "description": "A young scholar from House Davar. Travels to meet Princess Jasnah to become her ward.", "planet": "roshar", "requiredBooks": ["the_way_of_kings"] },
   { "id": "dalinar", "name": "Dalinar Kholin", "description": "Highprince of House Kholin. The Bondsmith, known as the Blackthorn.", "planet": "roshar", "requiredBooks": ["the_way_of_kings"] },
-  { "id": "adalinar", "name": "Adolin Kholin", "description": "Dalinar's eldest son. A talented duelist and warrior, known for his charisma and style.", "planet": "roshar", "requiredBooks": ["the_way_of_kings"] },
+  { "id": "adolin", "name": "Adolin Kholin", "description": "Dalinar's eldest son. A talented duelist and warrior, known for his charisma and style.", "planet": "roshar", "requiredBooks": ["the_way_of_kings"] },
   { "id": "jasnah", "name": "Jasnah Kholin", "description": "Princess of Alethkar and renowned scholar. Discoverer of the Knights Radiant secrets.", "planet": "roshar", "requiredBooks": ["the_way_of_kings"] },
   { "id": "szeth", "name": "Szeth", "description": "The Assassin in White. A Skybreaker from Shinovar forced to obey whoever holds his oathblade.", "planet": "roshar", "requiredBooks": ["the_way_of_kings"] },
   { "id": "navani", "name": "Navani Kholin", "description": "Widow of King Gavilar, mother of Jasnah. A brilliant scholar and engineer of fabrials and anti-light.", "planet": "roshar", "requiredBooks": ["the_way_of_kings"] },

@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, useCallback, useEffect } from 'react'
+import { useMemo, useRef, useState, useCallback, useEffect, useLayoutEffect } from 'react'
 import { PLANETS } from '@/data/static'
 import type { Character } from '@/types'
 import type { Planet } from '@/types/planet'
@@ -69,22 +69,38 @@ export default function UniverseMap({
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
+  const mapGroupRef = useRef<SVGGElement>(null)
   const [zoom, setZoom] = useState(1)
   const [panX, setPanX] = useState(0)
   const [panY, setPanY] = useState(0)
   const [isPanning, setIsPanning] = useState(false)
-  const panState = useRef({ isDown: false, startX: 0, startY: 0, wasPan: false })
+  const drag = useRef({
+    isDown: false, startX: 0, startY: 0, wasPan: false,
+    x: 0, y: 0, z: 1,
+  })
   const [hoveredPlanetId, setHoveredPlanetId] = useState<string | null>(null)
   const [activeShards, setActiveShards] = useState<string[]>([])
   const [showLegend, setShowLegend] = useState(false)
   const zoomTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const panRafRef = useRef<number | null>(null)
 
+  function syncTransform() {
+    const g = mapGroupRef.current
+    if (g) g.setAttribute('transform', `translate(${drag.current.x}, ${drag.current.y}) scale(${drag.current.z})`)
+  }
+
+  useLayoutEffect(() => {
+    drag.current.x = panX
+    drag.current.y = panY
+    drag.current.z = zoom
+    syncTransform()
+  }, [zoom, panX, panY])
+
   const shardData = useMemo(() => {
     const map = new Map<string, { color: string; planets: string[] }>()
     for (const p of PLANETS) {
       if (!p.shard) continue
-      const parts = p.shard.split(/, | y | & /)
+      const parts = p.shard.split(/, | & /)
       for (const raw of parts) {
         const name = raw.replace(/\s*\(.*?\)\s*/g, '').trim()
         if (!name) continue
@@ -173,14 +189,12 @@ export default function UniverseMap({
   const hasFilter = activeShards.length > 0 || activeWorldhoppers.length > 0
 
   const handlePlanetClick = useCallback((planetId: string) => {
-    if (panState.current.wasPan) return
+    if (drag.current.wasPan) return
     onSelectPlanet(selectedPlanet === planetId ? null : planetId)
   }, [onSelectPlanet, selectedPlanet])
 
   const handleWheel = useCallback((e: React.WheelEvent) => {
     e.preventDefault()
-    if (zoomTimerRef.current) return
-    zoomTimerRef.current = setTimeout(() => { zoomTimerRef.current = null }, 50)
     const svgEl = svgRef.current
     if (!svgEl) return
     const rect = svgEl.getBoundingClientRect()
@@ -189,29 +203,43 @@ export default function UniverseMap({
     if (svgW === 0 || svgH === 0) return
     const mouseVX = ((e.clientX - rect.left) / svgW) * 900
     const mouseVY = ((e.clientY - rect.top) / svgH) * 600
-    const newZoom = Math.max(0.5, Math.min(3, zoom - e.deltaY * 0.001 * zoom))
-    if (newZoom !== zoom) {
-      const origX = (mouseVX - panX) / zoom
-      const origY = (mouseVY - panY) / zoom
-      setPanX(mouseVX - origX * newZoom)
-      setPanY(mouseVY - origY * newZoom)
-      setZoom(newZoom)
+    const d = drag.current
+    const newZoom = Math.max(0.5, Math.min(3, d.z - e.deltaY * 0.001 * d.z))
+    if (newZoom !== d.z) {
+      const origX = (mouseVX - d.x) / d.z
+      const origY = (mouseVY - d.y) / d.z
+      d.x = mouseVX - origX * newZoom
+      d.y = mouseVY - origY * newZoom
+      d.z = newZoom
+      syncTransform()
+      if (zoomTimerRef.current) clearTimeout(zoomTimerRef.current)
+      zoomTimerRef.current = setTimeout(() => {
+        zoomTimerRef.current = null
+        setPanX(d.x)
+        setPanY(d.y)
+        setZoom(d.z)
+      }, 80)
     }
-  }, [zoom, panX, panY])
+  }, [])
 
   const handlePointerDown = useCallback((e: React.PointerEvent) => {
-    panState.current = { isDown: true, startX: e.clientX, startY: e.clientY, wasPan: false }
+    const d = drag.current
+    d.isDown = true
+    d.startX = e.clientX
+    d.startY = e.clientY
+    d.wasPan = false
   }, [])
 
   const handlePointerMove = useCallback((e: React.PointerEvent) => {
-    if (!panState.current.isDown || e.buttons !== 1) return
-    const dx = e.clientX - panState.current.startX
-    const dy = e.clientY - panState.current.startY
-    if (!panState.current.wasPan && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
-      panState.current.wasPan = true
+    const d = drag.current
+    if (!d.isDown || e.buttons !== 1) return
+    const dx = e.clientX - d.startX
+    const dy = e.clientY - d.startY
+    if (!d.wasPan && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
+      d.wasPan = true
       setIsPanning(true)
     }
-    if (panState.current.wasPan) {
+    if (d.wasPan) {
       if (panRafRef.current) return
       panRafRef.current = requestAnimationFrame(() => {
         panRafRef.current = null
@@ -219,21 +247,24 @@ export default function UniverseMap({
         if (!svgEl) return
         const rect = svgEl.getBoundingClientRect()
         if (rect.width === 0 || rect.height === 0) return
-        const scaleX = 900 / rect.width
-        const scaleY = 600 / rect.height
-        setPanX(p => p + (e.clientX - panState.current.startX) * scaleX)
-        setPanY(p => p + (e.clientY - panState.current.startY) * scaleY)
-        panState.current.startX = e.clientX
-        panState.current.startY = e.clientY
+        const scale = 900 / Math.min(rect.width, rect.height)
+        d.x += (e.clientX - d.startX) * scale
+        d.y += (e.clientY - d.startY) * scale
+        d.startX = e.clientX
+        d.startY = e.clientY
+        syncTransform()
       })
     }
   }, [])
 
   const handlePointerUp = useCallback(() => {
-    panState.current.isDown = false
+    const d = drag.current
+    d.isDown = false
     setIsPanning(false)
     if (panRafRef.current) { cancelAnimationFrame(panRafRef.current); panRafRef.current = null }
-    setTimeout(() => { panState.current.wasPan = false }, 100)
+    setPanX(d.x)
+    setPanY(d.y)
+    setZoom(d.z)
   }, [])
 
   const handlePlanetHover = useCallback((planetId: string | null) => {
@@ -260,7 +291,7 @@ export default function UniverseMap({
     return { left, top }
   }, [tooltipPlanet, zoom, panX, panY])
 
-  const transform = `translate(${panX}, ${panY}) scale(${zoom})`
+  const transform = `translate(${drag.current.x}, ${drag.current.y}) scale(${drag.current.z})`
 
   const activeWhDetail = useMemo(() => {
     if (activeWorldhoppers.length === 0 || selected) return null
@@ -348,8 +379,15 @@ export default function UniverseMap({
               <feGaussianBlur stdDeviation="3" result="blur" />
               <feComposite in="SourceGraphic" in2="blur" operator="over" />
             </filter>
+            <filter id="blur-heavy">
+              <feGaussianBlur stdDeviation="40" />
+            </filter>
           </defs>
-          <g transform={transform}>
+          <g ref={mapGroupRef} transform={transform}>
+            <circle cx="300" cy="200" r="180" fill="#a78bfa" opacity="0.04" filter="url(#blur-heavy)" style={{ animation: 'nebula-drift 20s ease-in-out infinite' }} />
+            <circle cx="600" cy="400" r="220" fill="#22d3ee" opacity="0.03" filter="url(#blur-heavy)" style={{ animation: 'nebula-drift 25s ease-in-out infinite reverse' }} />
+            <circle cx="150" cy="500" r="160" fill="#f59e0b" opacity="0.03" filter="url(#blur-heavy)" style={{ animation: 'nebula-drift 30s ease-in-out infinite', animationDelay: '-10s' }} />
+
             {STARS.map((s) => (
               <circle
                 key={s.id} cx={s.x} cy={s.y} r={s.r} fill="white" opacity={s.opacity}
@@ -367,6 +405,7 @@ export default function UniverseMap({
                     <path
                       d={drawCurvedPath(c.from, c.to, c.offset)}
                       fill="none" stroke={c.color} strokeWidth="5" opacity={0.12}
+                      className="animate-line-pulse"
                     />
                   )}
                   <path
@@ -387,22 +426,23 @@ export default function UniverseMap({
               )
             })}
 
-            {PLANETS.map((p) => (
-              <PlanetRenderer
-                key={p.id}
-                planet={p}
-                size={p.size * 0.4}
-                isSelected={selectedPlanet === p.id}
-                isHighlighted={hasFilter ? highlightedPlanets.has(p.id) : true}
-                onClick={() => handlePlanetClick(p.id)}
-                onHover={(h) => handlePlanetHover(h ? p.id : null)}
-              />
+            {PLANETS.map((p, i) => (
+              <g key={p.id} className="animate-planet-enter" style={{ animationDelay: `${i * 0.08}s` }}>
+                <PlanetRenderer
+                  planet={p}
+                  size={p.size * 0.4}
+                  isSelected={selectedPlanet === p.id}
+                  isHighlighted={hasFilter ? highlightedPlanets.has(p.id) : true}
+                  onPlanetClick={handlePlanetClick}
+                  onPlanetHover={handlePlanetHover}
+                />
+              </g>
             ))}
 
-            {PLANETS.map((p) => {
+            {PLANETS.map((p, i) => {
               const labelX = p.x + p.size * 0.4 + 6
               return (
-                <g key={`lbl-${p.id}`} className="pointer-events-none select-none">
+                <g key={`lbl-${p.id}`} className="pointer-events-none select-none animate-label-fade" style={{ animationDelay: `${0.8 + i * 0.08}s` }}>
                   <line x1={p.x + p.size * 0.4} y1={p.y} x2={labelX} y2={p.y} stroke="#6b7280" strokeWidth="0.5" opacity={0.5} />
                   <text x={labelX + 2} y={p.y + 3} fill="#6b7280" fontSize="9" fontFamily="ui-monospace, monospace">
                     {p.name}

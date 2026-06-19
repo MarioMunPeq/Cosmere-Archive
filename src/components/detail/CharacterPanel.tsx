@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import type { CharacterSpan } from '@/data/static/timeline/character-lifespans'
 import { PLANETS } from '@/data/static'
 
@@ -13,7 +14,7 @@ function formatYear(year: number | null): string {
   return `${year}`
 }
 
-export default function CharacterPanel({ character, onClose, onSelectPlanet }: Props) {
+function CharacterPanel({ character, onClose, onSelectPlanet }: Props) {
   const planet = PLANETS.find((p) => p.id === character.planet.toLowerCase())
 
   return (
@@ -64,3 +65,5 @@ export default function CharacterPanel({ character, onClose, onSelectPlanet }: P
     </div>
   )
 }
+
+export default memo(CharacterPanel)
