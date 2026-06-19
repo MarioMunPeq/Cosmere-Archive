@@ -5,6 +5,7 @@ import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/Cosmere-Archive/',
   plugins: [
     react(),
     tailwindcss(), // Tailwind CSS v4 as a Vite plugin
