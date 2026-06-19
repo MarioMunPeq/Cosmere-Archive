@@ -4,7 +4,7 @@ import { PLANETS } from '@/data/static'
 import JourneyAnimation from '@/components/map/JourneyAnimation'
 
 // Build the planet coordinate map
-const planetMap = new Map(PLANETS.map(p => [p.id, { x: p.x, y: p.y }]))
+const planetMap = new Map(PLANETS.map((p) => [p.id, { x: p.x, y: p.y }]))
 
 // ---------- RAF mock ----------
 let rafCallback: ((time: number) => void) | null = null
@@ -28,7 +28,9 @@ function unmockRaf() {
 function tickRaf(time: number) {
   const cb = rafCallback
   if (cb) {
-    act(() => { cb(time) })
+    act(() => {
+      cb(time)
+    })
   }
 }
 
@@ -49,15 +51,13 @@ afterEach(() => {
 // ============================================================
 describe('JourneyAnimation — rendering', () => {
   it('renders nothing when worldhopperId is null', () => {
-    const { container } = render(
-      <JourneyAnimation worldhopperId={null} planetMap={planetMap} />
-    )
+    const { container } = render(<JourneyAnimation worldhopperId={null} planetMap={planetMap} />)
     expect(container.innerHTML).toBe('')
   })
 
   it('renders nothing when worldhopperId is undefined', () => {
     const { container } = render(
-      <JourneyAnimation worldhopperId={undefined as unknown as string} planetMap={planetMap} />
+      <JourneyAnimation worldhopperId={undefined as unknown as string} planetMap={planetMap} />,
     )
     expect(container.innerHTML).toBe('')
   })
@@ -87,9 +87,7 @@ describe('JourneyAnimation — rendering', () => {
   })
 
   it('renders SVG path layer with at least one path', () => {
-    const { container } = render(
-      <JourneyAnimation worldhopperId="hoid" planetMap={planetMap} />
-    )
+    const { container } = render(<JourneyAnimation worldhopperId="hoid" planetMap={planetMap} />)
     const svg = container.querySelector('[data-testid="journey-svg"]')
     expect(svg).toBeInTheDocument()
     const paths = svg!.querySelectorAll('path')
@@ -97,36 +95,32 @@ describe('JourneyAnimation — rendering', () => {
   })
 
   it('renders animated marker dot', () => {
-    const { container } = render(
-      <JourneyAnimation worldhopperId="hoid" planetMap={planetMap} />
-    )
+    const { container } = render(<JourneyAnimation worldhopperId="hoid" planetMap={planetMap} />)
     expect(container.querySelector('[data-testid="journey-marker"]')).toBeInTheDocument()
   })
 
   it('renders stop dots at planet positions', () => {
-    const { container } = render(
-      <JourneyAnimation worldhopperId="hoid" planetMap={planetMap} />
-    )
+    const { container } = render(<JourneyAnimation worldhopperId="hoid" planetMap={planetMap} />)
     const stops = container.querySelectorAll('[data-testid="journey-stop"]')
     expect(stops.length).toBeGreaterThanOrEqual(2)
   })
 
   it('renders a traced path (the already-traveled portion)', () => {
-    const { container } = render(
-      <JourneyAnimation worldhopperId="hoid" planetMap={planetMap} speed={100} />
-    )
+    const { container } = render(<JourneyAnimation worldhopperId="hoid" planetMap={planetMap} speed={100} />)
     fireEvent.click(screen.getByRole('button', { name: /play/i }))
     // First frame sets startTimeRef; second frame gives elapsed > 0
-    act(() => { vi.advanceTimersByTime(16) })
-    act(() => { vi.advanceTimersByTime(16) })
+    act(() => {
+      vi.advanceTimersByTime(16)
+    })
+    act(() => {
+      vi.advanceTimersByTime(16)
+    })
     const trace = container.querySelector('[data-testid="journey-traced-path"]')
     expect(trace).toBeInTheDocument()
   })
 
   it('renders an untraveled path (the remaining portion)', () => {
-    const { container } = render(
-      <JourneyAnimation worldhopperId="hoid" planetMap={planetMap} />
-    )
+    const { container } = render(<JourneyAnimation worldhopperId="hoid" planetMap={planetMap} />)
     const untraveled = container.querySelector('[data-testid="journey-untraveled-path"]')
     expect(untraveled).toBeInTheDocument()
   })
@@ -234,9 +228,7 @@ describe('JourneyAnimation — controls', () => {
 // ============================================================
 describe('JourneyAnimation — animation', () => {
   it('marker starts at first planet position', () => {
-    const { container } = render(
-      <JourneyAnimation worldhopperId="hoid" planetMap={planetMap} speed={1} />
-    )
+    const { container } = render(<JourneyAnimation worldhopperId="hoid" planetMap={planetMap} speed={1} />)
     const marker = container.querySelector('[data-testid="journey-marker"]')
     expect(marker).toBeInTheDocument()
     const cx = marker!.getAttribute('cx')
@@ -262,9 +254,7 @@ describe('JourneyAnimation — animation', () => {
   })
 
   it('marker position changes during animation', () => {
-    const { container } = render(
-      <JourneyAnimation worldhopperId="khriss" planetMap={planetMap} speed={10} />
-    )
+    const { container } = render(<JourneyAnimation worldhopperId="khriss" planetMap={planetMap} speed={10} />)
     const marker = container.querySelector('[data-testid="journey-marker"]')
     const startCx = marker!.getAttribute('cx')
     const startCy = marker!.getAttribute('cy')
@@ -283,9 +273,7 @@ describe('JourneyAnimation — animation', () => {
   })
 
   it('pauses animation mid-play and marker stops', () => {
-    const { container } = render(
-      <JourneyAnimation worldhopperId="hoid" planetMap={planetMap} speed={5} />
-    )
+    const { container } = render(<JourneyAnimation worldhopperId="hoid" planetMap={planetMap} speed={5} />)
     fireEvent.click(screen.getByRole('button', { name: /play/i }))
 
     for (let i = 0; i < 10; i++) {
@@ -309,14 +297,7 @@ describe('JourneyAnimation — animation', () => {
 
   it('calls onComplete when journey reaches end', () => {
     const onComplete = vi.fn()
-    render(
-      <JourneyAnimation
-        worldhopperId="kelsier"
-        planetMap={planetMap}
-        speed={50}
-        onComplete={onComplete}
-      />
-    )
+    render(<JourneyAnimation worldhopperId="kelsier" planetMap={planetMap} speed={50} onComplete={onComplete} />)
     fireEvent.click(screen.getByRole('button', { name: /play/i }))
 
     // Advance enough frames to pass through auto-pauses at each planet stop
@@ -330,9 +311,7 @@ describe('JourneyAnimation — animation', () => {
   })
 
   it('shows Play button again after journey completes', () => {
-    render(
-      <JourneyAnimation worldhopperId="kelsier" planetMap={planetMap} speed={50} />
-    )
+    render(<JourneyAnimation worldhopperId="kelsier" planetMap={planetMap} speed={50} />)
     fireEvent.click(screen.getByRole('button', { name: /play/i }))
 
     act(() => {
@@ -346,9 +325,7 @@ describe('JourneyAnimation — animation', () => {
   })
 
   it('progress is 100% when journey completes', () => {
-    render(
-      <JourneyAnimation worldhopperId="kelsier" planetMap={planetMap} speed={50} />
-    )
+    render(<JourneyAnimation worldhopperId="kelsier" planetMap={planetMap} speed={50} />)
     fireEvent.click(screen.getByRole('button', { name: /play/i }))
 
     act(() => {
@@ -376,14 +353,16 @@ describe('JourneyAnimation — animation', () => {
   })
 
   it('traced path length increases during animation', () => {
-    const { container } = render(
-      <JourneyAnimation worldhopperId="hoid" planetMap={planetMap} speed={5} />
-    )
+    const { container } = render(<JourneyAnimation worldhopperId="hoid" planetMap={planetMap} speed={5} />)
 
     fireEvent.click(screen.getByRole('button', { name: /play/i }))
     // Advance two frames: first sets startTimeRef, second gives progress > 0
-    act(() => { vi.advanceTimersByTime(16) })
-    act(() => { vi.advanceTimersByTime(16) })
+    act(() => {
+      vi.advanceTimersByTime(16)
+    })
+    act(() => {
+      vi.advanceTimersByTime(16)
+    })
     const trace = container.querySelector('[data-testid="journey-traced-path"]')
     const initialDash = trace!.getAttribute('stroke-dasharray')
 
@@ -403,9 +382,7 @@ describe('JourneyAnimation — animation', () => {
 // ============================================================
 describe('JourneyAnimation — reset', () => {
   it('resets to start when Reset is clicked during play', () => {
-    const { container } = render(
-      <JourneyAnimation worldhopperId="hoid" planetMap={planetMap} speed={5} />
-    )
+    const { container } = render(<JourneyAnimation worldhopperId="hoid" planetMap={planetMap} speed={5} />)
 
     fireEvent.click(screen.getByRole('button', { name: /play/i }))
     for (let i = 0; i < 10; i++) {
@@ -436,9 +413,7 @@ describe('JourneyAnimation — reset', () => {
 // ============================================================
 describe('JourneyAnimation — worldhopper change', () => {
   it('resets progress when worldhopperId changes', () => {
-    const { rerender } = render(
-      <JourneyAnimation worldhopperId="hoid" planetMap={planetMap} />
-    )
+    const { rerender } = render(<JourneyAnimation worldhopperId="hoid" planetMap={planetMap} />)
     fireEvent.click(screen.getByRole('button', { name: /play/i }))
     for (let i = 0; i < 10; i++) {
       tickRaf(i * 50)
@@ -451,9 +426,7 @@ describe('JourneyAnimation — worldhopper change', () => {
   })
 
   it('updates worldhopper name when id changes', () => {
-    const { rerender } = render(
-      <JourneyAnimation worldhopperId="hoid" planetMap={planetMap} />
-    )
+    const { rerender } = render(<JourneyAnimation worldhopperId="hoid" planetMap={planetMap} />)
     expect(screen.getByText('Hoid')).toBeInTheDocument()
 
     rerender(<JourneyAnimation worldhopperId="vasher" planetMap={planetMap} />)
@@ -461,9 +434,7 @@ describe('JourneyAnimation — worldhopper change', () => {
   })
 
   it('marker jumps to new worldhopper starting planet', () => {
-    const { rerender, container } = render(
-      <JourneyAnimation worldhopperId="hoid" planetMap={planetMap} />
-    )
+    const { rerender, container } = render(<JourneyAnimation worldhopperId="hoid" planetMap={planetMap} />)
     const marker = container.querySelector('[data-testid="journey-marker"]')
 
     rerender(<JourneyAnimation worldhopperId="kelsier" planetMap={planetMap} />)
@@ -483,16 +454,16 @@ describe('JourneyAnimation — speed', () => {
 
     // Slow — speed=1, too slow to finish in 300ms
     const { unmount } = render(
-      <JourneyAnimation worldhopperId="kelsier" planetMap={planetMap} speed={1} onComplete={onCompleteSlow} />
+      <JourneyAnimation worldhopperId="kelsier" planetMap={planetMap} speed={1} onComplete={onCompleteSlow} />,
     )
     fireEvent.click(screen.getByRole('button', { name: /play/i }))
-    act(() => { vi.advanceTimersByTime(300) })
+    act(() => {
+      vi.advanceTimersByTime(300)
+    })
     unmount()
 
     // Fast — speed=10, enough iterations to pass through auto-pauses
-    render(
-      <JourneyAnimation worldhopperId="kelsier" planetMap={planetMap} speed={10} onComplete={onCompleteFast} />
-    )
+    render(<JourneyAnimation worldhopperId="kelsier" planetMap={planetMap} speed={10} onComplete={onCompleteFast} />)
     fireEvent.click(screen.getByRole('button', { name: /play/i }))
     act(() => {
       for (let i = 0; i < 1200; i++) {
@@ -535,9 +506,7 @@ describe('JourneyAnimation — edge cases', () => {
   })
 
   it('does not error on unmount while animating', () => {
-    const { unmount } = render(
-      <JourneyAnimation worldhopperId="hoid" planetMap={planetMap} speed={5} />
-    )
+    const { unmount } = render(<JourneyAnimation worldhopperId="hoid" planetMap={planetMap} speed={5} />)
     fireEvent.click(screen.getByRole('button', { name: /play/i }))
     tickRaf(100)
     vi.advanceTimersByTime(50)
@@ -560,9 +529,7 @@ describe('JourneyAnimation — edge cases', () => {
   })
 
   it('responds to window resize (checks SVG dimensions)', () => {
-    const { container } = render(
-      <JourneyAnimation worldhopperId="hoid" planetMap={planetMap} />
-    )
+    const { container } = render(<JourneyAnimation worldhopperId="hoid" planetMap={planetMap} />)
     const svg = container.querySelector('[data-testid="journey-svg"]') as HTMLElement
     // Simulate resize
     act(() => {

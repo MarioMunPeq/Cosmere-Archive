@@ -25,7 +25,7 @@ function CharacterPanel({ character, onClose, onSelectPlanet }: Props) {
         aria-label="Close character panel"
         className="absolute right-3 top-3 text-gray-600 transition-colors hover:text-gray-300"
       >
-          <CloseIcon />
+        <CloseIcon />
       </button>
 
       <div className="mb-3 flex items-center gap-3">
@@ -33,13 +33,15 @@ function CharacterPanel({ character, onClose, onSelectPlanet }: Props) {
         <h3 className="text-lg font-bold text-gray-100">{character.name}</h3>
       </div>
 
-      {character.titles.length > 0 && (
-        <p className="text-xs text-gray-500">{character.titles.join(', ')}</p>
-      )}
+      {character.titles.length > 0 && <p className="text-xs text-gray-500">{character.titles.join(', ')}</p>}
 
       <div className="mt-3 flex gap-4 text-xs text-gray-500">
-        <span>Born: <strong className="text-gray-400">{formatYear(character.birthYear)}</strong></span>
-        <span>Died: <strong className="text-gray-400">{formatYear(character.deathYear)}</strong></span>
+        <span>
+          Born: <strong className="text-gray-400">{formatYear(character.birthYear)}</strong>
+        </span>
+        <span>
+          Died: <strong className="text-gray-400">{formatYear(character.deathYear)}</strong>
+        </span>
       </div>
 
       {planet && (
@@ -57,9 +59,7 @@ function CharacterPanel({ character, onClose, onSelectPlanet }: Props) {
 
       <div className="mt-3">
         <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Group</h4>
-        <span className="inline-block rounded bg-gray-800 px-2.5 py-1 text-xs text-gray-400">
-          {character.group}
-        </span>
+        <span className="inline-block rounded bg-gray-800 px-2.5 py-1 text-xs text-gray-400">{character.group}</span>
       </div>
     </div>
   )

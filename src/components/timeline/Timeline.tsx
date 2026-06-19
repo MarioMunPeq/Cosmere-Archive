@@ -33,7 +33,10 @@ export default function Timeline({
   const forkEventsBySaga = useMemo(() => {
     const map = new Map<string, TimelineEvent[]>()
     for (const saga of selectedSagas) {
-      map.set(saga, events.filter(e => e.saga === saga))
+      map.set(
+        saga,
+        events.filter((e) => e.saga === saga),
+      )
     }
     return map
   }, [events, selectedSagas])
@@ -71,7 +74,7 @@ export default function Timeline({
 
       <line x1={0} y1={MAIN_LINE_Y} x2={TOTAL_WIDTH} y2={MAIN_LINE_Y} stroke="#4b5563" strokeWidth={1.5} />
 
-      {mainEvents.map(event => {
+      {mainEvents.map((event) => {
         const x = yearToX(event.year)
         const isImportant = event.importance >= 4
         const r = isImportant ? 5 : 3.5
@@ -83,16 +86,27 @@ export default function Timeline({
             key={event.id}
             role={isImportant ? 'button' : undefined}
             tabIndex={isImportant ? 0 : -1}
-            aria-label={isImportant ? `${event.title} - ${event.year >= 0 ? `${event.year} AD` : `${-event.year} BC`}` : undefined}
-            onKeyDown={isImportant ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClickEvent(expandedEvent === event.id ? null : event.id, event, 'main') } } : undefined}
+            aria-label={
+              isImportant ? `${event.title} - ${event.year >= 0 ? `${event.year} AD` : `${-event.year} BC`}` : undefined
+            }
+            onKeyDown={
+              isImportant
+                ? (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      onClickEvent(expandedEvent === event.id ? null : event.id, event, 'main')
+                    }
+                  }
+                : undefined
+            }
             onMouseEnter={() => onHoverEvent(event.id, event, 'main')}
             onMouseLeave={() => hoveredEvent === event.id && onHoverEvent(null)}
-            onClick={() => onClickEvent(isImportant ? (expandedEvent === event.id ? null : event.id) : null, event, 'main')}
+            onClick={() =>
+              onClickEvent(isImportant ? (expandedEvent === event.id ? null : event.id) : null, event, 'main')
+            }
             style={{ cursor: isImportant ? 'pointer' : 'default' }}
           >
-            {isImportant && (
-              <circle cx={x} cy={MAIN_LINE_Y} r={10} fill="transparent" />
-            )}
+            {isImportant && <circle cx={x} cy={MAIN_LINE_Y} r={10} fill="transparent" />}
             <circle
               cx={x}
               cy={MAIN_LINE_Y}
@@ -126,29 +140,38 @@ export default function Timeline({
               <>
                 <line x1={nowX} y1={y - 18} x2={nowX} y2={y + 14} stroke={color} strokeWidth={2} opacity={0.7} />
                 <rect x={nowX + 4} y={y - 17} width={32} height={14} rx={4} fill={color} opacity={0.85} />
-                <text x={nowX + 7} y={y - 7} fill="#fff" fontSize={11} fontFamily="ui-monospace, monospace" fontWeight={700}>
+                <text
+                  x={nowX + 7}
+                  y={y - 7}
+                  fill="#fff"
+                  fontSize={11}
+                  fontFamily="ui-monospace, monospace"
+                  fontWeight={700}
+                >
                   NOW
                 </text>
               </>
             )}
 
-            {forked.filter(e => e.importance >= 4).map(event => {
-              const ex = yearToX(event.year)
-              return (
-                <line
-                  key={`conn-${event.id}`}
-                  x1={ex}
-                  y1={y}
-                  x2={ex}
-                  y2={MAIN_LINE_Y}
-                  stroke="#4b5563"
-                  strokeWidth={0.75}
-                  strokeDasharray="3 3"
-                />
-              )
-            })}
+            {forked
+              .filter((e) => e.importance >= 4)
+              .map((event) => {
+                const ex = yearToX(event.year)
+                return (
+                  <line
+                    key={`conn-${event.id}`}
+                    x1={ex}
+                    y1={y}
+                    x2={ex}
+                    y2={MAIN_LINE_Y}
+                    stroke="#4b5563"
+                    strokeWidth={0.75}
+                    strokeDasharray="3 3"
+                  />
+                )
+              })}
 
-            {forked.map(event => {
+            {forked.map((event) => {
               const ex = yearToX(event.year)
               const isImportant = event.importance >= 4
               const r = isImportant ? 4.5 : 3
@@ -159,16 +182,34 @@ export default function Timeline({
                   key={event.id}
                   role={isImportant ? 'button' : undefined}
                   tabIndex={isImportant ? 0 : -1}
-                  aria-label={isImportant ? `${event.title} - ${event.year >= 0 ? `${event.year} AD` : `${-event.year} BC`} (${sagaLabels[saga] || saga})` : undefined}
-                  onKeyDown={isImportant ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClickEvent(expandedEvent === event.id ? null : event.id, event, 'fork', saga) } } : undefined}
+                  aria-label={
+                    isImportant
+                      ? `${event.title} - ${event.year >= 0 ? `${event.year} AD` : `${-event.year} BC`} (${sagaLabels[saga] || saga})`
+                      : undefined
+                  }
+                  onKeyDown={
+                    isImportant
+                      ? (e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault()
+                            onClickEvent(expandedEvent === event.id ? null : event.id, event, 'fork', saga)
+                          }
+                        }
+                      : undefined
+                  }
                   onMouseEnter={() => onHoverEvent(event.id, event, 'fork', saga)}
                   onMouseLeave={() => hoveredEvent === event.id && onHoverEvent(null)}
-                  onClick={() => onClickEvent(isImportant ? (expandedEvent === event.id ? null : event.id) : null, event, 'fork', saga)}
+                  onClick={() =>
+                    onClickEvent(
+                      isImportant ? (expandedEvent === event.id ? null : event.id) : null,
+                      event,
+                      'fork',
+                      saga,
+                    )
+                  }
                   style={{ cursor: isImportant ? 'pointer' : 'default' }}
                 >
-                  {isImportant && (
-                    <circle cx={ex} cy={y} r={9} fill="transparent" />
-                  )}
+                  {isImportant && <circle cx={ex} cy={y} r={9} fill="transparent" />}
                   <circle
                     cx={ex}
                     cy={y}

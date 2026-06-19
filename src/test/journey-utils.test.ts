@@ -8,8 +8,8 @@ import { WORLDHOPPER_MOVEMENTS } from '@/data/static/timeline'
 //
 
 // ---------- Helpers for tests ----------
-const planetMap = new Map(PLANETS.map(p => [p.id, { x: p.x, y: p.y }]))
-const ALL_PLANET_IDS = new Set(PLANETS.map(p => p.id))
+const planetMap = new Map(PLANETS.map((p) => [p.id, { x: p.x, y: p.y }]))
+const ALL_PLANET_IDS = new Set(PLANETS.map((p) => p.id))
 
 import {
   buildJourneySegments,
@@ -56,7 +56,7 @@ describe('buildJourneySegments', () => {
   it('every segment has positive duration', () => {
     for (const wh of WORLDHOPPER_MOVEMENTS) {
       const segs = buildJourneySegments(wh.id, planetMap)
-    segs.forEach((s) => {
+      segs.forEach((s) => {
         expect(s.duration).toBeGreaterThan(0)
       })
     }
@@ -83,7 +83,7 @@ describe('buildJourneySegments', () => {
   })
 
   it('generates N-1 segments for N movements', () => {
-    const hoid = WORLDHOPPER_MOVEMENTS.find(wh => wh.id === 'hoid')!
+    const hoid = WORLDHOPPER_MOVEMENTS.find((wh) => wh.id === 'hoid')!
     const segs = buildJourneySegments('hoid', planetMap)
     expect(segs.length).toBe(hoid.movements.length - 1)
   })
@@ -91,7 +91,7 @@ describe('buildJourneySegments', () => {
   it('single-movement worldhopper produces zero segments', () => {
     // Logic: 1 movement → 0 segments; verified via vasher who has 5 → 4
     const segs = buildJourneySegments('vasher', planetMap)
-    const vasher = WORLDHOPPER_MOVEMENTS.find(wh => wh.id === 'vasher')!
+    const vasher = WORLDHOPPER_MOVEMENTS.find((wh) => wh.id === 'vasher')!
     expect(segs.length).toBe(vasher.movements.length - 1)
   })
 
@@ -111,7 +111,7 @@ describe('buildJourneySegments', () => {
   })
 
   it('segment years match movement years', () => {
-    const hoid = WORLDHOPPER_MOVEMENTS.find(wh => wh.id === 'hoid')!
+    const hoid = WORLDHOPPER_MOVEMENTS.find((wh) => wh.id === 'hoid')!
     const segs = buildJourneySegments('hoid', planetMap)
     segs.forEach((s, i) => {
       expect(s.fromYear).toBe(hoid.movements[i]!.year)
@@ -251,8 +251,7 @@ describe('interpolatePosition', () => {
     const first = segs[0]!
     const last = segs[segs.length - 1]!
     const pos = interpolatePosition(segs, 0.5, planetMap)
-    const allSame = (pos.x === first.from.x && pos.y === first.from.y) ||
-                   (pos.x === last.to.x && pos.y === last.to.y)
+    const allSame = (pos.x === first.from.x && pos.y === first.from.y) || (pos.x === last.to.x && pos.y === last.to.y)
     expect(allSame).toBe(false)
   })
 
@@ -347,21 +346,21 @@ describe('formatJourneyYear', () => {
 // ============================================================
 describe('data integrity', () => {
   it('every worldhopper in WORLDHOPPER_MOVEMENTS has at least 2 movements', () => {
-    WORLDHOPPER_MOVEMENTS.forEach(wh => {
+    WORLDHOPPER_MOVEMENTS.forEach((wh) => {
       expect(wh.movements.length, `${wh.id} has < 2 movements`).toBeGreaterThanOrEqual(2)
     })
   })
 
   it('all movements reference known planets', () => {
-    WORLDHOPPER_MOVEMENTS.forEach(wh => {
-      wh.movements.forEach(m => {
+    WORLDHOPPER_MOVEMENTS.forEach((wh) => {
+      wh.movements.forEach((m) => {
         expect(ALL_PLANET_IDS, `[${wh.id}] unknown planet "${m.planet}"`).toContain(m.planet)
       })
     })
   })
 
   it('every worldhopper has id, name, color', () => {
-    WORLDHOPPER_MOVEMENTS.forEach(wh => {
+    WORLDHOPPER_MOVEMENTS.forEach((wh) => {
       expect(wh.id).toBeTruthy()
       expect(wh.name).toBeTruthy()
       expect(wh.color).toMatch(/^#/)

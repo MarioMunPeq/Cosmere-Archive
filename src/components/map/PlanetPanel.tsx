@@ -21,7 +21,6 @@ export default function PlanetPanel({
   onStartJourney,
   panelRef,
 }: Props) {
-
   return (
     <div className="contents">
       <div className="fixed inset-0 z-30 bg-black/60 sm:hidden" onClick={() => onSelectPlanet(null)} />
@@ -62,7 +61,9 @@ export default function PlanetPanel({
               {selected.sagas.map((sId) => {
                 const saga = SAGA_BY_ID.get(sId)
                 return saga ? (
-                  <span key={sId} className="rounded-full bg-gray-800 px-2 py-0.5 text-xs text-gray-400">{saga.name}</span>
+                  <span key={sId} className="rounded-full bg-gray-800 px-2 py-0.5 text-xs text-gray-400">
+                    {saga.name}
+                  </span>
                 ) : null
               })}
             </div>
@@ -112,7 +113,10 @@ export default function PlanetPanel({
               {selected.connectedPlanets.map((pId) => {
                 const p = PLANETS.find((pl) => pl.id === pId)
                 return p ? (
-                  <span key={pId} className="flex items-center gap-1 rounded-full bg-gray-800 px-2 py-0.5 text-xs text-gray-400">
+                  <span
+                    key={pId}
+                    className="flex items-center gap-1 rounded-full bg-gray-800 px-2 py-0.5 text-xs text-gray-400"
+                  >
                     <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: p.color }} />
                     {p.name}
                   </span>

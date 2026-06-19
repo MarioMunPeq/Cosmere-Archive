@@ -12,10 +12,6 @@ import ZoomControls from './ZoomControls'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
 import type { Character } from '@/types'
 
-
-
-
-
 function drawCurvedPath(p1: Planet, p2: Planet, offset: number): string {
   const dx = p2.x - p1.x
   const dy = p2.y - p1.y
@@ -36,11 +32,38 @@ interface Props {
 }
 
 const SHARD_COLORS: Record<string, string> = {
-  'Honor': '#f59e0b', 'Cultivation': '#22c55e', 'Odium': '#ef4444',
-  'Preservation': '#3b82f6', 'Ruin': '#991b1b', 'Harmony': '#14b8a6',
-  'Devotion': '#a5b4fc', 'Dominion': '#312e81',
-  'Endowment': '#d946ef', 'Autonomy': '#eab308',
-  'Ambition': '#8b5cf6', 'Virtuosity': '#0ea5e9', 'Mercy': '#f472b6',
+  Honor: '#f59e0b',
+  Cultivation: '#22c55e',
+  Odium: '#ef4444',
+  Preservation: '#3b82f6',
+  Ruin: '#991b1b',
+  Harmony: '#14b8a6',
+  Devotion: '#a5b4fc',
+  Dominion: '#312e81',
+  Endowment: '#d946ef',
+  Autonomy: '#eab308',
+  Ambition: '#8b5cf6',
+  Virtuosity: '#0ea5e9',
+  Mercy: '#f472b6',
+}
+
+function seededUnit(index: number, salt: number): number {
+  const value = Math.sin(index * 12.9898 + salt * 78.233) * 43758.5453
+  return value - Math.floor(value)
+}
+
+function createStars(count: number) {
+  return Array.from({ length: count }, (_, i) => {
+    const twinkleSeed = seededUnit(i, 5)
+    return {
+      id: i,
+      x: seededUnit(i, 1) * 900,
+      y: seededUnit(i, 2) * 600,
+      r: seededUnit(i, 3) * 0.8 + 0.15,
+      opacity: seededUnit(i, 4) * 0.35 + 0.05,
+      twinkle: twinkleSeed > 0.7 ? seededUnit(i, 6) * 6 : -1,
+    }
+  })
 }
 
 export default function UniverseMap({
@@ -60,28 +83,27 @@ export default function UniverseMap({
   const [panY, setPanY] = useState(0)
   const [isPanning, setIsPanning] = useState(false)
   const drag = useRef({
-    isDown: false, startX: 0, startY: 0, wasPan: false,
-    x: 0, y: 0, z: 1,
+    isDown: false,
+    startX: 0,
+    startY: 0,
+    wasPan: false,
+    x: 0,
+    y: 0,
+    z: 1,
   })
   const [hoveredPlanetId, setHoveredPlanetId] = useState<string | null>(null)
   const [activeShards, setActiveShards] = useState<string[]>([])
   const [showLegend, setShowLegend] = useState(() => window.innerWidth >= 640)
   const [showWorldhopperPicker, setShowWorldhopperPicker] = useState(false)
+  const [tooltipScreenPos, setTooltipScreenPos] = useState({ left: 0, top: 0 })
 
   const isCoarse = useMemo(() => window.matchMedia('(pointer: coarse)').matches, [])
-  const starCount = useMemo(() => window.innerWidth < 640 ? 100 : 350, [])
-  const STARS = useMemo(() => Array.from({ length: starCount }, (_, i) => ({
-    id: i,
-    x: Math.random() * 900,
-    y: Math.random() * 600,
-    r: Math.random() * 0.8 + 0.15,
-    opacity: Math.random() * 0.35 + 0.05,
-    twinkle: Math.random() > 0.7 ? Math.random() * 6 : -1,
-  })), [starCount])
+  const starCount = useMemo(() => (window.innerWidth < 640 ? 100 : 350), [])
+  const STARS = useMemo(() => createStars(starCount), [starCount])
 
   useEffect(() => {
     function onResize() {
-      if (window.innerWidth >= 640) setShowLegend(prev => prev ? prev : true)
+      if (window.innerWidth >= 640) setShowLegend((prev) => (prev ? prev : true))
     }
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
@@ -89,7 +111,9 @@ export default function UniverseMap({
   const zoomTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
-    return () => { if (zoomTimerRef.current) clearTimeout(zoomTimerRef.current) }
+    return () => {
+      if (zoomTimerRef.current) clearTimeout(zoomTimerRef.current)
+    }
   }, [])
   const panRafRef = useRef<number | null>(null)
 
@@ -126,7 +150,9 @@ export default function UniverseMap({
   useEffect(() => {
     const el = containerRef.current
     if (!el) return
-    const handler = (e: WheelEvent) => { e.preventDefault() }
+    const handler = (e: WheelEvent) => {
+      e.preventDefault()
+    }
     el.addEventListener('wheel', handler, { passive: false })
     return () => el.removeEventListener('wheel', handler)
   }, [])
@@ -172,7 +198,9 @@ export default function UniverseMap({
     for (const g of groups.values()) {
       if (g.length > 1) {
         const step = 0.25 / g.length
-        g.forEach((l, idx) => { l.offset = (idx - (g.length - 1) / 2) * step })
+        g.forEach((l, idx) => {
+          l.offset = (idx - (g.length - 1) / 2) * step
+        })
       }
     }
     return lines
@@ -199,9 +227,13 @@ export default function UniverseMap({
 
   function resetView() {
     const d = drag.current
-    d.x = 0; d.y = 0; d.z = 1
+    d.x = 0
+    d.y = 0
+    d.z = 1
     syncTransform()
-    setPanX(0); setPanY(0); setZoom(1)
+    setPanX(0)
+    setPanY(0)
+    setZoom(1)
   }
 
   function zoomToCenter(newZoom: number) {
@@ -210,7 +242,8 @@ export default function UniverseMap({
     if (!svgEl) return
     const rect = svgEl.getBoundingClientRect()
     if (rect.width === 0 || rect.height === 0) return
-    const centerVX = 450; const centerVY = 300
+    const centerVX = 450
+    const centerVY = 300
     const clamped = Math.max(0.5, Math.min(3, newZoom))
     if (clamped !== d.z) {
       const origX = (centerVX - d.x) / d.z
@@ -222,15 +255,20 @@ export default function UniverseMap({
       if (zoomTimerRef.current) clearTimeout(zoomTimerRef.current)
       zoomTimerRef.current = setTimeout(() => {
         zoomTimerRef.current = null
-        setPanX(d.x); setPanY(d.y); setZoom(d.z)
+        setPanX(d.x)
+        setPanY(d.y)
+        setZoom(d.z)
       }, 80)
     }
   }
 
-  const handlePlanetClick = useCallback((planetId: string) => {
-    if (drag.current.wasPan) return
-    onSelectPlanet(selectedPlanet === planetId ? null : planetId)
-  }, [onSelectPlanet, selectedPlanet])
+  const handlePlanetClick = useCallback(
+    (planetId: string) => {
+      if (drag.current.wasPan) return
+      onSelectPlanet(selectedPlanet === planetId ? null : planetId)
+    },
+    [onSelectPlanet, selectedPlanet],
+  )
 
   const handleWheel = useCallback((e: React.WheelEvent) => {
     e.preventDefault()
@@ -300,37 +338,49 @@ export default function UniverseMap({
     const d = drag.current
     d.isDown = false
     setIsPanning(false)
-    if (panRafRef.current) { cancelAnimationFrame(panRafRef.current); panRafRef.current = null }
+    if (panRafRef.current) {
+      cancelAnimationFrame(panRafRef.current)
+      panRafRef.current = null
+    }
     setPanX(d.x)
     setPanY(d.y)
     setZoom(d.z)
   }, [])
 
-  const handlePlanetHover = useCallback((planetId: string | null) => {
-    setHoveredPlanetId(planetId)
-  }, [])
+  const calculateTooltipPosition = useCallback(
+    (tooltipPlanet: Planet) => {
+      const svgEl = svgRef.current
+      if (!svgEl) return { left: 0, top: 0 }
+      const rect = svgEl.getBoundingClientRect()
+      const svgW = rect.width
+      const svgH = rect.height
+      if (svgW === 0 || svgH === 0) return { left: 0, top: 0 }
+      const screenX = ((tooltipPlanet.x * zoom + panX) / 900) * svgW + rect.left
+      const screenY = ((tooltipPlanet.y * zoom + panY) / 600) * svgH + rect.top
+      let left = screenX - rect.left + 15
+      let top = screenY - rect.top - tooltipPlanet.size * 0.4 * zoom - 10
+      const tooltipW = 224
+      const containerW = containerRef.current?.clientWidth ?? 900
+      if (left + tooltipW > containerW - 8) left = containerW - tooltipW - 8
+      if (left < 8) left = 8
+      if (top < 4) top = screenY - rect.top + tooltipPlanet.size * 0.4 * zoom + 10
+      return { left, top }
+    },
+    [zoom, panX, panY],
+  )
+
+  const handlePlanetHover = useCallback(
+    (planetId: string | null) => {
+      setHoveredPlanetId(planetId)
+      const planet = planetId ? planetMap.get(planetId) : null
+      setTooltipScreenPos(planet ? calculateTooltipPosition(planet) : { left: 0, top: 0 })
+    },
+    [calculateTooltipPosition, planetMap],
+  )
 
   const tooltipPlanet = !selected && hoveredPlanetId ? (planetMap.get(hoveredPlanetId) ?? null) : null
-  const tooltipScreenPos = useMemo(() => {
-    if (!tooltipPlanet) return { left: 0, top: 0 }
-    const svgEl = svgRef.current
-    if (!svgEl) return { left: 0, top: 0 }
-    const rect = svgEl.getBoundingClientRect()
-    const svgW = rect.width; const svgH = rect.height
-    if (svgW === 0 || svgH === 0) return { left: 0, top: 0 }
-    const screenX = ((tooltipPlanet.x * zoom + panX) / 900) * svgW + rect.left
-    const screenY = ((tooltipPlanet.y * zoom + panY) / 600) * svgH + rect.top
-    let left = screenX - rect.left + 15
-    let top = screenY - rect.top - tooltipPlanet.size * 0.4 * zoom - 10
-    const tooltipW = 224
-    const containerW = containerRef.current?.clientWidth ?? 900
-    if (left + tooltipW > containerW - 8) left = containerW - tooltipW - 8
-    if (left < 8) left = 8
-    if (top < 4) top = screenY - rect.top + tooltipPlanet.size * 0.4 * zoom + 10
-    return { left, top }
-  }, [tooltipPlanet, zoom, panX, panY])
 
-  const transform = `translate(${drag.current.x}, ${drag.current.y}) scale(${drag.current.z})`
+  const transform = `translate(${panX}, ${panY}) scale(${zoom})`
 
   const activeWhDetail = useMemo(() => {
     if (activeWorldhoppers.length === 0 || selected) return null
@@ -344,7 +394,10 @@ export default function UniverseMap({
   const whPanelRef = useFocusTrap(!!activeWhDetail)
 
   return (
-    <div ref={containerRef} className="relative flex min-h-0 flex-1 overflow-hidden rounded-2xl border border-gray-800 bg-gray-950">
+    <div
+      ref={containerRef}
+      className="relative flex min-h-0 flex-1 overflow-hidden rounded-2xl border border-gray-800 bg-gray-950"
+    >
       <div
         className="relative flex min-h-0 flex-1"
         onPointerDown={handlePointerDown}
@@ -423,47 +476,85 @@ export default function UniverseMap({
             </filter>
           </defs>
           <g ref={mapGroupRef} transform={transform}>
-            <circle cx="300" cy="200" r="180" fill="#a78bfa" opacity="0.04" filter="url(#blur-heavy)" style={{ animation: 'nebula-drift 20s ease-in-out infinite' }} />
-            <circle cx="600" cy="400" r="220" fill="#22d3ee" opacity="0.03" filter="url(#blur-heavy)" style={{ animation: 'nebula-drift 25s ease-in-out infinite reverse' }} />
-            <circle cx="150" cy="500" r="160" fill="#f59e0b" opacity="0.03" filter="url(#blur-heavy)" style={{ animation: 'nebula-drift 30s ease-in-out infinite', animationDelay: '-10s' }} />
+            <circle
+              cx="300"
+              cy="200"
+              r="180"
+              fill="#a78bfa"
+              opacity="0.04"
+              filter="url(#blur-heavy)"
+              style={{ animation: 'nebula-drift 20s ease-in-out infinite' }}
+            />
+            <circle
+              cx="600"
+              cy="400"
+              r="220"
+              fill="#22d3ee"
+              opacity="0.03"
+              filter="url(#blur-heavy)"
+              style={{ animation: 'nebula-drift 25s ease-in-out infinite reverse' }}
+            />
+            <circle
+              cx="150"
+              cy="500"
+              r="160"
+              fill="#f59e0b"
+              opacity="0.03"
+              filter="url(#blur-heavy)"
+              style={{ animation: 'nebula-drift 30s ease-in-out infinite', animationDelay: '-10s' }}
+            />
 
             {STARS.map((s) => (
               <circle
-                key={s.id} cx={s.x} cy={s.y} r={s.r} fill="white" opacity={s.opacity}
+                key={s.id}
+                cx={s.x}
+                cy={s.y}
+                r={s.r}
+                fill="white"
+                opacity={s.opacity}
                 className={s.twinkle >= 0 ? 'animate-twinkle' : ''}
                 style={s.twinkle >= 0 ? { animationDelay: `${s.twinkle}s` } : undefined}
               />
             ))}
 
-            {hasFilter && connections.map((c, i) => {
-              const isActive = activeWorldhoppers.includes(c.whId)
-              const opacity = isActive ? 0.6 : 0.05
-              return (
-                <g key={`${c.whId}-${i}`}>
-                  {isActive && (
+            {hasFilter &&
+              connections.map((c, i) => {
+                const isActive = activeWorldhoppers.includes(c.whId)
+                const opacity = isActive ? 0.6 : 0.05
+                return (
+                  <g key={`${c.whId}-${i}`}>
+                    {isActive && (
+                      <path
+                        d={drawCurvedPath(c.from, c.to, c.offset)}
+                        fill="none"
+                        stroke={c.color}
+                        strokeWidth="5"
+                        opacity={0.12}
+                        className="animate-line-pulse"
+                      />
+                    )}
                     <path
                       d={drawCurvedPath(c.from, c.to, c.offset)}
-                      fill="none" stroke={c.color} strokeWidth="5" opacity={0.12}
-                      className="animate-line-pulse"
+                      fill="none"
+                      stroke={c.color}
+                      strokeWidth={isActive ? 2 : 0.5}
+                      strokeDasharray={isActive ? 'none' : '4 4'}
+                      opacity={opacity}
                     />
-                  )}
-                  <path
-                    d={drawCurvedPath(c.from, c.to, c.offset)}
-                    fill="none" stroke={c.color}
-                    strokeWidth={isActive ? 2 : 0.5}
-                    strokeDasharray={isActive ? "none" : "4 4"}
-                    opacity={opacity}
-                  />
-                  {isActive && (
-                    <path
-                      d={drawCurvedPath(c.from, c.to, c.offset)}
-                      fill="none" stroke={c.color} strokeWidth={2}
-                      strokeDasharray="6 20" opacity={0.7} className="animate-dash"
-                    />
-                  )}
-                </g>
-              )
-            })}
+                    {isActive && (
+                      <path
+                        d={drawCurvedPath(c.from, c.to, c.offset)}
+                        fill="none"
+                        stroke={c.color}
+                        strokeWidth={2}
+                        strokeDasharray="6 20"
+                        opacity={0.7}
+                        className="animate-dash"
+                      />
+                    )}
+                  </g>
+                )
+              })}
 
             {PLANETS.map((p, i) => (
               <g key={p.id} className="animate-planet-enter" style={{ animationDelay: `${i * 0.08}s` }}>
@@ -481,8 +572,20 @@ export default function UniverseMap({
             {PLANETS.map((p, i) => {
               const labelX = p.x + p.size * 0.4 + 6
               return (
-                <g key={`lbl-${p.id}`} className="pointer-events-none select-none animate-label-fade" style={{ animationDelay: `${0.8 + i * 0.08}s` }}>
-                  <line x1={p.x + p.size * 0.4} y1={p.y} x2={labelX} y2={p.y} stroke="#6b7280" strokeWidth="0.5" opacity={0.5} />
+                <g
+                  key={`lbl-${p.id}`}
+                  className="pointer-events-none select-none animate-label-fade"
+                  style={{ animationDelay: `${0.8 + i * 0.08}s` }}
+                >
+                  <line
+                    x1={p.x + p.size * 0.4}
+                    y1={p.y}
+                    x2={labelX}
+                    y2={p.y}
+                    stroke="#6b7280"
+                    strokeWidth="0.5"
+                    opacity={0.5}
+                  />
                   <text x={labelX + 2} y={p.y + 3} fill="#6b7280" fontSize="9" fontFamily="ui-monospace, monospace">
                     {p.name}
                   </text>
@@ -502,12 +605,8 @@ export default function UniverseMap({
             <div className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: tooltipPlanet.color }} />
             <span className="text-sm font-bold text-gray-100">{tooltipPlanet.name}</span>
           </div>
-          {tooltipPlanet.shard && (
-            <p className="mt-0.5 text-xs text-gray-400">{tooltipPlanet.shard}</p>
-          )}
-          <p className="mt-1 text-xs leading-relaxed text-gray-400 line-clamp-2">
-            {tooltipPlanet.description}
-          </p>
+          {tooltipPlanet.shard && <p className="mt-0.5 text-xs text-gray-400">{tooltipPlanet.shard}</p>}
+          <p className="mt-1 text-xs leading-relaxed text-gray-400 line-clamp-2">{tooltipPlanet.description}</p>
         </div>
       )}
 
@@ -537,32 +636,35 @@ export default function UniverseMap({
       <div className="absolute bottom-4 left-4 z-20 flex flex-col gap-2 sm:flex-row sm:items-end">
         <ShardLegend
           show={showLegend}
-          onToggle={() => setShowLegend(v => !v)}
+          onToggle={() => setShowLegend((v) => !v)}
           shardData={shardData}
           activeShards={activeShards}
-          onToggleShard={(name) => setActiveShards(prev =>
-            prev.includes(name) ? prev.filter(s => s !== name) : [...prev, name]
-          )}
+          onToggleShard={(name) =>
+            setActiveShards((prev) => (prev.includes(name) ? prev.filter((s) => s !== name) : [...prev, name]))
+          }
           onClear={() => setActiveShards([])}
         />
         <WorldhopperPicker
           show={showWorldhopperPicker}
           worldhoppers={WORLDHOPPERS}
-          onToggle={() => setShowWorldhopperPicker(v => !v)}
+          onToggle={() => setShowWorldhopperPicker((v) => !v)}
           onStartJourney={onStartJourney}
         />
       </div>
 
-      <ZoomControls onZoomIn={() => zoomToCenter(drag.current.z + 0.3)} onZoomOut={() => zoomToCenter(drag.current.z - 0.3)} onReset={resetView} />
+      <ZoomControls
+        onZoomIn={() => zoomToCenter(drag.current.z + 0.3)}
+        onZoomOut={() => zoomToCenter(drag.current.z - 0.3)}
+        onReset={resetView}
+      />
 
       {!selected && activeWorldhoppers.length === 0 && activeShards.length === 0 && (
         <div className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 text-center">
           <p className="hidden text-xs text-gray-600 sm:block">
-            Scroll to zoom &middot; Drag to pan &middot; {isCoarse ? 'Tap' : 'Click'} a planet &middot; Press <kbd className="rounded border border-gray-700 bg-gray-800 px-1 font-sans">/</kbd> to search
+            Scroll to zoom &middot; Drag to pan &middot; {isCoarse ? 'Tap' : 'Click'} a planet &middot; Press{' '}
+            <kbd className="rounded border border-gray-700 bg-gray-800 px-1 font-sans">/</kbd> to search
           </p>
-          <p className="text-xs text-gray-600 sm:hidden">
-            Drag to pan &middot; {isCoarse ? 'Tap' : 'Click'} a planet
-          </p>
+          <p className="text-xs text-gray-600 sm:hidden">Drag to pan &middot; {isCoarse ? 'Tap' : 'Click'} a planet</p>
         </div>
       )}
     </div>

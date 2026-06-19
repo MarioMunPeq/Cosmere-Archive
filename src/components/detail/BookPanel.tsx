@@ -24,17 +24,11 @@ function BookPanel({ book, onClose }: Props) {
 
       <h3 className="pr-4 text-lg font-bold text-gray-100">{book.title}</h3>
 
-      {saga && (
-        <p className="mt-1 text-xs font-medium text-gray-500">{saga.name}</p>
-      )}
+      {saga && <p className="mt-1 text-xs font-medium text-gray-500">{saga.name}</p>}
 
-      {book.year && (
-        <p className="mt-1 text-xs text-gray-600">Published {book.year}</p>
-      )}
+      {book.year && <p className="mt-1 text-xs text-gray-600">Published {book.year}</p>}
 
-      {book.description && (
-        <p className="mt-3 text-sm leading-relaxed text-gray-400">{book.description}</p>
-      )}
+      {book.description && <p className="mt-3 text-sm leading-relaxed text-gray-400">{book.description}</p>}
 
       {book.saga && (
         <div className="mt-4">

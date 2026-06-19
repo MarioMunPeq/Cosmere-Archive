@@ -28,7 +28,10 @@ export default function Layout() {
 
       <nav className="sticky top-0 z-10 shrink-0 border-b border-purple-900/50 bg-gray-950/80 backdrop-blur-sm">
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
-          <Link to="/" className="shrink-0 text-sm font-bold tracking-wider text-purple-400 sm:text-base sm:tracking-wider lg:text-xl">
+          <Link
+            to="/"
+            className="shrink-0 text-sm font-bold tracking-wider text-purple-400 sm:text-base sm:tracking-wider lg:text-xl"
+          >
             COSMERE ARCHIVE
           </Link>
 

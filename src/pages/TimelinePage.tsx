@@ -24,7 +24,7 @@ for (const saga of SAGAS) {
   SAGA_COLORS[saga.id] = TAILWIND_TO_HEX[saga.color] || '#6b7280'
 }
 
-const SAGA_ORDER = SAGAS.map(s => s.id)
+const SAGA_ORDER = SAGAS.map((s) => s.id)
 
 const SAGA_NOW_YEARS: Record<string, number> = {}
 for (const event of TIMELINE_EVENTS) {
@@ -69,9 +69,9 @@ export default function TimelinePage() {
   }, [])
 
   const toggleSaga = useCallback((sagaId: string) => {
-    setSelectedSagas(prev => {
+    setSelectedSagas((prev) => {
       if (prev.includes(sagaId)) {
-        return prev.filter(id => id !== sagaId)
+        return prev.filter((id) => id !== sagaId)
       }
       if (prev.length >= 5) return prev
       return [...prev, sagaId]
@@ -123,15 +123,18 @@ export default function TimelinePage() {
     [selectedSagas],
   )
 
-  const getViewportPosition = useCallback((svgX: number, svgY: number) => {
-    const el = scrollRef.current
-    if (!el) return { left: 0, top: 0 }
-    const rect = el.getBoundingClientRect()
-    return {
-      left: rect.left + svgX - scrollLeft,
-      top: rect.top + svgY,
-    }
-  }, [scrollLeft])
+  const getViewportPosition = useCallback(
+    (svgX: number, svgY: number) => {
+      const el = scrollRef.current
+      if (!el) return { left: 0, top: 0 }
+      const rect = el.getBoundingClientRect()
+      return {
+        left: rect.left + svgX - scrollLeft,
+        top: rect.top + svgY,
+      }
+    },
+    [scrollLeft],
+  )
 
   const forkCount = selectedSagas.length
   const timelineHeight = 8 + MAIN_LINE_Y + 8 + forkCount * FORK_SPACING + 16
@@ -152,7 +155,9 @@ export default function TimelinePage() {
 
   useEffect(() => {
     if (!expandedEvent) return
-    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') setExpandedEvent(null) }
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setExpandedEvent(null)
+    }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
   }, [expandedEvent])
@@ -161,10 +166,8 @@ export default function TimelinePage() {
     <div className="flex min-h-0 flex-1 flex-col">
       {/* Saga selector */}
       <div className="flex flex-wrap items-center gap-2 border-b border-gray-800 px-4 py-3">
-        <span className="mr-1 text-xs font-semibold uppercase tracking-wider text-gray-500">
-          Forks
-        </span>
-        {SAGA_ORDER.map(sagaId => {
+        <span className="mr-1 text-xs font-semibold uppercase tracking-wider text-gray-500">Forks</span>
+        {SAGA_ORDER.map((sagaId) => {
           const saga = SAGA_BY_ID.get(sagaId)
           if (!saga) return null
           const isActive = selectedSagas.includes(sagaId)
@@ -237,7 +240,6 @@ export default function TimelinePage() {
           />
         )}
       </div>
-
     </div>
   )
 }
@@ -274,12 +276,8 @@ function TooltipOverlay({
         <span className="text-[10px] text-gray-500">{formatJourneyYear(event.year)}</span>
       </div>
       <p className="mt-0.5 text-sm font-semibold text-purple-300">{event.title}</p>
-      <p className="mt-0.5 text-[11px] leading-tight text-gray-400 line-clamp-2">
-        {event.description}
-      </p>
-      {event.importance >= 4 && (
-        <p className="mt-0.5 text-[10px] text-purple-600/80">Click to expand</p>
-      )}
+      <p className="mt-0.5 text-[11px] leading-tight text-gray-400 line-clamp-2">{event.description}</p>
+      {event.importance >= 4 && <p className="mt-0.5 text-[10px] text-purple-600/80">Click to expand</p>}
     </div>
   )
 }
@@ -317,7 +315,10 @@ function CardOverlay({
           <span className="text-[11px] text-gray-500">{formatJourneyYear(event.year)}</span>
         </div>
         <button
-          onClick={(e) => { e.stopPropagation(); onClose() }}
+          onClick={(e) => {
+            e.stopPropagation()
+            onClose()
+          }}
           className="flex h-5 w-5 items-center justify-center rounded text-xs text-gray-600 hover:bg-gray-800 hover:text-gray-300"
           aria-label="Close"
         >
@@ -326,9 +327,7 @@ function CardOverlay({
       </div>
       <div className="px-3 py-2">
         <h3 className="text-sm font-bold text-purple-300">{event.title}</h3>
-        <p className="mt-1 text-[12px] leading-relaxed text-gray-300">
-          {event.description}
-        </p>
+        <p className="mt-1 text-[12px] leading-relaxed text-gray-300">{event.description}</p>
 
         <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[10px] text-gray-500">
           {event.saga && (
@@ -353,7 +352,11 @@ function CardOverlay({
           )}
           {event.importance && (
             <span>
-              Importance: <span className="text-gray-400">{'★'.repeat(event.importance)}{'☆'.repeat(5 - event.importance)}</span>
+              Importance:{' '}
+              <span className="text-gray-400">
+                {'★'.repeat(event.importance)}
+                {'☆'.repeat(5 - event.importance)}
+              </span>
             </span>
           )}
         </div>

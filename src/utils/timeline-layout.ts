@@ -41,7 +41,8 @@ function computeLayout(events: TimelineEvent[]) {
     if (uniqueYears.length === 0) return 0
     if (year <= uniqueYears[0]!) return xPositions[0]!
     if (year >= uniqueYears[uniqueYears.length - 1]!) return xPositions[xPositions.length - 1]!
-    let lo = 0, hi = uniqueYears.length - 1
+    let lo = 0,
+      hi = uniqueYears.length - 1
     while (hi - lo > 1) {
       const mid = (lo + hi) >> 1
       if (uniqueYears[mid]! <= year) lo = mid

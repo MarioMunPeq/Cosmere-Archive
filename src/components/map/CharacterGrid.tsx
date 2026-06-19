@@ -3,8 +3,6 @@ import { PLANETS, SAGAS, getBookById, SAGA_BY_ID, ALL_CHARACTERS } from '@/data/
 import CharacterComparison from './CharacterComparison'
 import type { Planet } from '@/data/static'
 
-
-
 function getCharacterSagas(requiredBooks: string[]): string[] {
   const sagaIds = new Set<string>()
   for (const bookId of requiredBooks) {
@@ -23,16 +21,18 @@ export default function CharacterGrid({ highlightedCharacter }: { highlightedCha
   const [comparing, setComparing] = useState<[string, string] | null>(null)
   const cardRefs = useRef<Map<string, HTMLButtonElement>>(new Map())
 
+  const highlightedPlanet = useMemo(() => {
+    if (!highlightedCharacter) return null
+    return ALL_CHARACTERS.find((c) => c.id === highlightedCharacter)?.planet ?? null
+  }, [highlightedCharacter])
+
   useEffect(() => {
     if (!highlightedCharacter) return
-    const char = ALL_CHARACTERS.find((c) => c.id === highlightedCharacter)
-    if (char) {
-      setFilterPlanets([char.planet])
-      setTimeout(() => {
-        const el = cardRefs.current.get(highlightedCharacter)
-        el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      }, 100)
-    }
+    const timer = setTimeout(() => {
+      const el = cardRefs.current.get(highlightedCharacter)
+      el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }, 100)
+    return () => clearTimeout(timer)
   }, [highlightedCharacter])
 
   const characterSagasMap = useMemo(() => {
@@ -44,24 +44,22 @@ export default function CharacterGrid({ highlightedCharacter }: { highlightedCha
   }, [])
 
   const filtered = useMemo(() => {
+    const activePlanets = highlightedPlanet ? Array.from(new Set([...filterPlanets, highlightedPlanet])) : filterPlanets
+
     return ALL_CHARACTERS.filter((c) => {
-      if (filterPlanets.length > 0 && !filterPlanets.includes(c.planet)) return false
+      if (activePlanets.length > 0 && !activePlanets.includes(c.planet)) return false
       const cSagas = characterSagasMap.get(c.id) ?? []
       if (filterSagas.length > 0 && !filterSagas.some((s) => cSagas.includes(s))) return false
       return true
     })
-  }, [filterPlanets, filterSagas, characterSagasMap])
+  }, [filterPlanets, filterSagas, characterSagasMap, highlightedPlanet])
 
   function togglePlanet(id: string) {
-    setFilterPlanets((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-    )
+    setFilterPlanets((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
   }
 
   function toggleSaga(id: string) {
-    setFilterSagas((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-    )
+    setFilterSagas((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
   }
 
   function toggleSelected(id: string) {
@@ -127,7 +125,10 @@ export default function CharacterGrid({ highlightedCharacter }: { highlightedCha
         </div>
 
         {hasFilters && (
-          <button onClick={clearFilters} className="ml-auto rounded px-2 py-0.5 text-xs text-gray-600 hover:text-gray-400">
+          <button
+            onClick={clearFilters}
+            className="ml-auto rounded px-2 py-0.5 text-xs text-gray-600 hover:text-gray-400"
+          >
             Clear filters
           </button>
         )}
@@ -145,7 +146,9 @@ export default function CharacterGrid({ highlightedCharacter }: { highlightedCha
               return (
                 <button
                   key={c.id}
-                  ref={(el) => { if (el) cardRefs.current.set(c.id, el) }}
+                  ref={(el) => {
+                    if (el) cardRefs.current.set(c.id, el)
+                  }}
                   onClick={() => toggleSelected(c.id)}
                   className={`group relative flex items-start gap-3 rounded-xl border p-3 text-left transition-all ${
                     isSelected
@@ -163,14 +166,16 @@ export default function CharacterGrid({ highlightedCharacter }: { highlightedCha
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium text-gray-200">{c.name}</span>
                       {planet && (
-                        <span className="inline-block h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: planet.color }} title={planet.name} />
+                        <span
+                          className="inline-block h-2 w-2 shrink-0 rounded-full"
+                          style={{ backgroundColor: planet.color }}
+                          title={planet.name}
+                        />
                       )}
                     </div>
 
                     <div className="mt-0.5 flex flex-wrap gap-1.5">
-                      {planet && (
-                        <span className="text-xs text-gray-500">{planet.name}</span>
-                      )}
+                      {planet && <span className="text-xs text-gray-500">{planet.name}</span>}
                       {cSagas.map((sId) => {
                         const saga = SAGA_BY_ID.get(sId)
                         return saga ? (
@@ -181,14 +186,10 @@ export default function CharacterGrid({ highlightedCharacter }: { highlightedCha
                       })}
                     </div>
 
-                    <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-gray-500">
-                      {c.description}
-                    </p>
+                    <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-gray-500">{c.description}</p>
                   </div>
 
-                  {isSelected && (
-                    <span className="absolute right-2 top-2 text-xs text-purple-400">✕</span>
-                  )}
+                  {isSelected && <span className="absolute right-2 top-2 text-xs text-purple-400">x</span>}
                 </button>
               )
             })}
@@ -199,9 +200,7 @@ export default function CharacterGrid({ highlightedCharacter }: { highlightedCha
       {selected.length === 2 && (
         <div className="sticky bottom-0 border-t border-gray-800 bg-gray-900/95 p-3 backdrop-blur-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-gray-400">
-              2 characters selected
-            </span>
+            <span className="text-xs text-gray-400">2 characters selected</span>
             <div className="flex gap-2">
               <button
                 onClick={() => setSelected([])}
@@ -220,9 +219,7 @@ export default function CharacterGrid({ highlightedCharacter }: { highlightedCha
         </div>
       )}
 
-      {comparing && (
-        <CharacterComparison characterIds={comparing} onClose={() => setComparing(null)} />
-      )}
+      {comparing && <CharacterComparison characterIds={comparing} onClose={() => setComparing(null)} />}
     </div>
   )
 }

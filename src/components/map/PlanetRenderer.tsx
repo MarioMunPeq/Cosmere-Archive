@@ -44,10 +44,22 @@ function PlanetRenderer({ planet, isSelected, isHighlighted, size, onPlanetClick
   return (
     <g
       onClick={() => onPlanetClick(planet.id)}
-      onPointerEnter={() => { setHovered(true); onPlanetHover(planet.id) }}
-      onPointerLeave={() => { setHovered(false); onPlanetHover(null) }}
-      onFocus={() => { setHovered(true); onPlanetHover(planet.id) }}
-      onBlur={() => { setHovered(false); onPlanetHover(null) }}
+      onPointerEnter={() => {
+        setHovered(true)
+        onPlanetHover(planet.id)
+      }}
+      onPointerLeave={() => {
+        setHovered(false)
+        onPlanetHover(null)
+      }}
+      onFocus={() => {
+        setHovered(true)
+        onPlanetHover(planet.id)
+      }}
+      onBlur={() => {
+        setHovered(false)
+        onPlanetHover(null)
+      }}
       tabIndex={0}
       role="button"
       aria-label={`${planet.name}${planet.shard ? ` — ${planet.shard}` : ''}`}
@@ -60,13 +72,22 @@ function PlanetRenderer({ planet, isSelected, isHighlighted, size, onPlanetClick
         transform: isHighlighted ? 'scale(1.08)' : 'scale(1)',
       }}
     >
-      {(showHalo) && (
-        <circle cx={planet.x} cy={planet.y} r={r * 1.4} fill={planet.color} opacity={hovered && !isSelected ? 0.15 : 0.08} filter="url(#glow)" />
+      {showHalo && (
+        <circle
+          cx={planet.x}
+          cy={planet.y}
+          r={r * 1.4}
+          fill={planet.color}
+          opacity={hovered && !isSelected ? 0.15 : 0.08}
+          filter="url(#glow)"
+        />
       )}
 
       {showExtra && (
         <circle
-          cx={planet.x} cy={planet.y} r={r * 1.6}
+          cx={planet.x}
+          cy={planet.y}
+          r={r * 1.6}
           fill="none"
           stroke={isSelected ? '#fbbf24' : planet.color}
           strokeWidth={isSelected ? 2 : 1}

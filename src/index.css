@@ -1,18 +1,32 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @media (prefers-reduced-motion: no-preference) {
   @keyframes dash-move {
-    to { stroke-dashoffset: -40; }
+    to {
+      stroke-dashoffset: -40;
+    }
   }
 
   @keyframes fade-in-up {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   @keyframes scale-in {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 
   .animate-dash {
@@ -28,8 +42,14 @@
   }
 
   @keyframes planet-enter {
-    from { opacity: 0; transform: scale(0); }
-    to { opacity: 1; transform: scale(1); }
+    from {
+      opacity: 0;
+      transform: scale(0);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 
   .animate-planet-enter {
@@ -37,8 +57,13 @@
   }
 
   @keyframes breathe {
-    0%, 100% { opacity: 0.85; }
-    50% { opacity: 1; }
+    0%,
+    100% {
+      opacity: 0.85;
+    }
+    50% {
+      opacity: 1;
+    }
   }
 
   .animate-breathe {
@@ -46,14 +71,26 @@
   }
 
   @keyframes nebula-drift {
-    0%, 100% { transform: translate(0, 0); }
-    33% { transform: translate(15px, -10px); }
-    66% { transform: translate(-8px, 12px); }
+    0%,
+    100% {
+      transform: translate(0, 0);
+    }
+    33% {
+      transform: translate(15px, -10px);
+    }
+    66% {
+      transform: translate(-8px, 12px);
+    }
   }
 
   @keyframes line-pulse {
-    0%, 100% { opacity: 0.12; }
-    50% { opacity: 0.25; }
+    0%,
+    100% {
+      opacity: 0.12;
+    }
+    50% {
+      opacity: 0.25;
+    }
   }
 
   .animate-line-pulse {
@@ -61,8 +98,14 @@
   }
 
   @keyframes label-fade {
-    from { opacity: 0; transform: translateX(-4px); }
-    to { opacity: 1; transform: translateX(0); }
+    from {
+      opacity: 0;
+      transform: translateX(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
   }
 
   .animate-label-fade {
@@ -70,8 +113,12 @@
   }
 
   @keyframes slide-up {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
   }
 
   .animate-slide-up {
@@ -79,8 +126,13 @@
   }
 
   @keyframes twinkle {
-    0%, 100% { opacity: 0.05; }
-    50% { opacity: 0.6; }
+    0%,
+    100% {
+      opacity: 0.05;
+    }
+    50% {
+      opacity: 0.6;
+    }
   }
 
   .animate-twinkle {
@@ -101,8 +153,14 @@
 }
 
 /* UI micro-animations */
-button, a, input, [role="button"] {
-  transition: color 0.2s ease-out, background-color 0.2s ease-out, border-color 0.2s ease-out;
+button,
+a,
+input,
+[role='button'] {
+  transition:
+    color 0.2s ease-out,
+    background-color 0.2s ease-out,
+    border-color 0.2s ease-out;
 }
 
 .planet-label {

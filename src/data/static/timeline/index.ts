@@ -19,7 +19,7 @@ export interface WorldhopperDisplay {
   planets: string[]
   sagas: string[]
 }
-export const WORLDHOPPERS: WorldhopperDisplay[] = WORLDHOPPER_MOVEMENTS.map(w => ({
+export const WORLDHOPPERS: WorldhopperDisplay[] = WORLDHOPPER_MOVEMENTS.map((w) => ({
   id: w.id,
   name: w.name,
   description: w.description,

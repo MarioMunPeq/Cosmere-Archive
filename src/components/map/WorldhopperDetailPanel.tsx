@@ -46,9 +46,7 @@ export default function WorldhopperDetailPanel({
         <p className="text-sm leading-relaxed text-gray-400">{wh.description}</p>
 
         {activeWorldhoppers.length > 1 && (
-          <p className="mt-2 text-xs text-gray-500">
-            +{activeWorldhoppers.length - 1} more worldhopper(s) selected
-          </p>
+          <p className="mt-2 text-xs text-gray-500">+{activeWorldhoppers.length - 1} more worldhopper(s) selected</p>
         )}
 
         <div className="mt-4">
@@ -59,9 +57,14 @@ export default function WorldhopperDetailPanel({
               return p ? (
                 <button
                   key={pid}
-                  onClick={() => { onSelectPlanet(pid); onToggleWorldhopper(wh.id) }}
+                  onClick={() => {
+                    onSelectPlanet(pid)
+                    onToggleWorldhopper(wh.id)
+                  }}
                   className="rounded-full bg-gray-800 px-2.5 py-0.5 text-xs text-gray-300 hover:bg-gray-700"
-                >{p.name}</button>
+                >
+                  {p.name}
+                </button>
               ) : null
             })}
           </div>
@@ -71,7 +74,9 @@ export default function WorldhopperDetailPanel({
           <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Sagas</h4>
           <div className="flex flex-wrap gap-1.5">
             {wh.sagas.map((s) => (
-              <span key={s} className="rounded bg-gray-800 px-2 py-0.5 text-xs text-gray-400">{s}</span>
+              <span key={s} className="rounded bg-gray-800 px-2 py-0.5 text-xs text-gray-400">
+                {s}
+              </span>
             ))}
           </div>
         </div>

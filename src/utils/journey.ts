@@ -44,7 +44,7 @@ export function yearGapToMs(gap: number): number {
 }
 
 function findWorldhopper(id: string): WorldhopperMovement | undefined {
-  return WORLDHOPPER_MOVEMENTS.find(wh => wh.id === id)
+  return WORLDHOPPER_MOVEMENTS.find((wh) => wh.id === id)
 }
 
 export function buildJourneySegments(
@@ -81,10 +81,7 @@ export function getTotalDuration(segments: JourneySegment[]): number {
   return segments.reduce((sum, s) => sum + s.duration, 0)
 }
 
-export function getStopProgressRange(
-  segments: JourneySegment[],
-  stopIndex: number,
-): { start: number; end: number } {
+export function getStopProgressRange(segments: JourneySegment[], stopIndex: number): { start: number; end: number } {
   if (segments.length === 0) return { start: 0, end: 1 }
   if (stopIndex < 0 || stopIndex >= segments.length) {
     throw new RangeError(`stopIndex ${stopIndex} out of range [0, ${segments.length})`)
@@ -103,10 +100,7 @@ export function getStopProgressRange(
   return { start, end }
 }
 
-export function findStopAtProgress(
-  segments: JourneySegment[],
-  progress: number,
-): number {
+export function findStopAtProgress(segments: JourneySegment[], progress: number): number {
   if (segments.length === 0) return 0
 
   const clamped = Math.max(0, Math.min(1, progress))
@@ -128,7 +122,17 @@ export function interpolatePosition(
   _planetMap: Map<string, { x: number; y: number }>,
 ): InterpolatedPosition {
   if (segments.length === 0) {
-    return { x: 0, y: 0, segmentIndex: 0, segmentProgress: 0, currentYear: 0, description: '', planet: '', fromPlanet: '', toPlanet: '' }
+    return {
+      x: 0,
+      y: 0,
+      segmentIndex: 0,
+      segmentProgress: 0,
+      currentYear: 0,
+      description: '',
+      planet: '',
+      fromPlanet: '',
+      toPlanet: '',
+    }
   }
 
   const clamped = Math.max(0, Math.min(1, progress))

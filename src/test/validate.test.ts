@@ -25,7 +25,14 @@ describe('validateCharacterArray', () => {
 
   it('passes through valid entries', () => {
     const data = [
-      { id: 'kaladin', name: 'Kaladin', planet: 'Roshar', description: 'Windrunner', image: '/img.jpg', requiredBooks: ['book1'] },
+      {
+        id: 'kaladin',
+        name: 'Kaladin',
+        planet: 'Roshar',
+        description: 'Windrunner',
+        image: '/img.jpg',
+        requiredBooks: ['book1'],
+      },
       { id: 'vin', name: 'Vin', planet: 'Scadrial', description: 'Mistborn', requiredBooks: [] },
     ]
 
@@ -40,6 +47,6 @@ describe('validateCharacterArray', () => {
     const data = await import('@/data/generated/characters.json')
     const result = validateCharacterArray(data.default ?? data)
     expect(result.length).toBeGreaterThan(0)
-    expect(result.every(c => c.id && c.name && c.planet)).toBe(true)
+    expect(result.every((c) => c.id && c.name && c.planet)).toBe(true)
   })
 })

@@ -7,12 +7,7 @@ interface Props {
   onStartJourney?: (id: string) => void
 }
 
-export default function WorldhopperPicker({
-  show,
-  worldhoppers,
-  onToggle,
-  onStartJourney,
-}: Props) {
+export default function WorldhopperPicker({ show, worldhoppers, onToggle, onStartJourney }: Props) {
   return (
     <div className="flex flex-col items-start gap-2 sm:items-start">
       {show && (
@@ -47,7 +42,17 @@ export default function WorldhopperPicker({
         aria-label={show ? 'Close worldhopper picker' : 'Open worldhopper picker'}
       >
         <span className="flex items-center gap-1.5">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="shrink-0"
+          >
             <circle cx="12" cy="12" r="10" />
             <path d="M2 12h20" />
             <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />

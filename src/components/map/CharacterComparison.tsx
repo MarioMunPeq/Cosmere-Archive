@@ -102,7 +102,9 @@ export default function CharacterComparison({ characterIds, onClose }: Props) {
                 {commonSagas.map((sId) => {
                   const saga = SAGA_BY_ID.get(sId)
                   return saga ? (
-                    <span key={sId} className="rounded-full bg-purple-900/30 px-2 py-0.5 text-xs text-purple-300">{saga.name}</span>
+                    <span key={sId} className="rounded-full bg-purple-900/30 px-2 py-0.5 text-xs text-purple-300">
+                      {saga.name}
+                    </span>
                   ) : null
                 })}
               </div>
@@ -136,7 +138,9 @@ export default function CharacterComparison({ characterIds, onClose }: Props) {
                 return (
                   <tr key={sId} className={shared ? 'bg-purple-900/5' : ''}>
                     <td className="py-2 pr-4 text-gray-500">{saga?.name ?? sId}</td>
-                    <td className={`py-2 pr-4 ${sInA ? (shared ? 'text-purple-300' : 'text-gray-400') : 'text-gray-700'}`}>
+                    <td
+                      className={`py-2 pr-4 ${sInA ? (shared ? 'text-purple-300' : 'text-gray-400') : 'text-gray-700'}`}
+                    >
                       {sInA ? '✓' : '—'}
                     </td>
                     <td className={`py-2 ${sInB ? (shared ? 'text-purple-300' : 'text-gray-400') : 'text-gray-700'}`}>
@@ -151,14 +155,18 @@ export default function CharacterComparison({ characterIds, onClose }: Props) {
                 <td className="py-2 pr-4">
                   <div className="max-w-[200px] space-y-0.5">
                     {aBooks.map((title) => (
-                      <div key={title} className="text-gray-400">{title}</div>
+                      <div key={title} className="text-gray-400">
+                        {title}
+                      </div>
                     ))}
                   </div>
                 </td>
                 <td className="py-2">
                   <div className="max-w-[200px] space-y-0.5">
                     {bBooks.map((title) => (
-                      <div key={title} className="text-gray-400">{title}</div>
+                      <div key={title} className="text-gray-400">
+                        {title}
+                      </div>
                     ))}
                   </div>
                 </td>

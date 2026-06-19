@@ -27,7 +27,7 @@ export default function MapPage() {
 
   const planetMap = useMemo(() => {
     const m = new Map<string, { x: number; y: number }>()
-    PLANETS.forEach(p => m.set(p.id, { x: p.x, y: p.y }))
+    PLANETS.forEach((p) => m.set(p.id, { x: p.x, y: p.y }))
     return m
   }, [])
 
@@ -43,14 +43,14 @@ export default function MapPage() {
     const id = searchParams.get('id')
     if (!id) return null
     return BOOKS.find((b) => b.id === id) ?? null
-  }, [paramsStr])
+  }, [searchParams])
 
   const detailCharacter = useMemo<CharacterSpan | null>(() => {
     if (searchParams.get('focus') !== 'character') return null
     const id = searchParams.get('id')
     if (!id) return null
     return CHARACTER_SPANS.find((c) => c.id === id) ?? null
-  }, [paramsStr])
+  }, [searchParams])
 
   useEffect(() => {
     if (!paramsStr) return
@@ -64,46 +64,56 @@ export default function MapPage() {
 
     switch (focus) {
       case 'planet':
-        setSelectedPlanet(id)
-        setHighlightedPlanet(id)
+        queueMicrotask(() => {
+          setSelectedPlanet(id)
+          setHighlightedPlanet(id)
+        })
         break
       case 'event': {
         const planet = searchParams.get('planet')
         if (planet) {
-          setSelectedPlanet(planet)
-          setHighlightedPlanet(planet)
+          queueMicrotask(() => {
+            setSelectedPlanet(planet)
+            setHighlightedPlanet(planet)
+          })
         } else {
           const event = TIMELINE_EVENTS.find((e) => e.id === id)
           if (event && event.planets.length > 0) {
-            setSelectedPlanet(event.planets[0]!)
-            setHighlightedPlanet(event.planets[0]!)
+            const eventPlanet = event.planets[0]!
+            queueMicrotask(() => {
+              setSelectedPlanet(eventPlanet)
+              setHighlightedPlanet(eventPlanet)
+            })
           }
         }
         break
       }
       case 'worldhopper':
-        setActiveWorldhoppers(prev => prev.includes(id) ? prev : [...prev, id])
+        queueMicrotask(() => {
+          setActiveWorldhoppers((prev) => (prev.includes(id) ? prev : [...prev, id]))
+        })
         break
     }
 
     setSearchParams({}, { replace: true })
-  }, [paramsStr])
+  }, [paramsStr, searchParams, setSearchParams])
 
   const handleCloseDetail = useCallback(() => {
     setSearchParams({}, { replace: true })
   }, [setSearchParams])
 
   const toggleWorldhopper = useCallback((id: string) => {
-    setActiveWorldhoppers((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-    )
+    setActiveWorldhoppers((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
   }, [])
 
-  const handleSelectPlanet = useCallback((id: string) => {
-    setSelectedPlanet(id)
-    setHighlightedPlanet(null)
-    handleCloseDetail()
-  }, [handleCloseDetail])
+  const handleSelectPlanet = useCallback(
+    (id: string) => {
+      setSelectedPlanet(id)
+      setHighlightedPlanet(null)
+      handleCloseDetail()
+    },
+    [handleCloseDetail],
+  )
 
   const handleSelectCharacter = useCallback((id: string) => {
     setHighlightedCharacter(id)
@@ -113,7 +123,7 @@ export default function MapPage() {
 
   const handleStartJourney = useCallback((id: string) => {
     setActiveJourney(id)
-    setActiveWorldhoppers(prev => prev.filter(x => x !== id))
+    setActiveWorldhoppers((prev) => prev.filter((x) => x !== id))
   }, [])
 
   const handleCloseJourney = useCallback(() => {
@@ -128,9 +138,7 @@ export default function MapPage() {
         <button
           onClick={() => setTab('map')}
           className={`flex-1 px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-colors sm:flex-none sm:px-6 ${
-            tab === 'map'
-              ? 'border-b-2 border-purple-500 text-purple-400'
-              : 'text-gray-600 hover:text-gray-400'
+            tab === 'map' ? 'border-b-2 border-purple-500 text-purple-400' : 'text-gray-600 hover:text-gray-400'
           }`}
         >
           Map
@@ -138,9 +146,7 @@ export default function MapPage() {
         <button
           onClick={() => setTab('characters')}
           className={`flex-1 px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-colors sm:flex-none sm:px-6 ${
-            tab === 'characters'
-              ? 'border-b-2 border-purple-500 text-purple-400'
-              : 'text-gray-600 hover:text-gray-400'
+            tab === 'characters' ? 'border-b-2 border-purple-500 text-purple-400' : 'text-gray-600 hover:text-gray-400'
           }`}
         >
           Characters
@@ -158,9 +164,7 @@ export default function MapPage() {
         <button
           onClick={() => setTab('timeline')}
           className={`flex-1 px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-colors sm:flex-none sm:px-6 ${
-            tab === 'timeline'
-              ? 'border-b-2 border-purple-500 text-purple-400'
-              : 'text-gray-600 hover:text-gray-400'
+            tab === 'timeline' ? 'border-b-2 border-purple-500 text-purple-400' : 'text-gray-600 hover:text-gray-400'
           }`}
         >
           Timeline
@@ -171,7 +175,10 @@ export default function MapPage() {
         <div className="relative flex min-h-0 flex-1">
           <UniverseMap
             selectedPlanet={detailBook || detailCharacter ? null : selectedPlanet}
-            onSelectPlanet={(id) => { setSelectedPlanet(id); if (id) setHighlightedPlanet(null) }}
+            onSelectPlanet={(id) => {
+              setSelectedPlanet(id)
+              if (id) setHighlightedPlanet(null)
+            }}
             activeWorldhoppers={activeWorldhoppers}
             onToggleWorldhopper={toggleWorldhopper}
             highlightedPlanet={highlightedPlanet}
@@ -180,19 +187,10 @@ export default function MapPage() {
           />
 
           {activeJourney && (
-            <JourneyAnimation
-              worldhopperId={activeJourney}
-              planetMap={planetMap}
-              onClose={handleCloseJourney}
-            />
+            <JourneyAnimation worldhopperId={activeJourney} planetMap={planetMap} onClose={handleCloseJourney} />
           )}
 
-          {detailBook && (
-            <BookPanel
-              book={detailBook}
-              onClose={handleCloseDetail}
-            />
-          )}
+          {detailBook && <BookPanel book={detailBook} onClose={handleCloseDetail} />}
 
           {detailCharacter && (
             <CharacterPanel
