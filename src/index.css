@@ -69,6 +69,15 @@
     animation: label-fade 0.4s ease-out both;
   }
 
+  @keyframes slide-up {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.35s ease-out both;
+  }
+
   @keyframes twinkle {
     0%, 100% { opacity: 0.05; }
     50% { opacity: 0.6; }
@@ -94,4 +103,33 @@
 /* UI micro-animations */
 button, a, input, [role="button"] {
   transition: color 0.2s ease-out, background-color 0.2s ease-out, border-color 0.2s ease-out;
+}
+
+.planet-label {
+  font-size: clamp(8px, 1.2vw, 11px);
+}
+
+/* Custom scrollbar — dark, thin, subtle */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #4b5563 transparent;
 }

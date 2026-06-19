@@ -5,7 +5,10 @@ import SearchBar from './SearchBar'
 export default function Layout() {
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
-      if (e.key === '/' && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)) {
+      if (
+        (e.key === '/' || (e.key === 'k' && (e.metaKey || e.ctrlKey))) &&
+        !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)
+      ) {
         e.preventDefault()
         document.getElementById('cosmere-search')?.focus()
       }

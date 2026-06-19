@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useState } from 'react'
 import type { Planet } from '@/types/planet'
 import RosharRenderer from './renderers/RosharRenderer'
 import ScadrialRenderer from './renderers/ScadrialRenderer'
@@ -20,7 +20,8 @@ interface Props {
   onPlanetHover: (id: string | null) => void
 }
 
-const RENDERERS: Record<string, React.ComponentType<{ x: number; y: number; r: number }>> = {
+type Renderer = React.ComponentType<{ x: number; y: number; r: number }>
+const RENDERERS: Record<string, Renderer> = {
   roshar: RosharRenderer,
   scadrial: ScadrialRenderer,
   sel: SelRenderer,
@@ -35,14 +36,22 @@ const RENDERERS: Record<string, React.ComponentType<{ x: number; y: number; r: n
 
 function PlanetRenderer({ planet, isSelected, isHighlighted, size, onPlanetClick, onPlanetHover }: Props) {
   const r = size
-  const BodyRenderer = RENDERERS[planet.id]
+  const BodyRenderer: Renderer | undefined = RENDERERS[planet.id]
+  const [hovered, setHovered] = useState(false)
+  const showExtra = isSelected || isHighlighted
+  const showHalo = isSelected || isHighlighted || hovered
 
   return (
     <g
       onClick={() => onPlanetClick(planet.id)}
-      onPointerEnter={() => onPlanetHover(planet.id)}
-      onPointerLeave={() => onPlanetHover(null)}
-      className="cursor-pointer"
+      onPointerEnter={() => { setHovered(true); onPlanetHover(planet.id) }}
+      onPointerLeave={() => { setHovered(false); onPlanetHover(null) }}
+      onFocus={() => { setHovered(true); onPlanetHover(planet.id) }}
+      onBlur={() => { setHovered(false); onPlanetHover(null) }}
+      tabIndex={0}
+      role="button"
+      aria-label={`${planet.name}${planet.shard ? ` — ${planet.shard}` : ''}`}
+      className="cursor-pointer outline-none"
       opacity={isHighlighted ? 1 : 0.4}
       style={{
         transition: 'opacity 0.25s ease-out, transform 0.2s ease-out',
@@ -51,11 +60,11 @@ function PlanetRenderer({ planet, isSelected, isHighlighted, size, onPlanetClick
         transform: isHighlighted ? 'scale(1.08)' : 'scale(1)',
       }}
     >
-      {(isSelected || isHighlighted) && (
-        <circle cx={planet.x} cy={planet.y} r={r * 1.4} fill={planet.color} opacity={0.08} filter="url(#glow)" />
+      {(showHalo) && (
+        <circle cx={planet.x} cy={planet.y} r={r * 1.4} fill={planet.color} opacity={hovered && !isSelected ? 0.15 : 0.08} filter="url(#glow)" />
       )}
 
-      {(isSelected || isHighlighted) && (
+      {showExtra && (
         <circle
           cx={planet.x} cy={planet.y} r={r * 1.6}
           fill="none"
@@ -67,7 +76,11 @@ function PlanetRenderer({ planet, isSelected, isHighlighted, size, onPlanetClick
       )}
 
       <g className="animate-breathe">
-        <BodyRenderer x={planet.x} y={planet.y} r={r} />
+        {BodyRenderer ? (
+          <BodyRenderer x={planet.x} y={planet.y} r={r} />
+        ) : (
+          <circle cx={planet.x} cy={planet.y} r={r} fill={planet.color} opacity={0.8} />
+        )}
       </g>
     </g>
   )

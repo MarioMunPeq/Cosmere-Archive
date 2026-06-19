@@ -1,0 +1,153 @@
+import { type RefObject } from 'react'
+import { PLANETS, getBookById, SAGA_BY_ID } from '@/data/static'
+import { WORLDHOPPERS } from '@/data/static/timeline'
+import type { Planet } from '@/types/planet'
+import type { Character } from '@/types'
+
+interface Props {
+  selected: Planet
+  selectedCharacters: Character[]
+  onSelectPlanet: (id: string | null) => void
+  onSelectCharacter: (id: string) => void
+  onStartJourney: (id: string) => void
+  panelRef: RefObject<HTMLDivElement | null>
+}
+
+export default function PlanetPanel({
+  selected,
+  selectedCharacters,
+  onSelectPlanet,
+  onSelectCharacter,
+  onStartJourney,
+  panelRef,
+}: Props) {
+
+  return (
+    <div className="contents">
+      <div className="fixed inset-0 z-30 bg-black/60 sm:hidden" onClick={() => onSelectPlanet(null)} />
+      <div
+        ref={panelRef}
+        key={selected.id}
+        className="absolute inset-0 z-40 flex flex-col overflow-y-auto bg-gray-900 animate-slide-up sm:inset-auto sm:bottom-auto sm:left-auto sm:right-4 sm:top-4 sm:w-72 sm:rounded-xl sm:border sm:border-gray-700/60 sm:bg-gray-900/95 sm:p-5 sm:shadow-2xl sm:backdrop-blur-lg sm:animate-scale-in"
+      >
+        <button
+          onClick={() => onSelectPlanet(null)}
+          aria-label="Close planet panel"
+          className="absolute right-3 top-3 text-gray-600 transition-colors hover:text-gray-300"
+        >
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+        </button>
+
+        <div className="mb-3 flex items-center gap-3">
+          <div className="h-3 w-3 rounded-full shrink-0" style={{ backgroundColor: selected.color }} />
+          <h3 className="text-lg font-bold text-gray-100">{selected.name}</h3>
+        </div>
+
+        <p className="text-xs font-medium text-purple-400/80">{selected.shard}</p>
+        <p className="mt-2 text-sm leading-relaxed text-gray-400">{selected.description}</p>
+
+        {selected.magicSystem && (
+          <div className="mt-3 rounded-lg border border-gray-800 bg-gray-900/50 px-3 py-2">
+            <h4 className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-gray-500">Magic System</h4>
+            <p className="text-xs leading-relaxed text-gray-400">{selected.magicSystem}</p>
+          </div>
+        )}
+
+        {selected.sagas && selected.sagas.length > 0 && (
+          <div className="mt-3">
+            <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Sagas</h4>
+            <div className="flex flex-wrap gap-1.5">
+              {selected.sagas.map((sId) => {
+                const saga = SAGA_BY_ID.get(sId)
+                return saga ? (
+                  <span key={sId} className="rounded-full bg-gray-800 px-2 py-0.5 text-xs text-gray-400">{saga.name}</span>
+                ) : null
+              })}
+            </div>
+          </div>
+        )}
+
+        {selected.books && selected.books.length > 0 && (
+          <div className="mt-3">
+            <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Books</h4>
+            <div className="space-y-1">
+              {selected.books.map((bId) => {
+                const book = getBookById(bId)
+                return book ? (
+                  <div key={bId} className="flex items-center gap-2 rounded bg-gray-800/50 px-2 py-1">
+                    <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: selected.color }} />
+                    <span className="text-xs text-gray-400">{book.title}</span>
+                  </div>
+                ) : null
+              })}
+            </div>
+          </div>
+        )}
+
+        {selectedCharacters.length > 0 && (
+          <div className="mt-3">
+            <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">
+              Characters ({selectedCharacters.length})
+            </h4>
+            <div className="flex flex-wrap gap-1.5">
+              {selectedCharacters.map((c) => (
+                <button
+                  key={c.id}
+                  onClick={() => onSelectCharacter?.(c.id)}
+                  className="rounded-full bg-gray-800 px-2.5 py-0.5 text-xs text-gray-300 transition-colors hover:bg-gray-700 hover:text-white"
+                >
+                  {c.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {selected.connectedPlanets && selected.connectedPlanets.length > 0 && (
+          <div className="mt-3">
+            <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Connected Planets</h4>
+            <div className="flex flex-wrap gap-1.5">
+              {selected.connectedPlanets.map((pId) => {
+                const p = PLANETS.find((pl) => pl.id === pId)
+                return p ? (
+                  <span key={pId} className="flex items-center gap-1 rounded-full bg-gray-800 px-2 py-0.5 text-xs text-gray-400">
+                    <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: p.color }} />
+                    {p.name}
+                  </span>
+                ) : null
+              })}
+            </div>
+          </div>
+        )}
+
+        {WORLDHOPPERS.filter((wh) => wh.planets.includes(selected.id)).length > 0 && (
+          <div className="mt-3">
+            <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Worldhoppers</h4>
+            <div className="space-y-1.5">
+              {WORLDHOPPERS.filter((wh) => wh.planets.includes(selected.id)).map((wh) => (
+                <div
+                  key={wh.id}
+                  className="flex items-center gap-2 rounded px-2 py-1.5 text-xs text-gray-400 transition-colors hover:bg-gray-800/50"
+                >
+                  <span className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: wh.color }} />
+                  <span className="flex-1 truncate">{wh.name}</span>
+                  <button
+                    onClick={() => onStartJourney(wh.id)}
+                    className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-purple-900/30 text-purple-400 transition-colors hover:bg-purple-800/40 hover:text-purple-300"
+                    aria-label={`Animate ${wh.name}'s journey`}
+                  >
+                    <svg width="10" height="10" viewBox="0 0 12 12" fill="currentColor">
+                      <path d="M2 1l9 5-9 5V1z" />
+                    </svg>
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

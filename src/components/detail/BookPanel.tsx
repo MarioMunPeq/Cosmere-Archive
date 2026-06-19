@@ -2,6 +2,7 @@ import { memo } from 'react'
 import type { Book } from '@/types'
 import type { Saga } from '@/data/static/sagas'
 import { SAGAS } from '@/data/static'
+import { CloseIcon } from '@/components/common/icons'
 
 interface Props {
   book: Book
@@ -18,9 +19,7 @@ function BookPanel({ book, onClose }: Props) {
         aria-label="Close book panel"
         className="absolute right-3 top-3 text-gray-600 transition-colors hover:text-gray-300"
       >
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
+        <CloseIcon />
       </button>
 
       <h3 className="pr-4 text-lg font-bold text-gray-100">{book.title}</h3>

@@ -210,9 +210,3 @@ export const BOOKS: Book[] = [
 export function getBookById(id: string): Book | undefined {
   return BOOKS.find((book) => book.id === id)
 }
-
-export function getBooksBySaga(sagaId: string): Book[] {
-  return BOOKS.filter((book) => book.saga === sagaId).sort(
-    (a, b) => a.order - b.order,
-  )
-}

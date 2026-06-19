@@ -1,30 +1,20 @@
 import { useMemo, useRef, useState, useCallback, useEffect, useLayoutEffect } from 'react'
-import { PLANETS } from '@/data/static'
-import type { Character } from '@/types'
+import { PLANETS, ALL_CHARACTERS } from '@/data/static'
+import { WORLDHOPPERS } from '@/data/static/timeline'
+import type { WorldhopperDisplay } from '@/data/static/timeline'
 import type { Planet } from '@/types/planet'
 import PlanetRenderer from './PlanetRenderer'
-import charactersData from '@/data/generated/characters.json'
-import { validateCharacterArray } from '@/data/generated/validate'
+import PlanetPanel from './PlanetPanel'
+import WorldhopperDetailPanel from './WorldhopperDetailPanel'
+import ShardLegend from './ShardLegend'
+import WorldhopperPicker from './WorldhopperPicker'
+import ZoomControls from './ZoomControls'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
+import type { Character } from '@/types'
 
-const ALL_CHARACTERS = validateCharacterArray(charactersData)
 
-export interface Worldhopper {
-  id: string
-  name: string
-  description: string
-  color: string
-  planets: string[]
-  sagas: string[]
-}
 
-const WORLDHOPPERS: Worldhopper[] = [
-  { id: "hoid",     name: "Hoid",     description: "Appears in almost every world. Storyteller, wanderer, seeker.",     color: "#a78bfa", planets: ["roshar","scadrial","nalthis","sel","taldain","first-of-the-sun","lumar","komashi","canticle"], sagas: ["stormlight","mistborn-era-1","elantris","warbreaker","secret-projects"] },
-  { id: "vasher",   name: "Vasher",   description: "Kalad the Usurper. Wielder of Nightblood, expert in Awakening.",     color: "#f472b6", planets: ["nalthis","roshar"], sagas: ["warbreaker","stormlight"] },
-  { id: "khriss",   name: "Khriss",   description: "Scholar from Taldain. Documents investiture systems.",           color: "#22c55e", planets: ["taldain","scadrial","roshar","first-of-the-sun"], sagas: ["white-sand"] },
-  { id: "nazh",     name: "Nazh",     description: "Cartographer and spy. Collects information for Khriss.",              color: "#eab308", planets: ["threnody","scadrial","roshar"], sagas: ["stormlight"] },
-  { id: "kelsier",  name: "Kelsier",  description: "The Survivor. Operates from the Cognitive Realm.",                  color: "#ef4444", planets: ["scadrial","roshar"], sagas: ["mistborn-era-1","stormlight"] },
-]
+
 
 function drawCurvedPath(p1: Planet, p2: Planet, offset: number): string {
   const dx = p2.x - p1.x
@@ -35,21 +25,14 @@ function drawCurvedPath(p1: Planet, p2: Planet, offset: number): string {
   return `M ${p1.x} ${p1.y} Q ${cx} ${cy} ${p2.x} ${p2.y}`
 }
 
-const STARS = Array.from({ length: 350 }, (_, i) => ({
-  id: i,
-  x: Math.random() * 900,
-  y: Math.random() * 600,
-  r: Math.random() * 0.8 + 0.15,
-  opacity: Math.random() * 0.35 + 0.05,
-  twinkle: Math.random() > 0.7 ? Math.random() * 6 : -1,
-}))
-
 interface Props {
   selectedPlanet: string | null
   onSelectPlanet: (id: string | null) => void
   activeWorldhoppers: string[]
   onToggleWorldhopper: (id: string) => void
   highlightedPlanet: string | null
+  onSelectCharacter?: (id: string) => void
+  onStartJourney?: (id: string) => void
 }
 
 const SHARD_COLORS: Record<string, string> = {
@@ -66,6 +49,8 @@ export default function UniverseMap({
   activeWorldhoppers,
   onToggleWorldhopper,
   highlightedPlanet,
+  onSelectCharacter,
+  onStartJourney,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
@@ -80,8 +65,32 @@ export default function UniverseMap({
   })
   const [hoveredPlanetId, setHoveredPlanetId] = useState<string | null>(null)
   const [activeShards, setActiveShards] = useState<string[]>([])
-  const [showLegend, setShowLegend] = useState(false)
+  const [showLegend, setShowLegend] = useState(() => window.innerWidth >= 640)
+  const [showWorldhopperPicker, setShowWorldhopperPicker] = useState(false)
+
+  const isCoarse = useMemo(() => window.matchMedia('(pointer: coarse)').matches, [])
+  const starCount = useMemo(() => window.innerWidth < 640 ? 100 : 350, [])
+  const STARS = useMemo(() => Array.from({ length: starCount }, (_, i) => ({
+    id: i,
+    x: Math.random() * 900,
+    y: Math.random() * 600,
+    r: Math.random() * 0.8 + 0.15,
+    opacity: Math.random() * 0.35 + 0.05,
+    twinkle: Math.random() > 0.7 ? Math.random() * 6 : -1,
+  })), [starCount])
+
+  useEffect(() => {
+    function onResize() {
+      if (window.innerWidth >= 640) setShowLegend(prev => prev ? prev : true)
+    }
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
   const zoomTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => { if (zoomTimerRef.current) clearTimeout(zoomTimerRef.current) }
+  }, [])
   const panRafRef = useRef<number | null>(null)
 
   function syncTransform() {
@@ -146,8 +155,8 @@ export default function UniverseMap({
     for (const wh of WORLDHOPPERS) {
       for (let i = 0; i < wh.planets.length; i++) {
         for (let j = i + 1; j < wh.planets.length; j++) {
-          const a = planetMap.get(wh.planets[i])
-          const b = planetMap.get(wh.planets[j])
+          const a = planetMap.get(wh.planets[i]!)
+          const b = planetMap.get(wh.planets[j]!)
           if (!a || !b) continue
           lines.push({ from: a, to: b, color: wh.color, whId: wh.id, offset: 0 })
         }
@@ -187,6 +196,36 @@ export default function UniverseMap({
   }, [activeShards, shardData, activeWorldhoppers, highlightedPlanet])
 
   const hasFilter = activeShards.length > 0 || activeWorldhoppers.length > 0
+
+  function resetView() {
+    const d = drag.current
+    d.x = 0; d.y = 0; d.z = 1
+    syncTransform()
+    setPanX(0); setPanY(0); setZoom(1)
+  }
+
+  function zoomToCenter(newZoom: number) {
+    const d = drag.current
+    const svgEl = svgRef.current
+    if (!svgEl) return
+    const rect = svgEl.getBoundingClientRect()
+    if (rect.width === 0 || rect.height === 0) return
+    const centerVX = 450; const centerVY = 300
+    const clamped = Math.max(0.5, Math.min(3, newZoom))
+    if (clamped !== d.z) {
+      const origX = (centerVX - d.x) / d.z
+      const origY = (centerVY - d.y) / d.z
+      d.x = centerVX - origX * clamped
+      d.y = centerVY - origY * clamped
+      d.z = clamped
+      syncTransform()
+      if (zoomTimerRef.current) clearTimeout(zoomTimerRef.current)
+      zoomTimerRef.current = setTimeout(() => {
+        zoomTimerRef.current = null
+        setPanX(d.x); setPanY(d.y); setZoom(d.z)
+      }, 80)
+    }
+  }
 
   const handlePlanetClick = useCallback((planetId: string) => {
     if (drag.current.wasPan) return
@@ -297,7 +336,7 @@ export default function UniverseMap({
     if (activeWorldhoppers.length === 0 || selected) return null
     const whs = activeWorldhoppers
       .map((id) => WORLDHOPPERS.find((w) => w.id === id))
-      .filter((w): w is Worldhopper => w !== undefined)
+      .filter((w): w is WorldhopperDisplay => w !== undefined)
     return whs.length > 0 ? whs[0] : null
   }, [activeWorldhoppers, selected])
 
@@ -473,172 +512,56 @@ export default function UniverseMap({
       )}
 
       {selected && (
-        <div
-          ref={planetPanelRef}
-          key={selected.id}
-          className="absolute bottom-4 left-4 right-4 top-auto w-auto animate-scale-in rounded-xl border border-gray-700/60 bg-gray-900/95 p-4 shadow-2xl backdrop-blur-lg sm:bottom-auto sm:left-auto sm:right-4 sm:top-4 sm:w-72 sm:p-5"
-        >
-          <button
-            onClick={() => onSelectPlanet(null)}
-            aria-label="Close planet panel"
-            className="absolute right-3 top-3 text-gray-600 transition-colors hover:text-gray-300"
-          >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-          </button>
-
-          <div className="mb-3 flex items-center gap-3">
-            <div className="h-3 w-3 rounded-full" style={{ backgroundColor: selected.color }} />
-            <h3 className="text-lg font-bold text-gray-100">{selected.name}</h3>
-          </div>
-
-          <p className="text-xs font-medium text-gray-400">{selected.shard}</p>
-          <p className="mt-2 text-sm leading-relaxed text-gray-400">{selected.description}</p>
-
-          {selectedCharacters.length > 0 && (
-            <div className="mt-4">
-              <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                Characters ({selectedCharacters.length})
-              </h4>
-              <div className="flex flex-wrap gap-1.5">
-                {selectedCharacters.map((c) => (
-                  <span key={c.id} className="rounded-full bg-gray-800 px-2.5 py-0.5 text-xs text-gray-300">{c.name}</span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {WORLDHOPPERS.filter((wh) => wh.planets.includes(selected.id)).length > 0 && (
-            <div className="mt-3">
-              <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Worldhoppers</h4>
-              <div className="space-y-1">
-                {WORLDHOPPERS.filter((wh) => wh.planets.includes(selected.id)).map((wh) => {
-                  const active = activeWorldhoppers.includes(wh.id)
-                  return (
-                    <button
-                      key={wh.name}
-                      onClick={(e) => { e.stopPropagation(); onToggleWorldhopper(wh.id) }}
-                      className={`block w-full rounded px-2 py-1 text-left text-xs transition-colors ${
-                        active ? 'bg-gray-700/50 font-medium text-white' : 'text-gray-400 hover:bg-gray-800/50'
-                      }`}
-                    >
-                      {wh.name} {active && '✓'}
-                    </button>
-                  )
-                })}
-              </div>
-            </div>
-          )}
-        </div>
+        <PlanetPanel
+          selected={selected}
+          selectedCharacters={selectedCharacters}
+          onSelectPlanet={onSelectPlanet}
+          onSelectCharacter={onSelectCharacter ?? (() => {})}
+          onStartJourney={onStartJourney ?? (() => {})}
+          panelRef={planetPanelRef}
+        />
       )}
 
       {activeWhDetail && (
-        <div
-          ref={whPanelRef}
-          key={activeWhDetail.id}
-          className="absolute bottom-4 left-4 right-4 top-auto w-auto animate-scale-in rounded-xl border border-gray-700/60 bg-gray-900/95 p-4 shadow-2xl backdrop-blur-lg sm:bottom-auto sm:left-auto sm:right-4 sm:top-4 sm:w-72 sm:p-5"
-        >
-          <button
-            onClick={() => onToggleWorldhopper(activeWhDetail.id)}
-            aria-label="Close worldhopper panel"
-            className="absolute right-3 top-3 text-gray-600 transition-colors hover:text-gray-300"
-          >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-          </button>
+        <WorldhopperDetailPanel
+          wh={activeWhDetail}
+          activeWorldhoppers={activeWorldhoppers}
+          planetMap={planetMap}
+          onToggleWorldhopper={onToggleWorldhopper}
+          onSelectPlanet={onSelectPlanet}
+          onStartJourney={onStartJourney}
+          panelRef={whPanelRef}
+        />
+      )}
 
-          <div className="mb-3 flex items-center gap-3">
-            <div className="h-3 w-3 rounded-full" style={{ backgroundColor: activeWhDetail.color }} />
-            <h3 className="text-lg font-bold text-gray-100">{activeWhDetail.name}</h3>
-          </div>
-
-          <p className="text-sm leading-relaxed text-gray-400">{activeWhDetail.description}</p>
-
-          {activeWorldhoppers.length > 1 && (
-            <p className="mt-2 text-xs text-gray-500">
-              +{activeWorldhoppers.length - 1} more worldhopper(s) selected
-            </p>
+      <div className="absolute bottom-4 left-4 z-20 flex flex-col gap-2 sm:flex-row sm:items-end">
+        <ShardLegend
+          show={showLegend}
+          onToggle={() => setShowLegend(v => !v)}
+          shardData={shardData}
+          activeShards={activeShards}
+          onToggleShard={(name) => setActiveShards(prev =>
+            prev.includes(name) ? prev.filter(s => s !== name) : [...prev, name]
           )}
+          onClear={() => setActiveShards([])}
+        />
+        <WorldhopperPicker
+          show={showWorldhopperPicker}
+          worldhoppers={WORLDHOPPERS}
+          onToggle={() => setShowWorldhopperPicker(v => !v)}
+          onStartJourney={onStartJourney}
+        />
+      </div>
 
-          <div className="mt-4">
-            <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Visited planets</h4>
-            <div className="flex flex-wrap gap-1.5">
-              {activeWhDetail.planets.map((pid) => {
-                const p = planetMap.get(pid)
-                return p ? (
-                  <button
-                    key={pid}
-                    onClick={() => { onSelectPlanet(pid); onToggleWorldhopper(activeWhDetail.id) }}
-                    className="rounded-full bg-gray-800 px-2.5 py-0.5 text-xs text-gray-300 hover:bg-gray-700"
-                  >{p.name}</button>
-                ) : null
-              })}
-            </div>
-          </div>
-
-          <div className="mt-3">
-            <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Sagas</h4>
-            <div className="flex flex-wrap gap-1.5">
-              {activeWhDetail.sagas.map((s) => (
-                <span key={s} className="rounded bg-gray-800 px-2 py-0.5 text-xs text-gray-400">{s}</span>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      <button
-        onClick={() => setShowLegend(v => !v)}
-        className="absolute bottom-4 left-4 z-20 rounded-lg border border-gray-700/60 bg-gray-900/80 px-2.5 py-1.5 text-xs text-gray-400 backdrop-blur-sm transition-colors hover:border-purple-500/60 hover:text-purple-400 sm:px-3"
-        aria-label={showLegend ? 'Close shard legend' : 'Open shard legend'}
-      >
-        {showLegend ? '✕ Close' : '⚡ Shards'}
-      </button>
-
-      {showLegend && (
-        <div className="absolute bottom-12 left-2 right-2 z-20 w-auto animate-fade-in-up rounded-xl border border-gray-700/60 bg-gray-900/95 p-3 shadow-2xl backdrop-blur-lg sm:bottom-12 sm:left-4 sm:right-auto sm:w-56 sm:p-4">
-          <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500">Shards</h4>
-          <div className="space-y-1.5">
-            <button
-              onClick={() => setActiveShards([])}
-              className={`flex w-full items-center gap-2 rounded px-2 py-1 text-left text-xs transition-colors ${
-                activeShards.length === 0 ? 'bg-purple-900/30 text-purple-300' : 'text-gray-400 hover:bg-gray-800/50'
-              }`}
-            >
-              <span className="flex h-3 w-3 shrink-0 items-center justify-center rounded-full border border-gray-600 text-[8px] text-gray-500">*</span>
-              All shards
-            </button>
-            {shardData.map((sd) => {
-              const active = activeShards.includes(sd.name)
-              return (
-                <button
-                  key={sd.name}
-                  onClick={() => setActiveShards(prev =>
-                    prev.includes(sd.name) ? prev.filter(s => s !== sd.name) : [...prev, sd.name]
-                  )}
-                  className={`flex w-full items-center gap-2 rounded px-2 py-1 text-left text-xs transition-colors ${
-                    active ? 'bg-gray-700/50 font-medium text-white' : 'text-gray-400 hover:bg-gray-800/50'
-                  }`}
-                >
-                  <span className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: sd.color, opacity: active ? 1 : 0.5 }} />
-                  <span className="flex-1">{sd.name}</span>
-                  <span className="text-[10px] text-gray-600">{sd.planets.length}</span>
-                </button>
-              )
-            })}
-          </div>
-        </div>
-      )}
+      <ZoomControls onZoomIn={() => zoomToCenter(drag.current.z + 0.3)} onZoomOut={() => zoomToCenter(drag.current.z - 0.3)} onReset={resetView} />
 
       {!selected && activeWorldhoppers.length === 0 && activeShards.length === 0 && (
         <div className="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 text-center">
           <p className="hidden text-xs text-gray-600 sm:block">
-            Scroll to zoom &middot; Drag to pan &middot; Click a planet
+            Scroll to zoom &middot; Drag to pan &middot; {isCoarse ? 'Tap' : 'Click'} a planet &middot; Press <kbd className="rounded border border-gray-700 bg-gray-800 px-1 font-sans">/</kbd> to search
           </p>
           <p className="text-xs text-gray-600 sm:hidden">
-            Drag to pan &middot; Tap a planet
+            Drag to pan &middot; {isCoarse ? 'Tap' : 'Click'} a planet
           </p>
         </div>
       )}

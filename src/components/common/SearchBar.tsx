@@ -7,100 +7,157 @@ import { WORLDHOPPER_MOVEMENTS } from '@/data/static/timeline/worldhopper-journe
 import { BOOKS } from '@/data/static/books'
 
 interface SearchResult {
-  type: 'planet' | 'character' | 'worldhopper' | 'event' | 'book'
+  type: 'planet' | 'character' | 'worldhopper' | 'event' | 'book' | 'header'
   label: string
   sublabel: string
   action: () => void
 }
 
 const MAX_PER_CATEGORY = 4
+const MAX_RECENT = 5
+const RECENT_KEY = 'cosmere-recent-searches'
+
+const CAT_LABELS: Record<string, string> = {
+  planet: 'Planets', character: 'Characters', worldhopper: 'Worldhoppers',
+  event: 'Events', book: 'Books',
+}
+
+const PLACEHOLDERS = [
+  'Search planets, characters, events...',
+  'Which planet is Preservation on?',
+  'Find a worldhopper...',
+  'Search by book title...',
+  'Look up a character...',
+]
+
+function loadRecent(): string[] {
+  try {
+    const raw = localStorage.getItem(RECENT_KEY)
+    return raw ? JSON.parse(raw) : []
+  } catch { return [] }
+}
+
+function saveRecent(items: string[]) {
+  try { localStorage.setItem(RECENT_KEY, JSON.stringify(items)) } catch { /* noop */ }
+}
+
+function addRecent(label: string) {
+  const prev = loadRecent().filter(s => s !== label)
+  saveRecent([label, ...prev].slice(0, MAX_RECENT))
+}
+
+function headerFor(type: SearchResult['type']): SearchResult {
+  return { type: 'header', label: CAT_LABELS[type] ?? type, sublabel: '', action: () => {} }
+}
 
 export default function SearchBar() {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<SearchResult[]>([])
   const [open, setOpen] = useState(false)
   const [highlightIdx, setHighlightIdx] = useState(-1)
+  const [placeholder, setPlaceholder] = useState(PLACEHOLDERS[0]!)
+  const [recent, setRecent] = useState<string[]>([])
   const inputRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
+
+  useEffect(() => { setRecent(loadRecent()) }, [])
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setPlaceholder(prev => {
+        const idx = PLACEHOLDERS.indexOf(prev)
+        return PLACEHOLDERS[(idx + 1) % PLACEHOLDERS.length] ?? PLACEHOLDERS[0]!
+      })
+    }, 4000)
+    return () => clearInterval(timer)
+  }, [])
 
   const runSearch = useCallback((q: string) => {
     const trimmed = q.trim().toLowerCase()
     if (!trimmed) { setResults([]); setOpen(false); return }
 
-    const hits: SearchResult[] = []
-    const add = (r: SearchResult) => { if (hits.length < MAX_PER_CATEGORY * 5) hits.push(r) }
-
     const match = (text: string) => text.toLowerCase().includes(trimmed)
 
+    const hits: SearchResult[] = []
+    const counts: Record<string, number> = {}
+
+    function addCategory(type: SearchResult['type'], items: SearchResult[]) {
+      if (items.length === 0) return
+      if (hits.length > 0) hits.push(headerFor(type))
+      hits.push(...items)
+      counts[type] = items.length
+    }
+
     // Planets
-    let planetCount = 0
+    const planets: SearchResult[] = []
     for (const p of PLANETS) {
-      if (planetCount >= MAX_PER_CATEGORY) break
+      if (planets.length >= MAX_PER_CATEGORY) break
       if (match(p.name) || (p.shard && match(p.shard)) || (p.description && match(p.description))) {
-        add({
+        planets.push({
           type: 'planet', label: p.name, sublabel: p.shard || '',
           action: () => navigate('/?focus=planet&id=' + p.id),
         })
-        planetCount++
       }
     }
+    addCategory('planet', planets)
 
     // Characters
-    let charCount = 0
+    const chars: SearchResult[] = []
     for (const c of CHARACTER_SPANS) {
-      if (charCount >= MAX_PER_CATEGORY) break
+      if (chars.length >= MAX_PER_CATEGORY) break
       if (match(c.name) || c.titles.some(t => match(t))) {
-        add({
+        chars.push({
           type: 'character', label: c.name, sublabel: c.planet + ' — ' + c.titles[0],
           action: () => navigate('/?focus=character&id=' + c.id + '&planet=' + c.planet.toLowerCase()),
         })
-        charCount++
       }
     }
+    addCategory('character', chars)
 
     // Worldhoppers
-    let whCount = 0
+    const whs: SearchResult[] = []
     for (const wh of WORLDHOPPER_MOVEMENTS) {
-      if (whCount >= MAX_PER_CATEGORY) break
+      if (whs.length >= MAX_PER_CATEGORY) break
       if (match(wh.name)) {
-        add({
+        whs.push({
           type: 'worldhopper', label: wh.name, sublabel: wh.movements.length + ' movements',
           action: () => navigate('/?focus=worldhopper&id=' + wh.id),
         })
-        whCount++
       }
     }
+    addCategory('worldhopper', whs)
 
     // Events
-    let evCount = 0
+    const events: SearchResult[] = []
     for (const e of TIMELINE_EVENTS) {
-      if (evCount >= MAX_PER_CATEGORY) break
+      if (events.length >= MAX_PER_CATEGORY) break
       if (match(e.title) || match(e.description)) {
-        add({
+        events.push({
           type: 'event', label: e.title, sublabel: e.saga + ' — ' + e.year,
           action: () => navigate('/?focus=event&id=' + e.id),
         })
-        evCount++
       }
     }
+    addCategory('event', events)
 
     // Books
-    let bookCount = 0
+    const books: SearchResult[] = []
     for (const b of BOOKS) {
-      if (bookCount >= MAX_PER_CATEGORY) break
+      if (books.length >= MAX_PER_CATEGORY) break
       if (match(b.title) || (b.description && match(b.description))) {
-        add({
+        books.push({
           type: 'book', label: b.title, sublabel: b.saga,
           action: () => navigate('/?focus=book&id=' + b.id),
         })
-        bookCount++
       }
     }
+    addCategory('book', books)
 
     setResults(hits)
     setOpen(hits.length > 0)
     setHighlightIdx(-1)
+    setRecent([])
   }, [navigate])
 
   useEffect(() => {
@@ -108,13 +165,18 @@ export default function SearchBar() {
     return () => clearTimeout(timer)
   }, [query, runSearch])
 
-  const close = useCallback(() => { setOpen(false); setQuery(''); setResults([]) }, [])
+  const close = useCallback(() => { setOpen(false); setQuery(''); setResults([]); setRecent(loadRecent()) }, [])
 
   const handleKey = useCallback((e: React.KeyboardEvent) => {
     if (!open) return
-    if (e.key === 'ArrowDown') { e.preventDefault(); setHighlightIdx(i => Math.min(i + 1, results.length - 1)) }
-    if (e.key === 'ArrowUp') { e.preventDefault(); setHighlightIdx(i => Math.max(i - 1, 0)) }
-    if (e.key === 'Enter' && highlightIdx >= 0) { results[highlightIdx].action(); close() }
+    const skipHeaders = (idx: number, dir: 1 | -1): number => {
+      let next = idx + dir
+      while (next >= 0 && next < results.length && results[next]?.type === 'header') next += dir
+      return Math.max(0, Math.min(next, results.length - 1))
+    }
+    if (e.key === 'ArrowDown') { e.preventDefault(); setHighlightIdx(i => skipHeaders(i, 1)) }
+    if (e.key === 'ArrowUp') { e.preventDefault(); setHighlightIdx(i => skipHeaders(i, -1)) }
+    if (e.key === 'Enter' && highlightIdx >= 0 && results[highlightIdx]?.type !== 'header') { results[highlightIdx]!.action(); close() }
     if (e.key === 'Escape') { close(); inputRef.current?.blur() }
     if (e.key === 'Tab') { close() }
   }, [open, results, highlightIdx, close])
@@ -138,13 +200,20 @@ export default function SearchBar() {
           type="text"
           value={query}
           onChange={e => setQuery(e.target.value)}
-          onFocus={() => { if (results.length) setOpen(true) }}
+          onFocus={() => {
+            if (results.length) setOpen(true)
+            else if (!query.trim()) {
+              const r = loadRecent()
+              if (r.length) { setRecent(r); setOpen(true) }
+            }
+          }}
           onKeyDown={handleKey}
-          placeholder="Search planets, characters, events..."
+          placeholder={placeholder}
           role="combobox"
           aria-expanded={open}
           aria-controls="search-results"
           aria-autocomplete="list"
+          aria-activedescendant={highlightIdx >= 0 && results[highlightIdx]?.type !== 'header' ? `search-opt-${highlightIdx}` : undefined}
           className="w-full bg-transparent outline-none placeholder:text-gray-600"
         />
         {query && (
@@ -168,24 +237,60 @@ export default function SearchBar() {
           role="listbox"
         >
           <div ref={listRef} className="max-h-80 overflow-y-auto py-1" role="presentation">
-            {results.length > 0 ? results.map((r, i) => (
-              <button
-                key={r.type + r.label}
-                onClick={() => { r.action(); close() }}
-                onMouseEnter={() => setHighlightIdx(i)}
-                role="option"
-                aria-selected={i === highlightIdx}
-                className={`flex w-full items-start gap-3 px-4 py-2.5 text-left text-sm transition-colors ${
-                  i === highlightIdx ? 'bg-purple-900/40 text-white' : 'text-gray-300 hover:bg-gray-800/60'
-                }`}
-              >
-                <span className="mt-0.5 shrink-0">{iconFor(r.type)}</span>
-                <div className="min-w-0 flex-1">
-                  <div className="truncate font-medium">{r.label}</div>
-                  <div className="truncate text-xs text-gray-500">{r.sublabel}</div>
+            {results.length > 0 ? results.map((r, i) => {
+              if (r.type === 'header') {
+                return (
+                  <div key={r.label} className="px-4 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-gray-600">
+                    {r.label}
+                  </div>
+                )
+              }
+              const idx = i
+              return (
+                <button
+                  key={r.type + r.label}
+                  id={`search-opt-${idx}`}
+                  onClick={() => { addRecent(r.label); r.action(); close() }}
+                  onMouseEnter={() => setHighlightIdx(idx)}
+                  role="option"
+                  aria-selected={highlightIdx === idx}
+                  className={`flex w-full items-start gap-3 px-4 py-2.5 text-left text-sm transition-colors ${
+                    highlightIdx === idx ? 'bg-purple-900/40 text-white' : 'text-gray-300 hover:bg-gray-800/60'
+                  }`}
+                >
+                  <span className="mt-0.5 shrink-0">{iconFor(r.type)}</span>
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate font-medium">{r.label}</div>
+                    <div className="truncate text-xs text-gray-500">{r.sublabel}</div>
+                  </div>
+                </button>
+              )
+            }) : recent.length > 0 && !query.trim() ? (
+              <div>
+                <div className="flex items-center justify-between px-4 py-2">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-600">Recent</span>
+                  <button
+                    onClick={() => { localStorage.removeItem(RECENT_KEY); setRecent([]) }}
+                    className="text-[10px] text-gray-600 hover:text-gray-400"
+                  >
+                    Clear
+                  </button>
                 </div>
-              </button>
-            )) : (
+                {recent.map((s, i) => (
+                  <button
+                    key={s}
+                    onClick={() => { setQuery(s); setRecent([]) }}
+                    onMouseEnter={() => setHighlightIdx(i)}
+                    className="flex w-full items-center gap-3 px-4 py-2 text-left text-sm text-gray-400 transition-colors hover:bg-gray-800/60"
+                  >
+                    <svg className="h-3.5 w-3.5 shrink-0 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    {s}
+                  </button>
+                ))}
+              </div>
+            ) : (
               <div className="px-4 py-6 text-center text-sm text-gray-500">
                 No results found
               </div>

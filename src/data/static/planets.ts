@@ -2,6 +2,18 @@ import type { Planet } from '@/types/planet'
 
 export const PLANETS: Planet[] = [
   {
+    id: "yolen",
+    name: "Yolen",
+    shard: "Adonalsium (Shattered)",
+    description: "The original world. Birthplace of Hoid and site of the Shattering of Adonalsium. Now lost and inaccessible.",
+    x: 60, y: 60,
+    color: "#a78bfa",
+    size: 20,
+    sagas: [],
+    magicSystem: "Unknown — the original investiture of Adonalsium, before the Shattering.",
+    books: [],
+  },
+  {
     id: "roshar",
     name: "Roshar",
     shard: "Honor, Cultivation & Odium",
@@ -9,6 +21,10 @@ export const PLANETS: Planet[] = [
     x: 580, y: 280,
     color: "#06b6d4",
     size: 60,
+    sagas: ["stormlight", "arcanum-unbounded"],
+    magicSystem: "Surgebinding — using Stormlight to fuel the ten orders of Knights Radiant. Also Old Magic and Voidbinding.",
+    connectedPlanets: ["ashyn", "braize"],
+    books: ["the_way_of_kings", "words_of_radiance", "oathbringer", "rhythm_of_war", "wind_and_truth", "arcanum_unbounded"],
   },
   {
     id: "scadrial",
@@ -18,6 +34,9 @@ export const PLANETS: Planet[] = [
     x: 250, y: 340,
     color: "#ef4444",
     size: 55,
+    sagas: ["mistborn-era-1", "mistborn-era-2", "arcanum-unbounded"],
+    magicSystem: "The Metallic Arts — Allomancy (burning metals), Feruchemy (storing attributes), and Hemalurgy (stealing via spikes).",
+    books: ["the_final_empire", "the_well_of_ascension", "the_hero_of_ages", "the_alloy_of_law", "shadows_of_self", "the_bands_of_mourning", "the_lost_metal", "arcanum_unbounded"],
   },
   {
     id: "sel",
@@ -27,6 +46,9 @@ export const PLANETS: Planet[] = [
     x: 400, y: 180,
     color: "#14b8a6",
     size: 45,
+    sagas: ["elantris", "arcanum-unbounded"],
+    magicSystem: "Location-based Investiture — AonDor (Arelon), Dakhor (Fjordell), Forgery (MaiPon), ChayShan (Hrovell). Each tied to specific geography.",
+    books: ["elantris", "arcanum_unbounded"],
   },
   {
     id: "nalthis",
@@ -36,6 +58,10 @@ export const PLANETS: Planet[] = [
     x: 300, y: 120,
     color: "#d946ef",
     size: 40,
+    sagas: ["warbreaker"],
+    magicSystem: "Awakening — using BioChromatic Breath to animate objects and grant sentience. Color perception determines power.",
+    connectedPlanets: ["roshar"],
+    books: ["warbreaker"],
   },
   {
     id: "taldain",
@@ -45,6 +71,9 @@ export const PLANETS: Planet[] = [
     x: 180, y: 480,
     color: "#eab308",
     size: 35,
+    sagas: ["white-sand"],
+    magicSystem: "Sand Mastery — manipulating sand using Investiture. Also Sand Toning, a lesser-known variant.",
+    books: ["white_sand_vol_1", "white_sand_vol_2", "white_sand_vol_3"],
   },
   {
     id: "threnody",
@@ -54,6 +83,9 @@ export const PLANETS: Planet[] = [
     x: 460, y: 500,
     color: "#8b5cf6",
     size: 30,
+    sagas: ["arcanum-unbounded"],
+    magicSystem: "Shades — the cognitive shadows of the dead that inhabit the Forests of Hell. Simple Rules govern survival.",
+    books: ["arcanum_unbounded"],
   },
   {
     id: "first-of-the-sun",
@@ -63,6 +95,9 @@ export const PLANETS: Planet[] = [
     x: 740, y: 430,
     color: "#22c55e",
     size: 28,
+    sagas: ["arcanum-unbounded", "secret-projects"],
+    magicSystem: "Aviar bonds — birds that bond with humans granting various abilities. Patji is a sentient perpendicularity.",
+    books: ["arcanum_unbounded", "the_sunlit_man"],
   },
   {
     id: "komashi",
@@ -72,6 +107,9 @@ export const PLANETS: Planet[] = [
     x: 720, y: 100,
     color: "#0ea5e9",
     size: 32,
+    sagas: ["secret-projects"],
+    magicSystem: "Yoki-Hijo (spirit summoning) and Nightmare painting (trapping emotions in art). Powered by Hion lines.",
+    books: ["yumi_and_the_nightmare_painter"],
   },
   {
     id: "lumar",
@@ -81,6 +119,9 @@ export const PLANETS: Planet[] = [
     x: 750, y: 520,
     color: "#f472b6",
     size: 28,
+    sagas: ["secret-projects"],
+    magicSystem: "Spores — twelve types of magical spores make up the seas. Each type has unique properties when activated by water.",
+    books: ["tress_of_the_emerald_sea"],
   },
   {
     id: "canticle",
@@ -90,5 +131,8 @@ export const PLANETS: Planet[] = [
     x: 850, y: 300,
     color: "#f97316",
     size: 25,
+    sagas: ["secret-projects"],
+    magicSystem: "Torment bonds — Investiture bonded to individuals grants heat resistance and other abilities. The planet itself is a trapped entity.",
+    books: ["the_sunlit_man"],
   },
 ]

@@ -1,6 +1,7 @@
 import { memo } from 'react'
 import type { CharacterSpan } from '@/data/static/timeline/character-lifespans'
 import { PLANETS } from '@/data/static'
+import { CloseIcon } from '@/components/common/icons'
 
 interface Props {
   character: CharacterSpan
@@ -24,9 +25,7 @@ function CharacterPanel({ character, onClose, onSelectPlanet }: Props) {
         aria-label="Close character panel"
         className="absolute right-3 top-3 text-gray-600 transition-colors hover:text-gray-300"
       >
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
+          <CloseIcon />
       </button>
 
       <div className="mb-3 flex items-center gap-3">

@@ -8,4 +8,22 @@ export type { CharacterSpan } from './character-lifespans'
 export { CHARACTER_SPANS, CHARACTER_GROUPS } from './character-lifespans'
 
 export type { WorldhopperMovement } from './worldhopper-journeys'
-export { WORLDHOPPER_MOVEMENTS } from './worldhopper-journeys'
+import { WORLDHOPPER_MOVEMENTS } from './worldhopper-journeys'
+export { WORLDHOPPER_MOVEMENTS }
+
+export interface WorldhopperDisplay {
+  id: string
+  name: string
+  description: string
+  color: string
+  planets: string[]
+  sagas: string[]
+}
+export const WORLDHOPPERS: WorldhopperDisplay[] = WORLDHOPPER_MOVEMENTS.map(w => ({
+  id: w.id,
+  name: w.name,
+  description: w.description,
+  color: w.color,
+  planets: w.planets,
+  sagas: w.sagas,
+}))

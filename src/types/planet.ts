@@ -7,4 +7,8 @@ export interface Planet {
   y: number
   color: string
   size: number
+  sagas?: string[]
+  magicSystem?: string
+  connectedPlanets?: string[]
+  books?: string[]
 }

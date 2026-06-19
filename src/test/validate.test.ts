@@ -20,7 +20,7 @@ describe('validateCharacterArray', () => {
 
     const result = validateCharacterArray(data)
     expect(result).toHaveLength(1)
-    expect(result[0].id).toBe('valid')
+    expect(result[0]!.id).toBe('valid')
   })
 
   it('passes through valid entries', () => {
@@ -31,9 +31,9 @@ describe('validateCharacterArray', () => {
 
     const result = validateCharacterArray(data)
     expect(result).toHaveLength(2)
-    expect(result[0].id).toBe('kaladin')
-    expect(result[0].image).toBe('/img.jpg')
-    expect(result[0].requiredBooks).toEqual(['book1'])
+    expect(result[0]!.id).toBe('kaladin')
+    expect(result[0]!.image).toBe('/img.jpg')
+    expect(result[0]!.requiredBooks).toEqual(['book1'])
   })
 
   it('handles characters.json data', async () => {
