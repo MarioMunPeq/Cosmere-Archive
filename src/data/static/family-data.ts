@@ -8,9 +8,11 @@ export const FAMILY_TREES: FamilyDefinition[] = [
     description:
       'The ruling house of Alethkar on Roshar. Gavilar and Dalinar are brothers; after Gavilar\'s death, Navani later married Dalinar.',
     members: [
-      { id: 'gavilar', name: 'Gavilar Kholin', spouseId: 'navani', isDeceased: true, gender: 'male' },
+      { id: 'kholin_house', name: 'House Kholin', isDeceased: true, gender: 'male' },
+
+      { id: 'gavilar', name: 'Gavilar Kholin', parentIds: ['kholin_house'], spouseId: 'navani', isDeceased: true, gender: 'male' },
       { id: 'navani', name: 'Navani Kholin', spouseId: 'gavilar', characterId: 'navani', gender: 'female' },
-      { id: 'dalinar', name: 'Dalinar Kholin', spouseId: 'evi', characterId: 'dalinar', gender: 'male' },
+      { id: 'dalinar', name: 'Dalinar Kholin', parentIds: ['kholin_house'], spouseId: 'evi', characterId: 'dalinar', gender: 'male' },
       { id: 'evi', name: 'Evi', spouseId: 'dalinar', isDeceased: true, gender: 'female' },
 
       { id: 'jasnah', name: 'Jasnah Kholin', parentIds: ['gavilar', 'navani'], characterId: 'jasnah', gender: 'female' },
@@ -45,7 +47,7 @@ export const FAMILY_TREES: FamilyDefinition[] = [
 
       { id: 'shallan', name: 'Shallan Davar', spouseId: 'adolin', characterId: 'shallan', gender: 'female' },
     ],
-    rootIds: ['gavilar', 'dalinar'],
+    rootIds: ['kholin_house'],
   },
   {
     id: 'davar',
@@ -110,12 +112,14 @@ export const FAMILY_TREES: FamilyDefinition[] = [
     description:
       'The found family bonded to Kelsier, the Survivor of Hathsin. Marsh is Kelsier\'s older brother; Spook is their distant cousin.',
     members: [
-      { id: 'kelsier', name: 'Kelsier', spouseId: 'mare', characterId: 'kelsier', gender: 'male' },
+      { id: 'survivor_circle', name: "Survivor's Circle", isDeceased: true, gender: 'male' },
+
+      { id: 'kelsier', name: 'Kelsier', parentIds: ['survivor_circle'], spouseId: 'mare', characterId: 'kelsier', gender: 'male' },
       { id: 'mare', name: 'Mare', spouseId: 'kelsier', isDeceased: true, gender: 'female' },
-      { id: 'marsh', name: 'Marsh', characterId: 'marsh', gender: 'male' },
-      { id: 'spook', name: 'Spook', characterId: 'spook', gender: 'male' },
+      { id: 'marsh', name: 'Marsh', parentIds: ['survivor_circle'], characterId: 'marsh', gender: 'male' },
+      { id: 'spook', name: 'Spook', parentIds: ['survivor_circle'], characterId: 'spook', gender: 'male' },
     ],
-    rootIds: ['kelsier', 'marsh', 'spook'],
+    rootIds: ['survivor_circle'],
   },
   {
     id: 'idris',
@@ -152,26 +156,15 @@ export const FAMILY_TREES: FamilyDefinition[] = [
     description:
       'The royal families of Arelon and Teod on Sel, united through the political marriage of Raoden and Sarene.',
     members: [
-      { id: 'iadon', name: 'King Iadon', isDeceased: true, gender: 'male' },
-      { id: 'eventeo', name: 'King Eventeo', isDeceased: true, gender: 'male' },
-      {
-        id: 'raoden',
-        name: 'Raoden',
-        parentIds: ['iadon'],
-        spouseId: 'sarene',
-        characterId: 'raoden',
-        gender: 'male',
-      },
-      {
-        id: 'sarene',
-        name: 'Sarene',
-        parentIds: ['eventeo'],
-        spouseId: 'raoden',
-        characterId: 'sarene',
-        gender: 'female',
-      },
+      { id: 'sel_crowns', name: 'Royal Houses of Sel', isDeceased: true, gender: 'male' },
+
+      { id: 'iadon', name: 'King Iadon', parentIds: ['sel_crowns'], isDeceased: true, gender: 'male' },
+      { id: 'eventeo', name: 'King Eventeo', parentIds: ['sel_crowns'], isDeceased: true, gender: 'male' },
+
+      { id: 'raoden', name: 'Raoden', parentIds: ['iadon'], spouseId: 'sarene', characterId: 'raoden', gender: 'male' },
+      { id: 'sarene', name: 'Sarene', parentIds: ['eventeo'], spouseId: 'raoden', characterId: 'sarene', gender: 'female' },
     ],
-    rootIds: ['iadon', 'eventeo'],
+    rootIds: ['sel_crowns'],
   },
   {
     id: 'era2_scadrial',
@@ -180,10 +173,12 @@ export const FAMILY_TREES: FamilyDefinition[] = [
     description:
       'Waxillium Ladrian, Steris Harms, and her half-sister Marasi Colms — the interconnected families of Scadrial\'s Era 2.',
     members: [
+      { id: 'lord_harms', name: 'Lord Harms', isDeceased: true, gender: 'male' },
+
+      { id: 'steris', name: 'Steris Harms', parentIds: ['lord_harms'], spouseId: 'wax', characterId: 'steris', gender: 'female' },
+      { id: 'marasi', name: 'Marasi Colms', parentIds: ['lord_harms'], characterId: 'marasi', gender: 'female' },
       { id: 'wax', name: 'Waxillium Ladrian', spouseId: 'steris', characterId: 'wax', gender: 'male' },
-      { id: 'steris', name: 'Steris Harms', spouseId: 'wax', characterId: 'steris', gender: 'female' },
-      { id: 'marasi', name: 'Marasi Colms', characterId: 'marasi', gender: 'female' },
     ],
-    rootIds: ['wax', 'marasi'],
+    rootIds: ['lord_harms'],
   },
 ]
