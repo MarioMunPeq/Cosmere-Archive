@@ -16,14 +16,14 @@ pnpm dev
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `pnpm dev` | Start dev server at localhost:5173 |
-| `pnpm build` | TypeScript check + production build |
-| `pnpm test` | Run vitest |
-| `pnpm test:watch` | Run tests in watch mode |
-| `pnpm lint` | ESLint check |
-| `pnpm preview` | Preview production build |
+| Command           | Description                         |
+| ----------------- | ----------------------------------- |
+| `pnpm dev`        | Start dev server at localhost:5173  |
+| `pnpm build`      | TypeScript check + production build |
+| `pnpm test`       | Run vitest                          |
+| `pnpm test:watch` | Run tests in watch mode             |
+| `pnpm lint`       | ESLint check                        |
+| `pnpm preview`    | Preview production build            |
 
 ## Guidelines
 

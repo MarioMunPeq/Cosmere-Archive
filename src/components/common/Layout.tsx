@@ -39,6 +39,30 @@ export default function Layout() {
             <Link to="/about" className="hidden text-sm text-gray-500 transition-colors hover:text-gray-300 sm:inline">
               About
             </Link>
+            <Link
+              to="/passport"
+              className="hidden text-sm text-gray-500 transition-colors hover:text-gray-300 sm:inline"
+            >
+              Passport
+            </Link>
+            <Link
+              to="/relationships"
+              className="hidden text-sm text-gray-500 transition-colors hover:text-gray-300 sm:inline"
+            >
+              Relationships
+            </Link>
+            <Link
+              to="/glossary"
+              className="hidden text-sm text-gray-500 transition-colors hover:text-gray-300 sm:inline"
+            >
+              Glossary
+            </Link>
+            <Link
+              to="/family-tree"
+              className="hidden text-sm text-gray-500 transition-colors hover:text-gray-300 sm:inline"
+            >
+              Family Tree
+            </Link>
             <div className="w-48 sm:w-64">
               <SearchBar />
             </div>

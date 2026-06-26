@@ -8,6 +8,13 @@ export interface Saga {
 
 export const SAGAS: Saga[] = [
   {
+    id: 'pre-cosmere',
+    name: 'Pre-Cosmere',
+    color: 'gray',
+    order: 0,
+    description: 'Events before the Shattering of Adonalsium and the division of the Shards.',
+  },
+  {
     id: 'mistborn-era-1',
     name: 'Mistborn Era 1',
     color: 'red',

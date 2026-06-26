@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import type { WorldhopperDisplay } from '@/data/static/timeline'
 
 interface Props {
@@ -7,7 +8,7 @@ interface Props {
   onStartJourney?: (id: string) => void
 }
 
-export default function WorldhopperPicker({ show, worldhoppers, onToggle, onStartJourney }: Props) {
+function WorldhopperPickerInner({ show, worldhoppers, onToggle, onStartJourney }: Props) {
   return (
     <div className="flex flex-col items-start gap-2 sm:items-start">
       {show && (
@@ -63,3 +64,6 @@ export default function WorldhopperPicker({ show, worldhoppers, onToggle, onStar
     </div>
   )
 }
+
+const WorldhopperPicker = memo(WorldhopperPickerInner)
+export default WorldhopperPicker

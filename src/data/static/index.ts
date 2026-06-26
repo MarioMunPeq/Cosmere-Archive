@@ -12,3 +12,5 @@ import charactersData from '@/data/generated/characters.json'
 import { validateCharacterArray } from '@/data/generated/validate'
 import type { Character } from '@/types'
 export const ALL_CHARACTERS: Character[] = validateCharacterArray(charactersData)
+
+export { CHARACTER_RELATIONSHIPS } from './character-relationships'

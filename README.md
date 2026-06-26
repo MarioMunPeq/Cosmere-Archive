@@ -39,8 +39,6 @@ El proyecto está basado en uno de mis universos de ficción favoritos: el Cosme
 
 <img src="https://raw.githubusercontent.com/MarioMunPeq/Cosmere-Archive/main/public/screenshots/characters.png" alt="Characters" width="900"/>
 
-
-
 ### Timeline
 
 <img src="https://raw.githubusercontent.com/MarioMunPeq/Cosmere-Archive/main/public/screenshots/timeline.png" alt="Timeline" width="900"/>
@@ -130,6 +128,7 @@ src/
 ├─ types/           TypeScript definitions
 └─ utils/           Timeline and journey calculations
 ```
+
 ---
 
 ## Data Model
@@ -176,6 +175,10 @@ Deploy to GitHub Pages
 Live version:
 
 https://mariomunpeq.github.io/Cosmere-Archive/
+
+### SPA Routing
+
+GitHub Pages does not support client-side routing (no fallback to `index.html` for arbitrary paths). This project uses `HashRouter` from React Router to work around this limitation. All routes are prefixed with `#/` — for example, `/#/about` instead of `/about`. This ensures direct URLs and page refreshes work correctly in production.
 
 ---
 

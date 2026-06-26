@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { SAGAS, SAGA_BY_ID } from '@/data/static'
 import { TIMELINE_EVENTS } from '@/data/static/timeline'
 import { formatJourneyYear } from '@/utils/journey'
@@ -42,6 +42,21 @@ const TYPE_LABELS: Record<string, string> = {
   departure: 'Departure',
   discovery: 'Discovery',
   historical: 'Historical',
+}
+
+const EVENT_TYPE_BADGE_COLORS: Record<string, string> = {
+  book: 'bg-blue-900/60 text-blue-300',
+  cataclysm: 'bg-red-900/60 text-red-300',
+  birth: 'bg-green-900/60 text-green-300',
+  death: 'bg-gray-800/80 text-gray-400',
+  arrival: 'bg-purple-900/60 text-purple-300',
+  departure: 'bg-yellow-900/60 text-yellow-300',
+  discovery: 'bg-cyan-900/60 text-cyan-300',
+  historical: 'bg-gray-800/60 text-gray-400',
+}
+
+function eventTypeBadgeClass(type: string): string {
+  return EVENT_TYPE_BADGE_COLORS[type] || 'bg-gray-800/60 text-gray-400'
 }
 
 export default function TimelinePage() {
@@ -137,21 +152,7 @@ export default function TimelinePage() {
   )
 
   const forkCount = selectedSagas.length
-  const timelineHeight = 8 + MAIN_LINE_Y + 8 + forkCount * FORK_SPACING + 16
-
-  const eventTypeBadgeClass = (type: string) => {
-    const colors: Record<string, string> = {
-      book: 'bg-blue-900/60 text-blue-300',
-      cataclysm: 'bg-red-900/60 text-red-300',
-      birth: 'bg-green-900/60 text-green-300',
-      death: 'bg-gray-800/80 text-gray-400',
-      arrival: 'bg-purple-900/60 text-purple-300',
-      departure: 'bg-yellow-900/60 text-yellow-300',
-      discovery: 'bg-cyan-900/60 text-cyan-300',
-      historical: 'bg-gray-800/60 text-gray-400',
-    }
-    return colors[type] || 'bg-gray-800/60 text-gray-400'
-  }
+  const timelineHeight = useMemo(() => 8 + MAIN_LINE_Y + 8 + forkCount * FORK_SPACING + 16, [forkCount])
 
   useEffect(() => {
     if (!expandedEvent) return
@@ -178,6 +179,7 @@ export default function TimelinePage() {
               key={sagaId}
               onClick={() => toggleSaga(sagaId)}
               disabled={maxed}
+              aria-pressed={isActive}
               className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-all ${
                 isActive
                   ? 'text-white shadow-sm'
@@ -306,6 +308,9 @@ function CardOverlay({
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={event.title}
       className="fixed z-50 w-[280px] rounded-lg border border-gray-700 bg-gray-900/95 shadow-xl backdrop-blur-sm"
       style={{ left: cardLeft, top: cardTop }}
     >
@@ -322,7 +327,7 @@ function CardOverlay({
           className="flex h-5 w-5 items-center justify-center rounded text-xs text-gray-600 hover:bg-gray-800 hover:text-gray-300"
           aria-label="Close"
         >
-          ✕
+          &times;
         </button>
       </div>
       <div className="px-3 py-2">

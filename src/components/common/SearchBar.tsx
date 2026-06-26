@@ -293,7 +293,8 @@ export default function SearchBar() {
           id="search-results"
           className="fixed left-2 right-2 top-auto z-50 mt-2 w-auto overflow-hidden rounded-xl border border-gray-700/60 bg-gray-900 shadow-2xl shadow-black/40 sm:absolute sm:left-auto sm:right-0 sm:w-80 lg:w-96"
           onMouseDown={(e) => e.preventDefault()}
-          role="listbox"
+          role={results.length > 0 ? 'listbox' : 'dialog'}
+          aria-label="Search results"
         >
           <div ref={listRef} className="max-h-80 overflow-y-auto py-1" role="presentation">
             {results.length > 0 ? (

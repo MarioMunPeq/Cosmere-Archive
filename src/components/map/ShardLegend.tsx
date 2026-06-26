@@ -1,3 +1,5 @@
+import { memo } from 'react'
+
 interface ShardItem {
   name: string
   color: string
@@ -13,7 +15,7 @@ interface Props {
   onClear: () => void
 }
 
-export default function ShardLegend({ show, onToggle, shardData, activeShards, onToggleShard, onClear }: Props) {
+function ShardLegendInner({ show, onToggle, shardData, activeShards, onToggleShard, onClear }: Props) {
   return (
     <div className="flex flex-col items-start gap-2 sm:items-start">
       <button
@@ -64,3 +66,6 @@ export default function ShardLegend({ show, onToggle, shardData, activeShards, o
     </div>
   )
 }
+
+const ShardLegend = memo(ShardLegendInner)
+export default ShardLegend

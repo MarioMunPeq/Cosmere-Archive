@@ -47,7 +47,28 @@ export default function PlanetPanel({
         <p className="text-xs font-medium text-purple-400/80">{selected.shard}</p>
         <p className="mt-2 text-sm leading-relaxed text-gray-400">{selected.description}</p>
 
-        {selected.magicSystem && (
+        {selected.investiture && selected.investiture.length > 0 && (
+          <div className="mt-3">
+            <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Investiture Systems</h4>
+            <div className="space-y-1.5">
+              {selected.investiture.map((sys) => (
+                <div key={sys.name} className="rounded-lg border border-gray-800 bg-gray-900/50 px-3 py-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-semibold text-gray-200">{sys.name}</span>
+                    {sys.shard && (
+                      <span className="rounded bg-purple-900/30 px-1.5 py-0.5 text-[10px] text-purple-400">
+                        {sys.shard}
+                      </span>
+                    )}
+                  </div>
+                  <p className="mt-1 text-xs leading-relaxed text-gray-500">{sys.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {selected.magicSystem && !selected.investiture?.length && (
           <div className="mt-3 rounded-lg border border-gray-800 bg-gray-900/50 px-3 py-2">
             <h4 className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-gray-500">Magic System</h4>
             <p className="text-xs leading-relaxed text-gray-400">{selected.magicSystem}</p>

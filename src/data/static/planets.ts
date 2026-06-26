@@ -13,6 +13,13 @@ export const PLANETS: Planet[] = [
     size: 20,
     sagas: [],
     magicSystem: 'Unknown — the original investiture of Adonalsium, before the Shattering.',
+    investiture: [
+      {
+        name: "Adonalsium's Investiture",
+        description: 'The primeval investiture of Adonalsium, before the Shattering. Its nature is unknown.',
+        shard: 'Adonalsium',
+      },
+    ],
     books: [],
   },
   {
@@ -28,7 +35,24 @@ export const PLANETS: Planet[] = [
     sagas: ['stormlight', 'arcanum-unbounded'],
     magicSystem:
       'Surgebinding — using Stormlight to fuel the ten orders of Knights Radiant. Also Old Magic and Voidbinding.',
-    connectedPlanets: ['ashyn', 'braize'],
+    investiture: [
+      {
+        name: 'Surgebinding',
+        description: 'The ten orders of Knights Radiant use Stormlight to manipulate natural forces.',
+        shard: 'Honor',
+      },
+      {
+        name: 'Old Magic',
+        description: 'Primitive investiture tied to the Nightwatcher and the boons/ curses she bestows.',
+        shard: 'Cultivation',
+      },
+      {
+        name: 'Voidbinding',
+        description: 'Investiture fueled by Odium, associated with the Unmade and the Fused.',
+        shard: 'Odium',
+      },
+    ],
+    connectedPlanets: [],
     books: [
       'the_way_of_kings',
       'words_of_radiance',
@@ -50,6 +74,23 @@ export const PLANETS: Planet[] = [
     sagas: ['mistborn-era-1', 'mistborn-era-2', 'arcanum-unbounded'],
     magicSystem:
       'The Metallic Arts — Allomancy (burning metals), Feruchemy (storing attributes), and Hemalurgy (stealing via spikes).',
+    investiture: [
+      {
+        name: 'Allomancy',
+        description: 'Burning metals ingested to grant physical or mental powers. Sixteen base metals.',
+        shard: 'Preservation',
+      },
+      {
+        name: 'Feruchemy',
+        description: 'Storing attributes like strength, speed, or memory in metal minds for later use.',
+        shard: 'Ruin',
+      },
+      {
+        name: 'Hemalurgy',
+        description: 'Stealing attributes from others via metal spikes driven through the body.',
+        shard: 'Ruin',
+      },
+    ],
     books: [
       'the_final_empire',
       'the_well_of_ascension',
@@ -73,6 +114,28 @@ export const PLANETS: Planet[] = [
     sagas: ['elantris', 'arcanum-unbounded'],
     magicSystem:
       'Location-based Investiture — AonDor (Arelon), Dakhor (Fjordell), Forgery (MaiPon), ChayShan (Hrovell). Each tied to specific geography.',
+    investiture: [
+      {
+        name: 'AonDor',
+        description: 'Symbol-based magic tied to the geography of Arelon. Weakened after the Reod.',
+        shard: 'Devotion',
+      },
+      {
+        name: 'Dakhor',
+        description: 'Bone-based magic used by the Fjordell priesthood. Powered by blood sacrifices.',
+        shard: 'Dominion',
+      },
+      {
+        name: 'Forgery',
+        description: "Altering an object's past through seals. Most potent in MaiPon.",
+        shard: 'Devotion',
+      },
+      {
+        name: 'ChayShan',
+        description: 'Martial-art-based investiture from Hrovell. Channeled through precise movements.',
+        shard: 'Dominion',
+      },
+    ],
     books: ['elantris', 'arcanum_unbounded'],
   },
   {
@@ -87,6 +150,14 @@ export const PLANETS: Planet[] = [
     sagas: ['warbreaker'],
     magicSystem:
       'Awakening — using BioChromatic Breath to animate objects and grant sentience. Color perception determines power.',
+    investiture: [
+      {
+        name: 'Awakening',
+        description:
+          'Using BioChromatic Breath to animate objects and grant sentience. Color perception determines power.',
+        shard: 'Endowment',
+      },
+    ],
     connectedPlanets: ['roshar'],
     books: ['warbreaker'],
   },
@@ -101,6 +172,18 @@ export const PLANETS: Planet[] = [
     size: 35,
     sagas: ['white-sand'],
     magicSystem: 'Sand Mastery — manipulating sand using Investiture. Also Sand Toning, a lesser-known variant.',
+    investiture: [
+      {
+        name: 'Sand Mastery',
+        description: 'Manipulating sand using Investiture. Practiced by the Darksiders.',
+        shard: 'Autonomy',
+      },
+      {
+        name: 'Sand Toning',
+        description: 'A lesser-known variant of Sand Mastery with different properties.',
+        shard: 'Autonomy',
+      },
+    ],
     books: ['white_sand_vol_1', 'white_sand_vol_2', 'white_sand_vol_3'],
   },
   {
@@ -115,6 +198,13 @@ export const PLANETS: Planet[] = [
     sagas: ['arcanum-unbounded'],
     magicSystem:
       'Shades — the cognitive shadows of the dead that inhabit the Forests of Hell. Simple Rules govern survival.',
+    investiture: [
+      {
+        name: 'Shades',
+        description: 'Cognitive shadows of the dead that inhabit the Forests of Hell. Governed by Simple Rules.',
+        shard: 'Ambition',
+      },
+    ],
     books: ['arcanum_unbounded'],
   },
   {
@@ -129,6 +219,14 @@ export const PLANETS: Planet[] = [
     sagas: ['arcanum-unbounded', 'secret-projects'],
     magicSystem:
       'Aviar bonds — birds that bond with humans granting various abilities. Patji is a sentient perpendicularity.',
+    investiture: [
+      {
+        name: 'Aviar Bond',
+        description:
+          'Birds that bond with humans granting various abilities such as mental shielding or enhanced senses.',
+        shard: 'Autonomy',
+      },
+    ],
     books: ['arcanum_unbounded', 'the_sunlit_man'],
   },
   {
@@ -143,6 +241,18 @@ export const PLANETS: Planet[] = [
     sagas: ['secret-projects'],
     magicSystem:
       'Yoki-Hijo (spirit summoning) and Nightmare painting (trapping emotions in art). Powered by Hion lines.',
+    investiture: [
+      {
+        name: 'Yoki-Hijo',
+        description: 'Spirit summoning performed by yoki-hijo maidens. Summons spirits from the dream realm.',
+        shard: 'Virtuosity',
+      },
+      {
+        name: 'Nightmare Painting',
+        description: 'Trapping emotions and experiences in art. Creates functional magical artifacts.',
+        shard: 'Virtuosity',
+      },
+    ],
     books: ['yumi_and_the_nightmare_painter'],
   },
   {
@@ -157,6 +267,14 @@ export const PLANETS: Planet[] = [
     sagas: ['secret-projects'],
     magicSystem:
       'Spores — twelve types of magical spores make up the seas. Each type has unique properties when activated by water.',
+    investiture: [
+      {
+        name: 'Spore Magic',
+        description:
+          'Twelve types of magical spores make up the seas. Each type has unique properties when activated by water.',
+        shard: 'Mercy',
+      },
+    ],
     books: ['tress_of_the_emerald_sea'],
   },
   {
@@ -171,6 +289,14 @@ export const PLANETS: Planet[] = [
     sagas: ['secret-projects'],
     magicSystem:
       'Torment bonds — Investiture bonded to individuals grants heat resistance and other abilities. The planet itself is a trapped entity.',
+    investiture: [
+      {
+        name: 'Torment Bond',
+        description:
+          'Investiture bonded to individuals grants heat resistance and other abilities. The planet itself is a trapped entity.',
+        shard: 'Ambition',
+      },
+    ],
     books: ['the_sunlit_man'],
   },
 ]

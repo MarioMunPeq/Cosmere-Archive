@@ -35,6 +35,20 @@
     "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer", "rhythm_of_war", "wind_and_truth"]
   },
   {
+    "id": "renarin",
+    "name": "Renarin Kholin",
+    "description": "Younger son of Dalinar Kholin. A Truthwatcher of the Knights Radiant who sees the future.",
+    "planet": "roshar",
+    "requiredBooks": ["words_of_radiance", "oathbringer", "rhythm_of_war", "wind_and_truth"]
+  },
+  {
+    "id": "elhokar",
+    "name": "Elhokar Kholin",
+    "description": "King of Alethkar, son of Gavilar Kholin. A paranoid but well-meaning ruler struggling to fill his father's shoes.",
+    "planet": "roshar",
+    "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer"]
+  },
+  {
     "id": "szeth",
     "name": "Szeth",
     "description": "The Assassin in White. A Skybreaker from Shinovar forced to obey whoever holds his oathblade.",

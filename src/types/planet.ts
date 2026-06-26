@@ -1,3 +1,9 @@
+export interface InvestitureSystem {
+  name: string
+  description: string
+  shard?: string
+}
+
 export interface Planet {
   id: string
   name: string
@@ -9,6 +15,7 @@ export interface Planet {
   size: number
   sagas?: string[]
   magicSystem?: string
+  investiture?: InvestitureSystem[]
   connectedPlanets?: string[]
   books?: string[]
 }

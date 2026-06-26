@@ -1,17 +1,25 @@
-import { useState, useCallback, useEffect, useMemo } from 'react'
+import { useState, useCallback, useEffect, useMemo, lazy, Suspense } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { BOOKS, PLANETS } from '@/data/static'
+import { BOOKS, PLANETS, SAGAS } from '@/data/static'
 import { TIMELINE_EVENTS, CHARACTER_SPANS } from '@/data/static/timeline'
 import UniverseMap from '@/components/map/UniverseMap'
-import CharacterGrid from '@/components/map/CharacterGrid'
-import WorldhopperGallery from '@/components/map/WorldhopperGallery'
-import JourneyAnimation from '@/components/map/JourneyAnimation'
-import TimelinePage from './TimelinePage'
-import BookPanel from '@/components/detail/BookPanel'
-import CharacterPanel from '@/components/detail/CharacterPanel'
 import MapSkeleton from '@/components/common/MapSkeleton'
+import SplitPane from '@/components/common/SplitPane'
+import { CloseIcon } from '@/components/common/icons'
 import type { Book } from '@/types'
 import type { CharacterSpan } from '@/data/static/timeline/character-lifespans'
+import type { Saga } from '@/data/static/sagas'
+
+function formatCharacterYear(year: number | null): string {
+  if (year === null) return 'Unknown'
+  if (year < 0) return `${Math.abs(year)} FE`
+  return `${year}`
+}
+
+const CharacterGrid = lazy(() => import('@/components/map/CharacterGrid'))
+const WorldhopperGallery = lazy(() => import('@/components/map/WorldhopperGallery'))
+const JourneyAnimation = lazy(() => import('@/components/map/JourneyAnimation'))
+const TimelinePage = lazy(() => import('./TimelinePage'))
 
 type Tab = 'map' | 'characters' | 'worldhoppers' | 'timeline'
 
@@ -24,6 +32,7 @@ export default function MapPage() {
   const [tab, setTab] = useState<Tab>('map')
   const [highlightedCharacter, setHighlightedCharacter] = useState<string | null>(null)
   const [activeJourney, setActiveJourney] = useState<string | null>(null)
+  const [flyToTarget, setFlyToTarget] = useState<{ planetId: string; x: number; y: number } | null>(null)
 
   const planetMap = useMemo(() => {
     const m = new Map<string, { x: number; y: number }>()
@@ -63,12 +72,15 @@ export default function MapPage() {
     }
 
     switch (focus) {
-      case 'planet':
+      case 'planet': {
+        const p = PLANETS.find((pl) => pl.id === id)
         queueMicrotask(() => {
           setSelectedPlanet(id)
           setHighlightedPlanet(id)
+          if (p) setFlyToTarget({ planetId: p.id, x: p.x, y: p.y })
         })
         break
+      }
       case 'event': {
         const planet = searchParams.get('planet')
         if (planet) {
@@ -130,6 +142,15 @@ export default function MapPage() {
     setActiveJourney(null)
   }, [])
 
+  const handleSelectMapPlanet = useCallback((id: string | null) => {
+    setSelectedPlanet(id)
+    if (id) setHighlightedPlanet(null)
+  }, [])
+
+  const handleFlyToDone = useCallback(() => {
+    setFlyToTarget(null)
+  }, [])
+
   if (loading) return <MapSkeleton />
 
   return (
@@ -172,40 +193,156 @@ export default function MapPage() {
       </div>
 
       {tab === 'map' ? (
-        <div className="relative flex min-h-0 flex-1">
-          <UniverseMap
-            selectedPlanet={detailBook || detailCharacter ? null : selectedPlanet}
-            onSelectPlanet={(id) => {
-              setSelectedPlanet(id)
-              if (id) setHighlightedPlanet(null)
-            }}
-            activeWorldhoppers={activeWorldhoppers}
-            onToggleWorldhopper={toggleWorldhopper}
-            highlightedPlanet={highlightedPlanet}
-            onSelectCharacter={handleSelectCharacter}
-            onStartJourney={handleStartJourney}
+        detailBook || detailCharacter ? (
+          <SplitPane
+            left={
+              <div className="flex h-full min-h-0 flex-1 flex-col">
+                <UniverseMap
+                  selectedPlanet={null}
+                  onSelectPlanet={handleSelectMapPlanet}
+                  activeWorldhoppers={activeWorldhoppers}
+                  onToggleWorldhopper={toggleWorldhopper}
+                  highlightedPlanet={highlightedPlanet}
+                  onSelectCharacter={handleSelectCharacter}
+                  onStartJourney={handleStartJourney}
+                  flyToTarget={flyToTarget}
+                  onFlyToDone={handleFlyToDone}
+                />
+                {activeJourney && (
+                  <Suspense fallback={null}>
+                    <JourneyAnimation
+                      worldhopperId={activeJourney}
+                      planetMap={planetMap}
+                      onClose={handleCloseJourney}
+                    />
+                  </Suspense>
+                )}
+              </div>
+            }
+            right={
+              <div className="flex flex-col p-5">
+                {detailBook && (
+                  <>
+                    <div className="mb-4 flex items-center justify-between">
+                      <h3 className="text-lg font-bold text-gray-100">{detailBook.title}</h3>
+                      <button
+                        onClick={handleCloseDetail}
+                        aria-label="Close"
+                        className="text-gray-600 transition-colors hover:text-gray-300"
+                      >
+                        <CloseIcon />
+                      </button>
+                    </div>
+                    {(() => {
+                      const saga: Saga | undefined = SAGAS.find((s: Saga) => s.id === detailBook.saga)
+                      return (
+                        <>
+                          {saga && <p className="mb-1 text-xs font-medium text-gray-500">{saga.name}</p>}
+                          {detailBook.year && <p className="mb-3 text-xs text-gray-600">Published {detailBook.year}</p>}
+                          {detailBook.description && (
+                            <p className="mb-4 text-sm leading-relaxed text-gray-400">{detailBook.description}</p>
+                          )}
+                          <div>
+                            <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500">Saga</h4>
+                            <span className="inline-block rounded bg-gray-800 px-2.5 py-1 text-xs text-gray-300">
+                              {saga?.name ?? detailBook.saga}
+                            </span>
+                          </div>
+                        </>
+                      )
+                    })()}
+                  </>
+                )}
+                {detailCharacter && (
+                  <>
+                    <div className="mb-4 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="h-3 w-3 rounded-full" style={{ backgroundColor: detailCharacter.color }} />
+                        <h3 className="text-lg font-bold text-gray-100">{detailCharacter.name}</h3>
+                      </div>
+                      <button
+                        onClick={handleCloseDetail}
+                        aria-label="Close"
+                        className="text-gray-600 transition-colors hover:text-gray-300"
+                      >
+                        <CloseIcon />
+                      </button>
+                    </div>
+                    {detailCharacter.titles.length > 0 && (
+                      <p className="mb-3 text-xs text-gray-500">{detailCharacter.titles.join(', ')}</p>
+                    )}
+                    <div className="mb-4 flex gap-4 text-xs text-gray-500">
+                      <span>
+                        Born:{' '}
+                        <strong className="text-gray-400">{formatCharacterYear(detailCharacter.birthYear)}</strong>
+                      </span>
+                      <span>
+                        Died:{' '}
+                        <strong className="text-gray-400">{formatCharacterYear(detailCharacter.deathYear)}</strong>
+                      </span>
+                    </div>
+                    {(() => {
+                      const planet = PLANETS.find((p) => p.id === detailCharacter.planet.toLowerCase())
+                      return planet ? (
+                        <div className="mb-4">
+                          <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                            Home Planet
+                          </h4>
+                          <button
+                            onClick={() => {
+                              handleSelectPlanet(planet.id)
+                              handleCloseDetail()
+                            }}
+                            className="flex items-center gap-2 rounded bg-gray-800 px-2.5 py-1.5 text-xs text-gray-300 transition-colors hover:bg-gray-700"
+                          >
+                            <span className="h-2 w-2 rounded-full" style={{ backgroundColor: planet.color }} />
+                            {planet.name}
+                          </button>
+                        </div>
+                      ) : null
+                    })()}
+                    <div>
+                      <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Group</h4>
+                      <span className="inline-block rounded bg-gray-800 px-2.5 py-1 text-xs text-gray-400">
+                        {detailCharacter.group}
+                      </span>
+                    </div>
+                  </>
+                )}
+              </div>
+            }
           />
-
-          {activeJourney && (
-            <JourneyAnimation worldhopperId={activeJourney} planetMap={planetMap} onClose={handleCloseJourney} />
-          )}
-
-          {detailBook && <BookPanel book={detailBook} onClose={handleCloseDetail} />}
-
-          {detailCharacter && (
-            <CharacterPanel
-              character={detailCharacter}
-              onClose={handleCloseDetail}
-              onSelectPlanet={handleSelectPlanet}
+        ) : (
+          <div className="relative flex min-h-0 flex-1">
+            <UniverseMap
+              selectedPlanet={selectedPlanet}
+              onSelectPlanet={handleSelectMapPlanet}
+              activeWorldhoppers={activeWorldhoppers}
+              onToggleWorldhopper={toggleWorldhopper}
+              highlightedPlanet={highlightedPlanet}
+              onSelectCharacter={handleSelectCharacter}
+              onStartJourney={handleStartJourney}
+              flyToTarget={flyToTarget}
+              onFlyToDone={handleFlyToDone}
             />
-          )}
-        </div>
-      ) : tab === 'timeline' ? (
-        <TimelinePage />
-      ) : tab === 'characters' ? (
-        <CharacterGrid highlightedCharacter={highlightedCharacter} />
+
+            {activeJourney && (
+              <Suspense fallback={null}>
+                <JourneyAnimation worldhopperId={activeJourney} planetMap={planetMap} onClose={handleCloseJourney} />
+              </Suspense>
+            )}
+          </div>
+        )
       ) : (
-        <WorldhopperGallery />
+        <Suspense fallback={<div className="flex-1" />}>
+          {tab === 'timeline' ? (
+            <TimelinePage />
+          ) : tab === 'characters' ? (
+            <CharacterGrid highlightedCharacter={highlightedCharacter} />
+          ) : (
+            <WorldhopperGallery />
+          )}
+        </Suspense>
       )}
     </div>
   )

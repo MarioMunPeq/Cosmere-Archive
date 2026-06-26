@@ -11,6 +11,7 @@ import WorldhopperPicker from './WorldhopperPicker'
 import ZoomControls from './ZoomControls'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
 import type { Character } from '@/types'
+import { easeOutCubic, calculateFlyTarget } from '@/utils/fly-to'
 
 function drawCurvedPath(p1: Planet, p2: Planet, offset: number): string {
   const dx = p2.x - p1.x
@@ -29,6 +30,8 @@ interface Props {
   highlightedPlanet: string | null
   onSelectCharacter?: (id: string) => void
   onStartJourney?: (id: string) => void
+  flyToTarget?: { planetId: string; x: number; y: number } | null
+  onFlyToDone?: () => void
 }
 
 const SHARD_COLORS: Record<string, string> = {
@@ -74,6 +77,8 @@ export default function UniverseMap({
   highlightedPlanet,
   onSelectCharacter,
   onStartJourney,
+  flyToTarget,
+  onFlyToDone,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
@@ -109,13 +114,17 @@ export default function UniverseMap({
     return () => window.removeEventListener('resize', onResize)
   }, [])
   const zoomTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const panRafRef = useRef<number | null>(null)
+  const flyRafRef = useRef<number | null>(null)
+  const isFlyingRef = useRef(false)
 
   useEffect(() => {
     return () => {
       if (zoomTimerRef.current) clearTimeout(zoomTimerRef.current)
+      if (panRafRef.current) cancelAnimationFrame(panRafRef.current)
+      if (flyRafRef.current) cancelAnimationFrame(flyRafRef.current)
     }
   }, [])
-  const panRafRef = useRef<number | null>(null)
 
   function syncTransform() {
     const g = mapGroupRef.current
@@ -162,6 +171,56 @@ export default function UniverseMap({
     PLANETS.forEach((p) => map.set(p.id, p))
     return map
   }, [])
+
+  useEffect(() => {
+    if (!flyToTarget) return
+
+    const d = drag.current
+    const planet = planetMap.get(flyToTarget.planetId)
+    if (!planet) return
+
+    if (flyRafRef.current) {
+      cancelAnimationFrame(flyRafRef.current)
+      flyRafRef.current = null
+    }
+
+    const targetZoom = Math.max(0.5, Math.min(3, d.z < 1.5 ? 2 : d.z))
+    const target = calculateFlyTarget(flyToTarget.x, flyToTarget.y, targetZoom)
+    const startX = d.x
+    const startY = d.y
+    const startZ = d.z
+    const duration = 600
+    const startTime = performance.now()
+
+    isFlyingRef.current = true
+
+    function tick(now: number) {
+      if (!isFlyingRef.current) return
+      const elapsed = now - startTime
+      const progress = Math.min(elapsed / duration, 1)
+      const eased = easeOutCubic(progress)
+
+      d.x = startX + (target.x - startX) * eased
+      d.y = startY + (target.y - startY) * eased
+      d.z = startZ + (targetZoom - startZ) * eased
+      syncTransform()
+
+      if (progress < 1) {
+        flyRafRef.current = requestAnimationFrame(tick)
+      } else {
+        isFlyingRef.current = false
+        flyRafRef.current = null
+        setPanX(d.x)
+        setPanY(d.y)
+        setZoom(d.z)
+        if (zoomTimerRef.current) clearTimeout(zoomTimerRef.current)
+        zoomTimerRef.current = null
+        onFlyToDone?.()
+      }
+    }
+
+    flyRafRef.current = requestAnimationFrame(tick)
+  }, [flyToTarget, planetMap, onFlyToDone])
 
   const charactersByPlanet = useMemo(() => {
     const map = new Map<string, Character[]>()
@@ -299,13 +358,24 @@ export default function UniverseMap({
     }
   }, [])
 
-  const handlePointerDown = useCallback((e: React.PointerEvent) => {
-    const d = drag.current
-    d.isDown = true
-    d.startX = e.clientX
-    d.startY = e.clientY
-    d.wasPan = false
-  }, [])
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      if (isFlyingRef.current) {
+        isFlyingRef.current = false
+        if (flyRafRef.current) {
+          cancelAnimationFrame(flyRafRef.current)
+          flyRafRef.current = null
+        }
+        onFlyToDone?.()
+      }
+      const d = drag.current
+      d.isDown = true
+      d.startX = e.clientX
+      d.startY = e.clientY
+      d.wasPan = false
+    },
+    [onFlyToDone],
+  )
 
   const handlePointerMove = useCallback((e: React.PointerEvent) => {
     const d = drag.current

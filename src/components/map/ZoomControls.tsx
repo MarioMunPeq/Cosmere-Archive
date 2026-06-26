@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { CloseIcon } from '@/components/common/icons'
 
 interface Props {
@@ -6,7 +7,7 @@ interface Props {
   onReset: () => void
 }
 
-export default function ZoomControls({ onZoomIn, onZoomOut, onReset }: Props) {
+function ZoomControlsInner({ onZoomIn, onZoomOut, onReset }: Props) {
   return (
     <div className="absolute bottom-4 right-4 z-20 flex flex-col gap-1">
       <button
@@ -37,3 +38,6 @@ export default function ZoomControls({ onZoomIn, onZoomOut, onReset }: Props) {
     </div>
   )
 }
+
+const ZoomControls = memo(ZoomControlsInner)
+export default ZoomControls
