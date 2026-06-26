@@ -33,12 +33,20 @@ export default class ErrorBoundary extends Component<Props, State> {
           <div className="max-w-md text-center">
             <h2 className="text-xl font-bold text-red-400">Something went wrong</h2>
             <p className="mt-2 text-sm text-gray-500">{this.state.error?.message ?? 'An unexpected error occurred.'}</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="mt-4 rounded-lg bg-purple-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-600"
-            >
-              Reload page
-            </button>
+            <div className="mt-4 flex justify-center gap-3">
+              <button
+                onClick={() => this.setState({ hasError: false, error: null })}
+                className="rounded-lg bg-purple-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-600"
+              >
+                Try again
+              </button>
+              <button
+                onClick={() => window.location.reload()}
+                className="rounded-lg border border-gray-600 px-4 py-2 text-sm font-medium text-gray-400 transition-colors hover:border-gray-500 hover:text-gray-300"
+              >
+                Reload page
+              </button>
+            </div>
           </div>
         </div>
       )

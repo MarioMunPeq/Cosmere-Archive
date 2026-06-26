@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { PLANETS } from '@/data/static'
 import { WORLDHOPPER_MOVEMENTS } from '@/data/static/timeline'
+import ColorDot from '@/components/ui/ColorDot'
+import { FALLBACK_COLOR } from '@/utils/constants'
 
 const PLANET_BY_ID = new Map(PLANETS.map((p) => [p.id, p]))
 
@@ -68,9 +70,9 @@ export default function WorldhopperGallery() {
                         return p ? (
                           <span
                             key={pId}
-                            className="flex items-center gap-1 rounded-full bg-gray-800 px-2 py-0.5 text-[10px] text-gray-400"
+                            className="flex items-center gap-1 rounded-full bg-gray-800 px-2 py-0.5 text-xxs text-gray-400"
                           >
-                            <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: p.color }} />
+                            <ColorDot color={p.color} size="xs" />
                             {p.name}
                           </span>
                         ) : null
@@ -105,16 +107,13 @@ export default function WorldhopperGallery() {
                         return (
                           <div key={i} className="relative pb-4 last:pb-0">
                             <div className="absolute -left-[22px] top-1 flex h-3 w-3 items-center justify-center">
-                              <div
-                                className="h-1.5 w-1.5 rounded-full"
-                                style={{ backgroundColor: p?.color ?? '#6b7280' }}
-                              />
+                              <ColorDot color={p?.color ?? FALLBACK_COLOR} size="xs" />
                             </div>
                             <div className="flex items-baseline gap-2">
-                              <span className="shrink-0 text-[10px] font-mono text-gray-600">
+                              <span className="shrink-0 text-xxs font-mono text-gray-600">
                                 {m.year > 0 ? `${m.year} AR` : `${Math.abs(m.year)} BR`}
                               </span>
-                              <span className="text-[10px] font-medium" style={{ color: p?.color ?? '#6b7280' }}>
+                              <span className="text-xxs font-medium" style={{ color: p?.color ?? FALLBACK_COLOR }}>
                                 {p?.name ?? m.planet}
                               </span>
                             </div>

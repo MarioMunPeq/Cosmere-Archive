@@ -1,7 +1,18 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { FAMILY_TREES } from '@/data/static/family-data'
 import { ALL_CHARACTERS } from '@/data/static'
 import FamilyTreeView from '@/components/detail/FamilyTreeView'
+import PageLayout from '@/components/ui/PageLayout'
+
+function crossTreeFamilies(characterId: string): { id: string; name: string }[] {
+  const result: { id: string; name: string }[] = []
+  for (const f of FAMILY_TREES) {
+    if (f.members.some((m) => m.characterId === characterId)) {
+      result.push({ id: f.id, name: f.name })
+    }
+  }
+  return result
+}
 
 export default function FamilyTreePage() {
   const [selectedFamily, setSelectedFamily] = useState(FAMILY_TREES[0]!.id)
@@ -12,8 +23,10 @@ export default function FamilyTreePage() {
 
   const detailMember = detailId ? (family.members.find((m) => m.characterId === detailId) ?? null) : null
 
+  const crossTrees = useMemo(() => (detailId ? crossTreeFamilies(detailId) : []), [detailId])
+
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-4 sm:p-6">
+    <PageLayout>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-lg font-bold text-gray-100 sm:text-xl">Family Trees</h1>
       </div>
@@ -57,23 +70,66 @@ export default function FamilyTreePage() {
             </button>
             <h3 className="text-sm font-semibold text-gray-200">{detailMember.name}</h3>
             <p className="mt-2 text-xs leading-relaxed text-gray-500">{detailChar.description}</p>
-            <p className="mt-2 text-[10px] text-gray-600">
+            <p className="mt-2 text-xxs text-gray-600">
               Planet: <span className="capitalize text-gray-500">{detailChar.planet.replace(/_/g, ' ')}</span>
             </p>
             {detailMember.isDeceased && (
-              <span className="mt-2 inline-block rounded bg-red-900/20 px-2 py-0.5 text-[10px] text-red-400">
+              <span className="mt-2 inline-block rounded bg-red-900/20 px-2 py-0.5 text-xxs text-red-400">
                 Deceased
               </span>
             )}
-            <p className="mt-1 text-[10px] text-gray-600">
-              Relationship:{' '}
-              <span className="text-gray-500">
-                {detailMember.parentIds ? 'Child' : detailMember.spouseId ? 'Spouse' : 'Root'}
-              </span>
+            <p className="mt-1 text-xxs text-gray-600">
+              {(() => {
+                const label = detailMember.parentIds
+                  ? detailMember.gender === 'female'
+                    ? 'Daughter of'
+                    : 'Son of'
+                  : detailMember.spouseId
+                    ? 'Spouse of'
+                    : null
+                if (!label) return null
+                const names = detailMember.parentIds
+                  ? detailMember.parentIds
+                      .map((pid) => {
+                        const p = family.members.find((m) => m.id === pid)
+                        return p?.name ?? pid
+                      })
+                      .join(' & ')
+                  : detailMember.spouseId
+                    ? (() => {
+                        const sp = family.members.find((m) => m.id === detailMember.spouseId)
+                        return sp?.name ?? detailMember.spouseId
+                      })()
+                    : null
+                if (!names) return null
+                return (
+                  <>
+                    {label} <span className="text-gray-500">{names}</span>
+                  </>
+                )
+              })()}
             </p>
+            {crossTrees.length > 1 && (
+              <div className="mt-2 flex flex-wrap gap-1">
+                {crossTrees
+                  .filter((t) => t.id !== selectedFamily)
+                  .map((t) => (
+                    <button
+                      key={t.id}
+                      onClick={() => {
+                        setSelectedFamily(t.id)
+                        setDetailId(detailId)
+                      }}
+                      className="rounded bg-purple-900/30 px-2 py-0.5 text-xxs text-purple-400 transition-colors hover:bg-purple-900/50"
+                    >
+                      Also in {t.name}
+                    </button>
+                  ))}
+              </div>
+            )}
           </div>
         )}
       </div>
-    </div>
+    </PageLayout>
   )
 }

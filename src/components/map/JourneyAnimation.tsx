@@ -1,10 +1,4 @@
-import { useMemo, useRef, useState, useCallback, useEffect } from 'react'
-
-const raf = (cb: FrameRequestCallback): number =>
-  typeof requestAnimationFrame !== 'undefined' ? requestAnimationFrame(cb) : 0
-const caf = (id: number): void => {
-  if (typeof cancelAnimationFrame !== 'undefined') cancelAnimationFrame(id)
-}
+import { useMemo } from 'react'
 import { PLANETS } from '@/data/static'
 import { WORLDHOPPER_MOVEMENTS } from '@/data/static/timeline'
 import {
@@ -14,10 +8,9 @@ import {
   findStopAtProgress,
   computeCurveControlPoint,
 } from '@/utils/journey'
+import { useAnimationEngine } from '@/hooks/useAnimationEngine'
 
 const PLANET_NAME_MAP = new Map(PLANETS.map((p) => [p.id, p.name]))
-
-const AUTO_PAUSE_MS = 2500
 
 interface Props {
   worldhopperId: string | null
@@ -48,168 +41,21 @@ export default function JourneyAnimation({
 }
 
 function JourneyAnimationContent({ worldhopperId, planetMap, speed: defaultSpeed = 1, onComplete, onClose }: Props) {
-  const segments = useMemo(() => buildJourneySegments(worldhopperId ?? '', planetMap), [worldhopperId, planetMap])
+  const segments = useMemo(() => buildJourneySegments(worldhopperId!, planetMap), [worldhopperId, planetMap])
 
   const whData = useMemo(() => WORLDHOPPER_MOVEMENTS.find((wh) => wh.id === worldhopperId), [worldhopperId])
 
-  const [playing, setPlaying] = useState(false)
-  const [progress, setProgress] = useState(0)
-  const [currentSpeed, setCurrentSpeed] = useState(defaultSpeed)
-  const [autoPaused, setAutoPaused] = useState(false)
-  const [renderedWorldhopperId, setRenderedWorldhopperId] = useState(worldhopperId)
-
-  const rafRef = useRef<number>(0)
-  const tickRef = useRef<FrameRequestCallback>(() => {})
-  const startTimeRef = useRef<number | null>(null)
-  const elapsedRef = useRef(0)
-  const progressRef = useRef(0)
-  const completedRef = useRef(false)
-  const playingRef = useRef(false)
-  const pauseUntilRef = useRef<number | null>(null)
-  const prevStopRef = useRef<number>(-1)
-  const userPausedRef = useRef(false)
-
   const totalDuration = useMemo(() => segments.reduce((sum, s) => sum + s.duration, 0), [segments])
 
-  const isWorldhopperChanging = renderedWorldhopperId !== worldhopperId
-  const displayedProgress = isWorldhopperChanging ? 0 : progress
-
-  useEffect(() => {
-    if (!isWorldhopperChanging) return
-    progressRef.current = 0
-    elapsedRef.current = 0
-    startTimeRef.current = null
-    completedRef.current = false
-    pauseUntilRef.current = null
-    prevStopRef.current = -1
-    userPausedRef.current = false
-    caf(rafRef.current)
-    queueMicrotask(() => {
-      setRenderedWorldhopperId(worldhopperId)
-      setPlaying(false)
-      setProgress(0)
-      setAutoPaused(false)
+  const { playing, currentSpeed, autoPaused, displayedProgress, handlePlayPause, handleReset, handleSpeedChange } =
+    useAnimationEngine({
+      totalDuration,
+      segments,
+      findStopAtProgress,
+      worldhopperId,
+      speed: defaultSpeed,
+      onComplete,
     })
-  }, [isWorldhopperChanging, worldhopperId])
-
-  const tick = useCallback(
-    (timestamp: number) => {
-      // Don't advance during user pause
-      if (!playingRef.current && pauseUntilRef.current === null) return
-
-      // If in auto-pause, check if it's time to resume
-      if (pauseUntilRef.current !== null) {
-        if (timestamp < pauseUntilRef.current) {
-          rafRef.current = raf(tickRef.current)
-          return
-        }
-        pauseUntilRef.current = null
-        setAutoPaused(false)
-        startTimeRef.current = timestamp
-      }
-
-      if (startTimeRef.current === null) {
-        startTimeRef.current = timestamp
-      }
-
-      const elapsed = elapsedRef.current + (timestamp - startTimeRef.current)
-      const adjustedDuration = totalDuration / Math.max(currentSpeed, 0.01)
-      const raw = elapsed / adjustedDuration
-      const clamped = Math.min(1, raw)
-
-      // Detect planet arrival for auto-pause (not the first planet, not user-paused)
-      const stopIdx = findStopAtProgress(segments, clamped)
-      if (stopIdx > 0 && stopIdx !== prevStopRef.current && !userPausedRef.current && !completedRef.current) {
-        prevStopRef.current = stopIdx
-        progressRef.current = clamped
-        setProgress(clamped)
-        elapsedRef.current = elapsed
-        startTimeRef.current = null
-        pauseUntilRef.current = timestamp + AUTO_PAUSE_MS
-        setAutoPaused(true)
-        rafRef.current = raf(tickRef.current)
-        return
-      }
-
-      progressRef.current = clamped
-      setProgress(clamped)
-
-      if (clamped >= 1) {
-        elapsedRef.current = elapsed
-        startTimeRef.current = null
-        setPlaying(false)
-        setAutoPaused(false)
-        if (!completedRef.current) {
-          completedRef.current = true
-          onComplete?.()
-        }
-        return
-      }
-
-      rafRef.current = raf(tickRef.current)
-    },
-    [segments, totalDuration, currentSpeed, onComplete],
-  )
-
-  useEffect(() => {
-    tickRef.current = tick
-  }, [tick])
-
-  useEffect(() => {
-    if (playing) {
-      userPausedRef.current = false
-      pauseUntilRef.current = null
-      startTimeRef.current = null
-      rafRef.current = raf(tickRef.current)
-    } else {
-      caf(rafRef.current)
-    }
-    playingRef.current = playing
-    return () => caf(rafRef.current)
-  }, [playing])
-
-  const handlePlayPause = useCallback(() => {
-    pauseUntilRef.current = null
-    setAutoPaused(false)
-
-    if (completedRef.current) {
-      progressRef.current = 0
-      setProgress(0)
-      elapsedRef.current = 0
-      startTimeRef.current = null
-      prevStopRef.current = -1
-      completedRef.current = false
-      setPlaying(true)
-      return
-    }
-
-    if (playingRef.current) {
-      userPausedRef.current = true
-      elapsedRef.current += performance.now() - (startTimeRef.current ?? performance.now())
-      startTimeRef.current = null
-      setPlaying(false)
-    } else {
-      setPlaying(true)
-    }
-  }, [])
-
-  const handleReset = useCallback(() => {
-    pauseUntilRef.current = null
-    setPlaying(false)
-    setProgress(0)
-    setAutoPaused(false)
-    progressRef.current = 0
-    elapsedRef.current = 0
-    startTimeRef.current = null
-    prevStopRef.current = -1
-    completedRef.current = false
-    userPausedRef.current = false
-    caf(rafRef.current)
-  }, [])
-
-  const handleSpeedChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setCurrentSpeed(Number(e.target.value))
-  }, [])
 
   const segmentPaths = useMemo(() => {
     return segments.map((s) => {
@@ -245,14 +91,12 @@ function JourneyAnimationContent({ worldhopperId, planetMap, speed: defaultSpeed
 
   return (
     <>
-      {/* SVG overlay */}
       <svg
         data-testid="journey-svg"
         className="pointer-events-none absolute inset-0 z-10 h-full w-full"
         viewBox="0 0 900 600"
         preserveAspectRatio="xMidYMid meet"
       >
-        {/* Untraveled paths (future segments: dashed) */}
         {segmentPaths.map((d, i) =>
           i > currentStop ? (
             <path
@@ -268,7 +112,6 @@ function JourneyAnimationContent({ worldhopperId, planetMap, speed: defaultSpeed
           ) : null,
         )}
 
-        {/* Completed paths (fully traveled: solid) */}
         {segmentPaths.map((d, i) =>
           i < currentStop ? (
             <path
@@ -285,7 +128,6 @@ function JourneyAnimationContent({ worldhopperId, planetMap, speed: defaultSpeed
           ) : null,
         )}
 
-        {/* Current segment (partially traveled) — bezier-aligned */}
         {segmentPaths[currentStop] && displayedProgress > 0 && (
           <path
             data-testid="journey-traced-path"
@@ -300,7 +142,6 @@ function JourneyAnimationContent({ worldhopperId, planetMap, speed: defaultSpeed
           />
         )}
 
-        {/* Stop dots */}
         {stopDots.map((dot, i) => (
           <circle
             key={i}
@@ -315,7 +156,6 @@ function JourneyAnimationContent({ worldhopperId, planetMap, speed: defaultSpeed
           />
         ))}
 
-        {/* Animated marker — on the bezier path now */}
         <circle
           data-testid="journey-marker"
           cx={pos.x}
@@ -338,7 +178,6 @@ function JourneyAnimationContent({ worldhopperId, planetMap, speed: defaultSpeed
         />
       </svg>
 
-      {/* Controls panel */}
       <div
         data-testid="journey-controls"
         className="absolute bottom-20 left-1/2 z-30 w-[90vw] max-w-md -translate-x-1/2 rounded-xl border border-gray-700/60 bg-gray-900/95 p-5 shadow-2xl backdrop-blur-lg sm:bottom-24"
@@ -347,7 +186,6 @@ function JourneyAnimationContent({ worldhopperId, planetMap, speed: defaultSpeed
           <p className="text-center text-sm text-gray-500">Unknown worldhopper</p>
         ) : (
           <>
-            {/* Header */}
             <div className="mb-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="h-3 w-3 rounded-full" style={{ backgroundColor: whData.color }} />
@@ -371,7 +209,6 @@ function JourneyAnimationContent({ worldhopperId, planetMap, speed: defaultSpeed
               </div>
             </div>
 
-            {/* Play/Pause + Progress */}
             <div className="mb-3 flex items-center gap-3">
               <button
                 onClick={handlePlayPause}
@@ -390,7 +227,6 @@ function JourneyAnimationContent({ worldhopperId, planetMap, speed: defaultSpeed
                 )}
               </button>
 
-              {/* Progress bar */}
               <div className="flex-1">
                 <div className="h-2 overflow-hidden rounded-full bg-gray-800">
                   <div
@@ -404,7 +240,6 @@ function JourneyAnimationContent({ worldhopperId, planetMap, speed: defaultSpeed
               </span>
             </div>
 
-            {/* Info rows */}
             <div className="mb-2 flex items-center justify-between text-sm">
               <div className="flex items-center gap-2">
                 <span data-testid="journey-info" className="font-medium text-gray-200">
@@ -417,14 +252,12 @@ function JourneyAnimationContent({ worldhopperId, planetMap, speed: defaultSpeed
               <span className="text-xs text-gray-600">{segments.length} segments</span>
             </div>
 
-            {/* Description */}
             {segmentDesc && (
               <p data-testid="journey-description" className="mb-3 text-sm leading-relaxed text-gray-400">
                 {segmentDesc}
               </p>
             )}
 
-            {/* Speed slider */}
             <div className="flex items-center gap-2">
               <span className="text-xs text-gray-600">0.5x</span>
               <input

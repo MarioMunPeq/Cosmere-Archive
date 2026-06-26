@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import type { TimelineEvent } from '@/data/static/timeline'
 import { yearToX, TOTAL_WIDTH, MAIN_LINE_Y, FORK_START_Y, FORK_SPACING } from '@/utils/timeline-layout'
+import { FALLBACK_COLOR } from '@/utils/constants'
 
 interface TimelineProps {
   events: TimelineEvent[]
@@ -46,7 +47,7 @@ export default function Timeline({
   function getImportanceColor(imp: number): string {
     if (imp >= 5) return '#a78bfa'
     if (imp >= 4) return '#c4b5fd'
-    return '#6b7280'
+    return FALLBACK_COLOR
   }
 
   function getImportanceStroke(imp: number): string {
@@ -122,7 +123,7 @@ export default function Timeline({
 
       {selectedSagas.map((saga, i) => {
         const y = FORK_START_Y + i * FORK_SPACING
-        const color = sagaColors[saga] || '#6b7280'
+        const color = sagaColors[saga] || FALLBACK_COLOR
         const label = sagaLabels[saga] || saga
         const forked = forkEventsBySaga.get(saga) || []
         const nowYear = sagaNowYears[saga]

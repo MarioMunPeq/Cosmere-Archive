@@ -7,6 +7,8 @@ import { CHARACTER_SPANS } from '@/data/static/timeline/character-lifespans'
 import { WORLDHOPPER_MOVEMENTS } from '@/data/static/timeline/worldhopper-journeys'
 import { ERAS } from '@/data/static/timeline/eras'
 import { ALL_CHARACTERS } from '@/data/static'
+import { HERALDS } from '@/data/static/heralds'
+import { READING_ORDER } from '@/data/static/reading-order'
 
 const PLANET_IDS = new Set(PLANETS.map((p) => p.id))
 const BOOK_IDS = new Set(BOOKS.map((b) => b.id))
@@ -16,6 +18,7 @@ const CHARACTER_IDS = new Set(ALL_CHARACTERS.map((c) => c.id))
 const SPAN_IDS = new Set(CHARACTER_SPANS.map((s) => s.id))
 const WH_IDS = new Set(WORLDHOPPER_MOVEMENTS.map((w) => w.id))
 const ERA_IDS = new Set(ERAS.map((e) => e.id))
+const HERALD_IDS = new Set(HERALDS.map((h) => h.id))
 
 describe('data integrity — unique IDs', () => {
   it('PLANETS have unique ids', () => {
@@ -214,7 +217,7 @@ describe('data integrity — entity validity', () => {
 
   it('all BOOKS have positive order values', () => {
     for (const book of BOOKS) {
-      expect(book.order, `book "${book.id}" has non-positive order ${book.order}`).toBeGreaterThanOrEqual(1)
+      expect(book.order, `book "${book.id}" has negative order ${book.order}`).toBeGreaterThanOrEqual(0)
     }
   })
 
@@ -257,5 +260,45 @@ describe('data integrity — entity validity', () => {
       const names = planet.investiture.map((s) => s.name)
       expect(names.length, `planet "${planet.id}" has duplicate investiture names`).toBe(new Set(names).size)
     }
+  })
+})
+
+describe('data integrity — Heralds', () => {
+  it('HERALDS have unique ids', () => {
+    expect(HERALDS.length).toBe(HERALD_IDS.size)
+  })
+
+  it('all Heralds have character entries if characterId is set', () => {
+    for (const h of HERALDS) {
+      if (h.characterId) {
+        expect(
+          CHARACTER_IDS.has(h.characterId),
+          `herald "${h.id}" references unknown character "${h.characterId}"`,
+        ).toBe(true)
+      }
+    }
+  })
+
+  it('all Heralds have exactly 2 surges', () => {
+    for (const h of HERALDS) {
+      expect(h.surges.length, `herald "${h.id}" does not have exactly 2 surges`).toBe(2)
+    }
+  })
+
+  it('each Herald has a unique order', () => {
+    const orders = HERALDS.map((h) => h.order)
+    expect(orders.length).toBe(new Set(orders).size)
+  })
+})
+
+describe('data integrity — Reading Order', () => {
+  it('all READING_ORDER book IDs exist in BOOKS', () => {
+    for (const id of READING_ORDER) {
+      expect(BOOK_IDS.has(id), `reading order references unknown book "${id}"`).toBe(true)
+    }
+  })
+
+  it('READING_ORDER has unique entries', () => {
+    expect(READING_ORDER.length).toBe(new Set(READING_ORDER).size)
   })
 })

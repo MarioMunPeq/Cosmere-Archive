@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom'
+import PageLayout from '@/components/ui/PageLayout'
 
 export default function About() {
   return (
-    <div className="flex min-h-0 flex-1 items-center justify-center p-6">
+    <PageLayout variant="center">
       <div className="max-w-lg animate-fade-in-up">
         <Link
           to="/"
@@ -85,6 +86,6 @@ export default function About() {
           </Link>
         </div>
       </div>
-    </div>
+    </PageLayout>
   )
 }

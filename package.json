@@ -12,16 +12,30 @@
     "format": "prettier --write \"**/*.{ts,tsx,css,json,md,yml,yaml}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,css,json,md,yml,yaml}\"",
     "preview": "vite preview",
+    "analyze": "ANALYZE=true pnpm build",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "ci": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "prepare": "husky"
   },
   "dependencies": {
     "@tanstack/react-virtual": "^3.14.3",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-router-dom": "^7.18.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{css,json,md,yml,yaml}": [
+      "prettier --write"
+    ]
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^5.2.1",
@@ -36,6 +50,7 @@
     "@tailwindcss/vite": "^4.3.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/node": "^24.12.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
@@ -47,9 +62,12 @@
     "eslint-plugin-react-refresh": "^0.5.2",
     "eslint-plugin-storybook": "^10.4.6",
     "globals": "^17.6.0",
+    "husky": "^9.1.7",
     "jsdom": "^29.1.1",
+    "lint-staged": "^17.0.8",
     "playwright": "^1.61.1",
     "prettier": "^3.8.4",
+    "rollup-plugin-visualizer": "^7.0.1",
     "storybook": "^10.4.6",
     "tailwindcss": "^4.3.1",
     "typescript": "~6.0.2",

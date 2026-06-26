@@ -1,21 +1,37 @@
 import { useEffect } from 'react'
-import { Outlet, Link } from 'react-router-dom'
+import { Outlet, Link, NavLink, useLocation } from 'react-router-dom'
 import SearchBar from './SearchBar'
+import { useScrollToTop } from '@/hooks/useScrollToTop'
+import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut'
+
+const ROUTE_TITLES: Record<string, string> = {
+  '/': 'Cosmere Archive',
+  '/about': 'About — Cosmere Archive',
+  '/relationships': 'Relationships — Cosmere Archive',
+  '/glossary': 'Glossary — Cosmere Archive',
+  '/family-tree': 'Family Tree — Cosmere Archive',
+  '/heralds': 'Heralds — Cosmere Archive',
+  '/reading-order': 'Reading Order — Cosmere Archive',
+  '/magic': 'Magic Systems — Cosmere Archive',
+}
+
+function navClass(base: string) {
+  return ({ isActive }: { isActive: boolean }) => `${base} ${isActive ? 'text-purple-400' : 'text-gray-500'}`
+}
 
 export default function Layout() {
+  const location = useLocation()
+  useScrollToTop()
+
   useEffect(() => {
-    function handleKey(e: KeyboardEvent) {
-      if (
-        (e.key === '/' || (e.key === 'k' && (e.metaKey || e.ctrlKey))) &&
-        !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)
-      ) {
-        e.preventDefault()
-        document.getElementById('cosmere-search')?.focus()
-      }
-    }
-    window.addEventListener('keydown', handleKey)
-    return () => window.removeEventListener('keydown', handleKey)
-  }, [])
+    document.title = ROUTE_TITLES[location.pathname] ?? 'Cosmere Archive'
+  }, [location.pathname])
+
+  useKeyboardShortcut([{ key: '/' }, { key: 'k', meta: true }, { key: 'k', ctrl: true }], (e) => {
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
+    e.preventDefault()
+    document.getElementById('cosmere-search')?.focus()
+  })
 
   return (
     <div className="flex h-screen flex-col bg-gray-950 text-gray-100">
@@ -36,33 +52,42 @@ export default function Layout() {
           </Link>
 
           <div className="ml-auto flex items-center gap-3">
-            <Link to="/about" className="hidden text-sm text-gray-500 transition-colors hover:text-gray-300 sm:inline">
+            <NavLink to="/about" className={navClass('hidden text-sm transition-colors hover:text-gray-300 sm:inline')}>
               About
-            </Link>
-            <Link
-              to="/passport"
-              className="hidden text-sm text-gray-500 transition-colors hover:text-gray-300 sm:inline"
-            >
-              Passport
-            </Link>
-            <Link
+            </NavLink>
+            <NavLink
               to="/relationships"
-              className="hidden text-sm text-gray-500 transition-colors hover:text-gray-300 sm:inline"
+              className={navClass('hidden text-sm transition-colors hover:text-gray-300 sm:inline')}
             >
               Relationships
-            </Link>
-            <Link
+            </NavLink>
+            <NavLink
               to="/glossary"
-              className="hidden text-sm text-gray-500 transition-colors hover:text-gray-300 sm:inline"
+              className={navClass('hidden text-sm transition-colors hover:text-gray-300 sm:inline')}
             >
               Glossary
-            </Link>
-            <Link
+            </NavLink>
+            <NavLink
               to="/family-tree"
-              className="hidden text-sm text-gray-500 transition-colors hover:text-gray-300 sm:inline"
+              className={navClass('hidden text-sm transition-colors hover:text-gray-300 sm:inline')}
             >
               Family Tree
-            </Link>
+            </NavLink>
+            <NavLink
+              to="/heralds"
+              className={navClass('hidden text-sm transition-colors hover:text-gray-300 sm:inline')}
+            >
+              Heralds
+            </NavLink>
+            <NavLink
+              to="/reading-order"
+              className={navClass('hidden text-sm transition-colors hover:text-gray-300 sm:inline')}
+            >
+              Reading Order
+            </NavLink>
+            <NavLink to="/magic" className={navClass('hidden text-sm transition-colors hover:text-gray-300 sm:inline')}>
+              Magic
+            </NavLink>
             <div className="w-48 sm:w-64">
               <SearchBar />
             </div>
@@ -71,7 +96,9 @@ export default function Layout() {
       </nav>
 
       <main id="main-content" className="flex min-h-0 flex-1 flex-col">
-        <Outlet />
+        <div key={location.pathname} className="contents animate-page-enter">
+          <Outlet />
+        </div>
       </main>
     </div>
   )

@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import type { Book } from '@/types'
-import type { Saga } from '@/data/static/sagas'
-import { SAGAS } from '@/data/static'
+
+import { SAGA_BY_ID } from '@/data/static'
 import { CloseIcon } from '@/components/common/icons'
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
 }
 
 function BookPanel({ book, onClose }: Props) {
-  const saga = SAGAS.find((s: Saga) => s.id === book.saga)
+  const saga = SAGA_BY_ID.get(book.saga)
 
   return (
     <div className="absolute bottom-4 left-4 right-4 top-auto w-auto animate-scale-in rounded-xl border border-gray-700/60 bg-gray-900/95 p-4 shadow-2xl backdrop-blur-lg sm:bottom-auto sm:left-auto sm:right-4 sm:top-4 sm:w-80 sm:p-5">

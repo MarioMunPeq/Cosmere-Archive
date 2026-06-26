@@ -1,6 +1,25 @@
 @import 'tailwindcss';
 
+@utility text-xxs {
+  font-size: 10px;
+}
+
 @media (prefers-reduced-motion: no-preference) {
+  @keyframes page-enter {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-page-enter {
+    animation: page-enter 0.25s ease-out both;
+  }
+
   @keyframes dash-move {
     to {
       stroke-dashoffset: -40;
@@ -35,10 +54,12 @@
 
   .animate-fade-in-up {
     animation: fade-in-up 0.35s ease-out both;
+    will-change: transform, opacity;
   }
 
   .animate-scale-in {
     animation: scale-in 0.25s ease-out both;
+    will-change: transform, opacity;
   }
 
   @keyframes planet-enter {
@@ -137,6 +158,16 @@
 
   .animate-twinkle {
     animation: twinkle 4s ease-in-out infinite;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }
 

@@ -1,108 +1,106 @@
-import { lazy, Suspense } from 'react'
+import { lazy } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Layout from '@/components/common/Layout'
 import ErrorBoundary from '@/components/common/ErrorBoundary'
-import MapPage from '@/pages/MapPage'
-import NotFound from '@/pages/NotFound'
+import RouteFallback from '@/components/ui/RouteFallback'
+import { MapPageSkeleton, GlossaryPageSkeleton } from '@/components/ui/Skeleton'
 
+const MapPage = lazy(() => import('@/pages/MapPage'))
 const About = lazy(() => import('@/pages/About'))
-const PassportPage = lazy(() => import('@/pages/PassportPage'))
 const RelationshipsPage = lazy(() => import('@/pages/RelationshipsPage'))
 const GlossaryPage = lazy(() => import('@/pages/GlossaryPage'))
 const FamilyTreePage = lazy(() => import('@/pages/FamilyTreePage'))
+const HeraldsPage = lazy(() => import('@/pages/HeraldsPage'))
+const BookPage = lazy(() => import('@/pages/BookPage'))
+const ReadingOrderPage = lazy(() => import('@/pages/ReadingOrderPage'))
+const MagicSystemsPage = lazy(() => import('@/pages/MagicSystemsPage'))
+const NotFound = lazy(() => import('@/pages/NotFound'))
 
 export default function App() {
   return (
     <ErrorBoundary>
       <Routes>
         <Route element={<Layout />}>
-          <Route index element={<MapPage />} />
           <Route
-            path="about"
+            index
             element={
-              <Suspense
-                fallback={
-                  <div className="flex min-h-0 flex-1 items-center justify-center">
-                    <div className="flex flex-col items-center gap-3">
-                      <div className="h-8 w-8 animate-spin rounded-full border-2 border-purple-500 border-t-transparent" />
-                      <p className="text-sm text-gray-500">Loading...</p>
-                    </div>
-                  </div>
-                }
-              >
-                <About />
-              </Suspense>
+              <RouteFallback fallback={<MapPageSkeleton />}>
+                <MapPage />
+              </RouteFallback>
             }
           />
           <Route
-            path="passport"
+            path="about"
             element={
-              <Suspense
-                fallback={
-                  <div className="flex min-h-0 flex-1 items-center justify-center">
-                    <div className="flex flex-col items-center gap-3">
-                      <div className="h-8 w-8 animate-spin rounded-full border-2 border-purple-500 border-t-transparent" />
-                      <p className="text-sm text-gray-500">Loading...</p>
-                    </div>
-                  </div>
-                }
-              >
-                <PassportPage />
-              </Suspense>
+              <RouteFallback>
+                <About />
+              </RouteFallback>
             }
           />
           <Route
             path="relationships"
             element={
-              <Suspense
-                fallback={
-                  <div className="flex min-h-0 flex-1 items-center justify-center">
-                    <div className="flex flex-col items-center gap-3">
-                      <div className="h-8 w-8 animate-spin rounded-full border-2 border-purple-500 border-t-transparent" />
-                      <p className="text-sm text-gray-500">Loading...</p>
-                    </div>
-                  </div>
-                }
-              >
+              <RouteFallback>
                 <RelationshipsPage />
-              </Suspense>
+              </RouteFallback>
             }
           />
           <Route
             path="glossary"
             element={
-              <Suspense
-                fallback={
-                  <div className="flex min-h-0 flex-1 items-center justify-center">
-                    <div className="flex flex-col items-center gap-3">
-                      <div className="h-8 w-8 animate-spin rounded-full border-2 border-purple-500 border-t-transparent" />
-                      <p className="text-sm text-gray-500">Loading...</p>
-                    </div>
-                  </div>
-                }
-              >
+              <RouteFallback fallback={<GlossaryPageSkeleton />}>
                 <GlossaryPage />
-              </Suspense>
+              </RouteFallback>
             }
           />
           <Route
             path="family-tree"
             element={
-              <Suspense
-                fallback={
-                  <div className="flex min-h-0 flex-1 items-center justify-center">
-                    <div className="flex flex-col items-center gap-3">
-                      <div className="h-8 w-8 animate-spin rounded-full border-2 border-purple-500 border-t-transparent" />
-                      <p className="text-sm text-gray-500">Loading...</p>
-                    </div>
-                  </div>
-                }
-              >
+              <RouteFallback>
                 <FamilyTreePage />
-              </Suspense>
+              </RouteFallback>
             }
           />
-          <Route path="*" element={<NotFound />} />
+          <Route
+            path="heralds"
+            element={
+              <RouteFallback>
+                <HeraldsPage />
+              </RouteFallback>
+            }
+          />
+          <Route
+            path="books/:id"
+            element={
+              <RouteFallback>
+                <BookPage />
+              </RouteFallback>
+            }
+          />
+          <Route
+            path="reading-order"
+            element={
+              <RouteFallback>
+                <ReadingOrderPage />
+              </RouteFallback>
+            }
+          />
+          <Route
+            path="magic"
+            element={
+              <RouteFallback>
+                <MagicSystemsPage />
+              </RouteFallback>
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <RouteFallback>
+                <NotFound />
+              </RouteFallback>
+            }
+          />
         </Route>
       </Routes>
     </ErrorBoundary>

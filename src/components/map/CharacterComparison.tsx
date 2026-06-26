@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { PLANETS, getBookById, SAGA_BY_ID, ALL_CHARACTERS } from '@/data/static'
 import type { Character } from '@/types'
 import { CloseIcon } from '@/components/common/icons'
+import ColorDot from '@/components/ui/ColorDot'
 
 const PLANET_BY_ID = new Map(PLANETS.map((p) => [p.id, p]))
 
@@ -67,7 +68,7 @@ export default function CharacterComparison({ characterIds, onClose }: Props) {
                   <h4 className="text-sm font-bold text-gray-200">{a.name}</h4>
                   {aPlanet && (
                     <span className="flex items-center gap-1 text-xs text-gray-500">
-                      <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: aPlanet.color }} />
+                      <ColorDot color={aPlanet.color} size="xs" />
                       {aPlanet.name}
                     </span>
                   )}
@@ -85,7 +86,7 @@ export default function CharacterComparison({ characterIds, onClose }: Props) {
                   <h4 className="text-sm font-bold text-gray-200">{b.name}</h4>
                   {bPlanet && (
                     <span className="flex items-center gap-1 text-xs text-gray-500">
-                      <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: bPlanet.color }} />
+                      <ColorDot color={bPlanet.color} size="xs" />
                       {bPlanet.name}
                     </span>
                   )}

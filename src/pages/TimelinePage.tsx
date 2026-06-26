@@ -2,26 +2,17 @@ import { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { SAGAS, SAGA_BY_ID } from '@/data/static'
 import { TIMELINE_EVENTS } from '@/data/static/timeline'
 import { formatJourneyYear } from '@/utils/journey'
+import { FALLBACK_COLOR } from '@/utils/constants'
+import { TAILWIND_TO_HEX, EVENT_TYPE_BADGE_COLORS } from '@/data/static/colors'
 import { yearToX, MAIN_LINE_Y, FORK_START_Y, FORK_SPACING, TOTAL_WIDTH } from '@/utils/timeline-layout'
 import Timeline from '@/components/timeline/Timeline'
 import type { TimelineEvent } from '@/data/static/timeline'
-
-const TAILWIND_TO_HEX: Record<string, string> = {
-  red: '#ef4444',
-  amber: '#f59e0b',
-  teal: '#14b8a6',
-  fuchsia: '#d946ef',
-  cyan: '#06b6d4',
-  yellow: '#eab308',
-  violet: '#8b5cf6',
-  sky: '#0ea5e9',
-}
 
 const SAGA_LABELS: Record<string, string> = {}
 const SAGA_COLORS: Record<string, string> = {}
 for (const saga of SAGAS) {
   SAGA_LABELS[saga.id] = saga.name
-  SAGA_COLORS[saga.id] = TAILWIND_TO_HEX[saga.color] || '#6b7280'
+  SAGA_COLORS[saga.id] = TAILWIND_TO_HEX[saga.color] || FALLBACK_COLOR
 }
 
 const SAGA_ORDER = SAGAS.map((s) => s.id)
@@ -42,17 +33,6 @@ const TYPE_LABELS: Record<string, string> = {
   departure: 'Departure',
   discovery: 'Discovery',
   historical: 'Historical',
-}
-
-const EVENT_TYPE_BADGE_COLORS: Record<string, string> = {
-  book: 'bg-blue-900/60 text-blue-300',
-  cataclysm: 'bg-red-900/60 text-red-300',
-  birth: 'bg-green-900/60 text-green-300',
-  death: 'bg-gray-800/80 text-gray-400',
-  arrival: 'bg-purple-900/60 text-purple-300',
-  departure: 'bg-yellow-900/60 text-yellow-300',
-  discovery: 'bg-cyan-900/60 text-cyan-300',
-  historical: 'bg-gray-800/60 text-gray-400',
 }
 
 function eventTypeBadgeClass(type: string): string {
@@ -172,7 +152,7 @@ export default function TimelinePage() {
           const saga = SAGA_BY_ID.get(sagaId)
           if (!saga) return null
           const isActive = selectedSagas.includes(sagaId)
-          const color = TAILWIND_TO_HEX[saga.color] || '#6b7280'
+          const color = TAILWIND_TO_HEX[saga.color] || FALLBACK_COLOR
           const maxed = !isActive && selectedSagas.length >= 5
           return (
             <button
@@ -275,11 +255,11 @@ function TooltipOverlay({
     >
       <div className="flex items-center gap-1.5">
         <span className={eventTypeBadgeClass(event.type)}>{TYPE_LABELS[event.type]}</span>
-        <span className="text-[10px] text-gray-500">{formatJourneyYear(event.year)}</span>
+        <span className="text-xxs text-gray-500">{formatJourneyYear(event.year)}</span>
       </div>
       <p className="mt-0.5 text-sm font-semibold text-purple-300">{event.title}</p>
       <p className="mt-0.5 text-[11px] leading-tight text-gray-400 line-clamp-2">{event.description}</p>
-      {event.importance >= 4 && <p className="mt-0.5 text-[10px] text-purple-600/80">Click to expand</p>}
+      {event.importance >= 4 && <p className="mt-0.5 text-xxs text-purple-600/80">Click to expand</p>}
     </div>
   )
 }
@@ -334,7 +314,7 @@ function CardOverlay({
         <h3 className="text-sm font-bold text-purple-300">{event.title}</h3>
         <p className="mt-1 text-[12px] leading-relaxed text-gray-300">{event.description}</p>
 
-        <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[10px] text-gray-500">
+        <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xxs text-gray-500">
           {event.saga && (
             <span>
               Saga: <span className="text-gray-400">{SAGA_LABELS[event.saga] || event.saga}</span>

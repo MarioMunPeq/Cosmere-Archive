@@ -56,7 +56,7 @@ function ShardLegendInner({ show, onToggle, shardData, activeShards, onToggleSha
                     style={{ backgroundColor: sd.color, opacity: active ? 1 : 0.5 }}
                   />
                   <span className="flex-1">{sd.name}</span>
-                  <span className="text-[10px] text-gray-600">{sd.planets.length}</span>
+                  <span className="text-xxs text-gray-600">{sd.planets.length}</span>
                 </button>
               )
             })}

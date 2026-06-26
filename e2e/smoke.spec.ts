@@ -4,7 +4,9 @@ test.describe('Smoke tests', () => {
   test('homepage loads with map and sidebar tabs', async ({ page }) => {
     await page.goto('/')
     await expect(page.locator('nav')).toContainText('COSMERE ARCHIVE')
-    await expect(page.locator('button:has-text("Planets"), button:has-text("Characters")').first()).toBeVisible({ timeout: 10000 })
+    await expect(page.locator('button:has-text("Planets"), button:has-text("Characters")').first()).toBeVisible({
+      timeout: 10000,
+    })
   })
 
   test('navigation links work', async ({ page }) => {
@@ -25,5 +27,11 @@ test.describe('Smoke tests', () => {
     await page.goto('/#/family-tree')
     await expect(page.locator('h1')).toContainText('Family Trees')
     await expect(page.locator('button:has-text("Kholin")')).toBeVisible()
+  })
+
+  test('heralds page loads with circular layout', async ({ page }) => {
+    await page.goto('/#/heralds')
+    await expect(page.locator('h1')).toContainText('Heralds of the Almighty')
+    await expect(page.locator('button:has-text("Jezrien")')).toBeVisible()
   })
 })

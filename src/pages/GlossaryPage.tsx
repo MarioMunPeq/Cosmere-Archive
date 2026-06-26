@@ -1,8 +1,11 @@
-import { useState, useMemo, useRef, useEffect } from 'react'
+import { useState, useMemo, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import type { GlossaryCategory } from '@/types/glossary'
 import { GLOSSARY_ENTRIES } from '@/data/static/glossary'
 import { CATEGORY_LABELS, CATEGORY_COLORS } from '@/types/glossary'
+import { useElementWidth } from '@/hooks/useResizeObserver'
+import { useTextFilter } from '@/hooks/useTextFilter'
 
 const CATEGORIES: GlossaryCategory[] = ['shard', 'magic', 'concept', 'group', 'event', 'phenomenon']
 
@@ -17,6 +20,7 @@ function TermCard({
   onToggle: () => void
   onSearch: (term: string) => void
 }) {
+  const navigate = useNavigate()
   return (
     <div
       className={`cursor-pointer rounded-lg border px-3.5 py-2.5 transition-colors ${
@@ -34,7 +38,7 @@ function TermCard({
       <div className="flex items-center gap-2">
         <span className="text-xs font-semibold text-gray-200">{entry.term}</span>
         <span
-          className="rounded px-1.5 py-0.5 text-[10px] font-medium"
+          className="rounded px-1.5 py-0.5 text-xxs font-medium"
           style={{ backgroundColor: CATEGORY_COLORS[entry.category] + '20', color: CATEGORY_COLORS[entry.category] }}
         >
           {CATEGORY_LABELS[entry.category]}
@@ -55,7 +59,7 @@ function TermCard({
                   e.stopPropagation()
                   onSearch(related.term)
                 }}
-                className="rounded bg-gray-700/40 px-2 py-0.5 text-[10px] text-purple-400 transition-colors hover:bg-gray-700/80"
+                className="rounded bg-gray-700/40 px-2 py-0.5 text-xxs text-purple-400 transition-colors hover:bg-gray-700/80"
               >
                 {related.term}
               </button>
@@ -64,8 +68,25 @@ function TermCard({
         </div>
       )}
       {expanded && entry.planet && (
-        <p className="mt-1.5 text-[10px] text-gray-600">
-          Planet: <span className="capitalize text-gray-500">{entry.planet.replace(/_/g, ' ')}</span>
+        <p className="mt-1.5 text-xxs text-gray-600">
+          Planet:{' '}
+          <span
+            role="link"
+            tabIndex={0}
+            className="cursor-pointer capitalize text-cyan-400 hover:text-cyan-300"
+            onClick={(e) => {
+              e.stopPropagation()
+              navigate(`/?focus=planet&id=${entry.planet}`)
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.stopPropagation()
+                navigate(`/?focus=planet&id=${entry.planet}`)
+              }
+            }}
+          >
+            {entry.planet.replace(/_/g, ' ')}
+          </span>
         </p>
       )}
     </div>
@@ -76,33 +97,16 @@ export default function GlossaryPage() {
   const [search, setSearch] = useState('')
   const [activeCategory, setActiveCategory] = useState<GlossaryCategory | 'all'>('all')
   const [expandedId, setExpandedId] = useState<string | null>(null)
-  const [columns, setColumns] = useState(3)
   const scrollRef = useRef<HTMLDivElement>(null)
   const gridRef = useRef<HTMLDivElement>(null)
+  const gridWidth = useElementWidth(gridRef)
+  const columns = gridWidth < 640 ? 1 : gridWidth < 1024 ? 2 : 3
 
-  useEffect(() => {
-    const el = gridRef.current
-    if (!el) return
-    const observer = new ResizeObserver((entries) => {
-      const w = entries[0]!.contentRect.width
-      if (w < 640) setColumns(1)
-      else if (w < 1024) setColumns(2)
-      else setColumns(3)
-    })
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [])
-
+  const textFiltered = useTextFilter(GLOSSARY_ENTRIES, search, ['term', 'definition', 'category'])
   const filtered = useMemo(() => {
-    const q = search.toLowerCase().trim()
-    return GLOSSARY_ENTRIES.filter((e) => {
-      if (activeCategory !== 'all' && e.category !== activeCategory) return false
-      if (q) {
-        return e.term.toLowerCase().includes(q) || e.definition.toLowerCase().includes(q) || e.category.includes(q)
-      }
-      return true
-    })
-  }, [search, activeCategory])
+    if (activeCategory === 'all') return textFiltered
+    return textFiltered.filter((e) => e.category === activeCategory)
+  }, [textFiltered, activeCategory])
 
   const rows = useMemo(() => {
     const r: (typeof GLOSSARY_ENTRIES)[number][][] = []

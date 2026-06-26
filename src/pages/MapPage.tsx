@@ -1,14 +1,15 @@
 import { useState, useCallback, useEffect, useMemo, lazy, Suspense } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { BOOKS, PLANETS, SAGAS } from '@/data/static'
+import { BOOKS, PLANETS, getPlanetById, SAGA_BY_ID } from '@/data/static'
+import ColorDot from '@/components/ui/ColorDot'
 import { TIMELINE_EVENTS, CHARACTER_SPANS } from '@/data/static/timeline'
 import UniverseMap from '@/components/map/UniverseMap'
 import MapSkeleton from '@/components/common/MapSkeleton'
 import SplitPane from '@/components/common/SplitPane'
 import { CloseIcon } from '@/components/common/icons'
+import BookCover from '@/components/common/BookCover'
 import type { Book } from '@/types'
 import type { CharacterSpan } from '@/data/static/timeline/character-lifespans'
-import type { Saga } from '@/data/static/sagas'
 
 function formatCharacterYear(year: number | null): string {
   if (year === null) return 'Unknown'
@@ -73,7 +74,7 @@ export default function MapPage() {
 
     switch (focus) {
       case 'planet': {
-        const p = PLANETS.find((pl) => pl.id === id)
+        const p = getPlanetById(id)
         queueMicrotask(() => {
           setSelectedPlanet(id)
           setHighlightedPlanet(id)
@@ -223,8 +224,11 @@ export default function MapPage() {
               <div className="flex flex-col p-5">
                 {detailBook && (
                   <>
-                    <div className="mb-4 flex items-center justify-between">
-                      <h3 className="text-lg font-bold text-gray-100">{detailBook.title}</h3>
+                    <div className="mb-4 flex items-start justify-between gap-4">
+                      <div className="flex items-start gap-4">
+                        <BookCover book={detailBook} size="sm" />
+                        <h3 className="text-lg font-bold text-gray-100">{detailBook.title}</h3>
+                      </div>
                       <button
                         onClick={handleCloseDetail}
                         aria-label="Close"
@@ -234,7 +238,7 @@ export default function MapPage() {
                       </button>
                     </div>
                     {(() => {
-                      const saga: Saga | undefined = SAGAS.find((s: Saga) => s.id === detailBook.saga)
+                      const saga = SAGA_BY_ID.get(detailBook.saga)
                       return (
                         <>
                           {saga && <p className="mb-1 text-xs font-medium text-gray-500">{saga.name}</p>}
@@ -282,7 +286,7 @@ export default function MapPage() {
                       </span>
                     </div>
                     {(() => {
-                      const planet = PLANETS.find((p) => p.id === detailCharacter.planet.toLowerCase())
+                      const planet = getPlanetById(detailCharacter.planet.toLowerCase())
                       return planet ? (
                         <div className="mb-4">
                           <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">
@@ -295,7 +299,7 @@ export default function MapPage() {
                             }}
                             className="flex items-center gap-2 rounded bg-gray-800 px-2.5 py-1.5 text-xs text-gray-300 transition-colors hover:bg-gray-700"
                           >
-                            <span className="h-2 w-2 rounded-full" style={{ backgroundColor: planet.color }} />
+                            <ColorDot color={planet.color} />
                             {planet.name}
                           </button>
                         </div>

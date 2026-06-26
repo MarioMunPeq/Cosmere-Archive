@@ -6,7 +6,7 @@ const IconsList = () => (
     {[CloseIcon, MinusIcon, ResetIcon].map((Icon, i) => (
       <div key={i} className="flex flex-col items-center gap-1">
         <Icon />
-        <span className="text-[10px] text-gray-500">{['CloseIcon', 'MinusIcon', 'ResetIcon'][i]}</span>
+        <span className="text-xxs text-gray-500">{['CloseIcon', 'MinusIcon', 'ResetIcon'][i]}</span>
       </div>
     ))}
   </div>

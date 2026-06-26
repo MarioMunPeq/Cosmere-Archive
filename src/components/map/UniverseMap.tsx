@@ -1,26 +1,23 @@
-import { useMemo, useRef, useState, useCallback, useEffect, useLayoutEffect } from 'react'
+import { useMemo, useState, useCallback, useEffect } from 'react'
 import { PLANETS, ALL_CHARACTERS } from '@/data/static'
 import { WORLDHOPPERS } from '@/data/static/timeline'
 import type { WorldhopperDisplay } from '@/data/static/timeline'
 import type { Planet } from '@/types/planet'
+import type { Character } from '@/types'
 import PlanetRenderer from './PlanetRenderer'
 import PlanetPanel from './PlanetPanel'
 import WorldhopperDetailPanel from './WorldhopperDetailPanel'
 import ShardLegend from './ShardLegend'
 import WorldhopperPicker from './WorldhopperPicker'
 import ZoomControls from './ZoomControls'
+import StarField from './StarField'
+import PlanetLabels from './PlanetLabels'
+import WorldhopperRoutes from './WorldhopperRoutes'
+import PlanetTooltip from './PlanetTooltip'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
-import type { Character } from '@/types'
-import { easeOutCubic, calculateFlyTarget } from '@/utils/fly-to'
-
-function drawCurvedPath(p1: Planet, p2: Planet, offset: number): string {
-  const dx = p2.x - p1.x
-  const dy = p2.y - p1.y
-  const f = 0.2 + offset
-  const cx = (p1.x + p2.x) / 2 + dy * f
-  const cy = (p1.y + p2.y) / 2 - dx * f
-  return `M ${p1.x} ${p1.y} Q ${cx} ${cy} ${p2.x} ${p2.y}`
-}
+import { useMapInteraction } from '@/hooks/useMapInteraction'
+import { SHARD_COLORS } from '@/data/static/colors'
+import { FALLBACK_COLOR } from '@/utils/constants'
 
 interface Props {
   selectedPlanet: string | null
@@ -34,41 +31,6 @@ interface Props {
   onFlyToDone?: () => void
 }
 
-const SHARD_COLORS: Record<string, string> = {
-  Honor: '#f59e0b',
-  Cultivation: '#22c55e',
-  Odium: '#ef4444',
-  Preservation: '#3b82f6',
-  Ruin: '#991b1b',
-  Harmony: '#14b8a6',
-  Devotion: '#a5b4fc',
-  Dominion: '#312e81',
-  Endowment: '#d946ef',
-  Autonomy: '#eab308',
-  Ambition: '#8b5cf6',
-  Virtuosity: '#0ea5e9',
-  Mercy: '#f472b6',
-}
-
-function seededUnit(index: number, salt: number): number {
-  const value = Math.sin(index * 12.9898 + salt * 78.233) * 43758.5453
-  return value - Math.floor(value)
-}
-
-function createStars(count: number) {
-  return Array.from({ length: count }, (_, i) => {
-    const twinkleSeed = seededUnit(i, 5)
-    return {
-      id: i,
-      x: seededUnit(i, 1) * 900,
-      y: seededUnit(i, 2) * 600,
-      r: seededUnit(i, 3) * 0.8 + 0.15,
-      opacity: seededUnit(i, 4) * 0.35 + 0.05,
-      twinkle: twinkleSeed > 0.7 ? seededUnit(i, 6) * 6 : -1,
-    }
-  })
-}
-
 export default function UniverseMap({
   selectedPlanet,
   onSelectPlanet,
@@ -80,22 +42,23 @@ export default function UniverseMap({
   flyToTarget,
   onFlyToDone,
 }: Props) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const svgRef = useRef<SVGSVGElement>(null)
-  const mapGroupRef = useRef<SVGGElement>(null)
-  const [zoom, setZoom] = useState(1)
-  const [panX, setPanX] = useState(0)
-  const [panY, setPanY] = useState(0)
-  const [isPanning, setIsPanning] = useState(false)
-  const drag = useRef({
-    isDown: false,
-    startX: 0,
-    startY: 0,
-    wasPan: false,
-    x: 0,
-    y: 0,
-    z: 1,
-  })
+  const {
+    containerRef,
+    svgRef,
+    mapGroupRef,
+    zoom,
+    panX,
+    panY,
+    isPanning,
+    drag,
+    handleWheel,
+    handlePointerDown,
+    handlePointerMove,
+    handlePointerUp,
+    resetView,
+    zoomToCenter,
+  } = useMapInteraction(flyToTarget, onFlyToDone)
+
   const [hoveredPlanetId, setHoveredPlanetId] = useState<string | null>(null)
   const [activeShards, setActiveShards] = useState<string[]>([])
   const [showLegend, setShowLegend] = useState(() => window.innerWidth >= 640)
@@ -103,8 +66,6 @@ export default function UniverseMap({
   const [tooltipScreenPos, setTooltipScreenPos] = useState({ left: 0, top: 0 })
 
   const isCoarse = useMemo(() => window.matchMedia('(pointer: coarse)').matches, [])
-  const starCount = useMemo(() => (window.innerWidth < 640 ? 100 : 350), [])
-  const STARS = useMemo(() => createStars(starCount), [starCount])
 
   useEffect(() => {
     function onResize() {
@@ -113,30 +74,12 @@ export default function UniverseMap({
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
   }, [])
-  const zoomTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const panRafRef = useRef<number | null>(null)
-  const flyRafRef = useRef<number | null>(null)
-  const isFlyingRef = useRef(false)
 
-  useEffect(() => {
-    return () => {
-      if (zoomTimerRef.current) clearTimeout(zoomTimerRef.current)
-      if (panRafRef.current) cancelAnimationFrame(panRafRef.current)
-      if (flyRafRef.current) cancelAnimationFrame(flyRafRef.current)
-    }
+  const planetMap = useMemo(() => {
+    const map = new Map<string, Planet>()
+    PLANETS.forEach((p) => map.set(p.id, p))
+    return map
   }, [])
-
-  function syncTransform() {
-    const g = mapGroupRef.current
-    if (g) g.setAttribute('transform', `translate(${drag.current.x}, ${drag.current.y}) scale(${drag.current.z})`)
-  }
-
-  useLayoutEffect(() => {
-    drag.current.x = panX
-    drag.current.y = panY
-    drag.current.z = zoom
-    syncTransform()
-  }, [zoom, panX, panY])
 
   const shardData = useMemo(() => {
     const map = new Map<string, { color: string; planets: string[] }>()
@@ -146,81 +89,13 @@ export default function UniverseMap({
       for (const raw of parts) {
         const name = raw.replace(/\s*\(.*?\)\s*/g, '').trim()
         if (!name) continue
-        if (!map.has(name)) {
-          map.set(name, { color: SHARD_COLORS[name] ?? '#6b7280', planets: [] })
-        }
+        if (!map.has(name)) map.set(name, { color: SHARD_COLORS[name] ?? FALLBACK_COLOR, planets: [] })
         const entry = map.get(name)
         if (entry) entry.planets.push(p.id)
       }
     }
     return Array.from(map.entries()).map(([name, data]) => ({ name, ...data }))
   }, [])
-
-  useEffect(() => {
-    const el = containerRef.current
-    if (!el) return
-    const handler = (e: WheelEvent) => {
-      e.preventDefault()
-    }
-    el.addEventListener('wheel', handler, { passive: false })
-    return () => el.removeEventListener('wheel', handler)
-  }, [])
-
-  const planetMap = useMemo(() => {
-    const map = new Map<string, Planet>()
-    PLANETS.forEach((p) => map.set(p.id, p))
-    return map
-  }, [])
-
-  useEffect(() => {
-    if (!flyToTarget) return
-
-    const d = drag.current
-    const planet = planetMap.get(flyToTarget.planetId)
-    if (!planet) return
-
-    if (flyRafRef.current) {
-      cancelAnimationFrame(flyRafRef.current)
-      flyRafRef.current = null
-    }
-
-    const targetZoom = Math.max(0.5, Math.min(3, d.z < 1.5 ? 2 : d.z))
-    const target = calculateFlyTarget(flyToTarget.x, flyToTarget.y, targetZoom)
-    const startX = d.x
-    const startY = d.y
-    const startZ = d.z
-    const duration = 600
-    const startTime = performance.now()
-
-    isFlyingRef.current = true
-
-    function tick(now: number) {
-      if (!isFlyingRef.current) return
-      const elapsed = now - startTime
-      const progress = Math.min(elapsed / duration, 1)
-      const eased = easeOutCubic(progress)
-
-      d.x = startX + (target.x - startX) * eased
-      d.y = startY + (target.y - startY) * eased
-      d.z = startZ + (targetZoom - startZ) * eased
-      syncTransform()
-
-      if (progress < 1) {
-        flyRafRef.current = requestAnimationFrame(tick)
-      } else {
-        isFlyingRef.current = false
-        flyRafRef.current = null
-        setPanX(d.x)
-        setPanY(d.y)
-        setZoom(d.z)
-        if (zoomTimerRef.current) clearTimeout(zoomTimerRef.current)
-        zoomTimerRef.current = null
-        onFlyToDone?.()
-      }
-    }
-
-    flyRafRef.current = requestAnimationFrame(tick)
-  }, [flyToTarget, planetMap, onFlyToDone])
 
   const charactersByPlanet = useMemo(() => {
     const map = new Map<string, Character[]>()
@@ -235,43 +110,11 @@ export default function UniverseMap({
   const selected = selectedPlanet ? (planetMap.get(selectedPlanet) ?? null) : null
   const selectedCharacters = selected ? (charactersByPlanet.get(selected.id) ?? []) : []
 
-  const connections = useMemo(() => {
-    const lines: { from: Planet; to: Planet; color: string; whId: string; offset: number }[] = []
-    for (const wh of WORLDHOPPERS) {
-      for (let i = 0; i < wh.planets.length; i++) {
-        for (let j = i + 1; j < wh.planets.length; j++) {
-          const a = planetMap.get(wh.planets[i]!)
-          const b = planetMap.get(wh.planets[j]!)
-          if (!a || !b) continue
-          lines.push({ from: a, to: b, color: wh.color, whId: wh.id, offset: 0 })
-        }
-      }
-    }
-    const groups = new Map<string, typeof lines>()
-    for (const l of lines) {
-      const key = [l.from.id, l.to.id].sort().join('-')
-      const g = groups.get(key) ?? []
-      g.push(l)
-      groups.set(key, g)
-    }
-    for (const g of groups.values()) {
-      if (g.length > 1) {
-        const step = 0.25 / g.length
-        g.forEach((l, idx) => {
-          l.offset = (idx - (g.length - 1) / 2) * step
-        })
-      }
-    }
-    return lines
-  }, [planetMap])
-
   const highlightedPlanets = useMemo(() => {
     const s = new Set<string>()
     if (activeShards.length > 0) {
       for (const sd of shardData) {
-        if (activeShards.includes(sd.name)) {
-          sd.planets.forEach((pid) => s.add(pid))
-        }
+        if (activeShards.includes(sd.name)) sd.planets.forEach((pid) => s.add(pid))
       }
     }
     if (highlightedPlanet) s.add(highlightedPlanet)
@@ -284,138 +127,13 @@ export default function UniverseMap({
 
   const hasFilter = activeShards.length > 0 || activeWorldhoppers.length > 0
 
-  function resetView() {
-    const d = drag.current
-    d.x = 0
-    d.y = 0
-    d.z = 1
-    syncTransform()
-    setPanX(0)
-    setPanY(0)
-    setZoom(1)
-  }
-
-  function zoomToCenter(newZoom: number) {
-    const d = drag.current
-    const svgEl = svgRef.current
-    if (!svgEl) return
-    const rect = svgEl.getBoundingClientRect()
-    if (rect.width === 0 || rect.height === 0) return
-    const centerVX = 450
-    const centerVY = 300
-    const clamped = Math.max(0.5, Math.min(3, newZoom))
-    if (clamped !== d.z) {
-      const origX = (centerVX - d.x) / d.z
-      const origY = (centerVY - d.y) / d.z
-      d.x = centerVX - origX * clamped
-      d.y = centerVY - origY * clamped
-      d.z = clamped
-      syncTransform()
-      if (zoomTimerRef.current) clearTimeout(zoomTimerRef.current)
-      zoomTimerRef.current = setTimeout(() => {
-        zoomTimerRef.current = null
-        setPanX(d.x)
-        setPanY(d.y)
-        setZoom(d.z)
-      }, 80)
-    }
-  }
-
   const handlePlanetClick = useCallback(
     (planetId: string) => {
       if (drag.current.wasPan) return
       onSelectPlanet(selectedPlanet === planetId ? null : planetId)
     },
-    [onSelectPlanet, selectedPlanet],
+    [onSelectPlanet, selectedPlanet, drag],
   )
-
-  const handleWheel = useCallback((e: React.WheelEvent) => {
-    e.preventDefault()
-    const svgEl = svgRef.current
-    if (!svgEl) return
-    const rect = svgEl.getBoundingClientRect()
-    const svgW = rect.width
-    const svgH = rect.height
-    if (svgW === 0 || svgH === 0) return
-    const mouseVX = ((e.clientX - rect.left) / svgW) * 900
-    const mouseVY = ((e.clientY - rect.top) / svgH) * 600
-    const d = drag.current
-    const newZoom = Math.max(0.5, Math.min(3, d.z - e.deltaY * 0.001 * d.z))
-    if (newZoom !== d.z) {
-      const origX = (mouseVX - d.x) / d.z
-      const origY = (mouseVY - d.y) / d.z
-      d.x = mouseVX - origX * newZoom
-      d.y = mouseVY - origY * newZoom
-      d.z = newZoom
-      syncTransform()
-      if (zoomTimerRef.current) clearTimeout(zoomTimerRef.current)
-      zoomTimerRef.current = setTimeout(() => {
-        zoomTimerRef.current = null
-        setPanX(d.x)
-        setPanY(d.y)
-        setZoom(d.z)
-      }, 80)
-    }
-  }, [])
-
-  const handlePointerDown = useCallback(
-    (e: React.PointerEvent) => {
-      if (isFlyingRef.current) {
-        isFlyingRef.current = false
-        if (flyRafRef.current) {
-          cancelAnimationFrame(flyRafRef.current)
-          flyRafRef.current = null
-        }
-        onFlyToDone?.()
-      }
-      const d = drag.current
-      d.isDown = true
-      d.startX = e.clientX
-      d.startY = e.clientY
-      d.wasPan = false
-    },
-    [onFlyToDone],
-  )
-
-  const handlePointerMove = useCallback((e: React.PointerEvent) => {
-    const d = drag.current
-    if (!d.isDown || e.buttons !== 1) return
-    const dx = e.clientX - d.startX
-    const dy = e.clientY - d.startY
-    if (!d.wasPan && (Math.abs(dx) > 5 || Math.abs(dy) > 5)) {
-      d.wasPan = true
-      setIsPanning(true)
-    }
-    if (d.wasPan) {
-      if (panRafRef.current) return
-      panRafRef.current = requestAnimationFrame(() => {
-        panRafRef.current = null
-        const svgEl = svgRef.current
-        if (!svgEl) return
-        const rect = svgEl.getBoundingClientRect()
-        if (rect.width === 0 || rect.height === 0) return
-        const scale = 900 / Math.min(rect.width, rect.height)
-        d.x += (e.clientX - d.startX) * scale
-        d.y += (e.clientY - d.startY) * scale
-        d.startX = e.clientX
-        d.startY = e.clientY
-        syncTransform()
-      })
-    }
-  }, [])
-
-  const handlePointerUp = useCallback(() => {
-    const d = drag.current
-    d.isDown = false
-    setIsPanning(false)
-    if (panRafRef.current) {
-      cancelAnimationFrame(panRafRef.current)
-      panRafRef.current = null
-    }
-    setPanX(d.x)
-    setPanY(d.y)
-    setZoom(d.z)
-  }, [])
 
   const calculateTooltipPosition = useCallback(
     (tooltipPlanet: Planet) => {
@@ -436,7 +154,7 @@ export default function UniverseMap({
       if (top < 4) top = screenY - rect.top + tooltipPlanet.size * 0.4 * zoom + 10
       return { left, top }
     },
-    [zoom, panX, panY],
+    [zoom, panX, panY, containerRef],
   )
 
   const handlePlanetHover = useCallback(
@@ -449,8 +167,6 @@ export default function UniverseMap({
   )
 
   const tooltipPlanet = !selected && hoveredPlanetId ? (planetMap.get(hoveredPlanetId) ?? null) : null
-
-  const transform = `translate(${panX}, ${panY}) scale(${zoom})`
 
   const activeWhDetail = useMemo(() => {
     if (activeWorldhoppers.length === 0 || selected) return null
@@ -486,57 +202,24 @@ export default function UniverseMap({
           aria-label="Interactive map of the Cosmere galaxy showing all known planets"
         >
           <defs>
-            <radialGradient id="grad-roshar" cx="30%" cy="30%" r="70%">
-              <stop offset="0%" stop-color="#22d3ee" stop-opacity="1" />
-              <stop offset="50%" stop-color="#0891b2" stop-opacity="1" />
-              <stop offset="100%" stop-color="#164e63" stop-opacity="1" />
-            </radialGradient>
-            <radialGradient id="grad-scadrial" cx="30%" cy="30%" r="70%">
-              <stop offset="0%" stop-color="#f87171" stop-opacity="1" />
-              <stop offset="50%" stop-color="#b91c1c" stop-opacity="1" />
-              <stop offset="100%" stop-color="#450a0a" stop-opacity="1" />
-            </radialGradient>
-            <radialGradient id="grad-sel" cx="30%" cy="30%" r="70%">
-              <stop offset="0%" stop-color="#5eead4" stop-opacity="1" />
-              <stop offset="50%" stop-color="#0d9488" stop-opacity="1" />
-              <stop offset="100%" stop-color="#134e4a" stop-opacity="1" />
-            </radialGradient>
-            <radialGradient id="grad-nalthis" cx="35%" cy="25%" r="75%">
-              <stop offset="0%" stop-color="#f0abfc" stop-opacity="1" />
-              <stop offset="50%" stop-color="#a21caf" stop-opacity="1" />
-              <stop offset="100%" stop-color="#4a044e" stop-opacity="1" />
-            </radialGradient>
-            <radialGradient id="grad-taldain" cx="20%" cy="30%" r="80%">
-              <stop offset="0%" stop-color="#fef08a" stop-opacity="1" />
-              <stop offset="50%" stop-color="#a16207" stop-opacity="1" />
-              <stop offset="100%" stop-color="#713f12" stop-opacity="1" />
-            </radialGradient>
-            <radialGradient id="grad-threnody" cx="30%" cy="30%" r="70%">
-              <stop offset="0%" stop-color="#6b7280" stop-opacity="1" />
-              <stop offset="50%" stop-color="#4b5563" stop-opacity="1" />
-              <stop offset="100%" stop-color="#111827" stop-opacity="1" />
-            </radialGradient>
-            <radialGradient id="grad-first-of-the-sun" cx="25%" cy="25%" r="75%">
-              <stop offset="0%" stop-color="#6ee7b7" stop-opacity="1" />
-              <stop offset="50%" stop-color="#15803d" stop-opacity="1" />
-              <stop offset="100%" stop-color="#14532d" stop-opacity="1" />
-            </radialGradient>
-            <radialGradient id="grad-komashi" cx="35%" cy="35%" r="70%">
-              <stop offset="0%" stop-color="#7dd3fc" stop-opacity="1" />
-              <stop offset="50%" stop-color="#0369a1" stop-opacity="1" />
-              <stop offset="100%" stop-color="#0c4a6e" stop-opacity="1" />
-            </radialGradient>
-            <radialGradient id="grad-lumar" cx="30%" cy="30%" r="70%">
-              <stop offset="0%" stop-color="#f9a8d4" stop-opacity="1" />
-              <stop offset="50%" stop-color="#db2777" stop-opacity="1" />
-              <stop offset="100%" stop-color="#831843" stop-opacity="1" />
-            </radialGradient>
-            <radialGradient id="grad-canticle" cx="20%" cy="20%" r="80%">
-              <stop offset="0%" stop-color="#fde047" stop-opacity="1" />
-              <stop offset="50%" stop-color="#ea580c" stop-opacity="1" />
-              <stop offset="100%" stop-color="#7c2d12" stop-opacity="1" />
-            </radialGradient>
-
+            {[
+              ['roshar', '#22d3ee', '#0891b2', '#164e63'],
+              ['scadrial', '#f87171', '#b91c1c', '#450a0a'],
+              ['sel', '#5eead4', '#0d9488', '#134e4a'],
+              ['nalthis', '#f0abfc', '#a21caf', '#4a044e'],
+              ['taldain', '#fef08a', '#a16207', '#713f12'],
+              ['threnody', '#6b7280', '#4b5563', '#111827'],
+              ['first-of-the-sun', '#6ee7b7', '#15803d', '#14532d'],
+              ['komashi', '#7dd3fc', '#0369a1', '#0c4a6e'],
+              ['lumar', '#f9a8d4', '#db2777', '#831843'],
+              ['canticle', '#fde047', '#ea580c', '#7c2d12'],
+            ].map(([id, c1, c2, c3]) => (
+              <radialGradient key={id} id={`grad-${id}`} cx="30%" cy="30%" r="70%">
+                <stop offset="0%" stop-color={c1 as string} stop-opacity="1" />
+                <stop offset="50%" stop-color={c2 as string} stop-opacity="1" />
+                <stop offset="100%" stop-color={c3 as string} stop-opacity="1" />
+              </radialGradient>
+            ))}
             <filter id="glow">
               <feGaussianBlur stdDeviation="3" result="blur" />
               <feComposite in="SourceGraphic" in2="blur" operator="over" />
@@ -545,87 +228,9 @@ export default function UniverseMap({
               <feGaussianBlur stdDeviation="40" />
             </filter>
           </defs>
-          <g ref={mapGroupRef} transform={transform}>
-            <circle
-              cx="300"
-              cy="200"
-              r="180"
-              fill="#a78bfa"
-              opacity="0.04"
-              filter="url(#blur-heavy)"
-              style={{ animation: 'nebula-drift 20s ease-in-out infinite' }}
-            />
-            <circle
-              cx="600"
-              cy="400"
-              r="220"
-              fill="#22d3ee"
-              opacity="0.03"
-              filter="url(#blur-heavy)"
-              style={{ animation: 'nebula-drift 25s ease-in-out infinite reverse' }}
-            />
-            <circle
-              cx="150"
-              cy="500"
-              r="160"
-              fill="#f59e0b"
-              opacity="0.03"
-              filter="url(#blur-heavy)"
-              style={{ animation: 'nebula-drift 30s ease-in-out infinite', animationDelay: '-10s' }}
-            />
-
-            {STARS.map((s) => (
-              <circle
-                key={s.id}
-                cx={s.x}
-                cy={s.y}
-                r={s.r}
-                fill="white"
-                opacity={s.opacity}
-                className={s.twinkle >= 0 ? 'animate-twinkle' : ''}
-                style={s.twinkle >= 0 ? { animationDelay: `${s.twinkle}s` } : undefined}
-              />
-            ))}
-
-            {hasFilter &&
-              connections.map((c, i) => {
-                const isActive = activeWorldhoppers.includes(c.whId)
-                const opacity = isActive ? 0.6 : 0.05
-                return (
-                  <g key={`${c.whId}-${i}`}>
-                    {isActive && (
-                      <path
-                        d={drawCurvedPath(c.from, c.to, c.offset)}
-                        fill="none"
-                        stroke={c.color}
-                        strokeWidth="5"
-                        opacity={0.12}
-                        className="animate-line-pulse"
-                      />
-                    )}
-                    <path
-                      d={drawCurvedPath(c.from, c.to, c.offset)}
-                      fill="none"
-                      stroke={c.color}
-                      strokeWidth={isActive ? 2 : 0.5}
-                      strokeDasharray={isActive ? 'none' : '4 4'}
-                      opacity={opacity}
-                    />
-                    {isActive && (
-                      <path
-                        d={drawCurvedPath(c.from, c.to, c.offset)}
-                        fill="none"
-                        stroke={c.color}
-                        strokeWidth={2}
-                        strokeDasharray="6 20"
-                        opacity={0.7}
-                        className="animate-dash"
-                      />
-                    )}
-                  </g>
-                )
-              })}
-
+          <g ref={mapGroupRef} transform={`translate(${panX}, ${panY}) scale(${zoom})`}>
+            <StarField />
+            <WorldhopperRoutes planetMap={planetMap} activeWorldhoppers={activeWorldhoppers} hasFilter={hasFilter} />
             {PLANETS.map((p, i) => (
               <g key={p.id} className="animate-planet-enter" style={{ animationDelay: `${i * 0.08}s` }}>
                 <PlanetRenderer
@@ -638,48 +243,14 @@ export default function UniverseMap({
                 />
               </g>
             ))}
-
-            {PLANETS.map((p, i) => {
-              const labelX = p.x + p.size * 0.4 + 6
-              return (
-                <g
-                  key={`lbl-${p.id}`}
-                  className="pointer-events-none select-none animate-label-fade"
-                  style={{ animationDelay: `${0.8 + i * 0.08}s` }}
-                >
-                  <line
-                    x1={p.x + p.size * 0.4}
-                    y1={p.y}
-                    x2={labelX}
-                    y2={p.y}
-                    stroke="#6b7280"
-                    strokeWidth="0.5"
-                    opacity={0.5}
-                  />
-                  <text x={labelX + 2} y={p.y + 3} fill="#6b7280" fontSize="9" fontFamily="ui-monospace, monospace">
-                    {p.name}
-                  </text>
-                </g>
-              )
-            })}
+            <PlanetLabels />
           </g>
         </svg>
       </div>
 
       {tooltipPlanet && (
-        <div
-          className="pointer-events-none absolute z-30 hidden max-w-56 animate-fade-in-up rounded-lg border border-gray-700/50 bg-gray-900/90 px-3 py-2 shadow-lg backdrop-blur-md sm:block"
-          style={{ left: tooltipScreenPos.left, top: tooltipScreenPos.top }}
-        >
-          <div className="flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: tooltipPlanet.color }} />
-            <span className="text-sm font-bold text-gray-100">{tooltipPlanet.name}</span>
-          </div>
-          {tooltipPlanet.shard && <p className="mt-0.5 text-xs text-gray-400">{tooltipPlanet.shard}</p>}
-          <p className="mt-1 text-xs leading-relaxed text-gray-400 line-clamp-2">{tooltipPlanet.description}</p>
-        </div>
+        <PlanetTooltip planet={tooltipPlanet} left={tooltipScreenPos.left} top={tooltipScreenPos.top} />
       )}
-
       {selected && (
         <PlanetPanel
           selected={selected}
@@ -690,7 +261,6 @@ export default function UniverseMap({
           panelRef={planetPanelRef}
         />
       )}
-
       {activeWhDetail && (
         <WorldhopperDetailPanel
           wh={activeWhDetail}
@@ -723,8 +293,8 @@ export default function UniverseMap({
       </div>
 
       <ZoomControls
-        onZoomIn={() => zoomToCenter(drag.current.z + 0.3)}
-        onZoomOut={() => zoomToCenter(drag.current.z - 0.3)}
+        onZoomIn={() => zoomToCenter(zoom + 0.3)}
+        onZoomOut={() => zoomToCenter(zoom - 0.3)}
         onReset={resetView}
       />
 

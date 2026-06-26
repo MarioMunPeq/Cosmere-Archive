@@ -1,6 +1,7 @@
 import { memo } from 'react'
 import type { CharacterSpan } from '@/data/static/timeline/character-lifespans'
-import { PLANETS } from '@/data/static'
+import { getPlanetById } from '@/data/static'
+import ColorDot from '@/components/ui/ColorDot'
 import { CloseIcon } from '@/components/common/icons'
 
 interface Props {
@@ -16,7 +17,7 @@ function formatYear(year: number | null): string {
 }
 
 function CharacterPanel({ character, onClose, onSelectPlanet }: Props) {
-  const planet = PLANETS.find((p) => p.id === character.planet.toLowerCase())
+  const planet = getPlanetById(character.planet.toLowerCase())
 
   return (
     <div className="absolute bottom-4 left-4 right-4 top-auto w-auto animate-scale-in rounded-xl border border-gray-700/60 bg-gray-900/95 p-4 shadow-2xl backdrop-blur-lg sm:bottom-auto sm:left-auto sm:right-4 sm:top-4 sm:w-80 sm:p-5">
@@ -51,7 +52,7 @@ function CharacterPanel({ character, onClose, onSelectPlanet }: Props) {
             onClick={() => onSelectPlanet(planet.id)}
             className="flex items-center gap-2 rounded bg-gray-800 px-2.5 py-1.5 text-xs text-gray-300 transition-colors hover:bg-gray-700"
           >
-            <span className="h-2 w-2 rounded-full" style={{ backgroundColor: planet.color }} />
+            <ColorDot color={planet.color} />
             {planet.name}
           </button>
         </div>

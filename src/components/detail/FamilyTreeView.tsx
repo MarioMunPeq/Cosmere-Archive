@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import type { FamilyDefinition, FamilyMember } from '@/types/family'
+import { FALLBACK_COLOR } from '@/utils/constants'
 
 const CARD_W = 140
 const CARD_H = 32
@@ -30,7 +31,7 @@ function Card({ m, x, y, w, onClick }: { m: FamilyMember; x: number; y: number; 
   const external = !m.characterId
   const fill = external ? (m.isDeceased ? '#1a1a2e' : '#1f2937') : '#1f2937'
   const stroke = external ? (m.isDeceased ? '#374151' : '#4b5563') : '#a78bfa'
-  const txt = external ? (m.isDeceased ? '#6b7280' : '#9ca3af') : '#e5e7eb'
+  const txt = external ? (m.isDeceased ? FALLBACK_COLOR : '#9ca3af') : '#e5e7eb'
   const rx = 6
 
   return (
@@ -62,7 +63,7 @@ function Card({ m, x, y, w, onClick }: { m: FamilyMember; x: number; y: number; 
           x={x + w / 2 - 6}
           y={y - CARD_H / 2 + 4}
           textAnchor="end"
-          fill={external ? '#6b7280' : '#9ca3af'}
+          fill={external ? FALLBACK_COLOR : '#9ca3af'}
           fontSize="8"
           fontStyle="italic"
         >

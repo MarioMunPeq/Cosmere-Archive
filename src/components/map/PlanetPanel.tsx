@@ -1,6 +1,8 @@
 import { type RefObject } from 'react'
-import { PLANETS, getBookById, SAGA_BY_ID } from '@/data/static'
+import { Link } from 'react-router-dom'
+import { getBookById, SAGA_BY_ID, getPlanetById } from '@/data/static'
 import { WORLDHOPPERS } from '@/data/static/timeline'
+import ColorDot from '@/components/ui/ColorDot'
 import type { Planet } from '@/types/planet'
 import type { Character } from '@/types'
 
@@ -56,7 +58,7 @@ export default function PlanetPanel({
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-semibold text-gray-200">{sys.name}</span>
                     {sys.shard && (
-                      <span className="rounded bg-purple-900/30 px-1.5 py-0.5 text-[10px] text-purple-400">
+                      <span className="rounded bg-purple-900/30 px-1.5 py-0.5 text-xxs text-purple-400">
                         {sys.shard}
                       </span>
                     )}
@@ -70,7 +72,7 @@ export default function PlanetPanel({
 
         {selected.magicSystem && !selected.investiture?.length && (
           <div className="mt-3 rounded-lg border border-gray-800 bg-gray-900/50 px-3 py-2">
-            <h4 className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-gray-500">Magic System</h4>
+            <h4 className="mb-1 text-xxs font-semibold uppercase tracking-wider text-gray-500">Magic System</h4>
             <p className="text-xs leading-relaxed text-gray-400">{selected.magicSystem}</p>
           </div>
         )}
@@ -98,10 +100,14 @@ export default function PlanetPanel({
               {selected.books.map((bId) => {
                 const book = getBookById(bId)
                 return book ? (
-                  <div key={bId} className="flex items-center gap-2 rounded bg-gray-800/50 px-2 py-1">
+                  <Link
+                    key={bId}
+                    to={`/books/${bId}`}
+                    className="flex items-center gap-2 rounded bg-gray-800/50 px-2 py-1 transition-colors hover:bg-gray-700/60"
+                  >
                     <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: selected.color }} />
                     <span className="text-xs text-gray-400">{book.title}</span>
-                  </div>
+                  </Link>
                 ) : null
               })}
             </div>
@@ -132,13 +138,13 @@ export default function PlanetPanel({
             <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Connected Planets</h4>
             <div className="flex flex-wrap gap-1.5">
               {selected.connectedPlanets.map((pId) => {
-                const p = PLANETS.find((pl) => pl.id === pId)
+                const p = getPlanetById(pId)
                 return p ? (
                   <span
                     key={pId}
                     className="flex items-center gap-1 rounded-full bg-gray-800 px-2 py-0.5 text-xs text-gray-400"
                   >
-                    <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: p.color }} />
+                    <ColorDot color={p.color} size="xs" />
                     {p.name}
                   </span>
                 ) : null
@@ -156,7 +162,7 @@ export default function PlanetPanel({
                   key={wh.id}
                   className="flex items-center gap-2 rounded px-2 py-1.5 text-xs text-gray-400 transition-colors hover:bg-gray-800/50"
                 >
-                  <span className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: wh.color }} />
+                  <ColorDot color={wh.color} size="lg" />
                   <span className="flex-1 truncate">{wh.name}</span>
                   <button
                     onClick={() => onStartJourney(wh.id)}

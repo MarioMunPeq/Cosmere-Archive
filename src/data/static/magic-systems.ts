@@ -1,0 +1,440 @@
+export interface AllomanticMetal {
+  id: string
+  name: string
+  alloy: string
+  group: 'physical' | 'mental' | 'temporal' | 'enhancement'
+  allomanticPower: string
+  feruchemicalPower: string
+  hemalurgicProperty: string
+  color: string
+}
+
+export interface MagicSystem {
+  id: string
+  name: string
+  description: string
+  planetId: string
+  shard: string
+  color: string
+  category: string
+  bookIds: string[]
+  allomanticMetals?: AllomanticMetal[]
+}
+
+export const ALLOMANTIC_METALS: AllomanticMetal[] = [
+  {
+    id: 'iron',
+    name: 'Iron',
+    alloy: 'Steel',
+    group: 'physical',
+    allomanticPower: 'Pull on nearby metals',
+    feruchemicalPower: 'Store physical weight',
+    hemalurgicProperty: 'Steals strength',
+    color: '#6b7280',
+  },
+  {
+    id: 'steel',
+    name: 'Steel',
+    alloy: 'Iron',
+    group: 'physical',
+    allomanticPower: 'Push on nearby metals',
+    feruchemicalPower: 'Store physical speed',
+    hemalurgicProperty: 'Steals Allomantic power',
+    color: '#9ca3af',
+  },
+  {
+    id: 'tin',
+    name: 'Tin',
+    alloy: 'Pewter',
+    group: 'physical',
+    allomanticPower: 'Enhance senses',
+    feruchemicalPower: 'Store senses',
+    hemalurgicProperty: 'Steals senses',
+    color: '#fbbf24',
+  },
+  {
+    id: 'pewter',
+    name: 'Pewter',
+    alloy: 'Tin',
+    group: 'physical',
+    allomanticPower: 'Enhance physical abilities',
+    feruchemicalPower: 'Store physical strength',
+    hemalurgicProperty: 'Steals Feruchemical power',
+    color: '#d97706',
+  },
+  {
+    id: 'zinc',
+    name: 'Zinc',
+    alloy: 'Brass',
+    group: 'mental',
+    allomanticPower: 'Riot emotions (enflame)',
+    feruchemicalPower: 'Store mental speed',
+    hemalurgicProperty: 'Steals emotional fortitude',
+    color: '#10b981',
+  },
+  {
+    id: 'brass',
+    name: 'Brass',
+    alloy: 'Zinc',
+    group: 'mental',
+    allomanticPower: 'Soothe emotions (calm)',
+    feruchemicalPower: 'Store warmth',
+    hemalurgicProperty: 'Steals cognitive function',
+    color: '#059669',
+  },
+  {
+    id: 'copper',
+    name: 'Copper',
+    alloy: 'Bronze',
+    group: 'mental',
+    allomanticPower: 'Hide Allomantic pulses',
+    feruchemicalPower: 'Store memories',
+    hemalurgicProperty: 'Steals intelligence',
+    color: '#f97316',
+  },
+  {
+    id: 'bronze',
+    name: 'Bronze',
+    alloy: 'Copper',
+    group: 'mental',
+    allomanticPower: 'Detect Allomantic pulses',
+    feruchemicalPower: 'Store wakefulness',
+    hemalurgicProperty: 'Steals Allomantic detection',
+    color: '#ea580c',
+  },
+  {
+    id: 'cadmium',
+    name: 'Cadmium',
+    alloy: 'Bendalloy',
+    group: 'temporal',
+    allomanticPower: 'Slow time bubble',
+    feruchemicalPower: 'Store breath',
+    hemalurgicProperty: 'Steals temporal power',
+    color: '#8b5cf6',
+  },
+  {
+    id: 'bendalloy',
+    name: 'Bendalloy',
+    alloy: 'Cadmium',
+    group: 'temporal',
+    allomanticPower: 'Speed time bubble',
+    feruchemicalPower: 'Store energy',
+    hemalurgicProperty: 'Steals investiture',
+    color: '#7c3aed',
+  },
+  {
+    id: 'gold',
+    name: 'Gold',
+    alloy: 'Electrum',
+    group: 'temporal',
+    allomanticPower: 'See your past self',
+    feruchemicalPower: 'Store health',
+    hemalurgicProperty: 'Steals healing',
+    color: '#f59e0b',
+  },
+  {
+    id: 'electrum',
+    name: 'Electrum',
+    alloy: 'Gold',
+    group: 'temporal',
+    allomanticPower: 'See your future',
+    feruchemicalPower: 'Store determination',
+    hemalurgicProperty: 'Steals future sight',
+    color: '#d97706',
+  },
+  {
+    id: 'aluminum',
+    name: 'Aluminum',
+    alloy: 'Duralumin',
+    group: 'enhancement',
+    allomanticPower: 'Wipe internal Allomantic reserves',
+    feruchemicalPower: 'Store identity',
+    hemalurgicProperty: 'Steals spiritual connection',
+    color: '#e5e7eb',
+  },
+  {
+    id: 'duralumin',
+    name: 'Duralumin',
+    alloy: 'Aluminum',
+    group: 'enhancement',
+    allomanticPower: 'Burn next metal instantly for massive burst',
+    feruchemicalPower: 'Store connection',
+    hemalurgicProperty: 'Steals Connection',
+    color: '#9ca3af',
+  },
+  {
+    id: 'chromium',
+    name: 'Chromium',
+    alloy: 'Nicrosil',
+    group: 'enhancement',
+    allomanticPower: 'Wipe external Allomantic reserves',
+    feruchemicalPower: 'Store fortune',
+    hemalurgicProperty: 'Steals destiny',
+    color: '#22d3ee',
+  },
+  {
+    id: 'nicrosil',
+    name: 'Nicrosil',
+    alloy: 'Chromium',
+    group: 'enhancement',
+    allomanticPower: "Enhance next Allomancer's burst",
+    feruchemicalPower: 'Store investiture',
+    hemalurgicProperty: 'Steals investiture type',
+    color: '#06b6d4',
+  },
+]
+
+export const MAGIC_SYSTEMS: MagicSystem[] = [
+  {
+    id: 'adonalsium_investiture',
+    name: "Adonalsium's Investiture",
+    description:
+      'The primeval investiture of Adonalsium before the Shattering. Its true nature and capabilities remain unknown.',
+    planetId: 'yolen',
+    shard: 'Adonalsium',
+    color: '#a78bfa',
+    category: 'primordial',
+    bookIds: [],
+  },
+  {
+    id: 'surgebinding',
+    name: 'Surgebinding',
+    description:
+      'The ten orders of Knights Radiant use Stormlight to manipulate natural forces. Surgebinding requires a Nahel bond between a human and a spren, allowing access to two of the ten Surges.',
+    planetId: 'roshar',
+    shard: 'Honor',
+    color: '#06b6d4',
+    category: 'surgebinding',
+    bookIds: ['the_way_of_kings', 'words_of_radiance', 'oathbringer', 'dawnshard', 'rhythm_of_war', 'wind_and_truth'],
+  },
+  {
+    id: 'old_magic',
+    name: 'Old Magic',
+    description:
+      'Primitive investiture tied to the Nightwatcher and the boons and curses she bestows upon those who seek her in the Valley.',
+    planetId: 'roshar',
+    shard: 'Cultivation',
+    color: '#22c55e',
+    category: 'old_magic',
+    bookIds: ['oathbringer', 'rhythm_of_war', 'wind_and_truth'],
+  },
+  {
+    id: 'voidbinding',
+    name: 'Voidbinding',
+    description:
+      'Investiture fueled by Odium, associated with the Unmade and the Fused. Uses Voidlight instead of Stormlight.',
+    planetId: 'roshar',
+    shard: 'Odium',
+    color: '#ef4444',
+    category: 'voidbinding',
+    bookIds: ['words_of_radiance', 'oathbringer', 'rhythm_of_war', 'wind_and_truth'],
+  },
+  {
+    id: 'allomancy',
+    name: 'Allomancy',
+    description:
+      'Burning metals ingested to grant physical or mental powers. Sixteen base metals arranged in four groups: Physical, Mental, Temporal, and Enhancement. Mistborn can burn all metals; Mistings can burn only one.',
+    planetId: 'scadrial',
+    shard: 'Preservation',
+    color: '#ef4444',
+    category: 'metallic_art',
+    bookIds: [
+      'the_final_empire',
+      'the_well_of_ascension',
+      'the_hero_of_ages',
+      'the_alloy_of_law',
+      'shadows_of_self',
+      'the_bands_of_mourning',
+      'the_lost_metal',
+    ],
+    allomanticMetals: ALLOMANTIC_METALS,
+  },
+  {
+    id: 'feruchemy',
+    name: 'Feruchemy',
+    description:
+      'Storing attributes like strength, speed, or memory in metal minds for later use. Feruchemical power scales with the time spent storing.',
+    planetId: 'scadrial',
+    shard: 'Ruin',
+    color: '#f97316',
+    category: 'metallic_art',
+    bookIds: [
+      'the_final_empire',
+      'the_well_of_ascension',
+      'the_hero_of_ages',
+      'the_alloy_of_law',
+      'shadows_of_self',
+      'the_bands_of_mourning',
+      'the_lost_metal',
+    ],
+  },
+  {
+    id: 'hemalurgy',
+    name: 'Hemalurgy',
+    description:
+      'Stealing attributes from others via metal spikes driven through the body. The most dangerous metallic art, capable of stealing Allomancy, Feruchemy, or other attributes.',
+    planetId: 'scadrial',
+    shard: 'Ruin',
+    color: '#dc2626',
+    category: 'metallic_art',
+    bookIds: ['the_final_empire', 'the_hero_of_ages', 'the_alloy_of_law', 'the_lost_metal'],
+  },
+  {
+    id: 'aondor',
+    name: 'AonDor',
+    description:
+      'Symbol-based magic tied to the geography of Arelon on Sel. Aons are complex symbols drawn in the air that produce magical effects. Weakened drastically after the Reod.',
+    planetId: 'sel',
+    shard: 'Devotion',
+    color: '#14b8a6',
+    category: 'selish',
+    bookIds: ['elantris'],
+  },
+  {
+    id: 'dakhor',
+    name: 'Dakhor',
+    description:
+      'Bone-based magic used by the Fjordell priesthood on Sel. Powered by blood sacrifices and bone-rearranging rituals.',
+    planetId: 'sel',
+    shard: 'Dominion',
+    color: '#991b1b',
+    category: 'selish',
+    bookIds: ['elantris'],
+  },
+  {
+    id: 'forgery',
+    name: 'Forgery',
+    description:
+      "Altering an object's past through special seals. Most potent in the MaiPon region of Sel. Used extensively by Shai in The Emperor's Soul.",
+    planetId: 'sel',
+    shard: 'Devotion',
+    color: '#0d9488',
+    category: 'selish',
+    bookIds: ['arcanum_unbounded'],
+  },
+  {
+    id: 'chayshan',
+    name: 'ChayShan',
+    description: 'Martial-art-based investiture from Hrovell on Sel. Channeled through precise movements and stances.',
+    planetId: 'sel',
+    shard: 'Dominion',
+    color: '#a3e635',
+    category: 'selish',
+    bookIds: ['elantris'],
+  },
+  {
+    id: 'awakening',
+    name: 'Awakening',
+    description:
+      'Using BioChromatic Breath to animate objects and grant sentience. Color perception determines power. The Eighth Heightening grants the ability to Awaken with visual Commands.',
+    planetId: 'nalthis',
+    shard: 'Endowment',
+    color: '#d946ef',
+    category: 'biochromatic',
+    bookIds: ['warbreaker'],
+  },
+  {
+    id: 'sand_mastery',
+    name: 'Sand Mastery',
+    description:
+      'Manipulating white sand using Investiture. Practiced by the Darksiders on Taldain. Sand turns black when investiture is expended.',
+    planetId: 'taldain',
+    shard: 'Autonomy',
+    color: '#eab308',
+    category: 'sand_mastery',
+    bookIds: ['white_sand_vol_1', 'white_sand_vol_2', 'white_sand_vol_3'],
+  },
+  {
+    id: 'sand_toning',
+    name: 'Sand Toning',
+    description:
+      'A lesser-known variant of Sand Mastery with different properties. Produces musical tones through sand manipulation.',
+    planetId: 'taldain',
+    shard: 'Autonomy',
+    color: '#a16207',
+    category: 'sand_mastery',
+    bookIds: ['white_sand_vol_1', 'white_sand_vol_2', 'white_sand_vol_3'],
+  },
+  {
+    id: 'shades',
+    name: 'Shades',
+    description:
+      'Cognitive shadows of the dead that inhabit the Forests of Hell on Threnody. Governed by Simple Rules: do not bleed, do not run, do not touch the shadows.',
+    planetId: 'threnody',
+    shard: 'Ambition',
+    color: '#8b5cf6',
+    category: 'cognitive',
+    bookIds: ['arcanum_unbounded'],
+  },
+  {
+    id: 'aviar_bond',
+    name: 'Aviar Bond',
+    description:
+      'Birds on First of the Sun that bond with humans granting various abilities such as mental shielding or enhanced senses. The bond is formed through parasitic worms.',
+    planetId: 'first-of-the-sun',
+    shard: 'Autonomy',
+    color: '#22c55e',
+    category: 'bonding',
+    bookIds: ['arcanum_unbounded', 'the_sunlit_man'],
+  },
+  {
+    id: 'yoki_hijo',
+    name: 'Yoki-Hijo',
+    description:
+      'Spirit summoning performed by yoki-hijo maidens on Komashi. They summon spirits from the dream realm and produce Hion threads that power technology.',
+    planetId: 'komashi',
+    shard: 'Virtuosity',
+    color: '#0ea5e9',
+    category: 'yoki_hijo',
+    bookIds: ['yumi_and_the_nightmare_painter'],
+  },
+  {
+    id: 'nightmare_painting',
+    name: 'Nightmare Painting',
+    description:
+      'Trapping emotions and experiences in art on Komashi. Created by nightmare painters to contain dangerous emotions and memories.',
+    planetId: 'komashi',
+    shard: 'Virtuosity',
+    color: '#0284c7',
+    category: 'nightmare',
+    bookIds: ['yumi_and_the_nightmare_painter'],
+  },
+  {
+    id: 'spore_magic',
+    name: 'Spore Magic',
+    description:
+      'Twelve types of magical spores make up the seas of Lumar. Each type has unique properties when activated by water. Extremely dangerous and unpredictable.',
+    planetId: 'lumar',
+    shard: 'Mercy',
+    color: '#f472b6',
+    category: 'spore',
+    bookIds: ['tress_of_the_emerald_sea'],
+  },
+  {
+    id: 'torment_bond',
+    name: 'Torment Bond',
+    description:
+      'Investiture bonded to individuals on Canticle grants heat resistance, flight, and other abilities. The planet itself is a trapped entity, and the bonds connect to its pain.',
+    planetId: 'canticle',
+    shard: 'Ambition',
+    color: '#f97316',
+    category: 'bonding',
+    bookIds: ['the_sunlit_man'],
+  },
+]
+
+export const MAGIC_SYSTEM_CATEGORIES = [
+  { id: 'primordial', name: 'Primordial' },
+  { id: 'surgebinding', name: 'Surgebinding' },
+  { id: 'old_magic', name: 'Old Magic' },
+  { id: 'voidbinding', name: 'Voidbinding' },
+  { id: 'metallic_art', name: 'Metallic Arts' },
+  { id: 'selish', name: 'Selish' },
+  { id: 'biochromatic', name: 'BioChromatic' },
+  { id: 'sand_mastery', name: 'Sand Mastery' },
+  { id: 'cognitive', name: 'Cognitive' },
+  { id: 'bonding', name: 'Bonding' },
+  { id: 'yoki_hijo', name: 'Yoki-Hijo' },
+  { id: 'nightmare', name: 'Nightmare' },
+  { id: 'spore', name: 'Spore' },
+] as const

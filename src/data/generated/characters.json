@@ -334,5 +334,110 @@
     "description": "A young woman from a remote island who crosses spore seas to rescue her love.",
     "planet": "lumar",
     "requiredBooks": ["tress_of_the_emerald_sea"]
+  },
+  {
+    "id": "charlie",
+    "name": "Charlie",
+    "description": "A boy from the Rock who Tress sets out to rescue. Cursed and sent to the Sorceress's island.",
+    "planet": "lumar",
+    "requiredBooks": ["tress_of_the_emerald_sea"]
+  },
+  {
+    "id": "rysn",
+    "name": "Rysn Ftori",
+    "description": "A Rosharan trader who becomes the Dawnshard and bonds the greatshell Chiri-Chiri.",
+    "planet": "roshar",
+    "requiredBooks": ["words_of_radiance", "oathbringer", "dawnshard", "rhythm_of_war"]
+  },
+  {
+    "id": "lopen",
+    "name": "Lopen",
+    "description": "A Herdazian Windrunner of Bridge Four. Known for his humor, missing arm, and cheerful disposition.",
+    "planet": "roshar",
+    "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer", "rhythm_of_war", "wind_and_truth"]
+  },
+  {
+    "id": "aux",
+    "name": "Auxiliary",
+    "description": "A sentient spren bonded to Nomad, capable of becoming various weapons and tools.",
+    "planet": "roshar",
+    "requiredBooks": ["the_sunlit_man"]
+  },
+  {
+    "id": "denth",
+    "name": "Denth",
+    "description": "A mercenary captain on Nalthis. Charming and deadly, with a mysterious past tied to Kalad's Phantoms.",
+    "planet": "nalthis",
+    "requiredBooks": ["warbreaker"]
+  },
+  {
+    "id": "blushweaver",
+    "name": "Blushweaver",
+    "description": "A Returned goddess of the Court of Gods. Bold, strategic, and fiercely independent.",
+    "planet": "nalthis",
+    "requiredBooks": ["warbreaker"]
+  },
+  {
+    "id": "yumi",
+    "name": "Yumi",
+    "description": "A yoki-hijo from Komashi who stacks stones for her people, trapped in a strange curse that swaps her world.",
+    "planet": "komashi",
+    "requiredBooks": ["yumi_and_the_nightmare_painter"]
+  },
+  {
+    "id": "jezrien",
+    "name": "Jezrien",
+    "description": "Herald of Kings. Patron of the Windrunners. His Honorblade grants the Surges of Adhesion and Gravitation.",
+    "planet": "roshar",
+    "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer"]
+  },
+  {
+    "id": "ishar",
+    "name": "Ishar",
+    "description": "Herald of the Bondsmiths. The most dangerous of the Heralds, known for his madness and manipulation of Connection.",
+    "planet": "roshar",
+    "requiredBooks": ["oathbringer", "rhythm_of_war", "wind_and_truth"]
+  },
+  {
+    "id": "kalak",
+    "name": "Kalak",
+    "description": "Herald of the Willshapers. One of the ten Heralds of the Almighty who founded the Oathpact.",
+    "planet": "roshar",
+    "requiredBooks": ["the_way_of_kings"]
+  },
+  {
+    "id": "chanarach",
+    "name": "Chanarach",
+    "description": "Herald of the Dustbringers. Little is known of her among modern Rosharans.",
+    "planet": "roshar",
+    "requiredBooks": ["rhythm_of_war"]
+  },
+  {
+    "id": "pailiah",
+    "name": "Pailiah",
+    "description": "Herald of the Truthwatchers. Patron of the Order of Truthwatchers.",
+    "planet": "roshar",
+    "requiredBooks": ["oathbringer"]
+  },
+  {
+    "id": "battar",
+    "name": "Battar",
+    "description": "Herald of the Elsecallers. Her current whereabouts and status are unknown.",
+    "planet": "roshar",
+    "requiredBooks": ["oathbringer"]
+  },
+  {
+    "id": "vedel",
+    "name": "Vedel",
+    "description": "Herald of the Edgedancers. Patron of the Order of Edgedancers.",
+    "planet": "roshar",
+    "requiredBooks": ["oathbringer"]
+  },
+  {
+    "id": "painter",
+    "name": "Nikaro (Painter)",
+    "description": "A nightmare painter from Komashi tasked with sealing nightmarish entities with his art.",
+    "planet": "komashi",
+    "requiredBooks": ["yumi_and_the_nightmare_painter"]
   }
 ]

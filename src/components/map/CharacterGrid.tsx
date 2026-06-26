@@ -179,7 +179,7 @@ export default function CharacterGrid({ highlightedCharacter }: { highlightedCha
                       {cSagas.map((sId) => {
                         const saga = SAGA_BY_ID.get(sId)
                         return saga ? (
-                          <span key={sId} className="rounded bg-gray-800 px-1.5 py-0.5 text-[10px] text-gray-500">
+                          <span key={sId} className="rounded bg-gray-800 px-1.5 py-0.5 text-xxs text-gray-500">
                             {saga.name}
                           </span>
                         ) : null

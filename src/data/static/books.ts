@@ -132,6 +132,14 @@ export const BOOKS: Book[] = [
     year: 2024,
     description: "The conclusion of the first Stormlight Archive arc. Roshar's heroes face the ultimate battle.",
   },
+  {
+    id: 'dawnshard',
+    title: 'Dawnshard',
+    saga: 'stormlight',
+    order: 0,
+    year: 2020,
+    description: 'A novella about Rysn and a voyage to the island of Akinah in search of the Dawnshard.',
+  },
 
   // White Sand
   {

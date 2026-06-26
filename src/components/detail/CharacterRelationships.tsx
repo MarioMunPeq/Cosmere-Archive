@@ -2,7 +2,8 @@ import { useMemo } from 'react'
 import type { Character } from '@/types'
 import type { CharacterRelationship, RelationshipType } from '@/types/relationships'
 import { RELATIONSHIP_LABELS, RELATIONSHIP_COLORS } from '@/types/relationships'
-import { PLANETS } from '@/data/static'
+import { getPlanetById } from '@/data/static'
+import { FALLBACK_COLOR } from '@/utils/constants'
 
 interface Props {
   character: Character
@@ -16,8 +17,8 @@ const CY = 240
 const R = 150
 
 function getCharacterColor(char: Character): string {
-  const planet = PLANETS.find((p) => p.id === char.planet.toLowerCase())
-  return planet?.color ?? '#6b7280'
+  const planet = getPlanetById(char.planet.toLowerCase())
+  return planet?.color ?? FALLBACK_COLOR
 }
 
 export default function CharacterRelationships({ character, allCharacters, relationships, onSelectCharacter }: Props) {
