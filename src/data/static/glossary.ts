@@ -7,6 +7,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     definition:
       'The primordial being of creation that existed before the Cosmere. It was shattered by a group of mortals into sixteen Shards, each representing a fundamental aspect of reality. The Shattering of Adonalsium is the defining event from which all Cosmere history flows.',
     category: 'shard',
+    pronunciation: 'ad-oh-NAL-see-um',
     relatedTerms: ['shattering', 'shard', 'vessel', 'dawnshard'],
   },
   {
@@ -15,6 +16,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     definition:
       "The Shard of Honor, Adhesion, and Oaths, originally held by Tanavast. It was splintered by Odium during the events on Roshar, though its influence persists in the Stormfather and the Nahel bond. Honor's intent compels those who hold it toward keeping promises and upholding oaths.",
     category: 'shard',
+    pronunciation: 'ON-er',
     planet: 'roshar',
     relatedTerms: ['cultivation', 'odium', 'surgebinding', 'knights_radiant', 'stormfather'],
   },
@@ -24,6 +26,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     definition:
       'The Shard of Cultivation, Growth, and Change, held by Koravellium Avast on Roshar. She has been subtly guiding events on Roshar, including the transformation of Taravangian and Dalinar, to oppose Odium and prepare for a future threat.',
     category: 'shard',
+    pronunciation: 'kul-tih-VAY-shun',
     planet: 'roshar',
     relatedTerms: ['honor', 'odium', 'old_magic', 'taravangian'],
   },
@@ -33,6 +36,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     definition:
       'The Shard of Hatred and Passion, originally held by Rayse and later taken by Taravangian. Odium is the primary antagonistic force in the Cosmere, having splintered multiple other Shards including Devotion, Dominion, and Honor.',
     category: 'shard',
+    pronunciation: 'OH-dee-um',
     planet: 'roshar',
     relatedTerms: ['honor', 'cultivation', 'voidbinding', 'taravangian', 'shattering'],
   },
@@ -131,6 +135,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     definition:
       'The investiture-based magic system of Roshar, used by the Knights Radiant. Surgebinders draw Stormlight from infused gemstones or highstorms to power ten Surges (fundamental forces). Each of the ten orders has access to two Surges. Surgebinding requires a Nahel bond between a human and a spren.',
     category: 'magic',
+    pronunciation: 'SURJ-bind-ing',
     planet: 'roshar',
     relatedTerms: ['honor', 'knights_radiant', 'stormlight', 'spren', 'voidbinding'],
   },
@@ -173,6 +178,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
   {
     id: 'hemalurgy',
     term: 'Hemalurgy',
+    pronunciation: 'HEEM-uh-lur-jee',
     definition:
       'A Scadrian investiture-based magic system fueled by both Ruin and Preservation. Hemalurgy uses metal spikes driven through the body to steal investiture from one person and grant it to another. It is the most dangerous metallic art.',
     category: 'magic',
@@ -185,6 +191,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     definition:
       'A Selish magic system based on the shape of Arelon. AonDor requires drawing Aons — glyphs that represent geographic features of Arelon. The Elantrians of Elantris are the primary practitioners. The Shaod transforms those with Elantrian ancestry into Elantrians.',
     category: 'magic',
+    pronunciation: 'AY-on-DOR',
     planet: 'sel',
     relatedTerms: ['devotion', 'dominion', 'dakhor', 'forgery', 'raoden'],
   },
@@ -212,6 +219,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     definition:
       'The investiture-based magic system of Nalthis, fueled by BioChromatic Breath. Awakeners invest Breath into objects to animate them according to Commands. The more Breaths used, the more complex the animation. The Eighth Heightening grants the ability to Awaken with visual Commands.',
     category: 'magic',
+    pronunciation: 'uh-WAY-ken-ing',
     planet: 'nalthis',
     relatedTerms: ['endowment', 'breath', 'vasher', 'nightblood'],
   },
@@ -275,6 +283,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     definition:
       'The fundamental energy of the Cosmere, equivalent to magic. All magic systems in the Cosmere are manifestations of investiture. Investiture can exist in various forms: solid (gemstones, metal), liquid (Perpendicularities), and gaseous (Stormlight, Breath). Various laws govern its behavior across all Shards.',
     category: 'concept',
+    pronunciation: 'in-VEST-i-chur',
     relatedTerms: ['shard', 'perpendicularity', 'realmatic_theory', 'spiritual_realm'],
   },
   {
@@ -291,6 +300,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     definition:
       'One of sixteen fragments of Adonalsium, each representing a fundamental divine attribute. Shards are held by Vessels — mortals who take up the power and are gradually influenced by its Intent. Shards can be Splintered, Splintered into smaller pieces, or combined.',
     category: 'concept',
+    pronunciation: 'SHARD',
     relatedTerms: ['adonalsium', 'vessel', 'splinter', 'shattering'],
   },
   {
@@ -315,6 +325,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     definition:
       'Primordial Commands that predate the Shattering of Adonalsium. Dawnshards were used in the Shattering itself. There are four Dawnshards, each representing a fundamental Command. Holding a Dawnshard changes the wielder in profound ways.',
     category: 'concept',
+    pronunciation: 'DAWN-shard',
     relatedTerms: ['adonalsium', 'shattering', 'realmatic_theory'],
   },
   {
@@ -323,6 +334,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     definition:
       'A location where the Physical, Cognitive, and Spiritual Realms converge, allowing travel between them. Perpendicularities form where Shards invest heavily in a location. Examples include the Well of Ascension on Scadrial and the Horneater Peaks on Roshar.',
     category: 'concept',
+    pronunciation: 'pur-pen-dik-yoo-LAIR-ih-tee',
     relatedTerms: ['cognitive_realm', 'spiritual_realm', 'physical_realm'],
   },
   {
@@ -355,6 +367,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     definition:
       'An order of Surgebinders on Roshar who bind spren through the Nahel bond. There are ten orders, each corresponding to two Surges and a specific type of spren. The Radiants were founded to protect humanity from the Desolations. They abandoned their oaths during the Recreance.',
     category: 'group',
+    pronunciation: 'RAY-dee-unt',
     planet: 'roshar',
     relatedTerms: ['surgebinding', 'spren', 'heralds', 'recreance', 'oathpact'],
   },
@@ -424,6 +437,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     definition:
       'The Last Desolation, after which nine Heralds abandoned the Oathpact and left Taln alone on Braize. Humanity believed the Desolations were over, leading to the Recreance and the abandonment of the Knights Radiant.',
     category: 'event',
+    pronunciation: 'ah-HAR-ee-ET-ee-um',
     planet: 'roshar',
     relatedTerms: ['heralds', 'desolations', 'recreance', 'taln'],
   },
@@ -460,6 +474,7 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     definition:
       'Sentient investiture-based entities from the Cognitive Realm (Shadesmar) on Roshar. Spren are concepts given life by human perception. Some spren bond with humans to form the Nahel bond, granting Surgebinding abilities. Common spren include windspren, honorspren, and cryptics.',
     category: 'phenomenon',
+    pronunciation: 'spren',
     planet: 'roshar',
     relatedTerms: ['cognitive_realm', 'surgebinding', 'knights_radiant', 'shadesmar'],
   },

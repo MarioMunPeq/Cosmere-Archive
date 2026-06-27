@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://cosmere-archive.vercel.app/sitemap.xml

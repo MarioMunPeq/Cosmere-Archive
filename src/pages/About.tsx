@@ -1,7 +1,13 @@
 import { Link } from 'react-router-dom'
 import PageLayout from '@/components/ui/PageLayout'
+import { useSEOMeta } from '@/hooks/useSEOMeta'
 
 export default function About() {
+  useSEOMeta({
+    title: 'About — Cosmere Archive',
+    description:
+      "About the Cosmere Archive — an interactive visual encyclopedia of Brandon Sanderson's Cosmere universe",
+  })
   return (
     <PageLayout variant="center">
       <div className="max-w-lg animate-fade-in-up">

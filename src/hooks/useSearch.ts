@@ -5,9 +5,12 @@ import { TIMELINE_EVENTS } from '@/data/static/timeline'
 import { CHARACTER_SPANS } from '@/data/static/timeline/character-lifespans'
 import { WORLDHOPPER_MOVEMENTS } from '@/data/static/timeline/worldhopper-journeys'
 import { BOOKS } from '@/data/static/books'
+import { GLOSSARY_ENTRIES } from '@/data/static/glossary'
+import { MAGIC_SYSTEMS } from '@/data/static/magic-systems'
+import { HERALDS } from '@/data/static/heralds'
 
 interface SearchResult {
-  type: 'planet' | 'character' | 'worldhopper' | 'event' | 'book' | 'header'
+  type: 'planet' | 'character' | 'worldhopper' | 'event' | 'book' | 'glossary' | 'magic' | 'herald' | 'header'
   label: string
   sublabel: string
   action: () => void
@@ -23,6 +26,9 @@ const CAT_LABELS: Record<string, string> = {
   worldhopper: 'Worldhoppers',
   event: 'Events',
   book: 'Books',
+  glossary: 'Glossary',
+  magic: 'Magic Systems',
+  herald: 'Heralds',
 }
 
 const PLACEHOLDERS = [
@@ -170,6 +176,48 @@ export function useSearch() {
         }
       }
       addCategory('book', books)
+
+      const glossary: SearchResult[] = []
+      for (const g of GLOSSARY_ENTRIES) {
+        if (glossary.length >= MAX_PER_CATEGORY) break
+        if (match(g.term) || match(g.definition)) {
+          glossary.push({
+            type: 'glossary',
+            label: g.term,
+            sublabel: g.category,
+            action: () => navigate('/glossary'),
+          })
+        }
+      }
+      addCategory('glossary', glossary)
+
+      const magic: SearchResult[] = []
+      for (const m of MAGIC_SYSTEMS) {
+        if (magic.length >= MAX_PER_CATEGORY) break
+        if (match(m.name) || match(m.description)) {
+          magic.push({
+            type: 'magic',
+            label: m.name,
+            sublabel: m.planetId + ' — ' + m.shard,
+            action: () => navigate('/magic'),
+          })
+        }
+      }
+      addCategory('magic', magic)
+
+      const heralds: SearchResult[] = []
+      for (const h of HERALDS) {
+        if (heralds.length >= MAX_PER_CATEGORY) break
+        if (match(h.name) || match(h.title) || h.surges.some((s) => match(s))) {
+          heralds.push({
+            type: 'herald',
+            label: h.name,
+            sublabel: h.title,
+            action: () => navigate('/heralds'),
+          })
+        }
+      }
+      addCategory('herald', heralds)
 
       setResults(hits)
       setOpen(hits.length > 0)

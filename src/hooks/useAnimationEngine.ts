@@ -27,6 +27,8 @@ interface UseAnimationEngineReturn {
   handlePlayPause: () => void
   handleReset: () => void
   handleSpeedChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  handleSetProgress: (p: number) => void
+  setCurrentSpeed: React.Dispatch<React.SetStateAction<number>>
 }
 
 export function useAnimationEngine({
@@ -191,6 +193,23 @@ export function useAnimationEngine({
     setCurrentSpeed(Number(e.target.value))
   }, [])
 
+  const handleSetProgress = useCallback(
+    (p: number) => {
+      const clamped = Math.max(0, Math.min(1, p))
+      progressRef.current = clamped
+      elapsedRef.current = clamped * totalDuration
+      startTimeRef.current = null
+      prevStopRef.current = findStopAtProgress(segments, clamped) - 1
+      setProgress(clamped)
+      setAutoPaused(false)
+      setPlaying(false)
+      completedRef.current = false
+      userPausedRef.current = false
+      caf(rafRef.current)
+    },
+    [totalDuration, segments, findStopAtProgress],
+  )
+
   return {
     playing,
     progress,
@@ -200,5 +219,7 @@ export function useAnimationEngine({
     handlePlayPause,
     handleReset,
     handleSpeedChange,
+    handleSetProgress,
+    setCurrentSpeed,
   }
 }

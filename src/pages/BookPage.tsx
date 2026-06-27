@@ -4,14 +4,24 @@ import { BOOKS, SAGA_BY_ID, ALL_CHARACTERS } from '@/data/static'
 import BookCover from '@/components/common/BookCover'
 import NotFound from './NotFound'
 import PageLayout from '@/components/ui/PageLayout'
-import { useDocumentTitle } from '@/hooks/useDocumentTitle'
+import { useSEOMeta } from '@/hooks/useSEOMeta'
 
 export default function BookPage() {
   const { id } = useParams<{ id: string }>()
 
   const book = useMemo(() => BOOKS.find((b) => b.id === id), [id])
 
-  useDocumentTitle(book ? `${book.title} — Cosmere Archive` : 'Book — Cosmere Archive')
+  useSEOMeta(
+    book
+      ? {
+          title: `${book.title} — Cosmere Archive`,
+          description: `Details about ${book.title} — part of the Cosmere series by Brandon Sanderson`,
+        }
+      : {
+          title: 'Book — Cosmere Archive',
+          description: 'Details about a book — part of the Cosmere series by Brandon Sanderson',
+        },
+  )
 
   const saga = book ? SAGA_BY_ID.get(book.saga) : undefined
 

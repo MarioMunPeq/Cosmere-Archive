@@ -12,8 +12,14 @@ const GlossaryPage = lazy(() => import('@/pages/GlossaryPage'))
 const FamilyTreePage = lazy(() => import('@/pages/FamilyTreePage'))
 const HeraldsPage = lazy(() => import('@/pages/HeraldsPage'))
 const BookPage = lazy(() => import('@/pages/BookPage'))
+const BooksPage = lazy(() => import('@/pages/BooksPage'))
+const CharactersPage = lazy(() => import('@/pages/CharactersPage'))
+const ShardsPage = lazy(() => import('@/pages/ShardsPage'))
+const LocationsPage = lazy(() => import('@/pages/LocationsPage'))
 const ReadingOrderPage = lazy(() => import('@/pages/ReadingOrderPage'))
 const MagicSystemsPage = lazy(() => import('@/pages/MagicSystemsPage'))
+const StandaloneTimelinePage = lazy(() => import('@/pages/StandaloneTimelinePage'))
+const StatsPage = lazy(() => import('@/pages/StatsPage'))
 const NotFound = lazy(() => import('@/pages/NotFound'))
 
 export default function App() {
@@ -78,10 +84,58 @@ export default function App() {
             }
           />
           <Route
+            path="books"
+            element={
+              <RouteFallback>
+                <BooksPage />
+              </RouteFallback>
+            }
+          />
+          <Route
+            path="characters"
+            element={
+              <RouteFallback>
+                <CharactersPage />
+              </RouteFallback>
+            }
+          />
+          <Route
+            path="shards"
+            element={
+              <RouteFallback>
+                <ShardsPage />
+              </RouteFallback>
+            }
+          />
+          <Route
+            path="stats"
+            element={
+              <RouteFallback>
+                <StatsPage />
+              </RouteFallback>
+            }
+          />
+          <Route
+            path="timeline"
+            element={
+              <RouteFallback>
+                <StandaloneTimelinePage />
+              </RouteFallback>
+            }
+          />
+          <Route
             path="reading-order"
             element={
               <RouteFallback>
                 <ReadingOrderPage />
+              </RouteFallback>
+            }
+          />
+          <Route
+            path="locations"
+            element={
+              <RouteFallback>
+                <LocationsPage />
               </RouteFallback>
             }
           />

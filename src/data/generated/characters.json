@@ -53,6 +53,7 @@
     "name": "Szeth",
     "description": "The Assassin in White. A Skybreaker from Shinovar forced to obey whoever holds his oathblade.",
     "planet": "roshar",
+    "pronunciation": "SETH",
     "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer", "wind_and_truth"]
   },
   {
@@ -130,6 +131,7 @@
     "name": "Kelsier",
     "description": "The Survivor of Hathsin. A Mistborn who leads the rebellion against the Lord Ruler.",
     "planet": "scadrial",
+    "pronunciation": "KEL-see-er",
     "requiredBooks": ["the_final_empire", "the_hero_of_ages", "arcanum_unbounded", "the_lost_metal"]
   },
   {
@@ -144,6 +146,7 @@
     "name": "Sazed",
     "description": "A Terris Keeper, scholar and feruchemist. Serves as advisor and bearer of religious knowledge.",
     "planet": "scadrial",
+    "pronunciation": "sah-ZED",
     "requiredBooks": [
       "the_final_empire",
       "the_well_of_ascension",

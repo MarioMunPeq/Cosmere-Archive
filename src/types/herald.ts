@@ -10,4 +10,5 @@ export interface Herald {
   characterId?: string
   color: string
   glyphSymbol?: string
+  pronunciation?: string
 }

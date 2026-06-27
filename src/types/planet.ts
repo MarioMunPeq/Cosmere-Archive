@@ -9,6 +9,7 @@ export interface Planet {
   name: string
   shard?: string
   description?: string
+  pronunciation?: string
   x: number
   y: number
   color: string

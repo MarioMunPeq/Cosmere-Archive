@@ -10,6 +10,7 @@ import { CloseIcon } from '@/components/common/icons'
 import BookCover from '@/components/common/BookCover'
 import type { Book } from '@/types'
 import type { CharacterSpan } from '@/data/static/timeline/character-lifespans'
+import { useSEOMeta } from '@/hooks/useSEOMeta'
 
 function formatCharacterYear(year: number | null): string {
   if (year === null) return 'Unknown'
@@ -25,6 +26,12 @@ const TimelinePage = lazy(() => import('./TimelinePage'))
 type Tab = 'map' | 'characters' | 'worldhoppers' | 'timeline'
 
 export default function MapPage() {
+  useSEOMeta({
+    title: 'Cosmere Archive',
+    description: 'Interactive map of the Cosmere universe — explore planets, worldhopper routes, and constellations',
+    path: '/',
+  })
+
   const [searchParams, setSearchParams] = useSearchParams()
   const [selectedPlanet, setSelectedPlanet] = useState<string | null>(null)
   const [activeWorldhoppers, setActiveWorldhoppers] = useState<string[]>([])

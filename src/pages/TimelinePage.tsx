@@ -6,6 +6,7 @@ import { FALLBACK_COLOR } from '@/utils/constants'
 import { TAILWIND_TO_HEX, EVENT_TYPE_BADGE_COLORS } from '@/data/static/colors'
 import { yearToX, MAIN_LINE_Y, FORK_START_Y, FORK_SPACING, TOTAL_WIDTH } from '@/utils/timeline-layout'
 import Timeline from '@/components/timeline/Timeline'
+import { useSEOMeta } from '@/hooks/useSEOMeta'
 import type { TimelineEvent } from '@/data/static/timeline'
 
 const SAGA_LABELS: Record<string, string> = {}
@@ -40,6 +41,11 @@ function eventTypeBadgeClass(type: string): string {
 }
 
 export default function TimelinePage() {
+  useSEOMeta({
+    title: 'Timeline — Cosmere Archive',
+    description: 'Interactive timeline of events across the Cosmere universe',
+  })
+
   const [selectedSagas, setSelectedSagas] = useState<string[]>([])
   const [hoveredEvent, setHoveredEvent] = useState<{
     event: TimelineEvent

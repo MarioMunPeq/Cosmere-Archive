@@ -3,6 +3,7 @@ import { HERALDS } from '@/data/static/heralds'
 import type { Herald } from '@/types/herald'
 import SplitPane from '@/components/common/SplitPane'
 import PageLayout from '@/components/ui/PageLayout'
+import { useSEOMeta } from '@/hooks/useSEOMeta'
 
 const CX = 300
 const CY = 300
@@ -14,6 +15,11 @@ function polar(index: number, total: number, radius: number) {
 }
 
 export default function HeraldsPage() {
+  useSEOMeta({
+    title: 'Heralds — Cosmere Archive',
+    description: 'Learn about the ten Heralds of the Almighty from the Stormlight Archive',
+  })
+
   const [selected, setSelected] = useState<Herald | null>(null)
   const [hovered, setHovered] = useState<string | null>(null)
 

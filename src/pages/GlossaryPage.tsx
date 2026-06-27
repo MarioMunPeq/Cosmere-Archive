@@ -6,6 +6,7 @@ import { GLOSSARY_ENTRIES } from '@/data/static/glossary'
 import { CATEGORY_LABELS, CATEGORY_COLORS } from '@/types/glossary'
 import { useElementWidth } from '@/hooks/useResizeObserver'
 import { useTextFilter } from '@/hooks/useTextFilter'
+import { useSEOMeta } from '@/hooks/useSEOMeta'
 
 const CATEGORIES: GlossaryCategory[] = ['shard', 'magic', 'concept', 'group', 'event', 'phenomenon']
 
@@ -37,6 +38,7 @@ function TermCard({
     >
       <div className="flex items-center gap-2">
         <span className="text-xs font-semibold text-gray-200">{entry.term}</span>
+        {entry.pronunciation && <span className="text-xxs italic text-gray-500">/{entry.pronunciation}/</span>}
         <span
           className="rounded px-1.5 py-0.5 text-xxs font-medium"
           style={{ backgroundColor: CATEGORY_COLORS[entry.category] + '20', color: CATEGORY_COLORS[entry.category] }}
@@ -94,6 +96,11 @@ function TermCard({
 }
 
 export default function GlossaryPage() {
+  useSEOMeta({
+    title: 'Glossary — Cosmere Archive',
+    description: 'Comprehensive glossary of Cosmere terms, magic systems, and concepts',
+  })
+
   const [search, setSearch] = useState('')
   const [activeCategory, setActiveCategory] = useState<GlossaryCategory | 'all'>('all')
   const [expandedId, setExpandedId] = useState<string | null>(null)

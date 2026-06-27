@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { BOOKS, SAGAS } from '@/data/static'
 import { READING_ORDER, READING_ORDER_KEY } from '@/data/static/reading-order'
 import PageLayout from '@/components/ui/PageLayout'
+import { useSEOMeta } from '@/hooks/useSEOMeta'
 
 function loadProgress(): Set<string> {
   try {
@@ -18,6 +19,11 @@ function saveProgress(ids: Set<string>) {
 }
 
 export default function ReadingOrderPage() {
+  useSEOMeta({
+    title: 'Reading Order — Cosmere Archive',
+    description: 'Suggested reading order for the Cosmere series by Brandon Sanderson',
+  })
+
   const [completed, setCompleted] = useState<Set<string>>(() => loadProgress())
 
   useEffect(() => {

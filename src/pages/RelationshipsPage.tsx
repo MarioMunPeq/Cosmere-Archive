@@ -2,10 +2,12 @@ import { useState, useMemo } from 'react'
 import { ALL_CHARACTERS, getPlanetById } from '@/data/static'
 import { CHARACTER_RELATIONSHIPS } from '@/data/static/character-relationships'
 import CharacterRelationships from '@/components/detail/CharacterRelationships'
+import ForceGraph from '@/components/detail/ForceGraph'
 import ColorDot from '@/components/ui/ColorDot'
 import PageLayout from '@/components/ui/PageLayout'
 import { FALLBACK_COLOR } from '@/utils/constants'
 import { useTextFilter } from '@/hooks/useTextFilter'
+import { useSEOMeta } from '@/hooks/useSEOMeta'
 import type { Character } from '@/types'
 
 function CharacterCard({
@@ -65,8 +67,14 @@ function GroupedCharacters({
 }
 
 export default function RelationshipsPage() {
+  useSEOMeta({
+    title: 'Character Relationships — Cosmere Archive',
+    description: 'Explore character relationships and connections across the Cosmere universe',
+  })
+
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined)
   const [search, setSearch] = useState('')
+  const [graphView, setGraphView] = useState(false)
 
   const selected = selectedId ? (ALL_CHARACTERS.find((c) => c.id === selectedId) ?? null) : null
 
@@ -84,53 +92,94 @@ export default function RelationshipsPage() {
 
   return (
     <PageLayout>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <h1 className="text-lg font-bold text-gray-100 sm:text-xl">Character Relationships</h1>
-        <input
-          type="search"
-          placeholder="Search characters..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-44 rounded-lg border border-gray-700/60 bg-gray-800/50 px-3 py-1.5 text-xs text-gray-300 placeholder-gray-600 outline-none transition-colors focus:border-purple-500/50 sm:w-56"
-        />
-      </div>
-
-      <div className="flex min-h-0 flex-1 gap-4 overflow-hidden">
-        <div className="w-56 shrink-0 space-y-3 overflow-y-auto pr-2">
-          {grouped.length === 0 ? (
-            <p className="pt-8 text-center text-xs text-gray-500">No characters match your search.</p>
-          ) : (
-            grouped.map(([planet, chars]) => (
-              <GroupedCharacters
-                key={planet}
-                label={planet}
-                chars={chars}
-                selectedId={selectedId}
-                onSelect={setSelectedId}
-              />
-            ))
-          )}
-        </div>
-
-        <div className="flex flex-1 flex-col items-center justify-center rounded-lg border border-gray-700/30 bg-gray-900/50 p-4">
-          {selected ? (
-            <>
-              <div className="mb-2 text-center">
-                <h2 className="text-sm font-semibold text-gray-200">{selected.name}</h2>
-                <p className="mt-0.5 text-xs text-gray-500">{selected.description}</p>
-              </div>
-              <CharacterRelationships
-                character={selected}
-                allCharacters={ALL_CHARACTERS}
-                relationships={CHARACTER_RELATIONSHIPS}
-                onSelectCharacter={setSelectedId}
-              />
-            </>
-          ) : (
-            <p className="text-sm text-gray-500">Select a character from the left to see their relationships.</p>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              setGraphView(false)
+              setSelectedId(undefined)
+            }}
+            className={`rounded-lg border px-3 py-1.5 text-xs transition-colors ${
+              !graphView
+                ? 'border-purple-500 bg-purple-900/30 text-purple-300'
+                : 'border-gray-700/60 bg-gray-800/50 text-gray-400 hover:border-gray-600 hover:text-gray-300'
+            }`}
+          >
+            Single View
+          </button>
+          <button
+            onClick={() => {
+              setGraphView(true)
+              setSelectedId(undefined)
+            }}
+            className={`rounded-lg border px-3 py-1.5 text-xs transition-colors ${
+              graphView
+                ? 'border-purple-500 bg-purple-900/30 text-purple-300'
+                : 'border-gray-700/60 bg-gray-800/50 text-gray-400 hover:border-gray-600 hover:text-gray-300'
+            }`}
+          >
+            Graph View
+          </button>
+          {!graphView && (
+            <input
+              type="search"
+              placeholder="Search characters..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-44 rounded-lg border border-gray-700/60 bg-gray-800/50 px-3 py-1.5 text-xs text-gray-300 placeholder-gray-600 outline-none transition-colors focus:border-purple-500/50 sm:w-56"
+            />
           )}
         </div>
       </div>
+
+      {graphView ? (
+        <div className="flex min-h-0 flex-1 rounded-lg border border-gray-700/30 bg-gray-900/50">
+          <ForceGraph
+            characters={ALL_CHARACTERS}
+            relationships={CHARACTER_RELATIONSHIPS}
+            selectedId={selectedId}
+            onSelectCharacter={setSelectedId}
+          />
+        </div>
+      ) : (
+        <div className="flex min-h-0 flex-1 gap-4 overflow-hidden">
+          <div className="w-56 shrink-0 space-y-3 overflow-y-auto pr-2">
+            {grouped.length === 0 ? (
+              <p className="pt-8 text-center text-xs text-gray-500">No characters match your search.</p>
+            ) : (
+              grouped.map(([planet, chars]) => (
+                <GroupedCharacters
+                  key={planet}
+                  label={planet}
+                  chars={chars}
+                  selectedId={selectedId}
+                  onSelect={setSelectedId}
+                />
+              ))
+            )}
+          </div>
+
+          <div className="flex flex-1 flex-col items-center justify-center rounded-lg border border-gray-700/30 bg-gray-900/50 p-4">
+            {selected ? (
+              <>
+                <div className="mb-2 text-center">
+                  <h2 className="text-sm font-semibold text-gray-200">{selected.name}</h2>
+                  <p className="mt-0.5 text-xs text-gray-500">{selected.description}</p>
+                </div>
+                <CharacterRelationships
+                  character={selected}
+                  allCharacters={ALL_CHARACTERS}
+                  relationships={CHARACTER_RELATIONSHIPS}
+                  onSelectCharacter={setSelectedId}
+                />
+              </>
+            ) : (
+              <p className="text-sm text-gray-500">Select a character from the left to see their relationships.</p>
+            )}
+          </div>
+        </div>
+      )}
     </PageLayout>
   )
 }

@@ -5,6 +5,7 @@ export interface GlossaryEntry {
   term: string
   definition: string
   category: GlossaryCategory
+  pronunciation?: string
   relatedTerms?: string[]
   planet?: string
 }

@@ -1,5 +1,6 @@
 import { memo, useState } from 'react'
 import type { Planet } from '@/types/planet'
+import OrbitRing from './OrbitRing'
 import RosharRenderer from './renderers/RosharRenderer'
 import ScadrialRenderer from './renderers/ScadrialRenderer'
 import SelRenderer from './renderers/SelRenderer'
@@ -95,6 +96,10 @@ function PlanetRenderer({ planet, isSelected, isHighlighted, size, onPlanetClick
           strokeDasharray={isSelected ? 'none' : '4 4'}
         />
       )}
+
+      <g className="orbit-ring">
+        <OrbitRing cx={planet.x} cy={planet.y} r={r * 1.8} color={planet.color} />
+      </g>
 
       <g className="animate-breathe">
         {BodyRenderer ? (

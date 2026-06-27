@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useCallback } from 'react'
 import { PLANETS } from '@/data/static'
 import { WORLDHOPPER_MOVEMENTS } from '@/data/static/timeline'
 import {
@@ -7,10 +7,14 @@ import {
   formatJourneyYear,
   findStopAtProgress,
   computeCurveControlPoint,
+  getStopProgressRange,
+  getTotalDuration,
 } from '@/utils/journey'
 import { useAnimationEngine } from '@/hooks/useAnimationEngine'
 
 const PLANET_NAME_MAP = new Map(PLANETS.map((p) => [p.id, p.name]))
+
+const SPEED_PRESETS = [0.5, 1, 2, 5] as const
 
 interface Props {
   worldhopperId: string | null
@@ -47,15 +51,23 @@ function JourneyAnimationContent({ worldhopperId, planetMap, speed: defaultSpeed
 
   const totalDuration = useMemo(() => segments.reduce((sum, s) => sum + s.duration, 0), [segments])
 
-  const { playing, currentSpeed, autoPaused, displayedProgress, handlePlayPause, handleReset, handleSpeedChange } =
-    useAnimationEngine({
-      totalDuration,
-      segments,
-      findStopAtProgress,
-      worldhopperId,
-      speed: defaultSpeed,
-      onComplete,
-    })
+  const {
+    playing,
+    currentSpeed,
+    autoPaused,
+    displayedProgress,
+    handlePlayPause,
+    handleReset,
+    handleSpeedChange,
+    handleSetProgress,
+  } = useAnimationEngine({
+    totalDuration,
+    segments,
+    findStopAtProgress,
+    worldhopperId,
+    speed: defaultSpeed,
+    onComplete,
+  })
 
   const segmentPaths = useMemo(() => {
     return segments.map((s) => {
@@ -81,6 +93,29 @@ function JourneyAnimationContent({ worldhopperId, planetMap, speed: defaultSpeed
     return dots
   }, [segments])
 
+  const stopProgresses = useMemo(() => {
+    return segments.map((_, i) => getStopProgressRange(segments, i))
+  }, [segments])
+
+  const handleSkipPrev = useCallback(() => {
+    const prev = Math.max(0, currentStop - 1)
+    const range = getStopProgressRange(segments, prev)
+    handleSetProgress(range.start)
+  }, [currentStop, segments, handleSetProgress])
+
+  const handleSkipNext = useCallback(() => {
+    const next = Math.min(segments.length - 1, currentStop + 1)
+    const range = getStopProgressRange(segments, next)
+    handleSetProgress(range.start)
+  }, [currentStop, segments, handleSetProgress])
+
+  const handleSpeedPreset = useCallback(
+    (speed: number) => {
+      handleSpeedChange({ target: { value: String(speed) } } as React.ChangeEvent<HTMLInputElement>)
+    },
+    [handleSpeedChange],
+  )
+
   const unknown = !whData
   const pct = Math.round(displayedProgress * 100)
   const yearStr = formatJourneyYear(pos.currentYear)
@@ -88,6 +123,10 @@ function JourneyAnimationContent({ worldhopperId, planetMap, speed: defaultSpeed
   const fromName = PLANET_NAME_MAP.get(pos.fromPlanet) ?? pos.fromPlanet
   const toName = PLANET_NAME_MAP.get(pos.toPlanet) ?? pos.toPlanet
   const segmentDesc = segments[currentStop]?.description ?? ''
+
+  const totalSecs = Math.round(getTotalDuration(segments) / 1000)
+  const elapsedSecs = Math.round(displayedProgress * totalSecs)
+  const timeStr = `${Math.floor(elapsedSecs / 60)}:${String(elapsedSecs % 60).padStart(2, '0')} / ${Math.floor(totalSecs / 60)}:${String(totalSecs % 60).padStart(2, '0')}`
 
   return (
     <>
@@ -180,7 +219,7 @@ function JourneyAnimationContent({ worldhopperId, planetMap, speed: defaultSpeed
 
       <div
         data-testid="journey-controls"
-        className="absolute bottom-20 left-1/2 z-30 w-[90vw] max-w-md -translate-x-1/2 rounded-xl border border-gray-700/60 bg-gray-900/95 p-5 shadow-2xl backdrop-blur-lg sm:bottom-24"
+        className="absolute bottom-20 left-1/2 z-30 w-[90vw] max-w-md -translate-x-1/2 rounded-xl border border-gray-700/60 bg-gray-900/95 p-4 shadow-2xl backdrop-blur-lg sm:bottom-24 sm:p-5"
       >
         {unknown ? (
           <p className="text-center text-sm text-gray-500">Unknown worldhopper</p>
@@ -209,7 +248,18 @@ function JourneyAnimationContent({ worldhopperId, planetMap, speed: defaultSpeed
               </div>
             </div>
 
-            <div className="mb-3 flex items-center gap-3">
+            <div className="mb-2 flex items-center gap-2">
+              <button
+                onClick={handleSkipPrev}
+                disabled={currentStop <= 0}
+                aria-label="Skip to previous stop"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded text-xs text-gray-500 transition-colors hover:bg-gray-800 hover:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor">
+                  <path d="M8 1L3 5l5 4V1zM2 1v8H1V1h1z" />
+                </svg>
+              </button>
+
               <button
                 onClick={handlePlayPause}
                 aria-label={playing || autoPaused ? 'Pause' : 'Play'}
@@ -227,20 +277,38 @@ function JourneyAnimationContent({ worldhopperId, planetMap, speed: defaultSpeed
                 )}
               </button>
 
+              <button
+                onClick={handleSkipNext}
+                disabled={currentStop >= segments.length - 1}
+                aria-label="Skip to next stop"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded text-xs text-gray-500 transition-colors hover:bg-gray-800 hover:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor">
+                  <path d="M2 1l5 4-5 4V1zM8 1v8H7V1h1z" />
+                </svg>
+              </button>
+
               <div className="flex-1">
-                <div className="h-2 overflow-hidden rounded-full bg-gray-800">
+                <div className="relative h-2 overflow-hidden rounded-full bg-gray-800">
+                  {stopProgresses.map((range, i) => (
+                    <div
+                      key={i}
+                      className="absolute top-0 h-full w-0.5 bg-gray-600"
+                      style={{ left: `${range.start * 100}%`, transform: 'translateX(-50%)' }}
+                    />
+                  ))}
                   <div
                     className="h-full rounded-full transition-all duration-200"
                     style={{ width: `${pct}%`, backgroundColor: whData.color }}
                   />
                 </div>
               </div>
-              <span data-testid="journey-progress" className="w-10 text-right text-sm text-gray-400">
+              <span data-testid="journey-progress" className="w-10 text-right text-xs text-gray-400">
                 {pct}%
               </span>
             </div>
 
-            <div className="mb-2 flex items-center justify-between text-sm">
+            <div className="mb-2 flex items-center justify-between text-xs">
               <div className="flex items-center gap-2">
                 <span data-testid="journey-info" className="font-medium text-gray-200">
                   {pos.fromPlanet !== pos.toPlanet ? `${fromName} → ${toName}` : fromName}
@@ -249,17 +317,31 @@ function JourneyAnimationContent({ worldhopperId, planetMap, speed: defaultSpeed
                   {yearStr}
                 </span>
               </div>
-              <span className="text-xs text-gray-600">{segments.length} segments</span>
+              <span className="text-gray-600">{timeStr}</span>
             </div>
 
             {segmentDesc && (
-              <p data-testid="journey-description" className="mb-3 text-sm leading-relaxed text-gray-400">
+              <p data-testid="journey-description" className="mb-3 text-xs leading-relaxed text-gray-400">
                 {segmentDesc}
               </p>
             )}
 
             <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-600">0.5x</span>
+              <div className="flex gap-1">
+                {SPEED_PRESETS.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => handleSpeedPreset(s)}
+                    className={`rounded px-2 py-0.5 text-xs transition-colors ${
+                      currentSpeed === s
+                        ? 'bg-purple-900/40 text-purple-300'
+                        : 'text-gray-500 hover:bg-gray-800 hover:text-gray-300'
+                    }`}
+                  >
+                    {s}x
+                  </button>
+                ))}
+              </div>
               <input
                 type="range"
                 min="0.5"
@@ -268,10 +350,9 @@ function JourneyAnimationContent({ worldhopperId, planetMap, speed: defaultSpeed
                 value={currentSpeed}
                 onChange={handleSpeedChange}
                 aria-label="Speed"
-                className="slider h-1 w-full cursor-pointer appearance-none rounded-full bg-gray-800 accent-purple-500"
+                className="slider h-1 flex-1 cursor-pointer appearance-none rounded-full bg-gray-800 accent-purple-500"
               />
-              <span className="text-xs text-gray-600">5x</span>
-              <span className="ml-1 w-6 text-right text-sm text-gray-400">{currentSpeed}x</span>
+              <span className="w-6 text-right text-xs text-gray-400">{currentSpeed}x</span>
             </div>
           </>
         )}

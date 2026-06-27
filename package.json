@@ -13,17 +13,19 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,css,json,md,yml,yaml}\"",
     "preview": "vite preview",
     "analyze": "ANALYZE=true pnpm build",
+    "analyze:report": "ANALYZE=true vite build && npx serve dist",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
-    "ci": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+    "ci": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "prepare": "husky"
   },
   "dependencies": {
     "@tanstack/react-virtual": "^3.14.3",
+    "d3-force": "^3.0.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-router-dom": "^7.18.0"
@@ -51,6 +53,7 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
+    "@types/d3-force": "^3.0.10",
     "@types/node": "^24.12.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",

@@ -5,10 +5,12 @@ import { VitePWA } from 'vite-plugin-pwa'
 import { visualizer } from 'rollup-plugin-visualizer'
 import path from 'path'
 
-// https://vite.dev/config/
 export default defineConfig({
   base: '/Cosmere-Archive/',
   build: {
+    target: 'es2022',
+    cssMinify: 'esbuild',
+    sourcemap: process.env.CI ? 'hidden' : false,
     rollupOptions: {
       output: {
         manualChunks(id: string) {
@@ -18,17 +20,20 @@ export default defineConfig({
             id.includes('node_modules/react-router/')
           )
             return 'vendor'
+          if (id.includes('node_modules/d3-force') || id.includes('node_modules/d3-')) return 'd3'
         },
       },
     },
   },
   plugins: [
     react(),
-    tailwindcss(), // Tailwind CSS v4 as a Vite plugin
-    ...(process.env.ANALYZE ? [visualizer({ open: true })] : []),
+    tailwindcss(),
+    ...(process.env.ANALYZE
+      ? [visualizer({ open: true, filename: 'dist/stats.html', gzipSize: true, brotliSize: true })]
+      : []),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'icon-192.png', 'icon-512.png'],
+      includeAssets: ['favicon.svg', 'icon-192.png', 'icon-512.png', 'screenshots/*.png'],
       manifest: {
         name: 'Cosmere Archive',
         short_name: 'Cosmere Archive',
@@ -42,17 +47,26 @@ export default defineConfig({
           { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },
         ],
+        screenshots: [
+          { src: '/screenshots/home.png', sizes: '1080x720', type: 'image/png', form_factor: 'wide' },
+          { src: '/screenshots/characters.png', sizes: '1080x720', type: 'image/png', form_factor: 'wide' },
+          { src: '/screenshots/timeline.png', sizes: '1080x720', type: 'image/png', form_factor: 'wide' },
+        ],
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,json,png,svg,ico,woff2}'],
-        runtimeCaching: [],
+        runtimeCaching: [
+          {
+            urlPattern: /\/screenshots\//,
+            handler: 'CacheFirst',
+            options: { cacheName: 'screenshots', expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 30 } },
+          },
+        ],
       },
     }),
   ],
   resolve: {
     alias: {
-      // "@" is a shortcut for "./src", so we can write "import X from '@/types'"
-      // instead of "../../../src/types". This keeps imports clean as the project grows.
       '@': path.resolve(__dirname, './src'),
     },
   },

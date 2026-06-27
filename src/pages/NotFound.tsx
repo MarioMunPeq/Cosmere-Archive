@@ -1,8 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { useDocumentTitle } from '@/hooks/useDocumentTitle'
+import { useSEOMeta } from '@/hooks/useSEOMeta'
 
 export default function NotFound() {
-  useDocumentTitle('404 — Cosmere Archive')
+  useSEOMeta({ title: '404 — Cosmere Archive', description: 'Page not found — Cosmere Archive' })
   const navigate = useNavigate()
   return (
     <section className="flex flex-col items-center justify-center py-20">

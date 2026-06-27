@@ -14,6 +14,10 @@ import StarField from './StarField'
 import PlanetLabels from './PlanetLabels'
 import WorldhopperRoutes from './WorldhopperRoutes'
 import PlanetTooltip from './PlanetTooltip'
+import LayersToggle from './LayersToggle'
+import ShardIcons from './ShardIcons'
+import ConstellationLines from './ConstellationLines'
+import type { MapLayers } from './LayersToggle'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
 import { useMapInteraction } from '@/hooks/useMapInteraction'
 import { SHARD_COLORS } from '@/data/static/colors'
@@ -64,6 +68,13 @@ export default function UniverseMap({
   const [showLegend, setShowLegend] = useState(() => window.innerWidth >= 640)
   const [showWorldhopperPicker, setShowWorldhopperPicker] = useState(false)
   const [tooltipScreenPos, setTooltipScreenPos] = useState({ left: 0, top: 0 })
+  const [layers, setLayers] = useState<MapLayers>({
+    labels: true,
+    routes: true,
+    shardIcons: false,
+    constellation: false,
+  })
+  const [showLayers, setShowLayers] = useState(false)
 
   const isCoarse = useMemo(() => window.matchMedia('(pointer: coarse)').matches, [])
 
@@ -154,7 +165,7 @@ export default function UniverseMap({
       if (top < 4) top = screenY - rect.top + tooltipPlanet.size * 0.4 * zoom + 10
       return { left, top }
     },
-    [zoom, panX, panY, containerRef],
+    [zoom, panX, panY, containerRef, svgRef],
   )
 
   const handlePlanetHover = useCallback(
@@ -175,6 +186,10 @@ export default function UniverseMap({
       .filter((w): w is WorldhopperDisplay => w !== undefined)
     return whs.length > 0 ? whs[0] : null
   }, [activeWorldhoppers, selected])
+
+  const handleToggleLayer = useCallback((layer: keyof MapLayers) => {
+    setLayers((prev) => ({ ...prev, [layer]: !prev[layer] }))
+  }, [])
 
   const planetPanelRef = useFocusTrap(!!selected)
   const whPanelRef = useFocusTrap(!!activeWhDetail)
@@ -230,7 +245,10 @@ export default function UniverseMap({
           </defs>
           <g ref={mapGroupRef} transform={`translate(${panX}, ${panY}) scale(${zoom})`}>
             <StarField />
-            <WorldhopperRoutes planetMap={planetMap} activeWorldhoppers={activeWorldhoppers} hasFilter={hasFilter} />
+            {layers.constellation && <ConstellationLines />}
+            {layers.routes && (
+              <WorldhopperRoutes planetMap={planetMap} activeWorldhoppers={activeWorldhoppers} hasFilter={hasFilter} />
+            )}
             {PLANETS.map((p, i) => (
               <g key={p.id} className="animate-planet-enter" style={{ animationDelay: `${i * 0.08}s` }}>
                 <PlanetRenderer
@@ -243,7 +261,8 @@ export default function UniverseMap({
                 />
               </g>
             ))}
-            <PlanetLabels />
+            {layers.labels && <PlanetLabels />}
+            {layers.shardIcons && <ShardIcons />}
           </g>
         </svg>
       </div>
@@ -289,6 +308,12 @@ export default function UniverseMap({
           worldhoppers={WORLDHOPPERS}
           onToggle={() => setShowWorldhopperPicker((v) => !v)}
           onStartJourney={onStartJourney}
+        />
+        <LayersToggle
+          show={showLayers}
+          layers={layers}
+          onToggle={() => setShowLayers((v) => !v)}
+          onToggleLayer={handleToggleLayer}
         />
       </div>
 

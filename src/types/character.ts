@@ -15,6 +15,9 @@ export interface Character {
   /** Home planet, e.g. "Roshar". */
   planet: string
 
+  /** Optional phonetic pronunciation guide. */
+  pronunciation?: string
+
   /** Optional URL to a portrait image. */
   image?: string
 

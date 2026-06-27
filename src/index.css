@@ -118,6 +118,20 @@
     animation: line-pulse 4s ease-in-out infinite;
   }
 
+  @keyframes constellation-pulse {
+    0%,
+    100% {
+      opacity: 0.1;
+    }
+    50% {
+      opacity: 0.35;
+    }
+  }
+
+  .animate-constellation-pulse {
+    animation: constellation-pulse 6s ease-in-out infinite;
+  }
+
   @keyframes label-fade {
     from {
       opacity: 0;
@@ -221,4 +235,132 @@ input,
 * {
   scrollbar-width: thin;
   scrollbar-color: #4b5563 transparent;
+}
+
+/* Orbit animations */
+@keyframes orbit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbit-pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbit-ring {
+    display: none;
+  }
+}
+
+/* View Transitions API */
+@keyframes vt-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes vt-slide-from-right {
+  from {
+    transform: translateX(30px);
+    opacity: 0;
+  }
+}
+@keyframes vt-slide-to-left {
+  to {
+    transform: translateX(-30px);
+    opacity: 0;
+  }
+}
+
+::view-transition-old(page-content) {
+  animation: 0.2s ease-out both vt-fade-out;
+}
+::view-transition-new(page-content) {
+  animation: 0.25s ease-out both vt-slide-from-right;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(page-content),
+  ::view-transition-new(page-content) {
+    animation: none;
+  }
+}
+
+/* Theme variables — dark is default */
+:root {
+  --bg-page: #030712;
+  --bg-nav: rgba(3, 7, 18, 0.8);
+  --text-main: #f3f4f6;
+  --font-size-scale: 1;
+}
+
+/* Font size scaling */
+body {
+  font-size: calc(100% * var(--font-size-scale));
+}
+
+/* Print stylesheet */
+@media print {
+  nav,
+  .back-to-top,
+  .theme-toggle,
+  .font-size-controls,
+  .command-palette-trigger,
+  #search-bar,
+  .breadcrumbs,
+  .skip-link,
+  button,
+  [role='button'] {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 12pt;
+  }
+
+  a[href]::after {
+    content: ' (' attr(href) ')';
+    font-size: 0.8em;
+    color: #666;
+  }
+
+  a[href^='/']::after {
+    content: ' (https://cosmere-archive.app' attr(href) ')';
+  }
+
+  @page {
+    margin: 2cm;
+  }
+}
+
+[data-theme='light'] {
+  --bg-page: #f9fafb;
+  --bg-nav: rgba(255, 255, 255, 0.85);
+  --text-main: #111827;
+}
+
+[data-theme='light'] body {
+  background-color: var(--bg-page);
+}
+
+[data-theme='light'] ::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+}
+
+[data-theme='light'] ::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
 }

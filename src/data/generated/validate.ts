@@ -44,6 +44,7 @@ export function validateCharacterArray(data: unknown): Character[] {
       planet: obj.planet,
       description: obj.description,
       image: typeof obj.image === 'string' ? obj.image : undefined,
+      pronunciation: typeof obj.pronunciation === 'string' ? obj.pronunciation : undefined,
       requiredBooks: Array.isArray(obj.requiredBooks)
         ? obj.requiredBooks.filter((b: unknown): b is string => typeof b === 'string')
         : [],

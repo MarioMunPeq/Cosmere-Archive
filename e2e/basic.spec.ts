@@ -39,6 +39,22 @@ test('magic systems page lists systems', async ({ page }) => {
   await expect(page.locator('text=Feruchemy')).toBeVisible()
 })
 
+test('characters page shows characters and filters', async ({ page }) => {
+  await page.goto('/characters')
+  await expect(page.locator('text=Characters')).toBeVisible()
+  await expect(page.locator('text=Kaladin')).toBeVisible()
+  await expect(page.locator('text=Vin')).toBeVisible()
+})
+
+test('books page shows all sagas and filters', async ({ page }) => {
+  await page.goto('/books')
+  await expect(page.locator('text=Books')).toBeVisible()
+  await expect(page.locator('text=The Final Empire')).toBeVisible()
+  await expect(page.locator('text=The Way of Kings')).toBeVisible()
+  await page.click('role=button[name="Mistborn Era 1"]')
+  await expect(page.locator('text=The Way of Kings')).not.toBeVisible()
+})
+
 test('family tree page loads', async ({ page }) => {
   await page.goto('/family-tree')
   await expect(page.locator('text=Family Tree')).toBeVisible()

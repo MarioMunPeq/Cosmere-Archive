@@ -7,6 +7,7 @@ import AllomanticTable from '@/components/magic/AllomanticTable'
 import ColorDot from '@/components/ui/ColorDot'
 import PageLayout from '@/components/ui/PageLayout'
 import type { Planet } from '@/types/planet'
+import { useSEOMeta } from '@/hooks/useSEOMeta'
 
 const PLANET_X = 60
 const SYSTEM_X = 200
@@ -67,6 +68,11 @@ function MagicDiagram({
 }
 
 export default function MagicSystemsPage() {
+  useSEOMeta({
+    title: 'Magic Systems — Cosmere Archive',
+    description: 'Explore all magic systems in the Cosmere — Allomancy, Surgebinding, AonDor, and more',
+  })
+
   const navigate = useNavigate()
   const [planetFilter, setPlanetFilter] = useState<string>('')
   const [selectedSystem, setSelectedSystem] = useState<MagicSystem | null>(null)

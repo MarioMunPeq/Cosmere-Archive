@@ -36,6 +36,7 @@ export default function SearchInput({
       >
         <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
       </svg>
+      <kbd className="hidden shrink-0 rounded border border-gray-700 px-1 text-xs text-gray-600 sm:inline">Ctrl+K</kbd>
       <label htmlFor="cosmere-search" className="sr-only">
         Search the Cosmere
       </label>

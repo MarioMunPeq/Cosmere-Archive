@@ -3,6 +3,7 @@ import { FAMILY_TREES } from '@/data/static/family-data'
 import { ALL_CHARACTERS } from '@/data/static'
 import FamilyTreeView from '@/components/detail/FamilyTreeView'
 import PageLayout from '@/components/ui/PageLayout'
+import { useSEOMeta } from '@/hooks/useSEOMeta'
 
 function crossTreeFamilies(characterId: string): { id: string; name: string }[] {
   const result: { id: string; name: string }[] = []
@@ -15,6 +16,11 @@ function crossTreeFamilies(characterId: string): { id: string; name: string }[] 
 }
 
 export default function FamilyTreePage() {
+  useSEOMeta({
+    title: 'Family Trees — Cosmere Archive',
+    description: 'Family trees and dynastic connections of major Cosmere characters',
+  })
+
   const [selectedFamily, setSelectedFamily] = useState(FAMILY_TREES[0]!.id)
   const [detailId, setDetailId] = useState<string | undefined>(undefined)
 
