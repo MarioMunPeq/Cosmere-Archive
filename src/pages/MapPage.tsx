@@ -8,6 +8,7 @@ import MapSkeleton from '@/components/common/MapSkeleton'
 import SplitPane from '@/components/common/SplitPane'
 import { CloseIcon } from '@/components/common/icons'
 import BookCover from '@/components/common/BookCover'
+import { JourneyProvider, JourneySvgContent } from '@/components/map/JourneyContext'
 import type { Book } from '@/types'
 import type { CharacterSpan } from '@/data/static/timeline/character-lifespans'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
@@ -18,12 +19,7 @@ function formatCharacterYear(year: number | null): string {
   return `${year}`
 }
 
-const CharacterGrid = lazy(() => import('@/components/map/CharacterGrid'))
-const WorldhopperGallery = lazy(() => import('@/components/map/WorldhopperGallery'))
 const JourneyAnimation = lazy(() => import('@/components/map/JourneyAnimation'))
-const TimelinePage = lazy(() => import('./TimelinePage'))
-
-type Tab = 'map' | 'characters' | 'worldhoppers' | 'timeline'
 
 export default function MapPage() {
   useSEOMeta({
@@ -37,8 +33,6 @@ export default function MapPage() {
   const [activeWorldhoppers, setActiveWorldhoppers] = useState<string[]>([])
   const [highlightedPlanet, setHighlightedPlanet] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
-  const [tab, setTab] = useState<Tab>('map')
-  const [highlightedCharacter, setHighlightedCharacter] = useState<string | null>(null)
   const [activeJourney, setActiveJourney] = useState<string | null>(null)
   const [flyToTarget, setFlyToTarget] = useState<{ planetId: string; x: number; y: number } | null>(null)
 
@@ -135,12 +129,6 @@ export default function MapPage() {
     [handleCloseDetail],
   )
 
-  const handleSelectCharacter = useCallback((id: string) => {
-    setHighlightedCharacter(id)
-    setSelectedPlanet(null)
-    setTab('characters')
-  }, [])
-
   const handleStartJourney = useCallback((id: string) => {
     setActiveJourney(id)
     setActiveWorldhoppers((prev) => prev.filter((x) => x !== id))
@@ -163,197 +151,148 @@ export default function MapPage() {
 
   return (
     <div className="relative flex min-h-0 flex-1 flex-col">
-      <div className="flex border-b border-gray-800">
-        <button
-          onClick={() => setTab('map')}
-          className={`flex-1 px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-colors sm:flex-none sm:px-6 ${
-            tab === 'map' ? 'border-b-2 border-purple-500 text-purple-400' : 'text-gray-600 hover:text-gray-400'
-          }`}
-        >
-          Map
-        </button>
-        <button
-          onClick={() => setTab('characters')}
-          className={`flex-1 px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-colors sm:flex-none sm:px-6 ${
-            tab === 'characters' ? 'border-b-2 border-purple-500 text-purple-400' : 'text-gray-600 hover:text-gray-400'
-          }`}
-        >
-          Characters
-        </button>
-        <button
-          onClick={() => setTab('worldhoppers')}
-          className={`flex-1 px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-colors sm:flex-none sm:px-6 ${
-            tab === 'worldhoppers'
-              ? 'border-b-2 border-purple-500 text-purple-400'
-              : 'text-gray-600 hover:text-gray-400'
-          }`}
-        >
-          Worldhoppers
-        </button>
-        <button
-          onClick={() => setTab('timeline')}
-          className={`flex-1 px-4 py-2 text-xs font-semibold uppercase tracking-wider transition-colors sm:flex-none sm:px-6 ${
-            tab === 'timeline' ? 'border-b-2 border-purple-500 text-purple-400' : 'text-gray-600 hover:text-gray-400'
-          }`}
-        >
-          Timeline
-        </button>
-      </div>
-
-      {tab === 'map' ? (
-        detailBook || detailCharacter ? (
-          <SplitPane
-            left={
-              <div className="flex h-full min-h-0 flex-1 flex-col">
+      {detailBook || detailCharacter ? (
+        <SplitPane
+          left={
+            <div className="flex h-full min-h-0 flex-1 flex-col">
+              <JourneyProvider worldhopperId={activeJourney ?? ''} planetMap={planetMap} speed={1}>
                 <UniverseMap
                   selectedPlanet={null}
                   onSelectPlanet={handleSelectMapPlanet}
                   activeWorldhoppers={activeWorldhoppers}
                   onToggleWorldhopper={toggleWorldhopper}
                   highlightedPlanet={highlightedPlanet}
-                  onSelectCharacter={handleSelectCharacter}
                   onStartJourney={handleStartJourney}
                   flyToTarget={flyToTarget}
                   onFlyToDone={handleFlyToDone}
-                />
+                >
+                  {activeJourney && <JourneySvgContent />}
+                </UniverseMap>
                 {activeJourney && (
                   <Suspense fallback={null}>
-                    <JourneyAnimation
-                      worldhopperId={activeJourney}
-                      planetMap={planetMap}
-                      onClose={handleCloseJourney}
-                    />
+                    <JourneyAnimation onClose={handleCloseJourney} />
                   </Suspense>
                 )}
-              </div>
-            }
-            right={
-              <div className="flex flex-col p-5">
-                {detailBook && (
-                  <>
-                    <div className="mb-4 flex items-start justify-between gap-4">
-                      <div className="flex items-start gap-4">
-                        <BookCover book={detailBook} size="sm" />
-                        <h3 className="text-lg font-bold text-gray-100">{detailBook.title}</h3>
-                      </div>
-                      <button
-                        onClick={handleCloseDetail}
-                        aria-label="Close"
-                        className="text-gray-600 transition-colors hover:text-gray-300"
-                      >
-                        <CloseIcon />
-                      </button>
+              </JourneyProvider>
+            </div>
+          }
+          right={
+            <div className="flex flex-col p-5">
+              {detailBook && (
+                <>
+                  <div className="mb-4 flex items-start justify-between gap-4">
+                    <div className="flex items-start gap-4">
+                      <BookCover book={detailBook} size="sm" />
+                      <h3 className="text-lg font-bold text-gray-100">{detailBook.title}</h3>
                     </div>
-                    {(() => {
-                      const saga = SAGA_BY_ID.get(detailBook.saga)
-                      return (
-                        <>
-                          {saga && <p className="mb-1 text-xs font-medium text-gray-500">{saga.name}</p>}
-                          {detailBook.year && <p className="mb-3 text-xs text-gray-600">Published {detailBook.year}</p>}
-                          {detailBook.description && (
-                            <p className="mb-4 text-sm leading-relaxed text-gray-400">{detailBook.description}</p>
-                          )}
-                          <div>
-                            <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500">Saga</h4>
-                            <span className="inline-block rounded bg-gray-800 px-2.5 py-1 text-xs text-gray-300">
-                              {saga?.name ?? detailBook.saga}
-                            </span>
-                          </div>
-                        </>
-                      )
-                    })()}
-                  </>
-                )}
-                {detailCharacter && (
-                  <>
-                    <div className="mb-4 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="h-3 w-3 rounded-full" style={{ backgroundColor: detailCharacter.color }} />
-                        <h3 className="text-lg font-bold text-gray-100">{detailCharacter.name}</h3>
-                      </div>
-                      <button
-                        onClick={handleCloseDetail}
-                        aria-label="Close"
-                        className="text-gray-600 transition-colors hover:text-gray-300"
-                      >
-                        <CloseIcon />
-                      </button>
-                    </div>
-                    {detailCharacter.titles.length > 0 && (
-                      <p className="mb-3 text-xs text-gray-500">{detailCharacter.titles.join(', ')}</p>
-                    )}
-                    <div className="mb-4 flex gap-4 text-xs text-gray-500">
-                      <span>
-                        Born:{' '}
-                        <strong className="text-gray-400">{formatCharacterYear(detailCharacter.birthYear)}</strong>
-                      </span>
-                      <span>
-                        Died:{' '}
-                        <strong className="text-gray-400">{formatCharacterYear(detailCharacter.deathYear)}</strong>
-                      </span>
-                    </div>
-                    {(() => {
-                      const planet = getPlanetById(detailCharacter.planet.toLowerCase())
-                      return planet ? (
-                        <div className="mb-4">
-                          <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                            Home Planet
-                          </h4>
-                          <button
-                            onClick={() => {
-                              handleSelectPlanet(planet.id)
-                              handleCloseDetail()
-                            }}
-                            className="flex items-center gap-2 rounded bg-gray-800 px-2.5 py-1.5 text-xs text-gray-300 transition-colors hover:bg-gray-700"
-                          >
-                            <ColorDot color={planet.color} />
-                            {planet.name}
-                          </button>
+                    <button
+                      onClick={handleCloseDetail}
+                      aria-label="Close"
+                      className="text-gray-600 transition-colors hover:text-gray-300"
+                    >
+                      <CloseIcon />
+                    </button>
+                  </div>
+                  {(() => {
+                    const saga = SAGA_BY_ID.get(detailBook.saga)
+                    return (
+                      <>
+                        {saga && <p className="mb-1 text-xs font-medium text-gray-500">{saga.name}</p>}
+                        {detailBook.year && <p className="mb-3 text-xs text-gray-600">Published {detailBook.year}</p>}
+                        {detailBook.description && (
+                          <p className="mb-4 text-sm leading-relaxed text-gray-400">{detailBook.description}</p>
+                        )}
+                        <div>
+                          <h4 className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500">Saga</h4>
+                          <span className="inline-block rounded bg-gray-800 px-2.5 py-1 text-xs text-gray-300">
+                            {saga?.name ?? detailBook.saga}
+                          </span>
                         </div>
-                      ) : null
-                    })()}
-                    <div>
-                      <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Group</h4>
-                      <span className="inline-block rounded bg-gray-800 px-2.5 py-1 text-xs text-gray-400">
-                        {detailCharacter.group}
-                      </span>
+                      </>
+                    )
+                  })()}
+                </>
+              )}
+              {detailCharacter && (
+                <>
+                  <div className="mb-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="h-3 w-3 rounded-full" style={{ backgroundColor: detailCharacter.color }} />
+                      <h3 className="text-lg font-bold text-gray-100">{detailCharacter.name}</h3>
                     </div>
-                  </>
-                )}
-              </div>
-            }
-          />
-        ) : (
-          <div className="relative flex min-h-0 flex-1">
+                    <button
+                      onClick={handleCloseDetail}
+                      aria-label="Close"
+                      className="text-gray-600 transition-colors hover:text-gray-300"
+                    >
+                      <CloseIcon />
+                    </button>
+                  </div>
+                  {detailCharacter.titles.length > 0 && (
+                    <p className="mb-3 text-xs text-gray-500">{detailCharacter.titles.join(', ')}</p>
+                  )}
+                  <div className="mb-4 flex gap-4 text-xs text-gray-500">
+                    <span>
+                      Born: <strong className="text-gray-400">{formatCharacterYear(detailCharacter.birthYear)}</strong>
+                    </span>
+                    <span>
+                      Died: <strong className="text-gray-400">{formatCharacterYear(detailCharacter.deathYear)}</strong>
+                    </span>
+                  </div>
+                  {(() => {
+                    const planet = getPlanetById(detailCharacter.planet.toLowerCase())
+                    return planet ? (
+                      <div className="mb-4">
+                        <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                          Home Planet
+                        </h4>
+                        <button
+                          onClick={() => {
+                            handleSelectPlanet(planet.id)
+                            handleCloseDetail()
+                          }}
+                          className="flex items-center gap-2 rounded bg-gray-800 px-2.5 py-1.5 text-xs text-gray-300 transition-colors hover:bg-gray-700"
+                        >
+                          <ColorDot color={planet.color} />
+                          {planet.name}
+                        </button>
+                      </div>
+                    ) : null
+                  })()}
+                  <div>
+                    <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Group</h4>
+                    <span className="inline-block rounded bg-gray-800 px-2.5 py-1 text-xs text-gray-400">
+                      {detailCharacter.group}
+                    </span>
+                  </div>
+                </>
+              )}
+            </div>
+          }
+        />
+      ) : (
+        <div className="relative flex min-h-0 flex-1">
+          <JourneyProvider worldhopperId={activeJourney ?? ''} planetMap={planetMap} speed={1}>
             <UniverseMap
               selectedPlanet={selectedPlanet}
               onSelectPlanet={handleSelectMapPlanet}
               activeWorldhoppers={activeWorldhoppers}
               onToggleWorldhopper={toggleWorldhopper}
               highlightedPlanet={highlightedPlanet}
-              onSelectCharacter={handleSelectCharacter}
               onStartJourney={handleStartJourney}
               flyToTarget={flyToTarget}
               onFlyToDone={handleFlyToDone}
-            />
+            >
+              {activeJourney && <JourneySvgContent />}
+            </UniverseMap>
 
             {activeJourney && (
               <Suspense fallback={null}>
-                <JourneyAnimation worldhopperId={activeJourney} planetMap={planetMap} onClose={handleCloseJourney} />
+                <JourneyAnimation onClose={handleCloseJourney} />
               </Suspense>
             )}
-          </div>
-        )
-      ) : (
-        <Suspense fallback={<div className="flex-1" />}>
-          {tab === 'timeline' ? (
-            <TimelinePage />
-          ) : tab === 'characters' ? (
-            <CharacterGrid highlightedCharacter={highlightedCharacter} />
-          ) : (
-            <WorldhopperGallery />
-          )}
-        </Suspense>
+          </JourneyProvider>
+        </div>
       )}
     </div>
   )

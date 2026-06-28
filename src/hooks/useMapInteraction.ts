@@ -41,7 +41,17 @@ export function useMapInteraction(
   useEffect(() => {
     const el = containerRef.current
     if (!el) return
-    const handler = (e: WheelEvent) => e.preventDefault()
+    const handler = (e: WheelEvent) => {
+      let target = e.target as HTMLElement | null
+      while (target && target !== el) {
+        const style = getComputedStyle(target)
+        if (style.overflowY === 'auto' || style.overflowY === 'scroll') {
+          return
+        }
+        target = target.parentElement
+      }
+      e.preventDefault()
+    }
     el.addEventListener('wheel', handler, { passive: false })
     return () => el.removeEventListener('wheel', handler)
   }, [])

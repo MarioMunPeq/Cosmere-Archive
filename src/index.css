@@ -306,6 +306,11 @@ input,
   --font-size-scale: 1;
 }
 
+/* Full-page dark background (prevents white flash when scrolling past 100vh) */
+html {
+  background-color: var(--bg-page);
+}
+
 /* Font size scaling */
 body {
   font-size: calc(100% * var(--font-size-scale));

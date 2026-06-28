@@ -2,10 +2,8 @@ import { useEffect, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import SearchBar from './SearchBar'
 import ThemeToggle from '@/components/ui/ThemeToggle'
-import FontSizeControls from '@/components/ui/FontSizeControls'
 import CommandPalette from '@/components/ui/CommandPalette'
 import KeyboardShortcutsHelp from '@/components/ui/KeyboardShortcutsHelp'
-import ShareButton from '@/components/ui/ShareButton'
 import SpoilerToggle from '@/components/ui/SpoilerToggle'
 import Breadcrumbs from '@/components/ui/Breadcrumbs'
 import BackToTop from '@/components/ui/BackToTop'
@@ -108,20 +106,14 @@ export default function Layout() {
             >
               COSMERE ARCHIVE
             </TransitionLink>
+            <TransitionLink
+              to="/about"
+              className={navClass('hidden shrink-0 text-sm transition-colors hover:text-gray-300 sm:inline')}
+            >
+              About
+            </TransitionLink>
 
             <div className="ml-auto flex items-center gap-3">
-              <TransitionLink
-                to="/about"
-                className={navClass('hidden text-sm transition-colors hover:text-gray-300 sm:inline')}
-              >
-                About
-              </TransitionLink>
-              <TransitionLink
-                to="/relationships"
-                className={navClass('hidden text-sm transition-colors hover:text-gray-300 sm:inline')}
-              >
-                Relationships
-              </TransitionLink>
               <TransitionLink
                 to="/glossary"
                 className={navClass('hidden text-sm transition-colors hover:text-gray-300 sm:inline')}
@@ -189,8 +181,6 @@ export default function Layout() {
                 Magic
               </TransitionLink>
               <SpoilerToggle />
-              <ShareButton />
-              <FontSizeControls />
               <ThemeToggle />
               <div className="w-48 sm:w-64">
                 <SearchBar />

@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { memo, useMemo } from 'react'
 
 function seededUnit(index: number, salt: number): number {
   const value = Math.sin(index * 12.9898 + salt * 78.233) * 43758.5453
@@ -19,7 +19,7 @@ function createStars(count: number) {
   })
 }
 
-export default function StarField() {
+const StarField = memo(function StarField() {
   const starCount = useMemo(() => (window.innerWidth < 640 ? 100 : 350), [])
   const STARS = useMemo(() => createStars(starCount), [starCount])
 
@@ -66,4 +66,6 @@ export default function StarField() {
       ))}
     </g>
   )
-}
+})
+
+export default StarField

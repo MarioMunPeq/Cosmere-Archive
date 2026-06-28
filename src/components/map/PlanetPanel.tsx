@@ -29,7 +29,7 @@ export default function PlanetPanel({
       <div
         ref={panelRef}
         key={selected.id}
-        className="absolute inset-0 z-40 flex flex-col overflow-y-auto bg-gray-900 animate-slide-up sm:inset-auto sm:bottom-auto sm:left-auto sm:right-4 sm:top-4 sm:w-72 sm:rounded-xl sm:border sm:border-gray-700/60 sm:bg-gray-900/95 sm:p-5 sm:shadow-2xl sm:backdrop-blur-lg sm:animate-scale-in"
+        className="absolute inset-0 z-40 flex flex-col overflow-y-auto bg-gray-900 animate-slide-up sm:inset-auto sm:bottom-auto sm:left-auto sm:right-4 sm:top-4 sm:max-h-[calc(100vh-2rem)] sm:w-72 sm:rounded-xl sm:border sm:border-gray-700/60 sm:bg-gray-900/95 sm:p-5 sm:shadow-2xl sm:backdrop-blur-lg sm:animate-scale-in"
       >
         <button
           onClick={() => onSelectPlanet(null)}

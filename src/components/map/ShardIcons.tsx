@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { memo, useMemo } from 'react'
 import { PLANETS } from '@/data/static'
 import { SHARD_COLORS } from '@/data/static/colors'
 import { FALLBACK_COLOR } from '@/utils/constants'
@@ -10,7 +10,7 @@ function parseShards(shardStr: string): string[] {
     .filter(Boolean)
 }
 
-export default function ShardIcons() {
+const ShardIcons = memo(function ShardIcons() {
   const shardData = useMemo(() => {
     return PLANETS.filter((p) => p.shard).map((p) => {
       const names = parseShards(p.shard!)
@@ -50,4 +50,6 @@ export default function ShardIcons() {
       })}
     </g>
   )
-}
+})
+
+export default ShardIcons

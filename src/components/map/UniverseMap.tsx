@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback, useEffect } from 'react'
+import { useMemo, useState, useCallback, useEffect, forwardRef, useImperativeHandle } from 'react'
 import { PLANETS, ALL_CHARACTERS } from '@/data/static'
 import { WORLDHOPPERS } from '@/data/static/timeline'
 import type { WorldhopperDisplay } from '@/data/static/timeline'
@@ -33,19 +33,28 @@ interface Props {
   onStartJourney?: (id: string) => void
   flyToTarget?: { planetId: string; x: number; y: number } | null
   onFlyToDone?: () => void
+  children?: React.ReactNode
 }
 
-export default function UniverseMap({
-  selectedPlanet,
-  onSelectPlanet,
-  activeWorldhoppers,
-  onToggleWorldhopper,
-  highlightedPlanet,
-  onSelectCharacter,
-  onStartJourney,
-  flyToTarget,
-  onFlyToDone,
-}: Props) {
+export interface UniverseMapHandle {
+  mapGroupRef: React.RefObject<SVGGElement | null>
+}
+
+const UniverseMap = forwardRef<UniverseMapHandle, Props>(function UniverseMap(
+  {
+    selectedPlanet,
+    onSelectPlanet,
+    activeWorldhoppers,
+    onToggleWorldhopper,
+    highlightedPlanet,
+    onSelectCharacter,
+    onStartJourney,
+    flyToTarget,
+    onFlyToDone,
+    children,
+  },
+  ref,
+) {
   const {
     containerRef,
     svgRef,
@@ -62,6 +71,8 @@ export default function UniverseMap({
     resetView,
     zoomToCenter,
   } = useMapInteraction(flyToTarget, onFlyToDone)
+
+  useImperativeHandle(ref, () => ({ mapGroupRef }), [mapGroupRef])
 
   const [hoveredPlanetId, setHoveredPlanetId] = useState<string | null>(null)
   const [activeShards, setActiveShards] = useState<string[]>([])
@@ -263,6 +274,7 @@ export default function UniverseMap({
             ))}
             {layers.labels && <PlanetLabels />}
             {layers.shardIcons && <ShardIcons />}
+            {children}
           </g>
         </svg>
       </div>
@@ -334,4 +346,6 @@ export default function UniverseMap({
       )}
     </div>
   )
-}
+})
+
+export default UniverseMap

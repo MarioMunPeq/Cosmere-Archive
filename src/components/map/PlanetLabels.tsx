@@ -1,6 +1,8 @@
 import { PLANETS } from '@/data/static'
 
-export default function PlanetLabels() {
+import { memo } from 'react'
+
+const PlanetLabels = memo(function PlanetLabels() {
   return (
     <g>
       {PLANETS.map((p, i) => {
@@ -28,4 +30,6 @@ export default function PlanetLabels() {
       })}
     </g>
   )
-}
+})
+
+export default PlanetLabels

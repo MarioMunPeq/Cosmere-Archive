@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { memo, useMemo } from 'react'
 import { PLANETS } from '@/data/static'
 import type { Planet } from '@/types/planet'
 
@@ -48,7 +48,7 @@ const SAGA_CONSTELLATION_COLORS: Record<string, string> = {
   'arcanum-unbounded': '#818cf8',
 }
 
-export default function ConstellationLines() {
+const ConstellationLines = memo(function ConstellationLines() {
   const lines = useMemo(() => buildConnectionLines(), [])
 
   return (
@@ -89,4 +89,6 @@ export default function ConstellationLines() {
       })}
     </g>
   )
-}
+})
+
+export default ConstellationLines
