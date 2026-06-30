@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { memo, useMemo } from 'react'
 import { WORLDHOPPERS } from '@/data/static/timeline'
 import type { Planet } from '@/types/planet'
 
@@ -17,7 +17,7 @@ interface Props {
   hasFilter: boolean
 }
 
-export default function WorldhopperRoutes({ planetMap, activeWorldhoppers, hasFilter }: Props) {
+function WorldhopperRoutes({ planetMap, activeWorldhoppers, hasFilter }: Props) {
   const connections = useMemo(() => {
     const lines: { from: Planet; to: Planet; color: string; whId: string; offset: number }[] = []
     for (const wh of WORLDHOPPERS) {
@@ -92,3 +92,5 @@ export default function WorldhopperRoutes({ planetMap, activeWorldhoppers, hasFi
     </g>
   )
 }
+
+export default memo(WorldhopperRoutes)

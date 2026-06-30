@@ -1,9 +1,9 @@
-import { useMemo } from 'react'
+import { memo, useMemo } from 'react'
 import type { Character } from '@/types'
 import type { CharacterRelationship, RelationshipType } from '@/types/relationships'
 import { RELATIONSHIP_LABELS, RELATIONSHIP_COLORS } from '@/types/relationships'
 import { getPlanetById } from '@/data/static'
-import { FALLBACK_COLOR } from '@/utils/constants'
+import { FALLBACK_COLOR } from '@/data/static'
 
 interface Props {
   character: Character
@@ -21,7 +21,7 @@ function getCharacterColor(char: Character): string {
   return planet?.color ?? FALLBACK_COLOR
 }
 
-export default function CharacterRelationships({ character, allCharacters, relationships, onSelectCharacter }: Props) {
+function CharacterRelationships({ character, allCharacters, relationships, onSelectCharacter }: Props) {
   const related = useMemo(() => {
     const direct = relationships.filter((r) => r.characters[0] === character.id || r.characters[1] === character.id)
     return direct
@@ -34,6 +34,15 @@ export default function CharacterRelationships({ character, allCharacters, relat
       .filter(Boolean) as { character: Character; type: RelationshipType; label?: string }[]
   }, [character, allCharacters, relationships])
 
+  const nodes = useMemo(
+    () =>
+      related.map((item, i) => {
+        const angle = ((2 * Math.PI) / related.length) * i - Math.PI / 2
+        return { ...item, x: CX + R * Math.cos(angle), y: CY + R * Math.sin(angle), angle }
+      }),
+    [related],
+  )
+
   if (related.length === 0) {
     return (
       <div className="flex items-center justify-center rounded-lg border border-dashed border-gray-700 py-16 text-sm text-gray-500">
@@ -41,11 +50,6 @@ export default function CharacterRelationships({ character, allCharacters, relat
       </div>
     )
   }
-
-  const nodes = related.map((item, i) => {
-    const angle = ((2 * Math.PI) / related.length) * i - Math.PI / 2
-    return { ...item, x: CX + R * Math.cos(angle), y: CY + R * Math.sin(angle), angle }
-  })
 
   return (
     <svg viewBox="0 0 800 480" className="w-full" role="img" aria-label={`Relationship network for ${character.name}`}>
@@ -156,3 +160,5 @@ export default function CharacterRelationships({ character, allCharacters, relat
     </svg>
   )
 }
+
+export default memo(CharacterRelationships)

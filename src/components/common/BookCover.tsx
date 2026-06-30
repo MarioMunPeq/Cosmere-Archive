@@ -1,14 +1,35 @@
+import { memo, useState } from 'react'
 import { SAGA_BY_ID } from '@/data/static'
 import type { Book } from '@/types/book'
-import { FALLBACK_COLOR } from '@/utils/constants'
-import { SAGA_NAME_COLORS as SAGA_COLORS, SAGA_BG } from '@/data/static/colors'
+import { FALLBACK_COLOR, SAGA_NAME_COLORS as SAGA_COLORS, SAGA_BG } from '@/data/static'
 
 function getSaga(book: Book): string {
   const saga = SAGA_BY_ID.get(book.saga)
   return saga?.name ?? book.saga
 }
 
-export default function BookCover({ book, size = 'sm' }: { book: Book; size?: 'sm' | 'md' }) {
+function BookCover({ book, size = 'sm' }: { book: Book; size?: 'sm' | 'md' }) {
+  const [loaded, setLoaded] = useState(false)
+
+  if (book.cover) {
+    const w = size === 'md' ? 120 : 80
+    const h = size === 'md' ? 180 : 120
+    return (
+      <div className="relative shrink-0 overflow-hidden rounded-md bg-gray-800" style={{ width: w, height: h }}>
+        {!loaded && <div className="absolute inset-0 animate-pulse bg-gray-700" />}
+        <img
+          src={book.cover}
+          alt={`Cover of ${book.title}`}
+          width={w}
+          height={h}
+          loading="lazy"
+          onLoad={() => setLoaded(true)}
+          className={`h-full w-full object-cover transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+        />
+      </div>
+    )
+  }
+
   const saga = getSaga(book)
   const accent = SAGA_COLORS[saga] ?? FALLBACK_COLOR
   const bg = SAGA_BG[saga] ?? '#1f2937'
@@ -56,3 +77,5 @@ export default function BookCover({ book, size = 'sm' }: { book: Book; size?: 's
     </svg>
   )
 }
+
+export default memo(BookCover)

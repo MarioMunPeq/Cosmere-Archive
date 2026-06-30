@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { validateCharacterArray } from '@/data/generated/validate'
+import { validateCharacterArray } from '@/utils/validate'
 import { PLANETS } from '@/data/static/planets'
 
 describe('validateCharacterArray', () => {

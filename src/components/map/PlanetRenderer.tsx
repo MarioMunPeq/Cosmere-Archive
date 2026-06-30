@@ -1,16 +1,6 @@
 import { memo, useState } from 'react'
 import type { Planet } from '@/types/planet'
 import OrbitRing from './OrbitRing'
-import RosharRenderer from './renderers/RosharRenderer'
-import ScadrialRenderer from './renderers/ScadrialRenderer'
-import SelRenderer from './renderers/SelRenderer'
-import NalthisRenderer from './renderers/NalthisRenderer'
-import TaldainRenderer from './renderers/TaldainRenderer'
-import ThrenodyRenderer from './renderers/ThrenodyRenderer'
-import FirstOfTheSunRenderer from './renderers/FirstOfTheSunRenderer'
-import KomashiRenderer from './renderers/KomashiRenderer'
-import LumarRenderer from './renderers/LumarRenderer'
-import CanticleRenderer from './renderers/CanticleRenderer'
 
 interface Props {
   planet: Planet
@@ -21,23 +11,8 @@ interface Props {
   onPlanetHover: (id: string | null) => void
 }
 
-type Renderer = React.ComponentType<{ x: number; y: number; r: number }>
-const RENDERERS: Record<string, Renderer> = {
-  roshar: RosharRenderer,
-  scadrial: ScadrialRenderer,
-  sel: SelRenderer,
-  nalthis: NalthisRenderer,
-  taldain: TaldainRenderer,
-  threnody: ThrenodyRenderer,
-  'first-of-the-sun': FirstOfTheSunRenderer,
-  komashi: KomashiRenderer,
-  lumar: LumarRenderer,
-  canticle: CanticleRenderer,
-}
-
 function PlanetRenderer({ planet, isSelected, isHighlighted, size, onPlanetClick, onPlanetHover }: Props) {
   const r = size
-  const BodyRenderer: Renderer | undefined = RENDERERS[planet.id]
   const [hovered, setHovered] = useState(false)
   const showExtra = isSelected || isHighlighted
   const showHalo = isSelected || isHighlighted || hovered
@@ -45,6 +20,9 @@ function PlanetRenderer({ planet, isSelected, isHighlighted, size, onPlanetClick
   return (
     <g
       onClick={() => onPlanetClick(planet.id)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') onPlanetClick(planet.id)
+      }}
       onPointerEnter={() => {
         setHovered(true)
         onPlanetHover(planet.id)
@@ -102,11 +80,7 @@ function PlanetRenderer({ planet, isSelected, isHighlighted, size, onPlanetClick
       </g>
 
       <g className="animate-breathe">
-        {BodyRenderer ? (
-          <BodyRenderer x={planet.x} y={planet.y} r={r} />
-        ) : (
-          <circle cx={planet.x} cy={planet.y} r={r} fill={planet.color} opacity={0.8} />
-        )}
+        <circle cx={planet.x} cy={planet.y} r={r} fill={`url(#grad-${planet.id})`} />
       </g>
     </g>
   )

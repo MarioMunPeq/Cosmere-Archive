@@ -1,4 +1,6 @@
-export default function LoadingSpinner() {
+import { memo } from 'react'
+
+const LoadingSpinner = memo(function LoadingSpinner() {
   return (
     <div className="flex min-h-0 flex-1 items-center justify-center">
       <div className="flex flex-col items-center gap-3">
@@ -7,4 +9,6 @@ export default function LoadingSpinner() {
       </div>
     </div>
   )
-}
+})
+
+export default LoadingSpinner

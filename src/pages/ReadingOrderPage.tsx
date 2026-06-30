@@ -1,22 +1,12 @@
-import { useState, useEffect, useCallback, useMemo } from 'react'
-import { Link } from 'react-router-dom'
+import { useCallback, useMemo } from 'react'
+import BackToMapButton from '@/components/ui/BackToMapButton'
+import TransitionLink from '@/components/ui/TransitionLink'
 import { BOOKS, SAGAS } from '@/data/static'
-import { READING_ORDER, READING_ORDER_KEY } from '@/data/static/reading-order'
+import { READING_ORDER, READING_ORDER_KEY } from '@/data/static'
 import PageLayout from '@/components/ui/PageLayout'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
-
-function loadProgress(): Set<string> {
-  try {
-    const raw = localStorage.getItem(READING_ORDER_KEY)
-    return raw ? new Set(JSON.parse(raw)) : new Set()
-  } catch {
-    return new Set()
-  }
-}
-
-function saveProgress(ids: Set<string>) {
-  localStorage.setItem(READING_ORDER_KEY, JSON.stringify(Array.from(ids)))
-}
+import { IconCheck } from '@/components/common/icons'
+import { useLocalStorage } from '@/hooks/useLocalStorage'
 
 export default function ReadingOrderPage() {
   useSEOMeta({
@@ -24,20 +14,17 @@ export default function ReadingOrderPage() {
     description: 'Suggested reading order for the Cosmere series by Brandon Sanderson',
   })
 
-  const [completed, setCompleted] = useState<Set<string>>(() => loadProgress())
+  const [completedIds, setCompletedIds] = useLocalStorage<string[]>(READING_ORDER_KEY, [])
 
-  useEffect(() => {
-    saveProgress(completed)
-  }, [completed])
-
-  const toggle = useCallback((id: string) => {
-    setCompleted((prev) => {
-      const next = new Set(prev)
-      if (next.has(id)) next.delete(id)
-      else next.add(id)
-      return next
-    })
-  }, [])
+  const toggle = useCallback(
+    (id: string) => {
+      setCompletedIds((prev) => {
+        if (prev.includes(id)) return prev.filter((x) => x !== id)
+        return [...prev, id]
+      })
+    },
+    [setCompletedIds],
+  )
 
   const bookMap = useMemo(() => {
     const m = new Map(BOOKS.map((b) => [b.id, b]))
@@ -61,21 +48,13 @@ export default function ReadingOrderPage() {
   )
 
   const total = entries.length
-  const done = completed.size
+  const done = completedIds.length
   const pct = total > 0 ? Math.round((done / total) * 100) : 0
 
   return (
     <PageLayout variant="center">
       <div className="w-full max-w-2xl animate-fade-in-up">
-        <Link
-          to="/"
-          className="mb-6 inline-flex items-center gap-1.5 text-sm text-purple-400 transition-colors hover:text-purple-300"
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M10 12L6 8l4-4" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          Back to the map
-        </Link>
+        <BackToMapButton className="mb-6" />
 
         <h1 className="text-3xl font-bold text-gray-100">Reading Order</h1>
         <p className="mt-1 text-sm text-gray-500">Recommended reading order by Brandon Sanderson</p>
@@ -96,10 +75,7 @@ export default function ReadingOrderPage() {
         </div>
 
         <button
-          onClick={() => {
-            setCompleted(new Set())
-            saveProgress(new Set())
-          }}
+          onClick={() => setCompletedIds([])}
           className="mt-3 text-xs text-gray-600 transition-colors hover:text-gray-400"
         >
           Reset progress
@@ -108,7 +84,7 @@ export default function ReadingOrderPage() {
         <ul className="mt-6 space-y-1">
           {entries.map(({ id, book, saga, index }) => {
             if (!book) return null
-            const isDone = completed.has(id)
+            const isDone = completedIds.includes(id)
 
             return (
               <li
@@ -126,14 +102,10 @@ export default function ReadingOrderPage() {
                   }`}
                   aria-label={`Toggle ${book.title}`}
                 >
-                  {isDone && (
-                    <svg className="h-3 w-3" fill="none" viewBox="0 0 16 16" stroke="currentColor" strokeWidth="2">
-                      <path d="M4 8l3 3 5-6" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  )}
+                  {isDone && <IconCheck size={12} />}
                 </button>
 
-                <Link
+                <TransitionLink
                   to={`/books/${id}`}
                   className={`min-w-0 flex-1 transition-colors ${
                     isDone ? 'text-gray-500 line-through' : 'text-gray-200 hover:text-purple-400'
@@ -141,7 +113,7 @@ export default function ReadingOrderPage() {
                 >
                   <span className="text-sm font-medium">{book.title}</span>
                   {saga && <span className="ml-2 text-xs text-gray-600">— {saga.name}</span>}
-                </Link>
+                </TransitionLink>
 
                 {isDone && <span className="shrink-0 text-xs text-purple-500">Read</span>}
               </li>

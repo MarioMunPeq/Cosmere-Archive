@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react'
 import { useLocalStorage } from './useLocalStorage'
-import { ALL_CHARACTERS } from '@/data/static'
-import { BOOKS } from '@/data/static/books'
+import { ALL_CHARACTERS, BOOKS } from '@/data/static'
 import type { Character } from '@/types'
 
 const SPOILER_KEY = 'cosmere-spoiler-mode'

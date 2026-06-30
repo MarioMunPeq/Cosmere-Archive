@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react'
 import { useLocation } from 'react-router-dom'
+import { IconCheck } from '@/components/common/icons'
 
 const COPY_DURATION = 2000
 
@@ -38,9 +39,7 @@ export default function ShareButton() {
         title="Share"
       >
         {copied ? (
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-          </svg>
+          <IconCheck />
         ) : (
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
             <path

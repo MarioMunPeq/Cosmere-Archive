@@ -8,7 +8,7 @@ import SpoilerToggle from '@/components/ui/SpoilerToggle'
 import Breadcrumbs from '@/components/ui/Breadcrumbs'
 import BackToTop from '@/components/ui/BackToTop'
 import TransitionLink from '@/components/ui/TransitionLink'
-import { useScrollToTop } from '@/hooks/useScrollToTop'
+
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut'
 import { useViewTransitionNavigate } from '@/hooks/useViewTransition'
 
@@ -16,16 +16,28 @@ function navClass(base: string) {
   return ({ isActive }: { isActive: boolean }) => `${base} ${isActive ? 'text-purple-400' : 'text-gray-500'}`
 }
 
+const NAV_LINKS: { to: string; label: string }[] = [
+  { to: '/glossary', label: 'Glossary' },
+  { to: '/heralds', label: 'Heralds' },
+  { to: '/locations', label: 'Locations' },
+  { to: '/books', label: 'Books' },
+  { to: '/characters', label: 'Characters' },
+  { to: '/stats', label: 'Stats' },
+  { to: '/timeline', label: 'Timeline' },
+  { to: '/reading-order', label: 'Reading Order' },
+  { to: '/mind-map', label: 'Mind Map' },
+]
+
 const NAV_SHORTCUTS: [string, string][] = [
   ['1', '/about'],
   ['2', '/relationships'],
   ['3', '/glossary'],
-  ['4', '/family-tree'],
+  ['4', '/characters?tab=family'],
   ['5', '/heralds'],
   ['6', '/locations'],
   ['7', '/books'],
   ['8', '/characters'],
-  ['9', '/shards'],
+  ['9', '/locations?tab=shards'],
   ['0', '/stats'],
 ]
 
@@ -34,7 +46,9 @@ export default function Layout() {
   const navigate = useViewTransitionNavigate()
   const [cmdOpen, setCmdOpen] = useState(false)
   const [shortcutsOpen, setShortcutsOpen] = useState(false)
-  useScrollToTop()
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [location.pathname])
 
   useKeyboardShortcut(
     [
@@ -113,73 +127,18 @@ export default function Layout() {
               About
             </TransitionLink>
 
-            <div className="ml-auto flex items-center gap-3">
-              <TransitionLink
-                to="/glossary"
-                className={navClass('hidden text-sm transition-colors hover:text-gray-300 sm:inline')}
-              >
-                Glossary
-              </TransitionLink>
-              <TransitionLink
-                to="/family-tree"
-                className={navClass('hidden text-sm transition-colors hover:text-gray-300 sm:inline')}
-              >
-                Family Tree
-              </TransitionLink>
-              <TransitionLink
-                to="/heralds"
-                className={navClass('hidden text-sm transition-colors hover:text-gray-300 sm:inline')}
-              >
-                Heralds
-              </TransitionLink>
-              <TransitionLink
-                to="/locations"
-                className={navClass('hidden text-sm transition-colors hover:text-gray-300 sm:inline')}
-              >
-                Locations
-              </TransitionLink>
-              <TransitionLink
-                to="/books"
-                className={navClass('hidden text-sm transition-colors hover:text-gray-300 sm:inline')}
-              >
-                Books
-              </TransitionLink>
-              <TransitionLink
-                to="/characters"
-                className={navClass('hidden text-sm transition-colors hover:text-gray-300 sm:inline')}
-              >
-                Characters
-              </TransitionLink>
-              <TransitionLink
-                to="/shards"
-                className={navClass('hidden text-sm transition-colors hover:text-gray-300 sm:inline')}
-              >
-                Shards
-              </TransitionLink>
-              <TransitionLink
-                to="/stats"
-                className={navClass('hidden text-sm transition-colors hover:text-gray-300 sm:inline')}
-              >
-                Stats
-              </TransitionLink>
-              <TransitionLink
-                to="/timeline"
-                className={navClass('hidden text-sm transition-colors hover:text-gray-300 sm:inline')}
-              >
-                Timeline
-              </TransitionLink>
-              <TransitionLink
-                to="/reading-order"
-                className={navClass('hidden text-sm transition-colors hover:text-gray-300 sm:inline')}
-              >
-                Reading Order
-              </TransitionLink>
-              <TransitionLink
-                to="/magic"
-                className={navClass('hidden text-sm transition-colors hover:text-gray-300 sm:inline')}
-              >
-                Magic
-              </TransitionLink>
+            <div className="ml-auto flex items-center gap-3 min-w-0">
+              <div className="flex items-center gap-3 overflow-x-auto flex-nowrap scrollbar-none">
+                {NAV_LINKS.map(({ to, label }) => (
+                  <TransitionLink
+                    key={to}
+                    to={to}
+                    className={navClass('shrink-0 text-sm transition-colors hover:text-gray-300')}
+                  >
+                    {label}
+                  </TransitionLink>
+                ))}
+              </div>
               <SpoilerToggle />
               <ThemeToggle />
               <div className="w-48 sm:w-64">

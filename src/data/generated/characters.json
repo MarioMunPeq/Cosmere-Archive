@@ -65,8 +65,8 @@
   },
   {
     "id": "sigzil",
-    "name": "Sigzil (Nomad)",
-    "description": "A former Windrunner from Roshar, now known as Nomad, fleeing across the Cosmere.",
+    "name": "Sigzil / Nomad",
+    "description": "A former Knight Radiant of the Skybreakers turned worldhopper known as Nomad. Once a member of Bridge Four and Hoid's apprentice, he wanders the Cosmere bearing a Dawnshard.",
     "planet": "roshar",
     "requiredBooks": [
       "the_way_of_kings",
@@ -127,12 +127,33 @@
     "requiredBooks": ["the_final_empire", "the_well_of_ascension", "the_hero_of_ages", "arcanum_unbounded"]
   },
   {
+    "id": "kiin",
+    "name": "Kiin",
+    "description": "Sarene's uncle. A former pirate and restaurateur in Kae who plays a key role in the Elantris resistance.",
+    "planet": "sel",
+    "requiredBooks": ["elantris"]
+  },
+  {
     "id": "kelsier",
     "name": "Kelsier",
     "description": "The Survivor of Hathsin. A Mistborn who leads the rebellion against the Lord Ruler.",
     "planet": "scadrial",
     "pronunciation": "KEL-see-er",
     "requiredBooks": ["the_final_empire", "the_hero_of_ages", "arcanum_unbounded", "the_lost_metal"]
+  },
+  {
+    "id": "mare",
+    "name": "Mare",
+    "description": "Kelsier's late wife. A skaa woman who was executed in the Pits of Hathsin.",
+    "planet": "scadrial",
+    "requiredBooks": ["the_final_empire"]
+  },
+  {
+    "id": "reene",
+    "name": "Reen",
+    "description": "Vin's older half-brother. A cruel and abusive figure from Vin's past.",
+    "planet": "scadrial",
+    "requiredBooks": ["the_final_empire"]
   },
   {
     "id": "elend",
@@ -207,6 +228,13 @@
     "requiredBooks": ["the_alloy_of_law", "shadows_of_self", "the_bands_of_mourning", "the_lost_metal"]
   },
   {
+    "id": "syl",
+    "name": "Sylphrena",
+    "description": "An honorspren bonded to Kaladin. She is his conscience, guide, and friend.",
+    "planet": "roshar",
+    "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer", "rhythm_of_war", "wind_and_truth"]
+  },
+  {
     "id": "tenSoon",
     "name": "TenSoon",
     "description": "A kandra of the Third Generation who helps Vin and eventually gains his freedom.",
@@ -219,6 +247,13 @@
     "description": "Prince of Arelon, transformed by the Shaod of Elantris. Finds purpose among the fallen.",
     "planet": "sel",
     "requiredBooks": ["elantris"]
+  },
+  {
+    "id": "sadeas",
+    "name": "Torol Sadeas",
+    "description": "Highprince of Alethkar. A cunning and ruthless political rival of Dalinar Kholin.",
+    "planet": "roshar",
+    "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer"]
   },
   {
     "id": "sarene",
@@ -442,5 +477,208 @@
     "description": "A nightmare painter from Komashi tasked with sealing nightmarish entities with his art.",
     "planet": "komashi",
     "requiredBooks": ["yumi_and_the_nightmare_painter"]
+  },
+  {
+    "id": "sylphrena",
+    "name": "Sylphrena (Syl)",
+    "description": "An honorspren bonded to Kaladin. She serves as his spren and partner as a Knight Radiant of the Windrunners.",
+    "planet": "roshar",
+    "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer", "rhythm_of_war", "wind_and_truth"]
+  },
+  {
+    "id": "teft",
+    "name": "Teft",
+    "description": "A former soldier turned bridgeman and Knight Radiant of the Windrunners. Mentor to Kaladin and a member of Bridge Four.",
+    "planet": "roshar",
+    "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer", "rhythm_of_war"]
+  },
+  {
+    "id": "rock",
+    "name": "Rock (Numuhukumakiaki'aialunamor)",
+    "description": "A Horneater bridgeman turned chef. Known for his humor, cooking, and deep connection to the Unkalaki traditions.",
+    "planet": "roshar",
+    "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer"]
+  },
+  {
+    "id": "moash",
+    "name": "Moash (Vyre)",
+    "description": "A former bridgeman who becomes Odium's champion. Once a friend of Kaladin, he eventually embraces his role as Vyre, a servant of Odium.",
+    "planet": "roshar",
+    "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer", "rhythm_of_war"]
+  },
+  {
+    "id": "dabbid",
+    "name": "Dabbid",
+    "description": "A silent bridgeman from Bridge Four. Though unable to speak, he shows remarkable loyalty and resourcefulness during the occupation of Urithiru.",
+    "planet": "roshar",
+    "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer", "rhythm_of_war"]
+  },
+  {
+    "id": "rlain",
+    "name": "Rlain",
+    "description": "A listener scout who joins Bridge Four. The only listener remaining in Urithiru, he becomes a Truthwatcher and a bridge between humans and singers.",
+    "planet": "roshar",
+    "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer", "rhythm_of_war", "wind_and_truth"]
+  },
+  {
+    "id": "raboniel",
+    "name": "Raboniel (Lady of Wishes)",
+    "description": "A Fused scholar and commander who leads the occupation of Urithiru. She seeks a way to end the cycle of war between humans and singers.",
+    "planet": "roshar",
+    "requiredBooks": ["rhythm_of_war"]
+  },
+  {
+    "id": "eshonai",
+    "name": "Eshonai",
+    "description": "A listener explorer and warleader who discovered the shattered plains and sought a peaceful future for her people. Former Shardbearer and Willshaper.",
+    "planet": "roshar",
+    "requiredBooks": ["the_way_of_kings", "words_of_radiance"]
+  },
+  {
+    "id": "gavilar",
+    "name": "Gavilar Kholin",
+    "description": "The late king of Alethkar, father of Dalinar and Elhokar. His assassination by Szeth set the events of the Stormlight Archive in motion.",
+    "planet": "roshar",
+    "requiredBooks": ["the_way_of_kings", "oathbringer"]
+  },
+  {
+    "id": "breeze",
+    "name": "Breeze",
+    "description": "A Soother and member of Kelsier's crew. Known for his elegant demeanor and ability to manipulate emotions through Allomancy.",
+    "planet": "scadrial",
+    "requiredBooks": ["the_final_empire", "the_well_of_ascension", "the_hero_of_ages"]
+  },
+  {
+    "id": "ham",
+    "name": "Hammond (Ham)",
+    "description": "A Pewterarm and member of Kelsier's crew. A philosopher at heart who questions the morality of the crew's actions while fighting for the skaa.",
+    "planet": "scadrial",
+    "requiredBooks": ["the_final_empire", "the_well_of_ascension", "the_hero_of_ages"]
+  },
+  {
+    "id": "dockson",
+    "name": "Dockson",
+    "description": "The organizational mastermind of Kelsier's crew. He manages logistics and finances for the rebellion against the Lord Ruler.",
+    "planet": "scadrial",
+    "requiredBooks": ["the_final_empire", "the_well_of_ascension"]
+  },
+  {
+    "id": "clubs",
+    "name": "Clubs (Mennis)",
+    "description": "A Smoker and member of Kelsier's crew. His Allomantic coppercloud hides the crew's activities from Inquisitors and obligators.",
+    "planet": "scadrial",
+    "requiredBooks": ["the_final_empire", "the_well_of_ascension"]
+  },
+  {
+    "id": "tindwyl",
+    "name": "Tindwyl",
+    "description": "A Feruchemist of the Synod who trains Elend Venture to be a proper leader. A Terris elder known for her wisdom and stern demeanor.",
+    "planet": "scadrial",
+    "requiredBooks": ["the_well_of_ascension", "the_hero_of_ages"]
+  },
+  {
+    "id": "straff",
+    "name": "Straff Venture",
+    "description": "The high noble lord of House Venture and father of Elend. A powerful Allomancer and one of the most dangerous men in Luthadel.",
+    "planet": "scadrial",
+    "requiredBooks": ["the_final_empire", "the_well_of_ascension"]
+  },
+  {
+    "id": "zane",
+    "name": "Zane",
+    "description": "Straff Venture's Mistborn son, secretly working for the Lord Ruler. Tormented by a voice in his head, he becomes an unpredictable player in the siege of Luthadel.",
+    "planet": "scadrial",
+    "requiredBooks": ["the_well_of_ascension"]
+  },
+  {
+    "id": "miles_dagouter",
+    "name": "Miles Dagouter (Miles Hundredlives)",
+    "description": "A Twinborn bounty hunter with steel Allomancy and gold Feruchemy. His Compounding healing makes him nearly immortal. A religious zealot targeting corrupt nobles.",
+    "planet": "scadrial",
+    "requiredBooks": ["the_alloy_of_law", "shadows_of_self"]
+  },
+  {
+    "id": "telsin_ladrian",
+    "name": "Telsin Ladrian",
+    "description": "Waxillium's sister and the leader of the Set. She opposes Harmony and works to free Scadrial from his influence.",
+    "planet": "scadrial",
+    "requiredBooks": ["shadows_of_self", "the_bands_of_mourning", "the_lost_metal"]
+  },
+  {
+    "id": "galladon",
+    "name": "Galladon",
+    "description": "An Elantrian from Sel. Survived the Shaod and guided Raoden through Elantris. His stoic demeanor masks deep loyalty and wisdom.",
+    "planet": "sel",
+    "requiredBooks": ["elantris"]
+  },
+  {
+    "id": "dilaf",
+    "name": "Dilaf",
+    "description": "A Fjordell priest and leader of the Dakhor monks. A fanatical follower of Wulfden the Fourth who seeks to destroy Elantris and its people.",
+    "planet": "sel",
+    "requiredBooks": ["elantris"]
+  },
+  {
+    "id": "parlin",
+    "name": "Parlin",
+    "description": "Siri's cousin and Idrian guard. A loyal but reluctant soldier assigned to protect Siri during her journey to T'Telir.",
+    "planet": "nalthis",
+    "requiredBooks": ["warbreaker"]
+  },
+  {
+    "id": "baon",
+    "name": "Baon",
+    "description": "A Darksider mercenary from Taldain and member of Khriss's expedition to Dayside. Skilled in combat and knowledgeable about Sand Mastery.",
+    "planet": "taldain",
+    "requiredBooks": ["white_sand_vol_1", "white_sand_vol_2", "white_sand_vol_3"]
+  },
+  {
+    "id": "ais",
+    "name": "Ais",
+    "description": "A Dayside Taldain woman and leader of the Lady Masks. She aids Khriss's expedition across the Deep Desert.",
+    "planet": "taldain",
+    "requiredBooks": ["white_sand_vol_1", "white_sand_vol_2", "white_sand_vol_3"]
+  },
+  {
+    "id": "demoux",
+    "name": "Demoux",
+    "description": "A general in the armies of the Final Empire and later a member of the Seventeenth Shard. One of Kelsier's original crew and a loyal ally of Elend Venture.",
+    "planet": "scadrial",
+    "requiredBooks": ["the_final_empire", "the_well_of_ascension", "the_hero_of_ages"]
+  },
+  {
+    "id": "sixth_of_the_dusk",
+    "name": "Sixth of the Dusk",
+    "description": "A trapper from First of the Sun. Uses Aviar to survive the dangerous jungles of his homeworld. Later meets off-worlders and becomes involved in larger Cosmere events.",
+    "planet": "first-of-the-sun",
+    "requiredBooks": ["arcanum_unbounded"]
+  },
+  {
+    "id": "vathi",
+    "name": "Vathi",
+    "description": "A scholar from First of the Sun who studies the Aviar and the Pantheon. She accompanies Sixth of the Dusk on expeditions.",
+    "planet": "first-of-the-sun",
+    "requiredBooks": ["arcanum_unbounded"]
+  },
+  {
+    "id": "the_cinder_king",
+    "name": "The Cinder King",
+    "description": "The tyrannical ruler of Canticle who uses Torment bonds to control the planet's population. He endlessly pursues the sun across the scorched world.",
+    "planet": "canticle",
+    "requiredBooks": ["the_sunlit_man"]
+  },
+  {
+    "id": "fort",
+    "name": "Fort",
+    "description": "A thick-browed foxlike alien from the planet UTol who joins Nomad on his journey. Consumed by a desire for vengeance against the Night Brigade.",
+    "planet": "canticle",
+    "requiredBooks": ["the_sunlit_man"]
+  },
+  {
+    "id": "kokerlii",
+    "name": "Kokerlii",
+    "description": "A small squat humanoid alien from the planet UTol. A traveling companion of Nomad who provides comic relief and moral support.",
+    "planet": "canticle",
+    "requiredBooks": ["the_sunlit_man"]
   }
 ]

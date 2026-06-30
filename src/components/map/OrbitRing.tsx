@@ -9,17 +9,14 @@ interface Props {
 
 const DOT_COUNT = 6
 const DOT_R = 1.5
+const DOTS = Array.from({ length: DOT_COUNT }, (_, i) => ({ angle: (i * 360) / DOT_COUNT }))
 
 function OrbitRing({ cx, cy, r, color }: Props) {
-  const dots: { angle: number }[] = Array.from({ length: DOT_COUNT }, (_, i) => ({
-    angle: (i * 360) / DOT_COUNT,
-  }))
-
   return (
     <g>
       <circle cx={cx} cy={cy} r={r} fill="none" stroke={color} strokeWidth={0.3} opacity={0.15} />
       <g style={{ transformOrigin: `${cx}px ${cy}px`, animation: 'orbit-spin 8s linear infinite' }}>
-        {dots.map((d, i) => {
+        {DOTS.map((d, i) => {
           const rad = (d.angle * Math.PI) / 180
           const dx = cx + r * Math.cos(rad)
           const dy = cy + r * Math.sin(rad)

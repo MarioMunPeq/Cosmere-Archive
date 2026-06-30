@@ -8,8 +8,6 @@ const CLUSTER_GAP_PX = 64
 const START_PAD = 80
 const END_PAD = 80
 
-export const ERA_BAND_H = 36
-export const ERA_LABEL_Y = 30
 export const MAIN_LINE_Y = 60
 export const FORK_START_Y = 108
 export const FORK_SPACING = 48

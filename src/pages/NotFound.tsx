@@ -1,4 +1,5 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import BackToMapButton from '@/components/ui/BackToMapButton'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
 
 export default function NotFound() {
@@ -15,12 +16,7 @@ export default function NotFound() {
         >
           Go back
         </button>
-        <Link
-          to="/"
-          className="rounded-lg bg-purple-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-600"
-        >
-          Back to the map
-        </Link>
+        <BackToMapButton variant="button" />
       </div>
     </section>
   )

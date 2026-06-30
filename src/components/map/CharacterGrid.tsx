@@ -1,18 +1,7 @@
 import { useMemo, useState, useEffect, useRef } from 'react'
-import { PLANETS, SAGAS, getBookById, SAGA_BY_ID, ALL_CHARACTERS } from '@/data/static'
+import { PLANETS, SAGAS, SAGA_BY_ID, ALL_CHARACTERS, PLANET_BY_ID, getCharacterSagas } from '@/data/static'
 import CharacterComparison from './CharacterComparison'
-import type { Planet } from '@/data/static'
-
-function getCharacterSagas(requiredBooks: string[]): string[] {
-  const sagaIds = new Set<string>()
-  for (const bookId of requiredBooks) {
-    const book = getBookById(bookId)
-    if (book) sagaIds.add(book.saga)
-  }
-  return Array.from(sagaIds)
-}
-
-const PLANET_BY_ID = new Map<string, Planet>(PLANETS.map((p) => [p.id, p]))
+import EmptyState from '@/components/ui/EmptyState'
 
 export default function CharacterGrid({ highlightedCharacter }: { highlightedCharacter?: string | null }) {
   const [filterPlanets, setFilterPlanets] = useState<string[]>([])
@@ -136,7 +125,7 @@ export default function CharacterGrid({ highlightedCharacter }: { highlightedCha
 
       <div className="flex-1 overflow-y-auto p-4">
         {filtered.length === 0 ? (
-          <p className="mt-12 text-center text-sm text-gray-600">No characters match the selected filters.</p>
+          <EmptyState message="No characters match the selected filters." />
         ) : (
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filtered.map((c) => {

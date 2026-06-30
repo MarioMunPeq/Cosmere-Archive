@@ -3,7 +3,7 @@ import type { CharacterSpan } from '@/data/static/timeline/character-lifespans'
 import { getPlanetById } from '@/data/static'
 import ColorDot from '@/components/ui/ColorDot'
 import CharacterAvatar from '@/components/ui/CharacterAvatar'
-import { CloseIcon } from '@/components/common/icons'
+import DetailPanel from '@/components/ui/DetailPanel'
 
 interface Props {
   character: CharacterSpan
@@ -25,15 +25,7 @@ function CharacterPanel({ character, onClose, onSelectPlanet }: Props) {
   )
 
   return (
-    <div className="absolute bottom-4 left-4 right-4 top-auto w-auto animate-scale-in rounded-xl border border-gray-700/60 bg-gray-900/95 p-4 shadow-2xl backdrop-blur-lg sm:bottom-auto sm:left-auto sm:right-4 sm:top-4 sm:w-80 sm:p-5">
-      <button
-        onClick={onClose}
-        aria-label="Close character panel"
-        className="absolute right-3 top-3 text-gray-600 transition-colors hover:text-gray-300"
-      >
-        <CloseIcon />
-      </button>
-
+    <DetailPanel onClose={onClose} ariaLabel="Close character panel">
       <div className="mb-3 flex items-center gap-3">
         <CharacterAvatar character={avatarChar} color={character.color} size={32} />
         <h3 className="text-lg font-bold text-gray-100">{character.name}</h3>
@@ -67,7 +59,7 @@ function CharacterPanel({ character, onClose, onSelectPlanet }: Props) {
         <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Group</h4>
         <span className="inline-block rounded bg-gray-800 px-2.5 py-1 text-xs text-gray-400">{character.group}</span>
       </div>
-    </div>
+    </DetailPanel>
   )
 }
 

@@ -19,8 +19,7 @@ describe('BookCover', () => {
   })
 
   it('renders with md size', () => {
-    const { container } = render(<BookCover book={mockBook} size="md" />)
-    const svg = container.querySelector('svg')
-    expect(svg).toBeInTheDocument()
+    render(<BookCover book={mockBook} size="md" />)
+    expect(screen.getByLabelText('Cover of The Way of Kings').closest('svg')).toBeInTheDocument()
   })
 })

@@ -36,11 +36,14 @@ export function computeCurveControlPoint(
   }
 }
 
-// Map year-gap to animation ms: 1.5s min, 6s max, log-ish curve
-export function yearGapToMs(gap: number): number {
+const MIN_ANIM_MS = 1500
+const MAX_ANIM_MS = 6000
+const LOG_SCALE = 400
+
+function yearGapToMs(gap: number): number {
   const g = Math.abs(gap)
-  if (g <= 1) return 1500
-  return Math.round(Math.max(1500, Math.min(6000, 1500 + Math.log(g) * 400)))
+  if (g <= 1) return MIN_ANIM_MS
+  return Math.round(Math.max(MIN_ANIM_MS, Math.min(MAX_ANIM_MS, MIN_ANIM_MS + Math.log(g) * LOG_SCALE)))
 }
 
 function findWorldhopper(id: string): WorldhopperMovement | undefined {

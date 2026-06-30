@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react'
 import { ALL_CHARACTERS, getPlanetById } from '@/data/static'
-import { CHARACTER_RELATIONSHIPS } from '@/data/static/character-relationships'
+import { CHARACTER_RELATIONSHIPS } from '@/data/static'
 import CharacterRelationships from '@/components/detail/CharacterRelationships'
 import ForceGraph from '@/components/detail/ForceGraph'
 import ColorDot from '@/components/ui/ColorDot'
 import PageLayout from '@/components/ui/PageLayout'
-import { FALLBACK_COLOR } from '@/utils/constants'
+import EmptyState from '@/components/ui/EmptyState'
+import { FALLBACK_COLOR } from '@/data/static'
 import { useTextFilter } from '@/hooks/useTextFilter'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
 import type { Character } from '@/types'
@@ -146,7 +147,7 @@ export default function RelationshipsPage() {
         <div className="flex min-h-0 flex-1 gap-4 overflow-hidden">
           <div className="w-56 shrink-0 space-y-3 overflow-y-auto pr-2">
             {grouped.length === 0 ? (
-              <p className="pt-8 text-center text-xs text-gray-500">No characters match your search.</p>
+              <EmptyState message="No characters match your search." />
             ) : (
               grouped.map(([planet, chars]) => (
                 <GroupedCharacters

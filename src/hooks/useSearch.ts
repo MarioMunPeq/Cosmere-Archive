@@ -1,20 +1,15 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { PLANETS } from '@/data/static'
+import { PLANETS, BOOKS } from '@/data/static'
 import { TIMELINE_EVENTS } from '@/data/static/timeline'
 import { CHARACTER_SPANS } from '@/data/static/timeline/character-lifespans'
 import { WORLDHOPPER_MOVEMENTS } from '@/data/static/timeline/worldhopper-journeys'
-import { BOOKS } from '@/data/static/books'
 import { GLOSSARY_ENTRIES } from '@/data/static/glossary'
 import { MAGIC_SYSTEMS } from '@/data/static/magic-systems'
 import { HERALDS } from '@/data/static/heralds'
-
-interface SearchResult {
-  type: 'planet' | 'character' | 'worldhopper' | 'event' | 'book' | 'glossary' | 'magic' | 'herald' | 'header'
-  label: string
-  sublabel: string
-  action: () => void
-}
+import { useLocalStorage } from '@/hooks/useLocalStorage'
+import { SEARCH_DEBOUNCE_MS, PLACEHOLDER_ROTATE_MS } from '@/constants'
+import type { SearchResult } from '@/types/search'
 
 const MAX_PER_CATEGORY = 4
 const MAX_RECENT = 5
@@ -39,26 +34,8 @@ const PLACEHOLDERS = [
   'Look up a character...',
 ]
 
-function loadRecent(): string[] {
-  try {
-    const raw = localStorage.getItem(RECENT_KEY)
-    return raw ? JSON.parse(raw) : []
-  } catch {
-    return []
-  }
-}
-
-function saveRecent(items: string[]) {
-  try {
-    localStorage.setItem(RECENT_KEY, JSON.stringify(items))
-  } catch {
-    /* noop */
-  }
-}
-
-function addRecent(label: string) {
-  const prev = loadRecent().filter((s) => s !== label)
-  saveRecent([label, ...prev].slice(0, MAX_RECENT))
+function addRecent(label: string, setRecent: (v: string[] | ((prev: string[]) => string[])) => void) {
+  setRecent((prev) => [label, ...prev.filter((s) => s !== label)].slice(0, MAX_RECENT))
 }
 
 function headerFor(type: SearchResult['type']): SearchResult {
@@ -71,7 +48,7 @@ export function useSearch() {
   const [open, setOpen] = useState(false)
   const [highlightIdx, setHighlightIdx] = useState(-1)
   const [placeholder, setPlaceholder] = useState(PLACEHOLDERS[0]!)
-  const [recent, setRecent] = useState<string[]>(() => loadRecent())
+  const [recent, setRecent] = useLocalStorage<string[]>(RECENT_KEY, [])
   const inputRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
@@ -82,7 +59,7 @@ export function useSearch() {
         const idx = PLACEHOLDERS.indexOf(prev)
         return PLACEHOLDERS[(idx + 1) % PLACEHOLDERS.length]!
       })
-    }, 4000)
+    }, PLACEHOLDER_ROTATE_MS)
     return () => clearInterval(timer)
   }, [])
 
@@ -222,13 +199,12 @@ export function useSearch() {
       setResults(hits)
       setOpen(hits.length > 0)
       setHighlightIdx(-1)
-      setRecent([])
     },
     [navigate],
   )
 
   useEffect(() => {
-    const timer = setTimeout(() => runSearch(query), 200)
+    const timer = setTimeout(() => runSearch(query), SEARCH_DEBOUNCE_MS)
     return () => clearTimeout(timer)
   }, [query, runSearch])
 
@@ -236,7 +212,6 @@ export function useSearch() {
     setOpen(false)
     setQuery('')
     setResults([])
-    setRecent(loadRecent())
   }, [])
 
   const handleKey = useCallback(
@@ -293,23 +268,18 @@ export function useSearch() {
     handleKey,
     onFocus: useCallback(() => {
       if (results.length) setOpen(true)
-      else if (!query.trim()) {
-        const r = loadRecent()
-        if (r.length) {
-          setRecent(r)
-          setOpen(true)
-        }
+      else if (!query.trim() && recent.length) {
+        setOpen(true)
       }
-    }, [results.length, query, setOpen, setRecent]),
+    }, [results.length, query, recent, setOpen]),
     onSelect: useCallback(
       (label: string, action: () => void) => {
-        addRecent(label)
+        addRecent(label, setRecent)
         action()
         close()
       },
-      [close],
+      [close, setRecent],
     ),
+    clearRecent: useCallback(() => setRecent([]), [setRecent]),
   }
 }
-
-export type { SearchResult }

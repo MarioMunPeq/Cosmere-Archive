@@ -10,6 +10,7 @@ export default defineConfig({
   build: {
     target: 'es2022',
     cssMinify: 'esbuild',
+    chunkSizeWarningLimit: 1000,
     sourcemap: process.env.CI ? 'hidden' : false,
     rollupOptions: {
       output: {
@@ -17,10 +18,12 @@ export default defineConfig({
           if (
             id.includes('node_modules/react/') ||
             id.includes('node_modules/react-dom/') ||
-            id.includes('node_modules/react-router/')
+            id.includes('node_modules/react-router/') ||
+            id.includes('node_modules/react-router-dom/')
           )
             return 'vendor'
           if (id.includes('node_modules/d3-force') || id.includes('node_modules/d3-')) return 'd3'
+          if (id.includes('node_modules/@tanstack/react-virtual')) return 'virtual'
         },
       },
     },

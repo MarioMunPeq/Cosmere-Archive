@@ -1,4 +1,6 @@
 export type { Book } from './book'
 export type { Character } from './character'
 export type { Planet } from './planet'
+export type { GraphNode, GraphLink } from './force-graph'
 export type { CharacterRelationship, RelationshipType } from './relationships'
+export type { SearchResult } from './search'

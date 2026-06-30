@@ -1,35 +1,26 @@
-import { useState, useEffect, useCallback } from 'react'
-
-const THEME_KEY = 'cosmere-theme'
+import { useEffect, useCallback } from 'react'
+import { useLocalStorage } from './useLocalStorage'
 
 type Theme = 'dark' | 'light'
 
-function getInitialTheme(): Theme {
+function prefersLight() {
   try {
-    const stored = localStorage.getItem(THEME_KEY)
-    if (stored === 'dark' || stored === 'light') return stored
+    return window.matchMedia('(prefers-color-scheme: light)').matches
   } catch {
-    /* noop */
+    return false
   }
-  if (window.matchMedia('(prefers-color-scheme: light)').matches) return 'light'
-  return 'dark'
 }
 
 export function useTheme() {
-  const [theme, setThemeState] = useState<Theme>(getInitialTheme)
+  const [theme, setTheme] = useLocalStorage<Theme>('cosmere-theme', prefersLight() ? 'light' : 'dark')
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
-    try {
-      localStorage.setItem(THEME_KEY, theme)
-    } catch {
-      /* noop */
-    }
   }, [theme])
 
   const toggleTheme = useCallback(() => {
-    setThemeState((prev) => (prev === 'dark' ? 'light' : 'dark'))
-  }, [])
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
+  }, [setTheme])
 
-  return { theme, toggleTheme, setTheme: setThemeState }
+  return { theme, toggleTheme, setTheme }
 }

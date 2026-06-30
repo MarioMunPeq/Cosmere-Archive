@@ -1,7 +1,19 @@
-import { useMemo } from 'react'
+import { memo, useMemo } from 'react'
 import type { TimelineEvent } from '@/data/static/timeline'
 import { yearToX, TOTAL_WIDTH, MAIN_LINE_Y, FORK_START_Y, FORK_SPACING } from '@/utils/timeline-layout'
-import { FALLBACK_COLOR } from '@/utils/constants'
+import { FALLBACK_COLOR } from '@/data/static'
+
+function getImportanceColor(imp: number): string {
+  if (imp >= 5) return '#a78bfa'
+  if (imp >= 4) return '#c4b5fd'
+  return FALLBACK_COLOR
+}
+
+function getImportanceStroke(imp: number): string {
+  if (imp >= 5) return '#7c3aed'
+  if (imp >= 4) return '#8b5cf6'
+  return '#4b5563'
+}
 
 interface TimelineProps {
   events: TimelineEvent[]
@@ -15,7 +27,7 @@ interface TimelineProps {
   onClickEvent: (eventId: string | null, event?: TimelineEvent, line?: 'main' | 'fork', forkSaga?: string) => void
 }
 
-export default function Timeline({
+function Timeline({
   events,
   selectedSagas,
   sagaColors,
@@ -43,18 +55,6 @@ export default function Timeline({
   }, [events, selectedSagas])
 
   const mainEvents = events
-
-  function getImportanceColor(imp: number): string {
-    if (imp >= 5) return '#a78bfa'
-    if (imp >= 4) return '#c4b5fd'
-    return FALLBACK_COLOR
-  }
-
-  function getImportanceStroke(imp: number): string {
-    if (imp >= 5) return '#7c3aed'
-    if (imp >= 4) return '#8b5cf6'
-    return '#4b5563'
-  }
 
   return (
     <svg
@@ -229,3 +229,5 @@ export default function Timeline({
     </svg>
   )
 }
+
+export default memo(Timeline)

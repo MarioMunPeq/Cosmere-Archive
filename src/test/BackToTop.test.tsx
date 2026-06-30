@@ -19,6 +19,6 @@ describe('BackToTop', () => {
   it('starts hidden (opacity-0 class present)', () => {
     render(<BackToTop />)
     const btn = screen.getByLabelText('Back to top')
-    expect(btn.className).toContain('opacity-0')
+    expect(btn).toHaveClass('opacity-0')
   })
 })

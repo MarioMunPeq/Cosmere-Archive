@@ -1,22 +1,11 @@
 import { useMemo, useRef, useEffect, useState, useCallback } from 'react'
 import { forceSimulation, forceLink, forceManyBody, forceCenter, forceCollide } from 'd3-force'
-import type { SimulationNodeDatum, SimulationLinkDatum } from 'd3-force'
 import type { Character } from '@/types'
-import type { CharacterRelationship, RelationshipType } from '@/types/relationships'
+import type { CharacterRelationship } from '@/types/relationships'
 import { RELATIONSHIP_LABELS, RELATIONSHIP_COLORS } from '@/types/relationships'
 import { getPlanetById } from '@/data/static'
-import { FALLBACK_COLOR } from '@/utils/constants'
-
-interface GraphNode extends SimulationNodeDatum {
-  id: string
-  name: string
-  color: string
-}
-
-interface GraphLink extends SimulationLinkDatum<GraphNode> {
-  type: RelationshipType
-  label?: string
-}
+import { FALLBACK_COLOR } from '@/data/static'
+import type { GraphNode, GraphLink } from '@/types/force-graph'
 
 interface Props {
   characters: Character[]

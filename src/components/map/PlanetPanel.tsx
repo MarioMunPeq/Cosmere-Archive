@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom'
 import { getBookById, SAGA_BY_ID, getPlanetById } from '@/data/static'
 import { WORLDHOPPERS } from '@/data/static/timeline'
 import ColorDot from '@/components/ui/ColorDot'
+import CloseButton from '@/components/ui/CloseButton'
+import InfoSection from '@/components/ui/InfoSection'
+import { PlayIcon } from '@/components/common/icons'
 import type { Planet } from '@/types/planet'
 import type { Character } from '@/types'
 
@@ -24,22 +27,14 @@ export default function PlanetPanel({
   panelRef,
 }: Props) {
   return (
-    <div className="contents">
+    <>
       <div className="fixed inset-0 z-30 bg-black/60 sm:hidden" onClick={() => onSelectPlanet(null)} />
       <div
         ref={panelRef}
         key={selected.id}
         className="absolute inset-0 z-40 flex flex-col overflow-y-auto bg-gray-900 animate-slide-up sm:inset-auto sm:bottom-auto sm:left-auto sm:right-4 sm:top-4 sm:max-h-[calc(100vh-2rem)] sm:w-72 sm:rounded-xl sm:border sm:border-gray-700/60 sm:bg-gray-900/95 sm:p-5 sm:shadow-2xl sm:backdrop-blur-lg sm:animate-scale-in"
       >
-        <button
-          onClick={() => onSelectPlanet(null)}
-          aria-label="Close planet panel"
-          className="absolute right-3 top-3 text-gray-600 transition-colors hover:text-gray-300"
-        >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-        </button>
+        <CloseButton onClick={() => onSelectPlanet(null)} ariaLabel="Close planet panel" />
 
         <div className="mb-3 flex items-center gap-3">
           <div className="h-3 w-3 rounded-full shrink-0" style={{ backgroundColor: selected.color }} />
@@ -50,8 +45,7 @@ export default function PlanetPanel({
         <p className="mt-2 text-sm leading-relaxed text-gray-400">{selected.description}</p>
 
         {selected.investiture && selected.investiture.length > 0 && (
-          <div className="mt-3">
-            <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Investiture Systems</h4>
+          <InfoSection label="Investiture Systems">
             <div className="space-y-1.5">
               {selected.investiture.map((sys) => (
                 <div key={sys.name} className="rounded-lg border border-gray-800 bg-gray-900/50 px-3 py-2">
@@ -67,7 +61,7 @@ export default function PlanetPanel({
                 </div>
               ))}
             </div>
-          </div>
+          </InfoSection>
         )}
 
         {selected.magicSystem && !selected.investiture?.length && (
@@ -78,8 +72,7 @@ export default function PlanetPanel({
         )}
 
         {selected.sagas && selected.sagas.length > 0 && (
-          <div className="mt-3">
-            <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Sagas</h4>
+          <InfoSection label="Sagas">
             <div className="flex flex-wrap gap-1.5">
               {selected.sagas.map((sId) => {
                 const saga = SAGA_BY_ID.get(sId)
@@ -90,12 +83,11 @@ export default function PlanetPanel({
                 ) : null
               })}
             </div>
-          </div>
+          </InfoSection>
         )}
 
         {selected.books && selected.books.length > 0 && (
-          <div className="mt-3">
-            <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Books</h4>
+          <InfoSection label="Books">
             <div className="space-y-1">
               {selected.books.map((bId) => {
                 const book = getBookById(bId)
@@ -111,14 +103,11 @@ export default function PlanetPanel({
                 ) : null
               })}
             </div>
-          </div>
+          </InfoSection>
         )}
 
         {selectedCharacters.length > 0 && (
-          <div className="mt-3">
-            <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">
-              Characters ({selectedCharacters.length})
-            </h4>
+          <InfoSection label={`Characters (${selectedCharacters.length})`}>
             <div className="flex flex-wrap gap-1.5">
               {selectedCharacters.map((c) => (
                 <button
@@ -130,12 +119,11 @@ export default function PlanetPanel({
                 </button>
               ))}
             </div>
-          </div>
+          </InfoSection>
         )}
 
         {selected.connectedPlanets && selected.connectedPlanets.length > 0 && (
-          <div className="mt-3">
-            <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Connected Planets</h4>
+          <InfoSection label="Connected Planets">
             <div className="flex flex-wrap gap-1.5">
               {selected.connectedPlanets.map((pId) => {
                 const p = getPlanetById(pId)
@@ -150,12 +138,11 @@ export default function PlanetPanel({
                 ) : null
               })}
             </div>
-          </div>
+          </InfoSection>
         )}
 
         {WORLDHOPPERS.filter((wh) => wh.planets.includes(selected.id)).length > 0 && (
-          <div className="mt-3">
-            <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">Worldhoppers</h4>
+          <InfoSection label="Worldhoppers">
             <div className="space-y-1.5">
               {WORLDHOPPERS.filter((wh) => wh.planets.includes(selected.id)).map((wh) => (
                 <div
@@ -169,16 +156,14 @@ export default function PlanetPanel({
                     className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-purple-900/30 text-purple-400 transition-colors hover:bg-purple-800/40 hover:text-purple-300"
                     aria-label={`Animate ${wh.name}'s journey`}
                   >
-                    <svg width="10" height="10" viewBox="0 0 12 12" fill="currentColor">
-                      <path d="M2 1l9 5-9 5V1z" />
-                    </svg>
+                    <PlayIcon />
                   </button>
                 </div>
               ))}
             </div>
-          </div>
+          </InfoSection>
         )}
       </div>
-    </div>
+    </>
   )
 }

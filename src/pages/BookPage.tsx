@@ -1,5 +1,8 @@
 import { useMemo } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
+import BackToMapButton from '@/components/ui/BackToMapButton'
+import TransitionLink from '@/components/ui/TransitionLink'
+import { IconChevronLeft, IconChevronRight } from '@/components/common/icons'
 import { BOOKS, SAGA_BY_ID, ALL_CHARACTERS } from '@/data/static'
 import BookCover from '@/components/common/BookCover'
 import NotFound from './NotFound'
@@ -8,6 +11,7 @@ import { useSEOMeta } from '@/hooks/useSEOMeta'
 
 export default function BookPage() {
   const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
 
   const book = useMemo(() => BOOKS.find((b) => b.id === id), [id])
 
@@ -51,15 +55,7 @@ export default function BookPage() {
   return (
     <PageLayout variant="center">
       <div className="w-full max-w-2xl animate-fade-in-up">
-        <Link
-          to="/"
-          className="mb-6 inline-flex items-center gap-1.5 text-sm text-purple-400 transition-colors hover:text-purple-300"
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M10 12L6 8l4-4" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          Back to the map
-        </Link>
+        <BackToMapButton className="mb-6" />
 
         <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
           <BookCover book={book} size="md" />
@@ -91,7 +87,12 @@ export default function BookPage() {
               {characters.map((c) => (
                 <div key={c.id} className="rounded-lg border border-gray-800 bg-gray-900/50 p-3">
                   <div className="font-medium text-gray-200">{c.name}</div>
-                  <div className="mt-0.5 text-xs text-gray-500 capitalize">{c.planet}</div>
+                  <button
+                    onClick={() => navigate(`/?focus=planet&id=${c.planet}`)}
+                    className="mt-0.5 text-xs text-gray-500 capitalize transition-colors hover:text-cyan-400"
+                  >
+                    {c.planet}
+                  </button>
                   <div className="mt-1 text-xs leading-relaxed text-gray-500 line-clamp-2">{c.description}</div>
                 </div>
               ))}
@@ -101,32 +102,22 @@ export default function BookPage() {
 
         <nav className="mt-8 flex items-center justify-between border-t border-gray-800 pt-6">
           {prevBook ? (
-            <Link
+            <TransitionLink
               to={`/books/${prevBook.id}`}
               className="group flex items-center gap-2 text-sm text-gray-400 transition-colors hover:text-purple-400"
             >
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 16 16"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                className="transition-transform group-hover:-translate-x-0.5"
-              >
-                <path d="M10 12L6 8l4-4" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              <IconChevronLeft size={14} className="transition-transform group-hover:-translate-x-0.5" />
               <div className="text-right">
                 <div className="text-xs text-gray-600">Previous</div>
                 <div className="text-sm">{prevBook.title}</div>
               </div>
-            </Link>
+            </TransitionLink>
           ) : (
             <div />
           )}
 
           {nextBook ? (
-            <Link
+            <TransitionLink
               to={`/books/${nextBook.id}`}
               className="group flex items-center gap-2 text-sm text-gray-400 transition-colors hover:text-purple-400"
             >
@@ -134,18 +125,8 @@ export default function BookPage() {
                 <div className="text-xs text-gray-600">Next</div>
                 <div className="text-sm">{nextBook.title}</div>
               </div>
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 16 16"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                className="transition-transform group-hover:translate-x-0.5"
-              >
-                <path d="M6 4l4 4-4 4" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </Link>
+              <IconChevronRight size={14} className="transition-transform group-hover:translate-x-0.5" />
+            </TransitionLink>
           ) : (
             <div />
           )}

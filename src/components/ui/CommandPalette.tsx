@@ -1,6 +1,10 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { useViewTransitionNavigate } from '@/hooks/useViewTransition'
 import { BOOKS, ALL_CHARACTERS } from '@/data/static'
+import EmptyState from '@/components/ui/EmptyState'
+import Overlay from '@/components/ui/Overlay'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
+import { IconSearch } from '@/components/common/icons'
 
 interface Command {
   id: string
@@ -14,10 +18,16 @@ const PAGE_COMMANDS: Command[] = [
   { id: 'home', label: 'Map', description: 'Interactive Cosmere map', to: '/', icon: '🗺' },
   { id: 'books', label: 'Books', description: 'All Cosmere books', to: '/books', icon: '📚' },
   { id: 'characters', label: 'Characters', description: 'Notable Cosmere characters', to: '/characters', icon: '👤' },
-  { id: 'shards', label: 'Shards', description: 'Shards of Adonalsium', to: '/shards', icon: '💎' },
+  { id: 'shards', label: 'Shards', description: 'Shards of Adonalsium', to: '/locations?tab=shards', icon: '💎' },
   { id: 'timeline', label: 'Timeline', description: 'Cosmere timeline of events', to: '/timeline', icon: '📅' },
   { id: 'glossary', label: 'Glossary', description: 'Cosmere terminology', to: '/glossary', icon: '📖' },
-  { id: 'magic', label: 'Magic Systems', description: 'Magic across the Cosmere', to: '/magic', icon: '✨' },
+  {
+    id: 'magic',
+    label: 'Magic Systems',
+    description: 'Magic across the Cosmere',
+    to: '/glossary?tab=magic',
+    icon: '✨',
+  },
   {
     id: 'relationships',
     label: 'Relationships',
@@ -25,7 +35,13 @@ const PAGE_COMMANDS: Command[] = [
     to: '/relationships',
     icon: '🔗',
   },
-  { id: 'family-tree', label: 'Family Tree', description: 'Cosmere family trees', to: '/family-tree', icon: '🌳' },
+  {
+    id: 'family-tree',
+    label: 'Family Tree',
+    description: 'Cosmere family trees',
+    to: '/characters?tab=family',
+    icon: '🌳',
+  },
   { id: 'heralds', label: 'Heralds', description: 'The 10 Heralds of the Almighty', to: '/heralds', icon: '👑' },
   {
     id: 'locations',
@@ -45,11 +61,16 @@ const PAGE_COMMANDS: Command[] = [
   { id: 'about', label: 'About', description: 'About Cosmere Archive', to: '/about', icon: 'ℹ️' },
 ]
 
-export default function CommandPalette({ onClose }: { onClose: () => void }) {
+interface Props {
+  onClose: () => void
+}
+
+export default function CommandPalette({ onClose }: Props) {
   const [query, setQuery] = useState('')
   const [selectedIdx, setSelectedIdx] = useState(0)
   const navigate = useViewTransitionNavigate()
   const inputRef = useRef<HTMLInputElement>(null)
+  const containerRef = useFocusTrap(true)
 
   const allCommands = useMemo(() => {
     const bookCommands: Command[] = BOOKS.map((b) => ({
@@ -109,23 +130,16 @@ export default function CommandPalette({ onClose }: { onClose: () => void }) {
 
   return (
     <div
+      ref={containerRef}
       className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh]"
       role="dialog"
       aria-modal="true"
       aria-label="Command palette"
     >
-      <div className="fixed inset-0 bg-black/60" onClick={onClose} />
+      <Overlay onClick={onClose} />
       <div className="relative w-full max-w-lg animate-fade-in-up rounded-xl border border-gray-700 bg-gray-900 shadow-2xl">
         <div className="flex items-center border-b border-gray-700 px-4">
-          <svg
-            className="mr-3 h-5 w-5 shrink-0 text-gray-500"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
+          <IconSearch size={20} className="mr-3 shrink-0 text-gray-500" />
           <input
             ref={inputRef}
             type="text"
@@ -142,7 +156,7 @@ export default function CommandPalette({ onClose }: { onClose: () => void }) {
           <kbd className="ml-2 shrink-0 rounded border border-gray-600 px-1.5 py-0.5 text-xs text-gray-500">esc</kbd>
         </div>
         <div className="max-h-80 overflow-y-auto p-2">
-          {filtered.length === 0 && <p className="py-6 text-center text-sm text-gray-500">No results found.</p>}
+          {filtered.length === 0 && <EmptyState message="No results found." />}
           {filtered.map((cmd, i) => (
             <button
               key={cmd.id}

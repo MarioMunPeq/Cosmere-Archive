@@ -129,5 +129,3 @@ export const HERALDS: Herald[] = [
     color: '#eab308',
   },
 ]
-
-export const HERALD_BY_ID: Map<string, Herald> = new Map(HERALDS.map((h) => [h.id, h]))

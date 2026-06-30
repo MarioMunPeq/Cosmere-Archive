@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { PLANETS } from '@/data/static'
 import { WORLDHOPPER_MOVEMENTS } from '@/data/static/timeline'
+import { planetMap } from '@/test/fixtures'
 
 //
 // Utility functions to be extracted to src/utils/journey.ts
@@ -8,7 +9,6 @@ import { WORLDHOPPER_MOVEMENTS } from '@/data/static/timeline'
 //
 
 // ---------- Helpers for tests ----------
-const planetMap = new Map(PLANETS.map((p) => [p.id, { x: p.x, y: p.y }]))
 const ALL_PLANET_IDS = new Set(PLANETS.map((p) => p.id))
 
 import {

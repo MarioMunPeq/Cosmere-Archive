@@ -1,19 +1,9 @@
-import { useMemo } from 'react'
-import { PLANETS, getBookById, SAGA_BY_ID, ALL_CHARACTERS } from '@/data/static'
+import { useMemo, useEffect } from 'react'
+import { PLANET_BY_ID, getBookById, SAGA_BY_ID, ALL_CHARACTERS, getCharacterSagas } from '@/data/static'
 import type { Character } from '@/types'
 import { CloseIcon } from '@/components/common/icons'
 import ColorDot from '@/components/ui/ColorDot'
-
-const PLANET_BY_ID = new Map(PLANETS.map((p) => [p.id, p]))
-
-function getCharacterSagas(c: Character): string[] {
-  const sagaIds = new Set<string>()
-  for (const bookId of c.requiredBooks) {
-    const book = getBookById(bookId)
-    if (book) sagaIds.add(book.saga)
-  }
-  return Array.from(sagaIds)
-}
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 
 function getCharacterBooks(c: Character): string[] {
   return c.requiredBooks.map((id) => {
@@ -28,6 +18,16 @@ interface Props {
 }
 
 export default function CharacterComparison({ characterIds, onClose }: Props) {
+  const containerRef = useFocusTrap(true)
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose])
+
   const chars = useMemo(() => {
     return characterIds
       .map((id) => ALL_CHARACTERS.find((c) => c.id === id))
@@ -37,8 +37,8 @@ export default function CharacterComparison({ characterIds, onClose }: Props) {
   if (chars.length !== 2) return null
 
   const [a, b] = chars as [Character, Character]
-  const aSagas = getCharacterSagas(a)
-  const bSagas = getCharacterSagas(b)
+  const aSagas = getCharacterSagas(a.requiredBooks)
+  const bSagas = getCharacterSagas(b.requiredBooks)
   const aBooks = getCharacterBooks(a)
   const bBooks = getCharacterBooks(b)
   const aPlanet = PLANET_BY_ID.get(a.planet)
@@ -48,7 +48,7 @@ export default function CharacterComparison({ characterIds, onClose }: Props) {
   const allSagas = Array.from(new Set([...aSagas, ...bSagas]))
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+    <div ref={containerRef} className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
       <div className="flex max-h-[90vh] w-full max-w-3xl flex-col rounded-xl border border-gray-800 bg-gray-900 shadow-2xl">
         <div className="flex items-center justify-between border-b border-gray-800 px-5 py-3">
           <h3 className="text-sm font-semibold text-gray-200">Character Comparison</h3>

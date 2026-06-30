@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom'
+import BackToMapButton from '@/components/ui/BackToMapButton'
+import TransitionLink from '@/components/ui/TransitionLink'
 import PageLayout from '@/components/ui/PageLayout'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
 
@@ -11,15 +12,7 @@ export default function About() {
   return (
     <PageLayout variant="center">
       <div className="max-w-lg animate-fade-in-up">
-        <Link
-          to="/"
-          className="mb-6 inline-flex items-center gap-1.5 text-sm text-purple-400 transition-colors hover:text-purple-300"
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M10 12L6 8l4-4" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          Back to the map
-        </Link>
+        <BackToMapButton className="mb-6" />
 
         <h1 className="text-3xl font-bold text-gray-100">About</h1>
 
@@ -87,9 +80,9 @@ export default function About() {
         </p>
 
         <div className="mt-8 border-t border-gray-800 pt-6 text-sm text-gray-600">
-          <Link to="/" className="text-purple-400 hover:text-purple-300">
+          <TransitionLink to="/" className="text-purple-400 hover:text-purple-300">
             &larr; Back to the Cosmere Map
-          </Link>
+          </TransitionLink>
         </div>
       </div>
     </PageLayout>

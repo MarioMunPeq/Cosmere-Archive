@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import ReadingOrderPage from '@/pages/ReadingOrderPage'
-import { READING_ORDER_KEY } from '@/data/static/reading-order'
+import { READING_ORDER_KEY } from '@/data/static'
 
 function renderPage() {
   return render(

@@ -514,4 +514,186 @@ export const GLOSSARY_ENTRIES: GlossaryEntry[] = [
     planet: 'sel',
     relatedTerms: ['aondor', 'raoden', 'elantris'],
   },
+  {
+    id: 'invention',
+    term: 'Invention',
+    definition:
+      'The Shard of Invention and Craft. Its current Vessel and location are unknown, though its influence may be tied to forward-thinking and the creation of novel investiture-based technologies across the Cosmere.',
+    category: 'shard',
+    relatedTerms: ['shard', 'vessel'],
+  },
+  {
+    id: 'valor',
+    term: 'Valor',
+    definition:
+      'The Shard of Valor and Bravery. Its current Vessel and location are unknown. It is one of the sixteen Shards of Adonalsium whose influence may be related to courage and facing danger.',
+    category: 'shard',
+    relatedTerms: ['shard', 'vessel'],
+  },
+  {
+    id: 'connection',
+    term: 'Connection',
+    definition:
+      'A Realmatic attribute that governs bonds between people, places, and objects. Connection can be manipulated by certain investiture arts, such as Feruchemical duralumin or AonDor. It is one of the fundamental forces of the Cosmere.',
+    category: 'concept',
+    relatedTerms: ['investiture', 'identity', 'fortune', 'realmatic_theory', 'feruchemy'],
+  },
+  {
+    id: 'identity',
+    term: 'Identity',
+    definition:
+      "A Realmatic attribute that defines an individual's sense of self. Identity can be stored, manipulated, or removed through Feruchemy and other investiture arts. It is one of the fundamental forces underlying Realmatic Theory.",
+    category: 'concept',
+    relatedTerms: ['connection', 'fortune', 'realmatic_theory', 'feruchemy', 'hemalurgy'],
+  },
+  {
+    id: 'fortune',
+    term: 'Fortune',
+    definition:
+      'A Realmatic attribute associated with luck, destiny, and knowing where to be at the right time. Fortune is one of the most mysterious of the fundamental forces and can be stored by Feruchemical chromium. Worldhoppers may use Fortune to navigate between realms.',
+    category: 'concept',
+    relatedTerms: ['connection', 'identity', 'realmatic_theory', 'worldhoppers'],
+  },
+  {
+    id: 'god_metal',
+    term: 'God Metal',
+    definition:
+      "The physical manifestation of a Shard's investiture. Each Shard produces a unique God Metal — such as atium (Ruin), lerasium (Preservation), and raysium (Odium). God Metals can be alloyed with normal metals to create unique effects and are the most concentrated form of investiture.",
+    category: 'concept',
+    pronunciation: 'god MET-al',
+    relatedTerms: ['shard', 'investiture', 'atium', 'lerasium', 'harmony'],
+  },
+  {
+    id: 'shardpool',
+    term: 'Shardpool',
+    definition:
+      "A physical location where a Shard's investiture pools into liquid form, often serving as a perpendicularity — a connection point between the Physical and Cognitive Realms. Examples include the Well of Ascension on Scadrial and the Horneater Peaks on Roshar.",
+    category: 'concept',
+    pronunciation: 'SHARD-pool',
+    relatedTerms: ['shard', 'perpendicularity', 'cognitive_realm', 'well_of_ascension', 'investiture'],
+  },
+  {
+    id: 'splinter',
+    term: 'Splinter',
+    definition:
+      "A fragment of a Shard's investiture that has been broken off and given independent existence. Spren, the Stormfather, and the Seons of Sel are all Splinters. Splintering is the process by which a Shard is broken into many pieces, such as what happened to Devotion and Dominion.",
+    category: 'concept',
+    pronunciation: 'SPLIN-ter',
+    relatedTerms: ['shard', 'spren', 'investiture', 'honor', 'cultivation'],
+  },
+  {
+    id: 'compounding',
+    term: 'Compounding',
+    definition:
+      'A Scadrian investiture technique that combines Allomancy and Feruchemy. A Twinborn burns a metal storing a Feruchemical attribute, releasing a burst of investiture far greater than the stored amount. Compounding creates exponential power and is one of the most potent abilities in the Cosmere.',
+    category: 'magic',
+    planet: 'scadrial',
+    pronunciation: 'kom-POUND-ing',
+    relatedTerms: ['allomancy', 'feruchemy', 'twinborn', 'harmony'],
+  },
+  {
+    id: 'twinborn',
+    term: 'Twinborn',
+    definition:
+      'A Scadrian who possesses both Allomantic and Feruchemical abilities, one metal in each. Twinborn can also Compound by burning their Feruchemical metal. Waxillium Ladrian (steel Allomancy + iron Feruchemy) is a well-known Twinborn.',
+    category: 'concept',
+    planet: 'scadrial',
+    pronunciation: 'TWIN-born',
+    relatedTerms: ['allomancy', 'feruchemy', 'compounding', 'harmony'],
+  },
+  {
+    id: 'unmade',
+    term: 'The Unmade',
+    definition:
+      'Nine powerful Splinters of Odium that act as his generals and agents on Roshar. Each Unmade has a unique form and influence — Ba-Ado-Mishram provided power to the singers, while Nergaoul (the Thrill) drove armies into bloodlust. They were instrumental in the Desolations and the True Desolation.',
+    category: 'group',
+    planet: 'roshar',
+    pronunciation: 'un-MADE',
+    relatedTerms: ['odium', 'voidbinding', 'desolations', 'splinter', 'true_desolation'],
+  },
+  {
+    id: 'fused',
+    term: 'The Fused',
+    definition:
+      'Cognitive Shadows of ancient singers who sided with Odium during the Desolations. They possess living singers to return from Damnation, taking over their bodies and memories. Each of the nine types of Fused corresponds to a Surge of Voidbinding.',
+    category: 'group',
+    planet: 'roshar',
+    pronunciation: 'FYOOSD',
+    relatedTerms: ['odium', 'voidbinding', 'desolations', 'listeners', 'cognitive_shadow'],
+  },
+  {
+    id: 'listeners',
+    term: 'The Listeners',
+    definition:
+      'The original inhabitants of Roshar, also known as the Parshendi. They are a race of singers who can change form through gemstones. Before the arrival of humans, the Listeners were the dominant intelligent species on Roshar. They can transform into dullform, mateform, warform, nimbleform, and others.',
+    category: 'group',
+    planet: 'roshar',
+    pronunciation: 'LIS-en-ers',
+    relatedTerms: ['roshar', 'fused', 'desolations', 'stormlight', 'odium'],
+  },
+  {
+    id: 'the_set',
+    term: 'The Set',
+    definition:
+      "A secret organization on Scadrial opposed to Harmony and the Elendel government. The Set seeks to advance technology beyond what Harmony allows and has conducted experiments with Hemalurgy and Trell's influence. They are led by Telsin Ladrian and have operatives throughout the Roughs and Elendel.",
+    category: 'group',
+    planet: 'scadrial',
+    relatedTerms: ['harmony', 'hemalurgy', 'ghostbloods', 'autonomy'],
+  },
+  {
+    id: 'the_diagram',
+    term: 'The Diagram',
+    definition:
+      "A secret society on Roshar founded by Taravangian following a moment of extreme intelligence granted by the Nightwatcher. The Diagram is a written prediction of the future, detailing steps to survive the True Desolation. Its members include influential figures across Roshar's governments and hospitals.",
+    category: 'group',
+    planet: 'roshar',
+    relatedTerms: ['taravangian', 'ghostbloods', 'odium', 'true_desolation'],
+  },
+  {
+    id: 'windrunner',
+    term: 'Windrunners',
+    definition:
+      "The third order of the Knights Radiant, associated with the Surges of Adhesion and Gravitation. Windrunners can stick objects together and alter their own and others' gravitational pull, granting flight. Their spren are honorspren, and their patron Herald is Jezrien.",
+    category: 'concept',
+    planet: 'roshar',
+    pronunciation: 'WIND-run-ers',
+    relatedTerms: ['knights_radiant', 'surgebinding', 'honor', 'spren', 'kaladin', 'sylphrena'],
+  },
+  {
+    id: 'bondsmith',
+    term: 'Bondsmiths',
+    definition:
+      'The first order of the Knights Radiant, associated with the Surge of Tension and Adhesion. Bondsmiths can unite and forge connections between people and realms. Unlike other orders, only three Bondsmiths can exist at a time. Their spren are the three largest Splinters of Honor: the Stormfather, the Nightwatcher, and the Sibling.',
+    category: 'concept',
+    planet: 'roshar',
+    pronunciation: 'BOND-smiths',
+    relatedTerms: ['knights_radiant', 'surgebinding', 'honor', 'dalinar', 'spren'],
+  },
+  {
+    id: 'false_desolation',
+    term: 'False Desolation',
+    definition:
+      'A conflict on Roshar approximately two thousand years before the True Desolation. Ba-Ado-Mishram, one of the Unmade, managed to Connect with the singers and grant them forms of power, mimicking a Desolation. The conflict ended when the Knights Radiant captured Ba-Ado-Mishram, which caused the singers to lose their minds and led to the Recreance.',
+    category: 'event',
+    planet: 'roshar',
+    relatedTerms: ['knights_radiant', 'recreance', 'unmade', 'desolations'],
+  },
+  {
+    id: 'thaylen_field',
+    term: 'Battle of Thaylen Field',
+    definition:
+      "A pivotal battle during the True Desolation on Roshar. The combined forces of the Coalition and the Knights Radiant faced Odium's army at Thaylen City. Dalinar Kholin refused to become Odium's champion and instead opened the perpendicularity of Honor, summoning the Knights Radiant and turning the tide of battle.",
+    category: 'event',
+    planet: 'roshar',
+    relatedTerms: ['dalinar', 'odium', 'knights_radiant', 'true_desolation', 'thaylenah'],
+  },
+  {
+    id: 'night_of_ashes',
+    term: 'Night of Ash',
+    definition:
+      "An event on Scadrial marking the death of the Lord Ruler and the beginning of the Collapse. The night was marked by massive rebellion across the Central Dominance, the release of the mists, and the fall of the Final Empire's power structure. Vin killed the Lord Ruler using the power of the Well of Ascension.",
+    category: 'event',
+    planet: 'scadrial',
+    relatedTerms: ['vin', 'kelsier', 'the_final_empire', 'rashek', 'well_of_ascension'],
+  },
 ]

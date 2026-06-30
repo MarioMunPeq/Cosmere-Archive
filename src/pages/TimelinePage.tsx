@@ -1,11 +1,12 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { SAGAS, SAGA_BY_ID } from '@/data/static'
 import { TIMELINE_EVENTS } from '@/data/static/timeline'
-import { formatJourneyYear } from '@/utils/journey'
-import { FALLBACK_COLOR } from '@/utils/constants'
-import { TAILWIND_TO_HEX, EVENT_TYPE_BADGE_COLORS } from '@/data/static/colors'
+import { FALLBACK_COLOR, TAILWIND_TO_HEX, EVENT_TYPE_BADGE_COLORS } from '@/data/static'
+import { MAX_FORK_SAGAS } from '@/constants'
 import { yearToX, MAIN_LINE_Y, FORK_START_Y, FORK_SPACING, TOTAL_WIDTH } from '@/utils/timeline-layout'
 import Timeline from '@/components/timeline/Timeline'
+import TooltipOverlay from '@/components/timeline/TooltipOverlay'
+import CardOverlay from '@/components/timeline/CardOverlay'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
 import type { TimelineEvent } from '@/data/static/timeline'
 
@@ -23,17 +24,6 @@ for (const event of TIMELINE_EVENTS) {
   const current = SAGA_NOW_YEARS[event.saga] ?? -Infinity
   const max = event.endYear ? Math.max(event.year, event.endYear) : event.year
   if (max > current) SAGA_NOW_YEARS[event.saga] = max
-}
-
-const TYPE_LABELS: Record<string, string> = {
-  book: 'Book',
-  cataclysm: 'Cataclysm',
-  birth: 'Birth',
-  death: 'Death',
-  arrival: 'Arrival',
-  departure: 'Departure',
-  discovery: 'Discovery',
-  historical: 'Historical',
 }
 
 function eventTypeBadgeClass(type: string): string {
@@ -74,7 +64,7 @@ export default function TimelinePage() {
       if (prev.includes(sagaId)) {
         return prev.filter((id) => id !== sagaId)
       }
-      if (prev.length >= 5) return prev
+      if (prev.length >= MAX_FORK_SAGAS) return prev
       return [...prev, sagaId]
     })
   }, [])
@@ -159,7 +149,7 @@ export default function TimelinePage() {
           if (!saga) return null
           const isActive = selectedSagas.includes(sagaId)
           const color = TAILWIND_TO_HEX[saga.color] || FALLBACK_COLOR
-          const maxed = !isActive && selectedSagas.length >= 5
+          const maxed = !isActive && selectedSagas.length >= MAX_FORK_SAGAS
           return (
             <button
               key={sagaId}
@@ -231,129 +221,3 @@ export default function TimelinePage() {
     </div>
   )
 }
-
-function TooltipOverlay({
-  event,
-  x,
-  y,
-  line,
-  eventTypeBadgeClass,
-  toViewport,
-}: {
-  event: TimelineEvent
-  x: number
-  y: number
-  line: 'main' | 'fork'
-  eventTypeBadgeClass: (t: string) => string
-  toViewport: (svgX: number, svgY: number) => { left: number; top: number }
-}) {
-  const vp = toViewport(x + 10, line === 'main' ? y - 52 : y - 48)
-  let left = vp.left
-  const top = vp.top
-  const maxW = Math.min(240, window.innerWidth - 16)
-  if (left + maxW > window.innerWidth - 8) left = window.innerWidth - maxW - 8
-  if (left < 8) left = 8
-
-  return (
-    <div
-      className="pointer-events-none fixed z-50 rounded-md border border-gray-700 bg-gray-900/95 px-3 py-2 shadow-lg backdrop-blur-sm"
-      style={{ left, top, maxWidth: maxW }}
-    >
-      <div className="flex items-center gap-1.5">
-        <span className={eventTypeBadgeClass(event.type)}>{TYPE_LABELS[event.type]}</span>
-        <span className="text-xxs text-gray-500">{formatJourneyYear(event.year)}</span>
-      </div>
-      <p className="mt-0.5 text-sm font-semibold text-purple-300">{event.title}</p>
-      <p className="mt-0.5 text-[11px] leading-tight text-gray-400 line-clamp-2">{event.description}</p>
-      {event.importance >= 4 && <p className="mt-0.5 text-xxs text-purple-600/80">Click to expand</p>}
-    </div>
-  )
-}
-
-function CardOverlay({
-  event,
-  x,
-  y,
-  eventTypeBadgeClass,
-  onClose,
-  toViewport,
-}: {
-  event: TimelineEvent
-  x: number
-  y: number
-  eventTypeBadgeClass: (t: string) => string
-  onClose: () => void
-  toViewport: (svgX: number, svgY: number) => { left: number; top: number }
-}) {
-  const vp = toViewport(x, y)
-  const cardW = 280
-  let cardLeft = vp.left - cardW / 2
-  const cardTop = vp.top + 14
-  if (cardLeft + cardW > window.innerWidth - 8) cardLeft = window.innerWidth - cardW - 8
-  if (cardLeft < 8) cardLeft = 8
-
-  return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-label={event.title}
-      className="fixed z-50 w-[280px] rounded-lg border border-gray-700 bg-gray-900/95 shadow-xl backdrop-blur-sm"
-      style={{ left: cardLeft, top: cardTop }}
-    >
-      <div className="flex items-center justify-between border-b border-gray-800 px-3 py-2">
-        <div className="flex items-center gap-1.5">
-          <span className={eventTypeBadgeClass(event.type)}>{TYPE_LABELS[event.type]}</span>
-          <span className="text-[11px] text-gray-500">{formatJourneyYear(event.year)}</span>
-        </div>
-        <button
-          onClick={(e) => {
-            e.stopPropagation()
-            onClose()
-          }}
-          className="flex h-5 w-5 items-center justify-center rounded text-xs text-gray-600 hover:bg-gray-800 hover:text-gray-300"
-          aria-label="Close"
-        >
-          &times;
-        </button>
-      </div>
-      <div className="px-3 py-2">
-        <h3 className="text-sm font-bold text-purple-300">{event.title}</h3>
-        <p className="mt-1 text-[12px] leading-relaxed text-gray-300">{event.description}</p>
-
-        <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xxs text-gray-500">
-          {event.saga && (
-            <span>
-              Saga: <span className="text-gray-400">{SAGA_LABELS[event.saga] || event.saga}</span>
-            </span>
-          )}
-          {event.planets.length > 0 && (
-            <span>
-              Planets: <span className="text-gray-400">{event.planets.join(', ')}</span>
-            </span>
-          )}
-          {event.characters && event.characters.length > 0 && (
-            <span>
-              Characters: <span className="text-gray-400">{event.characters.join(', ')}</span>
-            </span>
-          )}
-          {event.worldhoppers && event.worldhoppers.length > 0 && (
-            <span>
-              Worldhoppers: <span className="text-gray-400">{event.worldhoppers.join(', ')}</span>
-            </span>
-          )}
-          {event.importance && (
-            <span>
-              Importance:{' '}
-              <span className="text-gray-400">
-                {'★'.repeat(event.importance)}
-                {'☆'.repeat(5 - event.importance)}
-              </span>
-            </span>
-          )}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-export { TYPE_LABELS }

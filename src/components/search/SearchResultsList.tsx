@@ -1,6 +1,7 @@
 import type { RefObject } from 'react'
-import type { SearchResult } from '@/hooks/useSearch'
-import SearchIcon from './SearchIcon'
+import type { SearchResult } from '@/types/search'
+import { SearchIcon } from '@/components/common/icons'
+import EmptyState from '@/components/ui/EmptyState'
 
 interface Props {
   results: SearchResult[]
@@ -105,7 +106,7 @@ export default function SearchResultsList({
             ))}
           </div>
         ) : (
-          <div className="px-4 py-6 text-center text-sm text-gray-500">No results found</div>
+          <EmptyState message="No results found" />
         )}
       </div>
     </div>

@@ -2,7 +2,7 @@ import { memo } from 'react'
 import type { Book } from '@/types'
 
 import { SAGA_BY_ID } from '@/data/static'
-import { CloseIcon } from '@/components/common/icons'
+import DetailPanel from '@/components/ui/DetailPanel'
 
 interface Props {
   book: Book
@@ -13,15 +13,7 @@ function BookPanel({ book, onClose }: Props) {
   const saga = SAGA_BY_ID.get(book.saga)
 
   return (
-    <div className="absolute bottom-4 left-4 right-4 top-auto w-auto animate-scale-in rounded-xl border border-gray-700/60 bg-gray-900/95 p-4 shadow-2xl backdrop-blur-lg sm:bottom-auto sm:left-auto sm:right-4 sm:top-4 sm:w-80 sm:p-5">
-      <button
-        onClick={onClose}
-        aria-label="Close book panel"
-        className="absolute right-3 top-3 text-gray-600 transition-colors hover:text-gray-300"
-      >
-        <CloseIcon />
-      </button>
-
+    <DetailPanel onClose={onClose} ariaLabel="Close book panel">
       <h3 className="pr-4 text-lg font-bold text-gray-100">{book.title}</h3>
 
       {saga && <p className="mt-1 text-xs font-medium text-gray-500">{saga.name}</p>}
@@ -38,7 +30,7 @@ function BookPanel({ book, onClose }: Props) {
           </span>
         </div>
       )}
-    </div>
+    </DetailPanel>
   )
 }
 

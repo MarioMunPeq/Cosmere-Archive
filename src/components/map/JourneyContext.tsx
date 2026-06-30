@@ -9,6 +9,7 @@ import {
   computeCurveControlPoint,
   getStopProgressRange,
   getTotalDuration,
+  formatJourneyYear,
 } from '@/utils/journey'
 import type { JourneySegment, InterpolatedPosition } from '@/utils/journey'
 import { useAnimationEngine } from '@/hooks/useAnimationEngine'
@@ -263,7 +264,7 @@ export function JourneySvgContent() {
 
 export function useJourneyDerived(ctx: JourneyCtxValue) {
   const pct = Math.round(ctx.displayedProgress * 100)
-  const yearStr = formatYear(ctx.pos.currentYear)
+  const yearStr = formatJourneyYear(ctx.pos.currentYear)
   const fromName = PLANET_NAME_MAP.get(ctx.pos.fromPlanet) ?? ctx.pos.fromPlanet
   const toName = PLANET_NAME_MAP.get(ctx.pos.toPlanet) ?? ctx.pos.toPlanet
   const segmentDesc = ctx.segments[ctx.currentStop]?.description ?? ''
@@ -271,9 +272,4 @@ export function useJourneyDerived(ctx: JourneyCtxValue) {
   const elapsedSecs = Math.round(ctx.displayedProgress * totalSecs)
   const timeStr = `${Math.floor(elapsedSecs / 60)}:${String(elapsedSecs % 60).padStart(2, '0')} / ${Math.floor(totalSecs / 60)}:${String(totalSecs % 60).padStart(2, '0')}`
   return { pct, yearStr, fromName, toName, segmentDesc, totalSecs, elapsedSecs, timeStr }
-}
-
-function formatYear(year: number): string {
-  const y = Math.floor(year)
-  return y < 0 ? `${-y} BC` : `${y} AD`
 }

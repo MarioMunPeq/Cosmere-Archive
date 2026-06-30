@@ -26,10 +26,6 @@ function setOrUpdateMeta(selector: string, attrs: Record<string, string>) {
   }
 }
 
-function removeMeta(selector: string) {
-  document.querySelector(selector)?.remove()
-}
-
 export function useSEOMeta(config: SEOMetaConfig) {
   const { title, description, path = '', image = DEFAULT_IMAGE, type = 'website' } = config
   const url = BASE_URL + path
@@ -55,16 +51,4 @@ export function useSEOMeta(config: SEOMetaConfig) {
     }
     canonical.href = url
   }, [title, description, url, image, type])
-}
-
-export function cleanupSEOMeta() {
-  const selectors = [
-    'meta[name="description"]',
-    'meta[property^="og:"]',
-    'meta[name^="twitter:"]',
-    'link[rel="canonical"]',
-  ]
-  for (const sel of selectors) {
-    removeMeta(sel)
-  }
 }

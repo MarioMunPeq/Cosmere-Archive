@@ -6,7 +6,7 @@ import { TIMELINE_EVENTS, CHARACTER_SPANS } from '@/data/static/timeline'
 import UniverseMap from '@/components/map/UniverseMap'
 import MapSkeleton from '@/components/common/MapSkeleton'
 import SplitPane from '@/components/common/SplitPane'
-import { CloseIcon } from '@/components/common/icons'
+import CloseButton from '@/components/ui/CloseButton'
 import BookCover from '@/components/common/BookCover'
 import { JourneyProvider, JourneySvgContent } from '@/components/map/JourneyContext'
 import type { Book } from '@/types'
@@ -185,13 +185,7 @@ export default function MapPage() {
                       <BookCover book={detailBook} size="sm" />
                       <h3 className="text-lg font-bold text-gray-100">{detailBook.title}</h3>
                     </div>
-                    <button
-                      onClick={handleCloseDetail}
-                      aria-label="Close"
-                      className="text-gray-600 transition-colors hover:text-gray-300"
-                    >
-                      <CloseIcon />
-                    </button>
+                    <CloseButton onClick={handleCloseDetail} ariaLabel="Close" className="" />
                   </div>
                   {(() => {
                     const saga = SAGA_BY_ID.get(detailBook.saga)
@@ -220,13 +214,7 @@ export default function MapPage() {
                       <div className="h-3 w-3 rounded-full" style={{ backgroundColor: detailCharacter.color }} />
                       <h3 className="text-lg font-bold text-gray-100">{detailCharacter.name}</h3>
                     </div>
-                    <button
-                      onClick={handleCloseDetail}
-                      aria-label="Close"
-                      className="text-gray-600 transition-colors hover:text-gray-300"
-                    >
-                      <CloseIcon />
-                    </button>
+                    <CloseButton onClick={handleCloseDetail} ariaLabel="Close" className="" />
                   </div>
                   {detailCharacter.titles.length > 0 && (
                     <p className="mb-3 text-xs text-gray-500">{detailCharacter.titles.join(', ')}</p>

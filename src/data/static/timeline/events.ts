@@ -295,15 +295,38 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     importance: 5,
   },
   {
-    id: 'recreance',
-    title: 'The Betrayal',
+    id: 'silver-kingdom-fall',
+    title: 'Fall of the Silver Kingdoms',
     description:
-      'The Knights Radiant, after discovering the truth about the Heralds and the Oathpact, abandon their oaths en masse. Their spren are killed or left catatonic. Humanity loses knowledge of Investiture for millennia.',
-    year: -500,
+      'After millennia of Desolations and the abandonment of the Oathpact, the Silver Kingdoms of Roshar gradually dissolve into smaller nations. The Heralds go into hiding or are worshipped as mythical figures. The Radiant orders become the dominant military force.',
+    year: -2000,
+    type: 'historical',
+    saga: 'stormlight',
+    planets: ['roshar'],
+    importance: 4,
+  },
+  {
+    id: 'urithiru-abandoned',
+    title: 'Urithiru Abandoned',
+    description:
+      "After the Recreance, the Tower city of Urithiru — seat of the Knights Radiant — is abandoned and lost to history. The Sibling, the tower's spren, falls into dormancy. The Oathgates are deactivated and the city becomes a legend.",
+    year: -490,
     type: 'cataclysm',
     saga: 'stormlight',
     planets: ['roshar'],
-    importance: 5,
+    importance: 4,
+  },
+  {
+    id: 'dawnchant-translated',
+    title: 'Translation of the Dawnchant',
+    description:
+      "Scholars on Roshar, including Jasnah Kholin and Jegger, work to translate the Dawnchant — the ancient language of the Dawnsingers. The translation reveals the true history of the Heralds and the Recreance, changing humanity's understanding of its past.",
+    year: 1165,
+    type: 'discovery',
+    saga: 'stormlight',
+    planets: ['roshar'],
+    characters: ['jasnah'],
+    importance: 3,
   },
   {
     id: 'spren-death',
@@ -336,6 +359,18 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     type: 'historical',
     saga: 'arcanum-unbounded',
     planets: ['threnody'],
+    importance: 3,
+  },
+  {
+    id: 'silence-montane',
+    title: 'Silence Montane on Threnody',
+    description:
+      'Silence Montane, a bounty hunter on Threnody, navigates the Forests of Hell where the Shades of the dead hunt the living. She runs a fort that shelters travelers and occasionally takes on dangerous contracts, following the Simple Rules that keep people alive on this deadly world.',
+    year: 700,
+    type: 'historical',
+    saga: 'arcanum-unbounded',
+    planets: ['threnody'],
+    characters: ['silence'],
     importance: 3,
   },
 
@@ -595,6 +630,17 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     importance: 5,
   },
   {
+    id: 'aluminum-discovery',
+    title: 'Aluminum Discovered on Scadrial',
+    description:
+      "The malatium, gold, and aluminum alloys are discovered and reverse-engineered from Inquisitors' spikes and Lord Ruler's artifacts. Aluminium is found to be Allomantically inert, blocking external Investiture — a discovery that later proves vital for feruchemical and hemalurgic research.",
+    year: 1030,
+    type: 'historical',
+    saga: 'mistborn-era-2',
+    planets: ['scadrial'],
+    importance: 3,
+  },
+  {
     id: 'ghostbloods-founded',
     title: 'Founding of the Ghostbloods',
     description:
@@ -667,6 +713,41 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     planets: ['nalthis'],
     characters: ['vasher', 'nightblood'],
     worldhoppers: ['vasher'],
+    importance: 4,
+  },
+  {
+    id: 'the-manywar',
+    title: 'The Manywar',
+    description:
+      'A devastating war on Nalthis between Hallandren and Idris, fought using invested technology. The conflict escalates to the point where Kalad unleashes his Phantoms, an army of lifeless soldiers that ends the war but nearly destroys both sides.',
+    year: 50,
+    type: 'historical',
+    saga: 'warbreaker',
+    planets: ['nalthis'],
+    importance: 4,
+  },
+  {
+    id: 'five-scholars',
+    title: 'The Five Scholars',
+    description:
+      'Vasher, Shashara, Denth, Arsteel, and other investiture researchers form the Five Scholars on Nalthis. They pioneer the development of Awakening techniques, including the creation of lifeless and the discovery of the Command to grant sentience to objects.',
+    year: 200,
+    type: 'historical',
+    saga: 'warbreaker',
+    planets: ['nalthis'],
+    characters: ['vasher', 'denth'],
+    importance: 4,
+  },
+  {
+    id: 'shashara-executed',
+    title: 'Execution of Shashara',
+    description:
+      'Shashara, one of the Five Scholars, reveals the secret of creating sentient invested objects to the public. Vasher kills her with Nightblood to prevent the knowledge from spreading, fearing the devastation it could cause across the Cosmere.',
+    year: 295,
+    type: 'death',
+    saga: 'warbreaker',
+    planets: ['nalthis'],
+    characters: ['vasher', 'nightblood'],
     importance: 4,
   },
   {
@@ -903,6 +984,43 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     planets: ['scadrial'],
     importance: 4,
   },
+  {
+    id: 'southern-scadrial-discovered',
+    title: 'Southern Scadrial Discovered',
+    description:
+      'Waxillium Ladrian travels beyond the Seran Mountains and discovers the Malwish civilization in the southern continent of Scadrial. The Malwish use advanced investiture technology — including medallions that grant Feruchemical powers — and have preserved knowledge of the Catacendre.',
+    year: 1326,
+    type: 'discovery',
+    saga: 'mistborn-era-2',
+    planets: ['scadrial'],
+    characters: ['wax', 'marasi', 'steris'],
+    importance: 4,
+  },
+  {
+    id: 'autonomy-invades-scadrial',
+    title: 'Autonomy Invades Scadrial',
+    description:
+      "Bavadin, the Shard of Autonomy, launches a full-scale invasion of Scadrial using an avatar named Taldain's Trell and Hemalurgic constructs. The city of Elendel is attacked with a devastating investiture bomb. Wax and the Ghostbloods ally to defend the planet.",
+    year: 1328,
+    type: 'cataclysm',
+    saga: 'mistborn-era-2',
+    planets: ['scadrial'],
+    characters: ['wax', 'wayne', 'marasi', 'kelsier', 'steris'],
+    worldhoppers: ['kelsier'],
+    importance: 5,
+  },
+  {
+    id: 'marasi-governor',
+    title: 'Marasi Becomes Governor',
+    description:
+      'After the Battle of Elendel, Marasi Colms is appointed governor of Elendel. She implements reforms to prepare Scadrial for its new role in the wider Cosmere and establishes diplomatic relations with the Malwish.',
+    year: 1329,
+    type: 'historical',
+    saga: 'mistborn-era-2',
+    planets: ['scadrial'],
+    characters: ['marasi'],
+    importance: 3,
+  },
 
   // ════════════════════════════════════════════════════
   // STORMLIGHT ARCHIVE (1450-1510)
@@ -1122,6 +1240,30 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     importance: 3,
   },
   {
+    id: 'scouring-of-ajay',
+    title: 'Scouring of Ajay',
+    description:
+      "Tress and her crew liberate the sea of Ajay from the tyrannical clutches of the Verdant Legion. Using cannons, cunning, and fungal spores, they destroy the Legion's fortress and free the spore harvesters, turning Ajay's twelve kingdoms into a free confederation.",
+    year: 1600,
+    type: 'historical',
+    saga: 'secret-projects',
+    planets: ['lumar'],
+    worldhoppers: ['hoid'],
+    importance: 3,
+  },
+  {
+    id: 'sorceress-lumar',
+    title: 'The Sorceress of Lumar',
+    description:
+      "A mysterious and powerful worldhopper known only as the Sorceress rules the Midnight Sea of Lumar. She possesses rare and powerful magical artifacts, including corrupted aethers. Tress bargains with her for Charlie's freedom, revealing the Sorceress to be a sadistic collector whose powers rival those of Shards.",
+    year: 1600,
+    type: 'historical',
+    saga: 'secret-projects',
+    planets: ['lumar'],
+    worldhoppers: ['hoid'],
+    importance: 3,
+  },
+  {
     id: 'yumi-events',
     title: 'Yumi and the Nightmare Painter',
     description:
@@ -1170,6 +1312,18 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     saga: 'secret-projects',
     planets: ['canticle'],
     importance: 3,
+  },
+  {
+    id: 'cinder-king-rule',
+    title: 'Rise of the Cinder King',
+    description:
+      "A ruthless warlord known only as the Cinder King seizes control of the planet Canticle, forcing its people into a desperate exodus from the scorching sun. He hunts Sigzil (Nomad) across the surface, wielding powerful investiture tied to Canticle's heat. Nomad ultimately defeats him, freeing Canticle's refugees.",
+    year: 1620,
+    type: 'historical',
+    saga: 'secret-projects',
+    planets: ['canticle'],
+    characters: ['sigzil'],
+    importance: 4,
   },
 
   // ════════════════════════════════════════════════════

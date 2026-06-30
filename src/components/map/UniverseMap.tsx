@@ -17,11 +17,12 @@ import PlanetTooltip from './PlanetTooltip'
 import LayersToggle from './LayersToggle'
 import ShardIcons from './ShardIcons'
 import ConstellationLines from './ConstellationLines'
+import WorldhopperHeatmap from './WorldhopperHeatmap'
 import type { MapLayers } from './LayersToggle'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
 import { useMapInteraction } from '@/hooks/useMapInteraction'
-import { SHARD_COLORS } from '@/data/static/colors'
-import { FALLBACK_COLOR } from '@/utils/constants'
+import { SHARD_COLORS, FALLBACK_COLOR, PLANET_BY_ID } from '@/data/static'
+import { MAP_VIEWBOX_W, MAP_VIEWBOX_H, ZOOM_STEP } from '@/constants'
 
 interface Props {
   selectedPlanet: string | null
@@ -84,6 +85,7 @@ const UniverseMap = forwardRef<UniverseMapHandle, Props>(function UniverseMap(
     routes: true,
     shardIcons: false,
     constellation: false,
+    heatmap: false,
   })
   const [showLayers, setShowLayers] = useState(false)
 
@@ -95,12 +97,6 @@ const UniverseMap = forwardRef<UniverseMapHandle, Props>(function UniverseMap(
     }
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
-  }, [])
-
-  const planetMap = useMemo(() => {
-    const map = new Map<string, Planet>()
-    PLANETS.forEach((p) => map.set(p.id, p))
-    return map
   }, [])
 
   const shardData = useMemo(() => {
@@ -129,7 +125,7 @@ const UniverseMap = forwardRef<UniverseMapHandle, Props>(function UniverseMap(
     return map
   }, [])
 
-  const selected = selectedPlanet ? (planetMap.get(selectedPlanet) ?? null) : null
+  const selected = selectedPlanet ? (PLANET_BY_ID.get(selectedPlanet) ?? null) : null
   const selectedCharacters = selected ? (charactersByPlanet.get(selected.id) ?? []) : []
 
   const highlightedPlanets = useMemo(() => {
@@ -182,13 +178,13 @@ const UniverseMap = forwardRef<UniverseMapHandle, Props>(function UniverseMap(
   const handlePlanetHover = useCallback(
     (planetId: string | null) => {
       setHoveredPlanetId(planetId)
-      const planet = planetId ? planetMap.get(planetId) : null
+      const planet = planetId ? PLANET_BY_ID.get(planetId) : null
       setTooltipScreenPos(planet ? calculateTooltipPosition(planet) : { left: 0, top: 0 })
     },
-    [calculateTooltipPosition, planetMap],
+    [calculateTooltipPosition],
   )
 
-  const tooltipPlanet = !selected && hoveredPlanetId ? (planetMap.get(hoveredPlanetId) ?? null) : null
+  const tooltipPlanet = !selected && hoveredPlanetId ? (PLANET_BY_ID.get(hoveredPlanetId) ?? null) : null
 
   const activeWhDetail = useMemo(() => {
     if (activeWorldhoppers.length === 0 || selected) return null
@@ -220,7 +216,7 @@ const UniverseMap = forwardRef<UniverseMapHandle, Props>(function UniverseMap(
       >
         <svg
           ref={svgRef}
-          viewBox="0 0 900 600"
+          viewBox={`0 0 ${MAP_VIEWBOX_W} ${MAP_VIEWBOX_H}`}
           className="block h-full w-full"
           preserveAspectRatio="xMidYMid meet"
           style={{ touchAction: 'none' }}
@@ -246,6 +242,10 @@ const UniverseMap = forwardRef<UniverseMapHandle, Props>(function UniverseMap(
                 <stop offset="100%" stop-color={c3 as string} stop-opacity="1" />
               </radialGradient>
             ))}
+            <radialGradient id="heat-gradient" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#a78bfa" stop-opacity="1" />
+              <stop offset="100%" stop-color="#a78bfa" stop-opacity="0" />
+            </radialGradient>
             <filter id="glow">
               <feGaussianBlur stdDeviation="3" result="blur" />
               <feComposite in="SourceGraphic" in2="blur" operator="over" />
@@ -258,7 +258,11 @@ const UniverseMap = forwardRef<UniverseMapHandle, Props>(function UniverseMap(
             <StarField />
             {layers.constellation && <ConstellationLines />}
             {layers.routes && (
-              <WorldhopperRoutes planetMap={planetMap} activeWorldhoppers={activeWorldhoppers} hasFilter={hasFilter} />
+              <WorldhopperRoutes
+                planetMap={PLANET_BY_ID}
+                activeWorldhoppers={activeWorldhoppers}
+                hasFilter={hasFilter}
+              />
             )}
             {PLANETS.map((p, i) => (
               <g key={p.id} className="animate-planet-enter" style={{ animationDelay: `${i * 0.08}s` }}>
@@ -274,6 +278,7 @@ const UniverseMap = forwardRef<UniverseMapHandle, Props>(function UniverseMap(
             ))}
             {layers.labels && <PlanetLabels />}
             {layers.shardIcons && <ShardIcons />}
+            {layers.heatmap && <WorldhopperHeatmap />}
             {children}
           </g>
         </svg>
@@ -296,7 +301,7 @@ const UniverseMap = forwardRef<UniverseMapHandle, Props>(function UniverseMap(
         <WorldhopperDetailPanel
           wh={activeWhDetail}
           activeWorldhoppers={activeWorldhoppers}
-          planetMap={planetMap}
+          planetMap={PLANET_BY_ID}
           onToggleWorldhopper={onToggleWorldhopper}
           onSelectPlanet={onSelectPlanet}
           onStartJourney={onStartJourney}
@@ -330,8 +335,8 @@ const UniverseMap = forwardRef<UniverseMapHandle, Props>(function UniverseMap(
       </div>
 
       <ZoomControls
-        onZoomIn={() => zoomToCenter(zoom + 0.3)}
-        onZoomOut={() => zoomToCenter(zoom - 0.3)}
+        onZoomIn={() => zoomToCenter(zoom + ZOOM_STEP)}
+        onZoomOut={() => zoomToCenter(zoom - ZOOM_STEP)}
         onReset={resetView}
       />
 

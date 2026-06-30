@@ -14,12 +14,12 @@ function renderAt(path: string) {
 describe('Breadcrumbs', () => {
   it('renders nothing on the root path', () => {
     const { container } = renderAt('/')
-    expect(container.innerHTML).toBe('')
+    expect(container).toBeEmptyDOMElement()
   })
 
   it('renders nothing for a single-segment path', () => {
     const { container } = renderAt('/books')
-    expect(container.innerHTML).toBe('')
+    expect(container).toBeEmptyDOMElement()
   })
 
   it('shows breadcrumb trail for a nested path', () => {
@@ -44,6 +44,6 @@ describe('Breadcrumbs', () => {
   it('shows breadcrumbs for a non-book nested path', () => {
     renderAt('/magic')
     const { container } = renderAt('/magic')
-    expect(container.innerHTML).toBe('')
+    expect(container).toBeEmptyDOMElement()
   })
 })

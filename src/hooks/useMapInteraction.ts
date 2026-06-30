@@ -1,5 +1,16 @@
 import { useRef, useState, useCallback, useEffect, useLayoutEffect } from 'react'
 import { easeOutCubic, calculateFlyTarget } from '@/utils/fly-to'
+import {
+  ZOOM_MIN,
+  ZOOM_MAX,
+  ZOOM_AUTO_THRESHOLD,
+  ZOOM_DEBOUNCE_MS,
+  FLY_DURATION_MS,
+  MAP_VIEWBOX_W,
+  MAP_VIEWBOX_H,
+  MAP_VIEWBOX_CENTER_X,
+  MAP_VIEWBOX_CENTER_Y,
+} from '@/constants'
 
 export function useMapInteraction(
   flyToTarget: { planetId: string; x: number; y: number } | null | undefined,
@@ -64,12 +75,12 @@ export function useMapInteraction(
       flyRafRef.current = null
     }
 
-    const targetZoom = Math.max(0.5, Math.min(3, d.z < 1.5 ? 2 : d.z))
+    const targetZoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, d.z < ZOOM_AUTO_THRESHOLD ? 2 : d.z))
     const target = calculateFlyTarget(flyToTarget.x, flyToTarget.y, targetZoom)
     const startX = d.x
     const startY = d.y
     const startZ = d.z
-    const duration = 600
+    const duration = FLY_DURATION_MS
     const startTime = performance.now()
     isFlyingRef.current = true
 
@@ -115,12 +126,12 @@ export function useMapInteraction(
     if (!svgEl) return
     const rect = svgEl.getBoundingClientRect()
     if (rect.width === 0 || rect.height === 0) return
-    const clamped = Math.max(0.5, Math.min(3, newZoom))
+    const clamped = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, newZoom))
     if (clamped !== d.z) {
-      const origX = (450 - d.x) / d.z
-      const origY = (300 - d.y) / d.z
-      d.x = 450 - origX * clamped
-      d.y = 300 - origY * clamped
+      const origX = (MAP_VIEWBOX_CENTER_X - d.x) / d.z
+      const origY = (MAP_VIEWBOX_CENTER_Y - d.y) / d.z
+      d.x = MAP_VIEWBOX_CENTER_X - origX * clamped
+      d.y = MAP_VIEWBOX_CENTER_Y - origY * clamped
       d.z = clamped
       syncTransform()
       if (zoomTimerRef.current) clearTimeout(zoomTimerRef.current)
@@ -129,7 +140,7 @@ export function useMapInteraction(
         setPanX(d.x)
         setPanY(d.y)
         setZoom(d.z)
-      }, 80)
+      }, ZOOM_DEBOUNCE_MS)
     }
   }
 
@@ -141,10 +152,10 @@ export function useMapInteraction(
     const svgW = rect.width
     const svgH = rect.height
     if (svgW === 0 || svgH === 0) return
-    const mouseVX = ((e.clientX - rect.left) / svgW) * 900
-    const mouseVY = ((e.clientY - rect.top) / svgH) * 600
+    const mouseVX = ((e.clientX - rect.left) / svgW) * MAP_VIEWBOX_W
+    const mouseVY = ((e.clientY - rect.top) / svgH) * MAP_VIEWBOX_H
     const d = drag.current
-    const newZoom = Math.max(0.5, Math.min(3, d.z - e.deltaY * 0.001 * d.z))
+    const newZoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, d.z - e.deltaY * 0.001 * d.z))
     if (newZoom !== d.z) {
       const origX = (mouseVX - d.x) / d.z
       const origY = (mouseVY - d.y) / d.z
@@ -158,7 +169,7 @@ export function useMapInteraction(
         setPanX(d.x)
         setPanY(d.y)
         setZoom(d.z)
-      }, 80)
+      }, ZOOM_DEBOUNCE_MS)
     }
   }, [])
 

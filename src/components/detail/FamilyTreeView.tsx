@@ -1,6 +1,6 @@
-import { useMemo } from 'react'
+import { memo, useMemo } from 'react'
 import type { FamilyDefinition, FamilyMember } from '@/types/family'
-import { FALLBACK_COLOR } from '@/utils/constants'
+import { FALLBACK_COLOR } from '@/data/static'
 
 const CARD_W = 140
 const CARD_H = 32
@@ -27,7 +27,19 @@ interface Props {
   onSelectCharacter?: (id: string) => void
 }
 
-function Card({ m, x, y, w, onClick }: { m: FamilyMember; x: number; y: number; w: number; onClick?: () => void }) {
+const Card = memo(function Card({
+  m,
+  x,
+  y,
+  w,
+  onClick,
+}: {
+  m: FamilyMember
+  x: number
+  y: number
+  w: number
+  onClick?: () => void
+}) {
   const external = !m.characterId
   const fill = external ? (m.isDeceased ? '#1a1a2e' : '#1f2937') : '#1f2937'
   const stroke = external ? (m.isDeceased ? '#374151' : '#4b5563') : '#a78bfa'
@@ -72,7 +84,7 @@ function Card({ m, x, y, w, onClick }: { m: FamilyMember; x: number; y: number; 
       )}
     </g>
   )
-}
+})
 
 function layoutSubtree(
   pid: string,
@@ -132,7 +144,7 @@ function layoutSubtree(
   return { nodes: ourNodes, connectors: conns, width: totalW }
 }
 
-export default function FamilyTreeView({ family, onSelectCharacter }: Props) {
+function FamilyTreeView({ family, onSelectCharacter }: Props) {
   const svgW = useMemo(() => {
     const memMap = new Map(family.members.map((m) => [m.id, m]))
     const childMap = new Map<string, string[]>()
@@ -275,3 +287,5 @@ export default function FamilyTreeView({ family, onSelectCharacter }: Props) {
     </svg>
   )
 }
+
+export default memo(FamilyTreeView)

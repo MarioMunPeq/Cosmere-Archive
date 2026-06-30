@@ -8,7 +8,20 @@ import { WORLDHOPPER_MOVEMENTS } from '@/data/static/timeline/worldhopper-journe
 import { ERAS } from '@/data/static/timeline/eras'
 import { ALL_CHARACTERS } from '@/data/static'
 import { HERALDS } from '@/data/static/heralds'
-import { READING_ORDER } from '@/data/static/reading-order'
+import {
+  READING_ORDER,
+  READING_ORDER_KEY,
+  SHORTCUTS,
+  CHARACTER_RELATIONSHIPS,
+  FALLBACK_COLOR,
+  SHARD_COLORS,
+  SAGA_BG,
+  SAGA_NAME_COLORS,
+  TAILWIND_TO_HEX,
+  EVENT_TYPE_BADGE_COLORS,
+  TYPE_LABELS,
+  hexToRgb,
+} from '@/data/static'
 
 const PLANET_IDS = new Set(PLANETS.map((p) => p.id))
 const BOOK_IDS = new Set(BOOKS.map((b) => b.id))
@@ -300,5 +313,74 @@ describe('data integrity — Reading Order', () => {
 
   it('READING_ORDER has unique entries', () => {
     expect(READING_ORDER.length).toBe(new Set(READING_ORDER).size)
+  })
+})
+
+describe('static-data.ts barrel', () => {
+  it('exports READING_ORDER_KEY as a string', () => {
+    expect(typeof READING_ORDER_KEY).toBe('string')
+    expect(READING_ORDER_KEY.length).toBeGreaterThan(0)
+  })
+
+  it('exports SHORTCUTS as a non-empty array', () => {
+    expect(Array.isArray(SHORTCUTS)).toBe(true)
+    expect(SHORTCUTS.length).toBeGreaterThan(0)
+    for (const s of SHORTCUTS) {
+      expect(typeof s.keys).toBe('string')
+      expect(typeof s.label).toBe('string')
+    }
+  })
+
+  it('exports CHARACTER_RELATIONSHIPS as a non-empty array', () => {
+    expect(Array.isArray(CHARACTER_RELATIONSHIPS)).toBe(true)
+    expect(CHARACTER_RELATIONSHIPS.length).toBeGreaterThan(0)
+    for (const r of CHARACTER_RELATIONSHIPS) {
+      expect(Array.isArray(r.characters)).toBe(true)
+      expect(r.characters.length).toBe(2)
+      expect(typeof r.type).toBe('string')
+    }
+  })
+
+  it('all CHARACTER_RELATIONSHIPS character IDs exist in ALL_CHARACTERS', () => {
+    for (const rel of CHARACTER_RELATIONSHIPS) {
+      for (const cid of rel.characters) {
+        expect(CHARACTER_IDS.has(cid), `relationship references unknown character "${cid}"`).toBe(true)
+      }
+    }
+  })
+
+  it('exports color constants as strings', () => {
+    expect(typeof FALLBACK_COLOR).toBe('string')
+    expect(FALLBACK_COLOR).toMatch(/^#/)
+    expect(typeof SHARD_COLORS).toBe('object')
+    expect(Object.keys(SHARD_COLORS).length).toBeGreaterThan(0)
+    expect(typeof SAGA_BG).toBe('object')
+    expect(Object.keys(SAGA_BG).length).toBeGreaterThan(0)
+    expect(typeof SAGA_NAME_COLORS).toBe('object')
+    expect(Object.keys(SAGA_NAME_COLORS).length).toBeGreaterThan(0)
+  })
+
+  it('exports TAILWIND_TO_HEX as a Record<string, string>', () => {
+    expect(typeof TAILWIND_TO_HEX).toBe('object')
+    for (const [k, v] of Object.entries(TAILWIND_TO_HEX)) {
+      expect(typeof k).toBe('string')
+      expect(v).toMatch(/^#/)
+    }
+  })
+
+  it('exports EVENT_TYPE_BADGE_COLORS and TYPE_LABELS', () => {
+    expect(typeof EVENT_TYPE_BADGE_COLORS).toBe('object')
+    expect(Object.keys(EVENT_TYPE_BADGE_COLORS).length).toBeGreaterThan(0)
+    expect(typeof TYPE_LABELS).toBe('object')
+    expect(Object.keys(TYPE_LABELS).length).toBeGreaterThan(0)
+  })
+
+  it('hexToRgb converts hex to RGB tuple', () => {
+    const result = hexToRgb('#a855f7')
+    expect(Array.isArray(result)).toBe(true)
+    expect(result.length).toBe(3)
+    expect(result[0]).toBe(168)
+    expect(result[1]).toBe(85)
+    expect(result[2]).toBe(247)
   })
 })

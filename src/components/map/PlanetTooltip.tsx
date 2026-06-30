@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { ALL_CHARACTERS, getPlanetById } from '@/data/static'
 import type { Planet } from '@/types/planet'
 
@@ -7,7 +8,7 @@ interface Props {
   top: number
 }
 
-export default function PlanetTooltip({ planet, left, top }: Props) {
+const PlanetTooltip = memo(function PlanetTooltip({ planet, left, top }: Props) {
   const characters = ALL_CHARACTERS.filter((c) => c.planet === planet.id)
 
   return (
@@ -39,4 +40,6 @@ export default function PlanetTooltip({ planet, left, top }: Props) {
       </div>
     </div>
   )
-}
+})
+
+export default PlanetTooltip

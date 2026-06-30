@@ -1,10 +1,8 @@
 import { useState } from 'react'
-import { PLANETS } from '@/data/static'
+import { PLANET_BY_ID } from '@/data/static'
 import { WORLDHOPPER_MOVEMENTS } from '@/data/static/timeline'
 import ColorDot from '@/components/ui/ColorDot'
-import { FALLBACK_COLOR } from '@/utils/constants'
-
-const PLANET_BY_ID = new Map(PLANETS.map((p) => [p.id, p]))
+import { FALLBACK_COLOR } from '@/data/static'
 
 const WH_DESCRIPTIONS: Record<string, string> = {
   hoid: 'A mysterious wanderer who appears throughout the Cosmere. Present at the Shattering of Adonalsium, he refused a Shard and now walks the worlds as a storyteller, informant, and seeker of something lost.',

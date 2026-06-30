@@ -9,10 +9,10 @@ const CX = 300
 const CY = 300
 const R = 200
 
-function polar(index: number, total: number, radius: number) {
-  const angle = (index / total) * Math.PI * 2 - Math.PI / 2
-  return { x: CX + radius * Math.cos(angle), y: CY + radius * Math.sin(angle) }
-}
+const HERALD_POSITIONS = HERALDS.map((h, i) => {
+  const angle = (i / HERALDS.length) * Math.PI * 2 - Math.PI / 2
+  return { id: h.id, x: CX + R * Math.cos(angle), y: CY + R * Math.sin(angle) }
+})
 
 export default function HeraldsPage() {
   useSEOMeta({
@@ -48,7 +48,7 @@ export default function HeraldsPage() {
               <circle cx={CX} cy={CY} r={R} fill="none" stroke="#374151" strokeWidth="1.5" strokeOpacity="0.3" />
 
               {HERALDS.map((h, i) => {
-                const pos = polar(i, HERALDS.length, R)
+                const pos = HERALD_POSITIONS[i]!
                 return (
                   <line
                     key={`line-${h.id}`}
@@ -63,8 +63,8 @@ export default function HeraldsPage() {
                 )
               })}
               {HERALDS.map((h, i) => {
-                const a = polar(i, HERALDS.length, R)
-                const b = polar((i + 1) % HERALDS.length, HERALDS.length, R)
+                const a = HERALD_POSITIONS[i]!
+                const b = HERALD_POSITIONS[(i + 1) % HERALDS.length]!
                 return (
                   <line
                     key={`arc-${h.id}`}
@@ -80,7 +80,7 @@ export default function HeraldsPage() {
               })}
 
               {HERALDS.map((h, i) => {
-                const pos = polar(i, HERALDS.length, R)
+                const pos = HERALD_POSITIONS[i]!
                 const isSelected = selected?.id === h.id
                 const isHovered = hovered === h.id
                 const nodeR = isHovered || isSelected ? 50 : 40
@@ -97,7 +97,7 @@ export default function HeraldsPage() {
                     }}
                     onMouseEnter={() => setHovered(h.id)}
                     onMouseLeave={() => setHovered(null)}
-                    style={{ cursor: 'pointer', transition: 'all 0.2s' }}
+                    className="cursor-pointer transition-all duration-200"
                   >
                     {isHovered && <circle cx={pos.x} cy={pos.y} r={70} fill={`url(#glow-${h.id})`} />}
                     <circle
@@ -108,7 +108,7 @@ export default function HeraldsPage() {
                       stroke={isSelected || isHovered ? h.color : h.color}
                       strokeWidth={isSelected ? 3 : 2}
                       opacity={isHovered ? 1 : 0.9}
-                      style={{ transition: 'all 0.2s' }}
+                      className="transition-all duration-200"
                     />
                     <text
                       x={pos.x}
@@ -118,7 +118,7 @@ export default function HeraldsPage() {
                       fontSize="13"
                       fontWeight="bold"
                       dominantBaseline="auto"
-                      style={{ pointerEvents: 'none' }}
+                      pointerEvents="none"
                     >
                       {h.name.includes('(') ? h.name.split(' (')[0] : h.name.split(' ')[0]}
                     </text>
@@ -129,7 +129,7 @@ export default function HeraldsPage() {
                       fill={h.color}
                       fontSize="10"
                       dominantBaseline="auto"
-                      style={{ pointerEvents: 'none' }}
+                      pointerEvents="none"
                     >
                       {h.order}
                     </text>
@@ -141,7 +141,7 @@ export default function HeraldsPage() {
                         fill="#a78bfa"
                         fontSize="9"
                         dominantBaseline="auto"
-                        style={{ pointerEvents: 'none' }}
+                        pointerEvents="none"
                       >
                         SELECTED
                       </text>

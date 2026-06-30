@@ -1,7 +1,6 @@
 import { memo, useMemo } from 'react'
 import { PLANETS } from '@/data/static'
-import { SHARD_COLORS } from '@/data/static/colors'
-import { FALLBACK_COLOR } from '@/utils/constants'
+import { SHARD_COLORS, FALLBACK_COLOR } from '@/data/static'
 
 function parseShards(shardStr: string): string[] {
   return shardStr

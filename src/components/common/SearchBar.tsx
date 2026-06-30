@@ -19,6 +19,7 @@ export default function SearchBar() {
     handleKey,
     onFocus,
     onSelect,
+    clearRecent,
   } = useSearch()
 
   return (
@@ -49,8 +50,7 @@ export default function SearchBar() {
           setRecent([])
         }}
         onClearRecent={() => {
-          localStorage.removeItem('cosmere-recent-searches')
-          setRecent([])
+          clearRecent()
         }}
       />
     </div>
