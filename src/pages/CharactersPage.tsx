@@ -222,7 +222,7 @@ export default function CharactersPage() {
                           )}
                         </div>
                         <button
-                          onClick={() => navigate(`/?focus=planet&id=${c.planet}`)}
+                          onClick={() => navigate(`/map?focus=planet&id=${c.planet}`)}
                           className="text-xs text-gray-500 capitalize transition-colors hover:text-cyan-400"
                         >
                           {planet?.name ?? c.planet}

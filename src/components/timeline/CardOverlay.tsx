@@ -67,7 +67,7 @@ export default function CardOverlay({ event, x, y, eventTypeBadgeClass, onClose,
                   <button
                     onClick={(e) => {
                       e.stopPropagation()
-                      navigate(`/?focus=planet&id=${pid}`)
+                      navigate(`/map?focus=planet&id=${pid}`)
                     }}
                     className="text-gray-400 transition-colors hover:text-cyan-400"
                   >

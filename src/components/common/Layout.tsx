@@ -1,32 +1,14 @@
 import { useEffect, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
-import SearchBar from './SearchBar'
-import ThemeToggle from '@/components/ui/ThemeToggle'
 import CommandPalette from '@/components/ui/CommandPalette'
 import KeyboardShortcutsHelp from '@/components/ui/KeyboardShortcutsHelp'
-import SpoilerToggle from '@/components/ui/SpoilerToggle'
 import Breadcrumbs from '@/components/ui/Breadcrumbs'
 import BackToTop from '@/components/ui/BackToTop'
 import TransitionLink from '@/components/ui/TransitionLink'
+import SideDrawer from '@/components/common/SideDrawer'
 
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut'
 import { useViewTransitionNavigate } from '@/hooks/useViewTransition'
-
-function navClass(base: string) {
-  return ({ isActive }: { isActive: boolean }) => `${base} ${isActive ? 'text-purple-400' : 'text-gray-500'}`
-}
-
-const NAV_LINKS: { to: string; label: string }[] = [
-  { to: '/glossary', label: 'Glossary' },
-  { to: '/heralds', label: 'Heralds' },
-  { to: '/locations', label: 'Locations' },
-  { to: '/books', label: 'Books' },
-  { to: '/characters', label: 'Characters' },
-  { to: '/stats', label: 'Stats' },
-  { to: '/timeline', label: 'Timeline' },
-  { to: '/reading-order', label: 'Reading Order' },
-  { to: '/mind-map', label: 'Mind Map' },
-]
 
 const NAV_SHORTCUTS: [string, string][] = [
   ['1', '/about'],
@@ -46,6 +28,7 @@ export default function Layout() {
   const navigate = useViewTransitionNavigate()
   const [cmdOpen, setCmdOpen] = useState(false)
   const [shortcutsOpen, setShortcutsOpen] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(false)
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [location.pathname])
@@ -94,6 +77,7 @@ export default function Layout() {
     <>
       {cmdOpen && <CommandPalette onClose={() => setCmdOpen(false)} />}
       {shortcutsOpen && <KeyboardShortcutsHelp onClose={() => setShortcutsOpen(false)} />}
+      <SideDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
       <div className="flex h-screen flex-col" style={{ backgroundColor: 'var(--bg-page)', color: 'var(--text-main)' }}>
         <a
           href="#main-content"
@@ -114,6 +98,15 @@ export default function Layout() {
           style={{ backgroundColor: 'var(--bg-nav)' }}
         >
           <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
+            <button
+              onClick={() => setDrawerOpen(true)}
+              className="flex h-8 w-8 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-gray-800 hover:text-gray-200"
+              aria-label="Open navigation menu"
+            >
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M2 4h14M2 9h14M2 14h14" strokeLinecap="round" />
+              </svg>
+            </button>
             <TransitionLink
               to="/"
               className="shrink-0 text-sm font-bold tracking-wider text-purple-400 sm:text-base sm:tracking-wider lg:text-xl"
@@ -122,29 +115,10 @@ export default function Layout() {
             </TransitionLink>
             <TransitionLink
               to="/about"
-              className={navClass('hidden shrink-0 text-sm transition-colors hover:text-gray-300 sm:inline')}
+              className="ml-auto hidden shrink-0 text-sm text-gray-500 transition-colors hover:text-gray-300 sm:inline"
             >
               About
             </TransitionLink>
-
-            <div className="ml-auto flex items-center gap-3 min-w-0">
-              <div className="flex items-center gap-3 overflow-x-auto flex-nowrap scrollbar-none">
-                {NAV_LINKS.map(({ to, label }) => (
-                  <TransitionLink
-                    key={to}
-                    to={to}
-                    className={navClass('shrink-0 text-sm transition-colors hover:text-gray-300')}
-                  >
-                    {label}
-                  </TransitionLink>
-                ))}
-              </div>
-              <SpoilerToggle />
-              <ThemeToggle />
-              <div className="w-48 sm:w-64">
-                <SearchBar />
-              </div>
-            </div>
           </div>
         </nav>
 

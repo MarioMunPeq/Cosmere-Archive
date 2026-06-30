@@ -10,6 +10,7 @@ import {
   CharactersPageSkeleton,
 } from '@/components/ui/Skeleton'
 
+const LandingPage = lazy(() => import('@/pages/LandingPage'))
 const MapPage = lazy(() => import('@/pages/MapPage'))
 const About = lazy(() => import('@/pages/About'))
 const RelationshipsPage = lazy(() => import('@/pages/RelationshipsPage'))
@@ -33,6 +34,14 @@ export default function App() {
         <Route element={<Layout />}>
           <Route
             index
+            element={
+              <RouteFallback>
+                <LandingPage />
+              </RouteFallback>
+            }
+          />
+          <Route
+            path="map"
             element={
               <RouteFallback fallback={<MapPageSkeleton />}>
                 <MapPage />

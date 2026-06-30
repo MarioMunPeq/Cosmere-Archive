@@ -88,7 +88,7 @@ export default function BookPage() {
                 <div key={c.id} className="rounded-lg border border-gray-800 bg-gray-900/50 p-3">
                   <div className="font-medium text-gray-200">{c.name}</div>
                   <button
-                    onClick={() => navigate(`/?focus=planet&id=${c.planet}`)}
+                    onClick={() => navigate(`/map?focus=planet&id=${c.planet}`)}
                     className="mt-0.5 text-xs text-gray-500 capitalize transition-colors hover:text-cyan-400"
                   >
                     {c.planet}

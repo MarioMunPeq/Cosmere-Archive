@@ -91,12 +91,12 @@ function TermCard({
             className="cursor-pointer capitalize text-cyan-400 hover:text-cyan-300"
             onClick={(e) => {
               e.stopPropagation()
-              navigate(`/?focus=planet&id=${entry.planet}`)
+              navigate(`/map?focus=planet&id=${entry.planet}`)
             }}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 e.stopPropagation()
-                navigate(`/?focus=planet&id=${entry.planet}`)
+                navigate(`/map?focus=planet&id=${entry.planet}`)
               }
             }}
           >

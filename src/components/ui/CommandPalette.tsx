@@ -84,7 +84,7 @@ export default function CommandPalette({ onClose }: Props) {
       id: `char-${c.id}`,
       label: c.name,
       description: c.description.slice(0, 60),
-      to: `/?focus=character&id=${c.id}&planet=${c.planet.toLowerCase()}`,
+      to: `/map?focus=character&id=${c.id}&planet=${c.planet.toLowerCase()}`,
       icon: '👤',
     }))
     return [...PAGE_COMMANDS, ...bookCommands, ...characterCommands]

@@ -163,7 +163,7 @@ export default function CosmereMindMap3D() {
         y: (p.y / 600) * 400 - 200,
         z: (Math.random() - 0.5) * 100,
         r: NODE_TYPES.planet!.baseR,
-        link: `/?focus=planet&id=${p.id}`,
+        link: `/map?focus=planet&id=${p.id}`,
       })
     }
 
