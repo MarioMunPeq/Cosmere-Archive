@@ -1,13 +1,13 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
-import GlossaryPage from '@/pages/GlossaryPage'
+import MagicSystemsPage from '@/pages/MagicSystemsPage'
 
 function renderMagicTab() {
   return render(
-    <MemoryRouter initialEntries={['/glossary?tab=magic']}>
-      <GlossaryPage />
+    <MemoryRouter initialEntries={['/magic']}>
+      <MagicSystemsPage />
     </MemoryRouter>,
   )
 }
@@ -24,6 +24,11 @@ describe('MagicSystemsPage', () => {
     expect(screen.getByText('All Planets')).toBeInTheDocument()
   })
 
+  it('has a search input', () => {
+    renderMagicTab()
+    expect(screen.getByPlaceholderText('Search systems...')).toBeInTheDocument()
+  })
+
   it('shows planet groupings by default', () => {
     renderMagicTab()
     expect(screen.getAllByText('Scadrial').length).toBeGreaterThanOrEqual(1)
@@ -33,37 +38,6 @@ describe('MagicSystemsPage', () => {
   it('shows magic system names under planets', () => {
     renderMagicTab()
     expect(screen.getAllByText('Allomancy').length).toBeGreaterThanOrEqual(1)
-  })
-
-  it('shows system count per planet', () => {
-    renderMagicTab()
-    expect(screen.getAllByText(/\d system/).length).toBeGreaterThanOrEqual(1)
-  })
-
-  it('shows detail panel when a system is selected', async () => {
-    renderMagicTab()
-    await userEvent.click(screen.getAllByText('Allomancy')[0]!)
-    expect(await screen.findByText(/Burning metals/i)).toBeInTheDocument()
-  })
-
-  it('shows AllomanticTable for allomancy', async () => {
-    renderMagicTab()
-    await userEvent.click(screen.getAllByText('Allomancy')[0]!)
-    expect(await screen.findByText('Steel')).toBeInTheDocument()
-    expect(await screen.findByText('Iron')).toBeInTheDocument()
-  })
-
-  it('shows detail panel content when a system is selected', async () => {
-    renderMagicTab()
-    await userEvent.click(screen.getByText('AonDor'))
-    const heading = await screen.findByRole('heading', { name: 'AonDor' })
-    expect(heading).toBeInTheDocument()
-    expect(screen.getByText('Category')).toBeInTheDocument()
-  })
-
-  it('shows placeholder when no system is selected', () => {
-    renderMagicTab()
-    expect(screen.getByText('Select a magic system')).toBeInTheDocument()
   })
 
   it('shows system shard info in cards', () => {
@@ -79,10 +53,50 @@ describe('MagicSystemsPage', () => {
     expect(screen.queryByText('Surgebinding')).not.toBeInTheDocument()
   })
 
-  it('shows SVG diagram when a planet is selected in filter', async () => {
+  it('opens detail panel when a system is clicked', async () => {
     renderMagicTab()
-    const select = screen.getByRole('combobox')
-    await userEvent.selectOptions(select, 'scadrial')
-    expect(await screen.findByRole('img', { name: /Scadrial/i })).toBeInTheDocument()
+    await userEvent.click(screen.getAllByText('Allomancy')[0]!)
+    expect(await screen.findByText(/Appears in/)).toBeInTheDocument()
+  })
+
+  it('shows detail content in the panel', async () => {
+    renderMagicTab()
+    await userEvent.click(screen.getByText('AonDor'))
+    expect(await screen.findByText(/Appears in/i)).toBeInTheDocument()
+  })
+
+  it('shows AllomanticTable for allomancy when expanded', async () => {
+    renderMagicTab()
+    await userEvent.click(screen.getAllByText('Allomancy')[0]!)
+    await userEvent.click(await screen.findByText('The Sixteen Metals'))
+    expect(await screen.findByText('Steel')).toBeInTheDocument()
+    expect(await screen.findByText('Iron')).toBeInTheDocument()
+  })
+
+  it('shows known users in detail panel', async () => {
+    renderMagicTab()
+    await userEvent.click(screen.getByText('AonDor'))
+    expect(await screen.findByText(/Known users/i)).toBeInTheDocument()
+  })
+
+  it('does not show detail panel by default', () => {
+    renderMagicTab()
+    expect(screen.queryByText('Appears in')).not.toBeInTheDocument()
+  })
+
+  it('filters systems by search input', async () => {
+    renderMagicTab()
+    const search = screen.getByPlaceholderText('Search systems...')
+    await userEvent.type(search, 'AonDor')
+    await waitFor(() => {
+      expect(screen.queryByText('Allomancy')).not.toBeInTheDocument()
+    })
+    expect(screen.getByText('AonDor')).toBeInTheDocument()
+  })
+
+  it('has a close button on the detail panel', async () => {
+    renderMagicTab()
+    await userEvent.click(screen.getByText('AonDor'))
+    expect(await screen.findByLabelText('Close detail')).toBeInTheDocument()
   })
 })

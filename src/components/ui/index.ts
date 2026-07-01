@@ -19,14 +19,7 @@ export { default as PageLayout } from './PageLayout'
 export { default as RouteFallback } from './RouteFallback'
 export { default as ShardCard } from './ShardCard'
 export { default as ShareButton } from './ShareButton'
-export {
-  SkeletonBar,
-  MapPageSkeleton,
-  GlossaryPageSkeleton,
-  BooksPageSkeleton,
-  CharactersPageSkeleton,
-  ShardsPageSkeleton,
-} from './Skeleton'
+export { SkeletonBar, MapPageSkeleton, BooksPageSkeleton, CharactersPageSkeleton, ShardsPageSkeleton } from './Skeleton'
 export { default as SpoilerToggle } from './SpoilerToggle'
 export { default as ThemeToggle } from './ThemeToggle'
 export { default as TransitionLink } from './TransitionLink'

@@ -3,24 +3,18 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import Layout from '@/components/common/Layout'
 import ErrorBoundary from '@/components/common/ErrorBoundary'
 import RouteFallback from '@/components/ui/RouteFallback'
-import {
-  MapPageSkeleton,
-  GlossaryPageSkeleton,
-  BooksPageSkeleton,
-  CharactersPageSkeleton,
-} from '@/components/ui/Skeleton'
+import { MapPageSkeleton, BooksPageSkeleton, CharactersPageSkeleton } from '@/components/ui/Skeleton'
 
 const LandingPage = lazy(() => import('@/pages/LandingPage'))
 const MapPage = lazy(() => import('@/pages/MapPage'))
 const About = lazy(() => import('@/pages/About'))
-const RelationshipsPage = lazy(() => import('@/pages/RelationshipsPage'))
-const GlossaryPage = lazy(() => import('@/pages/GlossaryPage'))
+
+const MagicSystemsPage = lazy(() => import('@/pages/MagicSystemsPage'))
 const HeraldsPage = lazy(() => import('@/pages/HeraldsPage'))
 const BookPage = lazy(() => import('@/pages/BookPage'))
 const BooksPage = lazy(() => import('@/pages/BooksPage'))
 const CharactersPage = lazy(() => import('@/pages/CharactersPage'))
 const LocationsPage = lazy(() => import('@/pages/LocationsPage'))
-const ReadingOrderPage = lazy(() => import('@/pages/ReadingOrderPage'))
 const StandaloneTimelinePage = lazy(() => import('@/pages/StandaloneTimelinePage'))
 const StatsPage = lazy(() => import('@/pages/StatsPage'))
 const ComparePage = lazy(() => import('@/pages/ComparePage'))
@@ -56,19 +50,12 @@ export default function App() {
               </RouteFallback>
             }
           />
+
           <Route
-            path="relationships"
+            path="magic"
             element={
               <RouteFallback>
-                <RelationshipsPage />
-              </RouteFallback>
-            }
-          />
-          <Route
-            path="glossary"
-            element={
-              <RouteFallback fallback={<GlossaryPageSkeleton />}>
-                <GlossaryPage />
+                <MagicSystemsPage />
               </RouteFallback>
             }
           />
@@ -123,14 +110,6 @@ export default function App() {
             }
           />
           <Route
-            path="reading-order"
-            element={
-              <RouteFallback>
-                <ReadingOrderPage />
-              </RouteFallback>
-            }
-          />
-          <Route
             path="locations"
             element={
               <RouteFallback>
@@ -138,7 +117,7 @@ export default function App() {
               </RouteFallback>
             }
           />
-          <Route path="magic" element={<Navigate to="/glossary?tab=magic" replace />} />
+          <Route path="glossary" element={<Navigate to="/magic" replace />} />
           <Route
             path="compare"
             element={

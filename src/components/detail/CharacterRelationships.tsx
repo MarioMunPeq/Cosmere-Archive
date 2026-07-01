@@ -12,9 +12,9 @@ interface Props {
   onSelectCharacter: (id: string) => void
 }
 
-const CX = 400
-const CY = 240
-const R = 150
+const CX = 450
+const CY = 270
+const R = 190
 
 function getCharacterColor(char: Character): string {
   const planet = getPlanetById(char.planet.toLowerCase())
@@ -45,25 +45,36 @@ function CharacterRelationships({ character, allCharacters, relationships, onSel
 
   if (related.length === 0) {
     return (
-      <div className="flex items-center justify-center rounded-lg border border-dashed border-gray-700 py-16 text-sm text-gray-500">
+      <div className="flex items-center justify-center rounded-lg border border-dashed border-gray-700 py-24 text-sm text-gray-500">
         No known relationships for this character.
       </div>
     )
   }
 
   return (
-    <svg viewBox="0 0 800 480" className="w-full" role="img" aria-label={`Relationship network for ${character.name}`}>
+    <svg viewBox="0 0 900 540" className="w-full" role="img" aria-label={`Relationship network for ${character.name}`}>
       <defs>
-        {nodes.map((node) => (
-          <filter key={node.character.id} id={`glow-${node.character.id}`}>
-            <feGaussianBlur stdDeviation="2" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        ))}
+        <filter id="center-glow">
+          <feGaussianBlur stdDeviation="6" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        <filter id="node-glow">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        <radialGradient id="bg-grad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#1e1b4b" stopOpacity="0.3" />
+          <stop offset="100%" stopColor="#030712" stopOpacity="0" />
+        </radialGradient>
       </defs>
+
+      <rect x="0" y="0" width="900" height="540" fill="url(#bg-grad)" rx="12" />
 
       {nodes.map((node) => {
         const color = RELATIONSHIP_COLORS[node.type]
@@ -81,21 +92,22 @@ function CharacterRelationships({ character, allCharacters, relationships, onSel
               y2={node.y}
               stroke={color}
               strokeWidth="1.5"
-              strokeDasharray="4 3"
-              opacity="0.5"
+              strokeDasharray="5 4"
+              opacity="0.45"
+              className="transition-all duration-500"
             />
             <rect
-              x={mx - 30}
-              y={my - 8}
-              width={60}
-              height={16}
-              rx="4"
-              fill="#111827"
+              x={mx - 32}
+              y={my - 9}
+              width={64}
+              height={18}
+              rx="5"
+              fill="#0f172a"
               stroke={color}
               strokeWidth="0.5"
-              opacity="0.9"
+              opacity="0.95"
             />
-            <text x={mx} y={my + 3.5} textAnchor="middle" fill={color} fontSize="9" fontWeight="600">
+            <text x={mx} y={my + 4} textAnchor="middle" fill={color} fontSize="9" fontWeight="600">
               {node.label ?? RELATIONSHIP_LABELS[node.type]}
             </text>
           </g>
@@ -105,28 +117,29 @@ function CharacterRelationships({ character, allCharacters, relationships, onSel
       <circle
         cx={CX}
         cy={CY}
-        r="36"
-        fill="#1f2937"
+        r="40"
+        fill="#1e293b"
         stroke={getCharacterColor(character)}
-        strokeWidth="2.5"
-        filter={`url(#glow-${character.id})`}
+        strokeWidth="3"
+        filter="url(#center-glow)"
+        className="transition-all duration-500"
       />
       <text
         x={CX}
         y={CY + 1}
         textAnchor="middle"
         fill="#e5e7eb"
-        fontSize="10"
+        fontSize="11"
         fontWeight="700"
         dominantBaseline="central"
       >
-        {character.name.length > 12 ? character.name.slice(0, 11) + '…' : character.name}
+        {character.name.length > 10 ? character.name.slice(0, 9) + '…' : character.name}
       </text>
 
       {nodes.map((node) => (
         <g
           key={node.character.id}
-          className="cursor-pointer"
+          className="cursor-pointer transition-all duration-300 hover:opacity-80"
           onClick={() => onSelectCharacter(node.character.id)}
           role="button"
           aria-label={`View ${node.character.name} relationships`}
@@ -138,22 +151,23 @@ function CharacterRelationships({ character, allCharacters, relationships, onSel
           <circle
             cx={node.x}
             cy={node.y}
-            r="28"
-            fill="#1f2937"
+            r="30"
+            fill="#1e293b"
             stroke={getCharacterColor(node.character)}
             strokeWidth="2"
-            filter={`url(#glow-${node.character.id})`}
+            filter="url(#node-glow)"
+            className="transition-all duration-300"
           />
           <text
             x={node.x}
             y={node.y + 1}
             textAnchor="middle"
             fill="#e5e7eb"
-            fontSize="9"
+            fontSize="10"
             fontWeight="600"
             dominantBaseline="central"
           >
-            {node.character.name.length > 14 ? node.character.name.slice(0, 13) + '…' : node.character.name}
+            {node.character.name.length > 12 ? node.character.name.slice(0, 11) + '…' : node.character.name}
           </text>
         </g>
       ))}

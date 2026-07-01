@@ -5,15 +5,13 @@ const SEGMENT_NAMES: Record<string, string> = {
   '': 'Map',
   about: 'About',
   relationships: 'Relationships',
-  glossary: 'Glossary',
+  characters: 'Characters',
+  magic: 'Magic Systems',
   heralds: 'Heralds',
   books: 'Books',
-  characters: 'Characters',
   stats: 'Stats',
   timeline: 'Timeline',
-  'reading-order': 'Reading Order',
   locations: 'Locations',
-  magic: 'Magic Systems',
 }
 
 type Crumb = { label: string; to: string }

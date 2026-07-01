@@ -39,20 +39,13 @@ const SECTIONS: Section[] = [
     iconType: 'planet',
   },
   {
-    id: 'glossary',
-    label: 'Glossary',
-    to: '/glossary',
+    id: 'magic',
+    label: 'Magic Systems',
+    to: '/magic',
     description: 'Terms, magic systems, and more',
-    iconType: 'glossary',
+    iconType: 'magic',
   },
   { id: 'stats', label: 'Stats', to: '/stats', description: 'Cosmere data dashboard', iconType: 'event' },
-  {
-    id: 'reading-order',
-    label: 'Reading Order',
-    to: '/reading-order',
-    description: 'Recommended reading order',
-    iconType: 'book',
-  },
   {
     id: 'heralds',
     label: 'Heralds',
@@ -63,7 +56,7 @@ const SECTIONS: Section[] = [
   {
     id: 'relationships',
     label: 'Relationships',
-    to: '/relationships',
+    to: '/characters?tab=relationships',
     description: 'Character relationships',
     iconType: 'character',
   },

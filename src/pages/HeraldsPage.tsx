@@ -3,16 +3,25 @@ import { HERALDS } from '@/data/static/heralds'
 import type { Herald } from '@/types/herald'
 import SplitPane from '@/components/common/SplitPane'
 import PageLayout from '@/components/ui/PageLayout'
+import HonorbladeSVG from '@/components/detail/herald/HonorbladeSVG'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
 
 const CX = 300
 const CY = 300
-const R = 200
+const R = 190
 
-const HERALD_POSITIONS = HERALDS.map((h, i) => {
-  const angle = (i / HERALDS.length) * Math.PI * 2 - Math.PI / 2
-  return { id: h.id, x: CX + R * Math.cos(angle), y: CY + R * Math.sin(angle) }
-})
+const TALN_ID = 'talenel'
+
+function getDisplayName(h: Herald): string {
+  return h.name.includes('(') ? h.name.split(' (')[0]! : h.name.split(' ')[0]!
+}
+
+function truncateName(h: Herald): string {
+  const base = getDisplayName(h)
+  if (h.name === 'Chanarach') return 'Chanarach'
+  if (base === 'Talenel') return 'Taln'
+  return base
+}
 
 export default function HeraldsPage() {
   useSEOMeta({
@@ -26,174 +35,178 @@ export default function HeraldsPage() {
   return (
     <PageLayout variant="none">
       <div className="shrink-0 border-b border-gray-800 px-4 py-3 sm:px-6">
-        <h1 className="text-lg font-bold text-gray-100 sm:text-xl">The Heralds of the Almighty</h1>
+        <h1 className="text-lg font-bold text-gray-100 sm:text-xl">The Oathpact</h1>
         <p className="mt-0.5 text-xs leading-relaxed text-gray-500">
-          The ten Heralds who formed the Oathpact with Honor. Click a Herald to see details.
+          Ten Heralds. One Promise. Nine abandoned it. Only Taln never broke.
         </p>
       </div>
 
       <SplitPane
         left={
-          <div className="flex h-full items-center justify-center p-1">
-            <svg viewBox="0 0 600 600" className="h-full w-full" role="img" aria-label="Heralds circle">
+          <div className="flex h-full items-center justify-center p-2">
+            <svg viewBox="0 0 600 600" className="h-full w-full" role="img" aria-label="Honorblades of the Heralds">
               <defs>
-                {HERALDS.map((h) => (
-                  <radialGradient key={`glow-${h.id}`} id={`glow-${h.id}`} cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stopColor={h.color} stopOpacity="0.3" />
-                    <stop offset="100%" stopColor={h.color} stopOpacity="0" />
-                  </radialGradient>
-                ))}
+                <radialGradient id="center-glow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#a78bfa" stopOpacity="0.08" />
+                  <stop offset="100%" stopColor="#a78bfa" stopOpacity="0" />
+                </radialGradient>
               </defs>
 
-              <circle cx={CX} cy={CY} r={R} fill="none" stroke="#374151" strokeWidth="1.5" strokeOpacity="0.3" />
+              <circle cx={CX} cy={CY} r={60} fill="url(#center-glow)" />
+
+              <circle
+                cx={CX}
+                cy={CY}
+                r={R + 2}
+                fill="none"
+                stroke="#1e293b"
+                strokeWidth="1"
+                strokeDasharray="4 4"
+                opacity="0.5"
+              />
 
               {HERALDS.map((h, i) => {
-                const pos = HERALD_POSITIONS[i]!
+                const rad = (i / HERALDS.length) * Math.PI * 2 - Math.PI / 2
+                const x = CX + (R - 8) * Math.cos(rad)
+                const y = CY + (R - 8) * Math.sin(rad)
                 return (
                   <line
                     key={`line-${h.id}`}
                     x1={CX}
                     y1={CY}
-                    x2={pos.x}
-                    y2={pos.y}
-                    stroke={h.color}
-                    strokeWidth="1.5"
-                    strokeOpacity={hovered === h.id ? '0.5' : '0.2'}
-                  />
-                )
-              })}
-              {HERALDS.map((h, i) => {
-                const a = HERALD_POSITIONS[i]!
-                const b = HERALD_POSITIONS[(i + 1) % HERALDS.length]!
-                return (
-                  <line
-                    key={`arc-${h.id}`}
-                    x1={a.x}
-                    y1={a.y}
-                    x2={b.x}
-                    y2={b.y}
+                    x2={x}
+                    y2={y}
                     stroke={h.color}
                     strokeWidth="1"
-                    strokeOpacity={hovered === h.id ? '0.4' : '0.15'}
+                    strokeOpacity={hovered === h.id ? '0.3' : '0.1'}
+                    className="transition-all duration-300"
                   />
                 )
               })}
 
-              {HERALDS.map((h, i) => {
-                const pos = HERALD_POSITIONS[i]!
-                const isSelected = selected?.id === h.id
-                const isHovered = hovered === h.id
-                const nodeR = isHovered || isSelected ? 50 : 40
-
-                return (
-                  <g
-                    key={h.id}
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`${h.name} — ${h.title}`}
-                    onClick={() => setSelected(h)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') setSelected(h)
-                    }}
-                    onMouseEnter={() => setHovered(h.id)}
-                    onMouseLeave={() => setHovered(null)}
-                    className="cursor-pointer transition-all duration-200"
-                  >
-                    {isHovered && <circle cx={pos.x} cy={pos.y} r={70} fill={`url(#glow-${h.id})`} />}
-                    <circle
-                      cx={pos.x}
-                      cy={pos.y}
-                      r={nodeR}
-                      fill={isSelected ? '#1e293b' : '#1f2937'}
-                      stroke={isSelected || isHovered ? h.color : h.color}
-                      strokeWidth={isSelected ? 3 : 2}
-                      opacity={isHovered ? 1 : 0.9}
-                      className="transition-all duration-200"
-                    />
-                    <text
-                      x={pos.x}
-                      y={pos.y - 6}
-                      textAnchor="middle"
-                      fill="#e5e7eb"
-                      fontSize="13"
-                      fontWeight="bold"
-                      dominantBaseline="auto"
-                      pointerEvents="none"
-                    >
-                      {h.name.includes('(') ? h.name.split(' (')[0] : h.name.split(' ')[0]}
-                    </text>
-                    <text
-                      x={pos.x}
-                      y={pos.y + 17}
-                      textAnchor="middle"
-                      fill={h.color}
-                      fontSize="10"
-                      dominantBaseline="auto"
-                      pointerEvents="none"
-                    >
-                      {h.order}
-                    </text>
-                    {isSelected && (
-                      <text
-                        x={pos.x}
-                        y={pos.y + 32}
-                        textAnchor="middle"
-                        fill="#a78bfa"
-                        fontSize="9"
-                        dominantBaseline="auto"
-                        pointerEvents="none"
-                      >
-                        SELECTED
-                      </text>
-                    )}
-                  </g>
-                )
-              })}
+              {HERALDS.map((h, i) => (
+                <HonorbladeSVG
+                  key={h.id}
+                  variant={h.id}
+                  color={h.color}
+                  displayName={truncateName(h)}
+                  order={h.order}
+                  index={i}
+                  total={HERALDS.length}
+                  isFallen={h.id !== TALN_ID}
+                  isHovered={hovered === h.id}
+                  isSelected={selected?.id === h.id}
+                  cx={CX}
+                  cy={CY}
+                  radius={R}
+                  onMouseEnter={() => setHovered(h.id)}
+                  onMouseLeave={() => setHovered(null)}
+                  onClick={() => setSelected(h)}
+                />
+              ))}
             </svg>
           </div>
         }
         right={
-          <div className="flex flex-col p-4 sm:p-5">
+          <div className="flex h-full flex-col p-3 sm:p-4">
             {selected ? (
-              <div className="animate-fade-in-up">
-                <div className="mb-4 flex items-center gap-3">
-                  <span className="h-4 w-4 shrink-0 rounded-full" style={{ backgroundColor: selected.color }} />
-                  <h2 className="text-lg font-bold text-gray-100">{selected.name}</h2>
-                </div>
-                <p className="text-sm text-purple-400">{selected.title}</p>
+              <div className="relative flex flex-1 flex-col overflow-y-auto rounded-xl border border-gray-800/60 bg-gray-900/70 shadow-xl backdrop-blur-sm animate-fade-in-up">
+                <div
+                  className="absolute left-0 top-3 bottom-3 w-[3px] rounded-r-sm"
+                  style={{ backgroundColor: selected.color }}
+                />
 
-                <div className="mt-4 space-y-3">
-                  <div>
-                    <h4 className="text-xxs font-semibold uppercase tracking-wider text-gray-500">Order</h4>
-                    <p className="mt-0.5 text-sm text-gray-200">{selected.order}</p>
-                  </div>
-                  <div>
-                    <h4 className="text-xxs font-semibold uppercase tracking-wider text-gray-500">Surges</h4>
-                    <div className="mt-1 flex flex-wrap gap-1.5">
-                      {selected.surges.map((s) => (
-                        <span key={s} className="rounded bg-gray-800 px-2 py-0.5 text-xs text-cyan-400">
-                          {s}
-                        </span>
-                      ))}
+                <div className="flex-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-5">
+                  <div className="pl-3">
+                    <div className="flex items-center gap-2">
+                      <h2 className="text-xl font-bold tracking-tight" style={{ color: selected.color }}>
+                        {selected.name}
+                      </h2>
                     </div>
+                    <p className="mt-0.5 text-sm text-gray-500">{selected.title}</p>
                   </div>
-                  <div>
-                    <h4 className="text-xxs font-semibold uppercase tracking-wider text-gray-500">Spren Type</h4>
-                    <p className="mt-0.5 text-sm text-gray-300">{selected.sprenType}</p>
-                  </div>
-                  {selected.description && (
+
+                  <div className="mt-4 space-y-4 pl-3">
                     <div>
-                      <h4 className="text-xxs font-semibold uppercase tracking-wider text-gray-500">Description</h4>
-                      <p className="mt-1 text-sm leading-relaxed text-gray-400">{selected.description}</p>
+                      <h4 className="text-xxs font-semibold uppercase tracking-widest text-gray-500">Order</h4>
+                      <div className="mt-1.5 rounded-lg border border-gray-800/60 bg-gray-950/50 px-3.5 py-2">
+                        <p className="text-sm font-medium text-gray-200">{selected.order}</p>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 className="text-xxs font-semibold uppercase tracking-widest text-gray-500">Surges</h4>
+                      <div className="mt-1.5 flex flex-wrap gap-2">
+                        {selected.surges.map((s) => (
+                          <span
+                            key={s}
+                            className="rounded-md border px-2.5 py-1 text-xs font-medium transition-colors"
+                            style={{
+                              borderColor: `${selected.color}40`,
+                              backgroundColor: `${selected.color}15`,
+                              color: selected.color,
+                            }}
+                          >
+                            {s}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 className="text-xxs font-semibold uppercase tracking-widest text-gray-500">Spren Type</h4>
+                      <div className="mt-1.5 rounded-lg border border-gray-800/60 bg-gray-950/50 px-3.5 py-2">
+                        <p className="text-sm text-gray-300">{selected.sprenType}</p>
+                      </div>
+                    </div>
+
+                    {selected.description && (
+                      <div>
+                        <h4 className="text-xxs font-semibold uppercase tracking-widest text-gray-500">Description</h4>
+                        <div className="mt-1.5 rounded-lg border border-gray-800/60 bg-gray-950/50 px-3.5 py-2.5">
+                          <p className="text-sm leading-relaxed text-gray-400">{selected.description}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {selected.id === TALN_ID && (
+                    <div className="mx-3 mt-4 rounded-lg border border-amber-500/25 bg-amber-950/15 px-3.5 py-2.5">
+                      <div className="flex items-start gap-2.5">
+                        <span className="mt-0.5 shrink-0 text-amber-400/60 text-xs">✦</span>
+                        <p className="text-xs leading-relaxed text-amber-400/85">
+                          The only Herald who never abandoned the Oathpact.
+                        </p>
+                      </div>
                     </div>
                   )}
+
+                  <div className="mt-5 border-t border-gray-800/50 pt-3 pl-3">
+                    <p className="text-center text-xxs text-gray-700">
+                      {selected.order} · {selected.surges.join(' + ')}
+                    </p>
+                  </div>
                 </div>
               </div>
             ) : (
               <div className="flex h-full items-center justify-center">
                 <div className="text-center">
-                  <p className="text-sm text-gray-500">Select a Herald from the circle</p>
-                  <p className="mt-1 text-xs text-gray-600">Hover over a node to highlight, click for details</p>
+                  <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-dashed border-gray-700/40 bg-gray-800/20">
+                    <svg
+                      viewBox="0 0 20 20"
+                      className="h-6 w-6 text-gray-600"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.2"
+                      aria-hidden="true"
+                    >
+                      <path d="M10 2 L13 8 L20 8 L14 12 L16 18 L10 14 L4 18 L6 12 L0 8 L7 8 L10 2 Z" />
+                    </svg>
+                  </div>
+                  <p className="text-sm font-medium text-gray-500">Select a Herald&apos;s Honorblade</p>
+                  <p className="mt-1 text-xs text-gray-600">Hover to inspect each Honorblade</p>
+                  <div className="mx-auto mt-5 h-px w-10 bg-gray-800" />
+                  <p className="mt-4 text-xs text-gray-700">9 swords fallen — 1 remains standing</p>
                 </div>
               </div>
             )}

@@ -11,11 +11,10 @@ const DRAWER_LINKS: { to: string; label: string }[] = [
   { to: '/timeline', label: 'Timeline' },
   { to: '/books', label: 'Books' },
   { to: '/locations', label: 'Locations' },
-  { to: '/glossary', label: 'Glossary' },
+  { to: '/magic', label: 'Magic Systems' },
   { to: '/stats', label: 'Stats' },
-  { to: '/reading-order', label: 'Reading Order' },
   { to: '/heralds', label: 'Heralds' },
-  { to: '/relationships', label: 'Relationships' },
+
   { to: '/mind-map', label: 'Mind Map' },
 ]
 

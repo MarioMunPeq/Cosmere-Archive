@@ -54,11 +54,8 @@ export default function AllomanticTable() {
   const [selectedMetal, setSelectedMetal] = useState<AllomanticMetal | null>(null)
 
   return (
-    <div className="animate-fade-in-up">
-      <div className="mb-3">
-        <h3 className="text-sm font-semibold text-gray-200">The Sixteen Metals</h3>
-        <p className="text-xs text-gray-500">Each metal has Allomantic, Feruchemical, and Hemalurgic properties</p>
-      </div>
+    <div>
+      <p className="mb-3 text-xs text-gray-500">Each metal has Allomantic, Feruchemical, and Hemalurgic properties</p>
 
       <div className="space-y-4">
         {GROUP_ORDER.map((group) => {

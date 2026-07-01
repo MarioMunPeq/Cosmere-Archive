@@ -20,19 +20,12 @@ const PAGE_COMMANDS: Command[] = [
   { id: 'characters', label: 'Characters', description: 'Notable Cosmere characters', to: '/characters', icon: '👤' },
   { id: 'shards', label: 'Shards', description: 'Shards of Adonalsium', to: '/locations?tab=shards', icon: '💎' },
   { id: 'timeline', label: 'Timeline', description: 'Cosmere timeline of events', to: '/timeline', icon: '📅' },
-  { id: 'glossary', label: 'Glossary', description: 'Cosmere terminology', to: '/glossary', icon: '📖' },
-  {
-    id: 'magic',
-    label: 'Magic Systems',
-    description: 'Magic across the Cosmere',
-    to: '/glossary?tab=magic',
-    icon: '✨',
-  },
+  { id: 'magic', label: 'Magic Systems', description: 'Magic across the Cosmere', to: '/magic', icon: '✨' },
   {
     id: 'relationships',
     label: 'Relationships',
     description: 'Character relationships',
-    to: '/relationships',
+    to: '/characters?tab=relationships',
     icon: '🔗',
   },
   {
@@ -51,13 +44,6 @@ const PAGE_COMMANDS: Command[] = [
     icon: '🌍',
   },
   { id: 'stats', label: 'Stats', description: 'Cosmere data dashboard', to: '/stats', icon: '📊' },
-  {
-    id: 'reading-order',
-    label: 'Reading Order',
-    description: 'Recommended reading order',
-    to: '/reading-order',
-    icon: '📋',
-  },
   { id: 'about', label: 'About', description: 'About Cosmere Archive', to: '/about', icon: 'ℹ️' },
 ]
 

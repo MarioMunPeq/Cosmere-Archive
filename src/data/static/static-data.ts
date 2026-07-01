@@ -1,30 +1,3 @@
-// ── Reading Order ──
-export const READING_ORDER_KEY = 'cosmere-reading-progress'
-export const READING_ORDER: string[] = [
-  'elantris',
-  'the_final_empire',
-  'the_well_of_ascension',
-  'the_hero_of_ages',
-  'warbreaker',
-  'the_way_of_kings',
-  'words_of_radiance',
-  'oathbringer',
-  'dawnshard',
-  'rhythm_of_war',
-  'wind_and_truth',
-  'the_alloy_of_law',
-  'shadows_of_self',
-  'the_bands_of_mourning',
-  'the_lost_metal',
-  'white_sand_vol_1',
-  'white_sand_vol_2',
-  'white_sand_vol_3',
-  'arcanum_unbounded',
-  'tress_of_the_emerald_sea',
-  'yumi_and_the_nightmare_painter',
-  'the_sunlit_man',
-]
-
 // ── Keyboard Shortcuts ──
 export interface Shortcut {
   keys: string
@@ -37,7 +10,7 @@ export const SHORTCUTS: Shortcut[] = [
   { keys: '?', label: 'Toggle this help' },
   { keys: 'Alt+1', label: 'About page' },
   { keys: 'Alt+2', label: 'Relationships page' },
-  { keys: 'Alt+3', label: 'Glossary page' },
+  { keys: 'Alt+3', label: 'Magic Systems page' },
   { keys: 'Alt+4', label: 'Family Tree page' },
   { keys: 'Alt+5', label: 'Heralds page' },
   { keys: 'Alt+6', label: 'Locations page' },

@@ -74,6 +74,29 @@
     will-change: transform, opacity;
   }
 
+  @keyframes twinkle {
+    0%,
+    100% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 0.4;
+    }
+  }
+
+  @keyframes divider-grow {
+    from {
+      width: 0%;
+    }
+    to {
+      width: 100%;
+    }
+  }
+
+  .animate-divider-grow {
+    animation: divider-grow 1s ease-out both;
+  }
+
   @keyframes planet-enter {
     from {
       opacity: 0;
@@ -184,6 +207,22 @@
 
   .animate-twinkle {
     animation: twinkle 4s ease-in-out infinite;
+  }
+
+  @keyframes symbol-float {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+      opacity: 0.12;
+    }
+    50% {
+      transform: translateY(-8px) rotate(3deg);
+      opacity: 0.28;
+    }
+  }
+
+  .animate-symbol-float {
+    animation: symbol-float 7s ease-in-out infinite;
   }
 }
 

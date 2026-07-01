@@ -1,6 +1,6 @@
-import { memo, useMemo } from 'react'
+import { memo, useMemo, useState } from 'react'
 import type { FamilyDefinition, FamilyMember } from '@/types/family'
-import { FALLBACK_COLOR } from '@/data/static'
+import { hexToRgb } from '@/data/static'
 
 const CARD_W = 140
 const CARD_H = 32
@@ -27,24 +27,36 @@ interface Props {
   onSelectCharacter?: (id: string) => void
 }
 
+function toRgba(hex: string, a: number): string {
+  const c = hexToRgb(hex)
+  return `rgba(${c[0]},${c[1]},${c[2]},${a})`
+}
+
+const FALLBACK_RGB = 'rgb(107,114,128)'
+
 const Card = memo(function Card({
   m,
   x,
   y,
   w,
+  color,
   onClick,
 }: {
   m: FamilyMember
   x: number
   y: number
   w: number
+  color: string
   onClick?: () => void
 }) {
+  const [hovered, setHovered] = useState(false)
   const external = !m.characterId
-  const fill = external ? (m.isDeceased ? '#1a1a2e' : '#1f2937') : '#1f2937'
-  const stroke = external ? (m.isDeceased ? '#374151' : '#4b5563') : '#a78bfa'
-  const txt = external ? (m.isDeceased ? FALLBACK_COLOR : '#9ca3af') : '#e5e7eb'
-  const rx = 6
+  const rgb = onClick ? color : FALLBACK_RGB
+  const fill = external ? toRgba(rgb, 0.08) : toRgba(rgb, 0.12)
+  const stroke = hovered && onClick ? toRgba(rgb, 0.8) : external ? toRgba(rgb, 0.25) : toRgba(rgb, 0.5)
+  const strokeW = hovered && onClick ? 2 : 1.5
+  const txt = external ? '#9ca3af' : '#e5e7eb'
+  const rx = 8
 
   return (
     <g
@@ -54,8 +66,10 @@ const Card = memo(function Card({
       onKeyDown={(e) => {
         if (onClick && (e.key === 'Enter' || e.key === ' ')) onClick()
       }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       className={onClick ? 'cursor-pointer' : ''}
-      style={{ opacity: external ? 0.7 : 1 }}
+      style={{ opacity: external ? 0.75 : 1 }}
     >
       <rect
         x={x - w / 2}
@@ -65,19 +79,32 @@ const Card = memo(function Card({
         rx={rx}
         fill={fill}
         stroke={stroke}
-        strokeWidth={1.5}
+        strokeWidth={strokeW}
       />
       <text x={x} y={y + 1} textAnchor="middle" fill={txt} fontSize="11" fontWeight="600" dominantBaseline="central">
         {m.name.length > 16 ? m.name.slice(0, 15) + '…' : m.name}
       </text>
       {m.isDeceased && (
+        <rect
+          x={x + w / 2 - 30}
+          y={y - CARD_H / 2 + 2}
+          width={26}
+          height={12}
+          rx={4}
+          fill={toRgba(rgb, 0.15)}
+          stroke="none"
+        />
+      )}
+      {m.isDeceased && (
         <text
-          x={x + w / 2 - 6}
-          y={y - CARD_H / 2 + 4}
-          textAnchor="end"
-          fill={external ? FALLBACK_COLOR : '#9ca3af'}
-          fontSize="8"
+          x={x + w / 2 - 17}
+          y={y - CARD_H / 2 + 8}
+          textAnchor="middle"
+          fill={toRgba(rgb, 0.7)}
+          fontSize="7"
           fontStyle="italic"
+          fontWeight="500"
+          dominantBaseline="central"
         >
           dec.
         </text>
@@ -197,7 +224,6 @@ function FamilyTreeView({ family, onSelectCharacter }: Props) {
       ox += r.width + CHILD_GAP
     }
 
-    // deduplicate nodes by id (keep first occurrence)
     const seen = new Set<string>()
     const dedupedNodes = allNodes.filter((n) => {
       if (seen.has(n.id)) return false
@@ -205,11 +231,12 @@ function FamilyTreeView({ family, onSelectCharacter }: Props) {
       return true
     })
 
-    // find the deepest y
     const maxY = Math.max(...dedupedNodes.map((n) => n.y))
 
     return { nodes: dedupedNodes, connectors: allConns, svgH: maxY + PAD + CARD_H / 2 }
   }, [family])
+
+  const color = family.color
 
   return (
     <svg
@@ -225,9 +252,9 @@ function FamilyTreeView({ family, onSelectCharacter }: Props) {
           y1={c.y1}
           x2={c.x2}
           y2={c.y2}
-          stroke={family.color}
+          stroke={color}
           strokeWidth="1.5"
-          strokeOpacity="0.45"
+          strokeOpacity="0.4"
         />
       ))}
       {layout.nodes.map((n) => {
@@ -243,17 +270,18 @@ function FamilyTreeView({ family, onSelectCharacter }: Props) {
                   x={n.x - CARD_W / 2 - SPOUSE_GAP / 2}
                   y={n.y}
                   w={CARD_W}
+                  color={color}
                   onClick={m.characterId && onSelectCharacter ? () => onSelectCharacter(m.characterId!) : undefined}
                 />
                 <line
-                  x1={n.x - SPOUSE_GAP / 2 - 2}
+                  x1={n.x - SPOUSE_GAP / 2 + CARD_W - 4}
                   y1={n.y}
-                  x2={n.x - SPOUSE_GAP / 2 + CARD_W + 2}
+                  x2={n.x + SPOUSE_GAP / 2 - CARD_W + 4}
                   y2={n.y}
-                  stroke={family.color}
+                  stroke={color}
                   strokeWidth="1"
                   strokeOpacity="0.3"
-                  strokeDasharray="3 2"
+                  strokeDasharray="3 3"
                 />
                 {(() => {
                   const spId = family.members.find((x) => x.id === m.id)?.spouseId
@@ -265,6 +293,7 @@ function FamilyTreeView({ family, onSelectCharacter }: Props) {
                       x={n.x + CARD_W / 2 + SPOUSE_GAP / 2}
                       y={n.y}
                       w={CARD_W}
+                      color={color}
                       onClick={
                         sp.characterId && onSelectCharacter ? () => onSelectCharacter(sp.characterId!) : undefined
                       }
@@ -278,6 +307,7 @@ function FamilyTreeView({ family, onSelectCharacter }: Props) {
                 x={n.x}
                 y={n.y}
                 w={CARD_W}
+                color={color}
                 onClick={m.characterId && onSelectCharacter ? () => onSelectCharacter(m.characterId!) : undefined}
               />
             )}

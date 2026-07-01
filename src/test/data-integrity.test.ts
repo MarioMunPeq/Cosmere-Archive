@@ -9,8 +9,6 @@ import { ERAS } from '@/data/static/timeline/eras'
 import { ALL_CHARACTERS } from '@/data/static'
 import { HERALDS } from '@/data/static/heralds'
 import {
-  READING_ORDER,
-  READING_ORDER_KEY,
   SHORTCUTS,
   CHARACTER_RELATIONSHIPS,
   FALLBACK_COLOR,
@@ -304,24 +302,7 @@ describe('data integrity — Heralds', () => {
   })
 })
 
-describe('data integrity — Reading Order', () => {
-  it('all READING_ORDER book IDs exist in BOOKS', () => {
-    for (const id of READING_ORDER) {
-      expect(BOOK_IDS.has(id), `reading order references unknown book "${id}"`).toBe(true)
-    }
-  })
-
-  it('READING_ORDER has unique entries', () => {
-    expect(READING_ORDER.length).toBe(new Set(READING_ORDER).size)
-  })
-})
-
 describe('static-data.ts barrel', () => {
-  it('exports READING_ORDER_KEY as a string', () => {
-    expect(typeof READING_ORDER_KEY).toBe('string')
-    expect(READING_ORDER_KEY.length).toBeGreaterThan(0)
-  })
-
   it('exports SHORTCUTS as a non-empty array', () => {
     expect(Array.isArray(SHORTCUTS)).toBe(true)
     expect(SHORTCUTS.length).toBeGreaterThan(0)

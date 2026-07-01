@@ -4,7 +4,6 @@ import { PLANETS, BOOKS } from '@/data/static'
 import { TIMELINE_EVENTS } from '@/data/static/timeline'
 import { CHARACTER_SPANS } from '@/data/static/timeline/character-lifespans'
 import { WORLDHOPPER_MOVEMENTS } from '@/data/static/timeline/worldhopper-journeys'
-import { GLOSSARY_ENTRIES } from '@/data/static/glossary'
 import { MAGIC_SYSTEMS } from '@/data/static/magic-systems'
 import { HERALDS } from '@/data/static/heralds'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
@@ -153,20 +152,6 @@ export function useSearch() {
         }
       }
       addCategory('book', books)
-
-      const glossary: SearchResult[] = []
-      for (const g of GLOSSARY_ENTRIES) {
-        if (glossary.length >= MAX_PER_CATEGORY) break
-        if (match(g.term) || match(g.definition)) {
-          glossary.push({
-            type: 'glossary',
-            label: g.term,
-            sublabel: g.category,
-            action: () => navigate('/glossary'),
-          })
-        }
-      }
-      addCategory('glossary', glossary)
 
       const magic: SearchResult[] = []
       for (const m of MAGIC_SYSTEMS) {
