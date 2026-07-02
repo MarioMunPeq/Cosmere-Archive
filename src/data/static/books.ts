@@ -4,6 +4,7 @@ export const BOOKS: Book[] = [
   // Mistborn Era 1
   {
     id: 'the_final_empire',
+    cover: 'images/covers/the_final_empire.webp',
     title: 'The Final Empire',
     saga: 'mistborn-era-1',
     order: 1,
@@ -13,6 +14,7 @@ export const BOOKS: Book[] = [
   },
   {
     id: 'the_well_of_ascension',
+    cover: 'images/covers/the_well_of_ascension.webp',
     title: 'The Well of Ascension',
     saga: 'mistborn-era-1',
     order: 2,
@@ -22,6 +24,7 @@ export const BOOKS: Book[] = [
   },
   {
     id: 'the_hero_of_ages',
+    cover: 'images/covers/the_hero_of_ages.webp',
     title: 'The Hero of Ages',
     saga: 'mistborn-era-1',
     order: 3,
@@ -32,6 +35,7 @@ export const BOOKS: Book[] = [
   // Mistborn Era 2 (Wax & Wayne)
   {
     id: 'the_alloy_of_law',
+    cover: 'images/covers/the_alloy_of_law.webp',
     title: 'The Alloy of Law',
     saga: 'mistborn-era-2',
     order: 1,
@@ -41,6 +45,7 @@ export const BOOKS: Book[] = [
   },
   {
     id: 'shadows_of_self',
+    cover: 'images/covers/shadows_of_self.webp',
     title: 'Shadows of Self',
     saga: 'mistborn-era-2',
     order: 2,
@@ -50,6 +55,7 @@ export const BOOKS: Book[] = [
   },
   {
     id: 'the_bands_of_mourning',
+    cover: 'images/covers/the_bands_of_mourning.webp',
     title: 'The Bands of Mourning',
     saga: 'mistborn-era-2',
     order: 3,
@@ -59,6 +65,7 @@ export const BOOKS: Book[] = [
   },
   {
     id: 'the_lost_metal',
+    cover: 'images/covers/the_lost_metal.webp',
     title: 'The Lost Metal',
     saga: 'mistborn-era-2',
     order: 4,
@@ -69,6 +76,7 @@ export const BOOKS: Book[] = [
   // Elantris
   {
     id: 'elantris',
+    cover: 'images/covers/elantris.webp',
     title: 'Elantris',
     saga: 'elantris',
     order: 1,
@@ -80,6 +88,7 @@ export const BOOKS: Book[] = [
   // Warbreaker
   {
     id: 'warbreaker',
+    cover: 'images/covers/warbreaker.webp',
     title: 'Warbreaker',
     saga: 'warbreaker',
     order: 1,
@@ -91,6 +100,7 @@ export const BOOKS: Book[] = [
   // The Stormlight Archive
   {
     id: 'the_way_of_kings',
+    cover: 'images/covers/the_way_of_kings.webp',
     title: 'The Way of Kings',
     saga: 'stormlight',
     order: 1,
@@ -100,6 +110,7 @@ export const BOOKS: Book[] = [
   },
   {
     id: 'words_of_radiance',
+    cover: 'images/covers/words_of_radiance.webp',
     title: 'Words of Radiance',
     saga: 'stormlight',
     order: 2,
@@ -108,6 +119,7 @@ export const BOOKS: Book[] = [
   },
   {
     id: 'oathbringer',
+    cover: 'images/covers/oathbringer.webp',
     title: 'Oathbringer',
     saga: 'stormlight',
     order: 3,
@@ -117,6 +129,7 @@ export const BOOKS: Book[] = [
   },
   {
     id: 'rhythm_of_war',
+    cover: 'images/covers/rhythm_of_war.webp',
     title: 'Rhythm of War',
     saga: 'stormlight',
     order: 4,
@@ -126,6 +139,7 @@ export const BOOKS: Book[] = [
   },
   {
     id: 'wind_and_truth',
+    cover: 'images/covers/wind_and_truth.webp',
     title: 'Wind and Truth',
     saga: 'stormlight',
     order: 5,
@@ -134,6 +148,7 @@ export const BOOKS: Book[] = [
   },
   {
     id: 'dawnshard',
+    cover: 'images/covers/dawnshard.webp',
     title: 'Dawnshard',
     saga: 'stormlight',
     order: 0,
@@ -144,6 +159,7 @@ export const BOOKS: Book[] = [
   // White Sand
   {
     id: 'white_sand_vol_1',
+    cover: 'images/covers/white_sand_vol_1.webp',
     title: 'White Sand Vol. 1',
     saga: 'white-sand',
     order: 1,
@@ -152,6 +168,7 @@ export const BOOKS: Book[] = [
   },
   {
     id: 'white_sand_vol_2',
+    cover: 'images/covers/white_sand_vol_2.webp',
     title: 'White Sand Vol. 2',
     saga: 'white-sand',
     order: 2,
@@ -160,6 +177,7 @@ export const BOOKS: Book[] = [
   },
   {
     id: 'white_sand_vol_3',
+    cover: 'images/covers/white_sand_vol_3.webp',
     title: 'White Sand Vol. 3',
     saga: 'white-sand',
     order: 3,
@@ -170,6 +188,7 @@ export const BOOKS: Book[] = [
   // Arcanum Unbounded
   {
     id: 'arcanum_unbounded',
+    cover: 'images/covers/arcanum_unbounded.webp',
     title: 'Arcanum Unbounded',
     saga: 'arcanum-unbounded',
     order: 1,
@@ -181,6 +200,7 @@ export const BOOKS: Book[] = [
   // Secret Projects
   {
     id: 'tress_of_the_emerald_sea',
+    cover: 'images/covers/tress_of_the_emerald_sea.webp',
     title: 'Tress of the Emerald Sea',
     saga: 'secret-projects',
     order: 1,
@@ -190,6 +210,7 @@ export const BOOKS: Book[] = [
   },
   {
     id: 'yumi_and_the_nightmare_painter',
+    cover: 'images/covers/yumi_and_the_nightmare_painter.webp',
     title: 'Yumi and the Nightmare Painter',
     saga: 'secret-projects',
     order: 2,
@@ -198,6 +219,7 @@ export const BOOKS: Book[] = [
   },
   {
     id: 'the_sunlit_man',
+    cover: 'images/covers/the_sunlit_man.webp',
     title: 'The Sunlit Man',
     saga: 'secret-projects',
     order: 3,

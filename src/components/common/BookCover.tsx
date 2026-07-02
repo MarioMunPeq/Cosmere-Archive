@@ -1,4 +1,4 @@
-import { memo, useState } from 'react'
+import { memo, useState, useCallback } from 'react'
 import { SAGA_BY_ID, FALLBACK_COLOR, SAGA_NAME_COLORS as SAGA_COLORS, SAGA_BG } from '@/data/static'
 import type { Book } from '@/types/book'
 
@@ -18,33 +18,39 @@ function hashSeed(s: string): number {
 const SIZES = { sm: { w: 90, h: 135 }, md: { w: 116, h: 174 }, lg: { w: 160, h: 240 } } as const
 
 function BookCover({ book, size = 'sm' }: { book: Book; size?: 'sm' | 'md' | 'lg' }) {
-  const [loaded, setLoaded] = useState(false)
+  const [imgStatus, setImgStatus] = useState<'loading' | 'loaded' | 'error'>('loading')
   const dims = SIZES[size]
+  const saga = getSaga(book)
+  const accent = SAGA_COLORS[saga] ?? FALLBACK_COLOR
+  const bg = SAGA_BG[saga] ?? '#1f2937'
+  const fs = size === 'lg' ? 11 : size === 'md' ? 9 : 7
 
-  if (book.cover) {
+  const onLoad = useCallback(() => setImgStatus('loaded'), [])
+  const onError = useCallback(() => setImgStatus('error'), [])
+
+  const imgSrc = book.cover ? `${import.meta.env.BASE_URL}${book.cover}` : undefined
+
+  if (imgSrc && imgStatus !== 'error') {
     return (
       <div
         className="relative shrink-0 overflow-hidden rounded-md bg-gray-800"
         style={{ width: dims.w, height: dims.h }}
       >
-        {!loaded && <div className="absolute inset-0 animate-pulse bg-gray-700" />}
+        {imgStatus === 'loading' && <div className="absolute inset-0 animate-pulse bg-gray-700" />}
         <img
-          src={book.cover}
+          src={imgSrc}
           alt={`Cover of ${book.title}`}
           width={dims.w}
           height={dims.h}
           loading="lazy"
-          onLoad={() => setLoaded(true)}
-          className={`h-full w-full object-cover transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+          onLoad={onLoad}
+          onError={onError}
+          className={`h-full w-full object-cover transition-opacity duration-300 ${imgStatus === 'loaded' ? 'opacity-100' : 'opacity-0'}`}
         />
       </div>
     )
   }
 
-  const saga = getSaga(book)
-  const accent = SAGA_COLORS[saga] ?? FALLBACK_COLOR
-  const bg = SAGA_BG[saga] ?? '#1f2937'
-  const fs = size === 'lg' ? 11 : size === 'md' ? 9 : 7
   const stars = Array.from({ length: 12 }, (_, i) => {
     const s = hashSeed(`${book.id}-${i}`)
     return { x: 4 + ((s * 92) % (dims.w - 8)), y: 4 + ((s * 47 + i * 13) % (dims.h - 8)), r: s > 0.7 ? 0.8 : 0.4 }

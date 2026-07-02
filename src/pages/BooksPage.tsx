@@ -132,11 +132,9 @@ export default function BooksPage() {
               <TransitionLink
                 key={book.id}
                 to={`/books/${book.id}`}
-                className="group flex items-start gap-4 rounded-2xl border border-gray-800/60 bg-gray-900/60 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black/30"
+                className="group flex items-start gap-4 rounded-2xl border border-gray-800/60 bg-gray-900/60 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black/30 animate-fade-in-up"
                 style={{
-                  animation: 'fadeInUp 0.5s ease-out forwards',
                   animationDelay: `${(i * 0.06).toFixed(2)}s`,
-                  opacity: 0,
                   ['--card-glow' as string]: `${color}15`,
                 }}
                 onMouseEnter={(e) => {
