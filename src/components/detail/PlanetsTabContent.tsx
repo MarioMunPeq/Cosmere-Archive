@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { PLANETS, SAGAS } from '@/data/static'
 import type { Saga } from '@/data/static'
 import BackToMapButton from '@/components/ui/BackToMapButton'
@@ -10,7 +11,11 @@ import { useTextFilter } from '@/hooks/useTextFilter'
 const sagaList = (SAGAS as Saga[]).filter((s) => s.id !== 'pre-cosmere')
 
 export default function PlanetsTabContent() {
-  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [searchParams] = useSearchParams()
+  const [selectedId, setSelectedId] = useState<string | null>(() => {
+    const param = searchParams.get('planet')
+    return param ?? null
+  })
   const [search, setSearch] = useState('')
   const [sagaFilter, setSagaFilter] = useState<string>('')
   const [graphView, setGraphView] = useState(false)

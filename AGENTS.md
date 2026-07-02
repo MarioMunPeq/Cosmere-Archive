@@ -41,12 +41,14 @@
 
 ### Goal
 
-Redesign the Locations page to Awwwards-level quality (cosmic/deep-space theme), then redesign the Timeline page to Awwwards-level quality.
+Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all synopses and character descriptions to Coppermind quality.
 
 ### Constraints & Preferences
 
 - Locations: Keep Planets + Shards tabs, same pattern as Characters (search + filter pills + detail drawer), force graph toggle, BackToMapButton, deep space/cosmic color scheme
 - Timeline: Improve existing horizontal layout (taller, better spacing), eras as expandible colored blocks, dots improved with glow + pulse + tooltip + card overlay, cosmic/cyan colors, elegant animations (staggered, glow, fade, slide-up), maintain max-5 sagas forks, stay inside page layout (no full-screen), no extra visualizations (only timeline)
+- Books: flat card grid, saga pills, star field, cross-references to characters/planets/magic, `import.meta.env.BASE_URL` prefix for cover images
+- Characters.json: only generated file that may be edited directly; descriptions should be Coppermind-style (wiki, lore-rich)
 
 ### Progress
 
@@ -71,17 +73,19 @@ Redesign the Locations page to Awwwards-level quality (cosmic/deep-space theme),
 - Fixed overflow bug on Locations/Shards tabs: removed extra flex wrappers, added `min-h-0` to `mx-auto` div, `h-full` to grid container, `shrink-0` to non-scrollable elements
 - All 251 tests pass, `tsc -b` clean, `pnpm lint` clean, ESLint clean (can commit)
 
-#### Done (this session)
+#### Done (this session: Books + synopses)
 
-- Updated `timeline-layout.ts` — taller constants (MAIN_LINE_Y: 60→100, FORK_START_Y: 108→164, FORK_SPACING: 48→64)
-- Added `animate-dot-enter`, `animate-dot-pulse`, `animate-era-glow` keyframes to `index.css`
-- Rewrote `Timeline.tsx` — era background bands (clickable, colored rects with labels), curved bezier fork connections, glow-filtered dots with staggered `animate-dot-enter` entrance, breathing pulse ring on hover/select, cosmic cyan/purple color scheme
-- Rewrote `TooltipOverlay.tsx` — gradient dark background, cyan border glow, `animate-fade-in-up` entrance, cyan accent title, improved spacing
-- Rewrote `CardOverlay.tsx` — `animate-slide-up` entrance, gradient header (cyan→purple→transparent), cyan accent title, glow shadow
-- Refactored `TimelinePage.tsx` — star field background (80 deterministic stars with `hashSeed`), eras button bar (clickable colored pills), era detail info bar (shows name, year range, event count, description; animated glow dot per era color), improved saga selector with gradient/ring styling, `Escape` key support for era close
-- Updated `StandaloneTimelinePage.tsx` — gradient title text, subtle nebula blur background
-- **V2 fixes**: main line visibility (strokeWidth 2, opacity 0.8, crisp cyan), text sizes increased (era→11, saga→13, NOW→11, dots→6/5/4), SVG filter bounding box fix (`x/y/width/height` on glow filters — no more square clipping), removed ugly breathing ring on active dots, fork connections reverted to dashed straight lines, event type badges now `rounded-full` pills instead of square blocks
-- All 251 tests pass, `tsc -b` clean, `pnpm lint` clean, `pnpm build` clean
+- Improved `BookCover.tsx` — `lg` size (160×240), gradient fills, star dots, `onError` SVG fallback with `import.meta.env.BASE_URL` prefix
+- Rewrote `BooksPage.tsx` — flat card grid, star field, saga filter pills, stagger animation, cosmic hover effects, no page chrome
+- Created `StandaloneBooksPage.tsx` — gradient title, BackToMapButton, nebula blur
+- Rewrote `BookPage.tsx` — planets section (PLANETS filtered by book.id), magic systems section (MAGIC_SYSTEMS filtered by book.id), cosmic gradient cards, hover glow
+- Updated `public/images/covers/` with cover paths in `books.ts`
+- Updated `App.tsx` — `/books` route uses StandaloneBooksPage
+- Rewrote all 27 book synopses in `books.ts` — Coppermind-style, 4–6 sentences each, lore-rich, covering setting/protagonist/conflict/significance
+- Rewrote all 93 character descriptions in `characters.json` — Coppermind-style, 2–4 sentences each, covering origin/role/abilities/significance
+- Added cross-reference URL params: CharactersPage reads `character` param to auto-open detail modal; PlanetsTabContent reads `planet` param to auto-select planet and open PlanetDetailPanel (matching MagicSystemsPage `system` param pattern)
+- Updated BooksPage.test.tsx, BookPage.test.tsx, created StandaloneBooksPage.test.tsx
+- All 257 tests pass, `tsc -b` clean, `pnpm lint` clean, `pnpm build` clean
 
 #### Blocked
 
@@ -99,10 +103,14 @@ Redesign the Locations page to Awwwards-level quality (cosmic/deep-space theme),
 - Era info shown as inline collapsible bar below eras row (name, year range, event count, description)
 - Active dots: just stronger glow + cyan stroke, no breathing ring (removed in v2 for cleanliness)
 - SVG filters need `x/y/width/height` bounds to avoid square clipping on glow
+- Books page uses flat card grid (not grouped by saga sections), renders content-only and wrapped by StandaloneBooksPage for page chrome
+- Cover images stored as `.webp` in `public/images/covers/` with relative paths in `books.ts`, BookCover prepends `import.meta.env.BASE_URL`
+- Image failure falls back to SVG cover (onError handler), not broken img tag
+- Cross-reference URL params follow MagicSystemsPage `system` param pattern: CharactersPage reads `character`, PlanetsTabContent reads `planet`
 
 ### Next Steps
 
-1. (all timeline tasks completed)
+1. (all books + characters tasks completed)
 
 ### Critical Context
 
@@ -116,6 +124,10 @@ Redesign the Locations page to Awwwards-level quality (cosmic/deep-space theme),
 - `MAX_FORK_SAGAS = 5` constant from `@/constants`
 - Timeline uses both SVG `<filter>` glow (`#glow`, `#glow-heavy`) for hover/select states and CSS classes (`animate-dot-enter`, `animate-era-glow`) for entrance/pulse animations
 - SVG filters need `x="-50%" y="-50%" width="200%" height="200%"` to prevent square clipping on glow effects
+- Book descriptions are in `books.ts` (single-quoted strings, must escape `'s` with `\'` inside single quotes)
+- Cover paths in `books.ts` are relative (`images/covers/{id}.webp`), BookCover prepends `import.meta.env.BASE_URL`
+- Characters in `characters.json` use Coppermind-style descriptions (2-4 sentences, origin/role/abilities/significance)
+- ALL_CHARACTERS has `requiredBooks`, PLANETS has `books`, MAGIC_SYSTEMS has `bookIds` — all arrays of book IDs for cross-filtering
 
 ### Relevant Files
 
@@ -131,3 +143,10 @@ Redesign the Locations page to Awwwards-level quality (cosmic/deep-space theme),
 - `src/index.css`: contains `animate-dot-enter`, `animate-dot-pulse`, `animate-era-glow`, `animate-fade-in-up`, `animate-slide-up`, `animate-slide-in-right`, `animate-twinkle-slow`, `animate-glow-pulse`, `animate-float`, and other cosmic keyframes
 - `src/test/StandaloneTimelinePage.test.tsx`: 5 tests (heading, description, back link, saga buttons, event SVGs)
 - `src/components/detail/PlanetForceGraph.tsx`: reference for `hashSeed()` pattern
+- `src/pages/BooksPage.tsx`: cosmic card grid for books (content only, wrapped by StandaloneBooksPage)
+- `src/pages/StandaloneBooksPage.tsx`: wrapper with gradient title, BackToMapButton
+- `src/pages/BookPage.tsx`: detail page with planets, characters, magic system cross-references
+- `src/components/common/BookCover.tsx`: SVG fallback, gradient fills, star dots, `import.meta.env.BASE_URL` prefix
+- `src/data/static/books.ts`: all 27 books with Coppermind-style synopses and relative cover paths
+- `src/data/generated/characters.json`: all 93 characters with Coppermind-style descriptions
+- `public/images/covers/`: `.webp` cover image files

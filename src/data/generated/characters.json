@@ -2,56 +2,56 @@
   {
     "id": "kaladin",
     "name": "Kaladin",
-    "description": "A battle medic turned slave turned Knight Radiant. Windrunner of the order of the Knights Radiant.",
+    "description": "A darkeyed surgeon's son from Hearthstone who becomes the most legendary Windrunner of the Knights Radiant. Enslaved and sold into Bridge Four after a betrayal by his lighteyed master, Kaladin rises from bridgeman to captain of the Kholin honor guard, bonding the honorspren Sylphrena. Known for his unwavering protection of those he cannot save and his struggle with depression, he is the first Windrunner in millennia to speak the Fourth Ideal.",
     "planet": "roshar",
     "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer", "rhythm_of_war", "wind_and_truth"]
   },
   {
     "id": "shallan",
     "name": "Shallan Davar",
-    "description": "A young scholar from House Davar. Travels to meet Princess Jasnah to become her ward.",
+    "description": "A lighteyed scholar and artist from the fractured House Davar of Jah Keved. To escape her traumatic past and her mother's death, Shallan develops multiple personalities—including the bold Veil and the violent Radiant—to cope. She bonds the cryptic Testament (later Pattern) to become a Lightweaver of the Knights Radiant, capable of creating illusions and soulcasting. Her investigation of the Ghostbloods and her marriage to Adolin Kholin place her at the center of Roshar's unfolding conflict.",
     "planet": "roshar",
     "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer", "rhythm_of_war", "wind_and_truth"]
   },
   {
     "id": "dalinar",
     "name": "Dalinar Kholin",
-    "description": "Highprince of House Kholin. The Bondsmith, known as the Blackthorn.",
+    "description": "Highprince of House Kholin, known across Alethkar as the Blackthorn—the most feared warlord of his generation. After the death of his brother Gavilar, Dalinar is haunted by visions from the Almighty and dedicates himself to uniting the warring monarchs of Roshar against the coming Desolation. He bonds the Stormfather to become a Bondsmith, the rarest and most powerful order of the Knights Radiant, capable of forging Connection between all things. His journey from brutal conqueror to principled leader defines the moral heart of the Stormlight Archive.",
     "planet": "roshar",
     "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer", "rhythm_of_war", "wind_and_truth"]
   },
   {
     "id": "adolin",
     "name": "Adolin Kholin",
-    "description": "Dalinar's eldest son. A talented duelist and warrior, known for his charisma and style.",
+    "description": "Eldest son of Dalinar Kholin and heir to House Kholin. A supremely talented duelist and duelmaster known for his flamboyant style, impeccable fashion sense, and genuine kindness—qualities rare among the Alethi lighteyes. Adolin struggles with the pressure of his family's expectations and the growing distance between himself and his Radiant father and brother. He bonds the deadeye shardblade Maya and discovers that spren thought dead can be revived through companionship rather than force. His relationship with Shallan Davar and his own journey toward becoming a Radiant mark him as a key figure on Roshar.",
     "planet": "roshar",
     "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer", "rhythm_of_war", "wind_and_truth"]
   },
   {
     "id": "jasnah",
     "name": "Jasnah Kholin",
-    "description": "Princess of Alethkar and renowned scholar. Discoverer of the Knights Radiant secrets.",
+    "description": "Queen of Alethkar and eldest child of Gavilar Kholin. A brilliant scholar and heretic who rejects the Vorin Church's teachings, Jasnah bonds the cryptic Ivory to become an Elsecaller capable of soulcasting and traveling between realms. She is the first person in millennia to discover the true nature of the Knights Radiant and the Voidbringers. Known for her razor-sharp intellect, pragmatic ruthlessness, and unshakable atheism in a world of literal gods, Jasnah rules Alethkar from Urithiru with a vision for a more enlightened society.",
     "planet": "roshar",
     "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer", "rhythm_of_war", "wind_and_truth"]
   },
   {
     "id": "renarin",
     "name": "Renarin Kholin",
-    "description": "Younger son of Dalinar Kholin. A Truthwatcher of the Knights Radiant who sees the future.",
+    "description": "The younger son of Dalinar Kholin, born with a natural weakness that caused him to be treated with a mix of protection and pity. Despite his epilepsy and his father's initial dismissiveness, Renarin bonds the mysterious spren Glys to become a Truthwatcher—an order gifted with future sight rather than factual truth. His visions and his corrupted spren mark him as an anomaly among the Radiants, and his growing friendship with Rlain the listener offers hope for cross-species understanding on Roshar.",
     "planet": "roshar",
     "requiredBooks": ["words_of_radiance", "oathbringer", "rhythm_of_war", "wind_and_truth"]
   },
   {
     "id": "elhokar",
     "name": "Elhokar Kholin",
-    "description": "King of Alethkar, son of Gavilar Kholin. A paranoid but well-meaning ruler struggling to fill his father's shoes.",
+    "description": "King of Alethkar after the assassination of his father Gavilar. A well-meaning but paranoid ruler who struggles to fill his father's shadow, Elhokar is known for his obsession with assassination threats, his poor judgment in choosing advisors, and his genuine desire to be a good king. He begins to see strange symbols that he cannot decipher—spren patterns, later revealed to be his potential as a Lightweaver—but his journey is cut short and he never speaks his oaths. His death at the hands of Moash sends shockwaves through the Alethi court.",
     "planet": "roshar",
     "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer"]
   },
   {
     "id": "szeth",
     "name": "Szeth",
-    "description": "The Assassin in White. A Skybreaker from Shinovar forced to obey whoever holds his oathblade.",
+    "description": "The Assassin in White, a Skybreaker from the isolated land of Shinovar who wields the legendary Honorblade of Jezrien. Szeth is bound by a magical oathstone: whoever holds the stone controls him absolutely, forcing him to commit terrible acts against his will. Known for his terrible efficiency with the Surges of Adhesion and Gravitation, Szeth assassinates Gavilar Kholin and later serves Taravangian before being freed by Dalinar. Under the tutelage of Nightblood and his new spren, he seeks absolution and a new purpose as a Knight Radiant sworn to the law.",
     "planet": "roshar",
     "pronunciation": "SETH",
     "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer", "wind_and_truth"]
@@ -59,14 +59,14 @@
   {
     "id": "navani",
     "name": "Navani Kholin",
-    "description": "Widow of King Gavilar, mother of Jasnah. A brilliant scholar and engineer of fabrials and anti-light.",
+    "description": "Widow of King Gavilar Kholin and mother of Jasnah and Elhokar. A brilliant scholar and engineer who pioneered the study of fabrials—devices that trap spren to produce magical effects—and later discovered the revolutionary principles of anti-Stormlight and Towerlight along with the rhythms of Roshar. For years sidelined by the patriarchal Alethi society, Navani proves herself the greatest scientific mind of her era when she bonds the Sibling and becomes the Bondsmith of Urithiru during the tower's occupation by the Fused.",
     "planet": "roshar",
     "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer", "rhythm_of_war", "wind_and_truth"]
   },
   {
     "id": "sigzil",
     "name": "Sigzil / Nomad",
-    "description": "A former Knight Radiant of the Skybreakers turned worldhopper known as Nomad. Once a member of Bridge Four and Hoid's apprentice, he wanders the Cosmere bearing a Dawnshard.",
+    "description": "A former Knight Radiant of the Skybreakers turned worldhopper who becomes known across the Cosmere as Nomad. Born on Roshar, Sigzil was once Hoid's apprentice, traveling and learning about the nature of investiture and the Shards. He bears a Dawnshard—a primordial Command of creation—which prevents him from harming others and has made him a target of the relentless Night Brigade. His journey across the Cosmere, including his time on UTol and Canticle, explores the cost of the Dawnshard's binding and the question of whether a man of peace can survive in a violent universe.",
     "planet": "roshar",
     "requiredBooks": [
       "the_way_of_kings",
@@ -80,63 +80,63 @@
   {
     "id": "venli",
     "name": "Venli",
-    "description": "A singer who becomes a Knight Radiant of the order of Willshapers.",
+    "description": "A singer of the listener people who becomes a Knight Radiant of the Willshapers, bonded to the spren Timbre. Unlike her heroic sister Eshonai, Venli was seduced by the promise of power from Odium, betraying her people and enabling the singers' transformation into the Fused. Tormented by guilt, she slowly embraces the Radiant path and works to free her people from Odium's control. Her journey is one of redemption, betrayal, and the difficult choice to become better than one's past actions.",
     "planet": "roshar",
     "requiredBooks": ["words_of_radiance", "oathbringer", "rhythm_of_war", "wind_and_truth"]
   },
   {
     "id": "taravangian",
     "name": "Taravangian",
-    "description": "King of Kharbranth. A complex figure who becomes the new Vessel of Odium.",
+    "description": "King of Kharbranth and one of the most complex figures in the Cosmere. Cursed by the curse of the Diagram, Taravangian's intelligence fluctuates wildly: on some days he is a genius capable of predicting the future, on others a simple-minded child filled with compassion. He founded the Diagram—a secret organization dedicated to saving humanity by any means necessary—and orchestrated the deaths of countless innocents to position himself. In a stunning turn, he kills Odium's Vessel and Ascends to become the new Shard of Odium, wielding the power of Passion with an inscrutable plan.",
     "planet": "roshar",
     "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer", "rhythm_of_war", "wind_and_truth"]
   },
   {
     "id": "lift",
     "name": "Lift",
-    "description": "A young Radiant who can use stormlight to fuel her abilities in unusual ways.",
+    "description": "A young Reshi girl who became an Edgedancer of the Knights Radiant, bonded to the cultivation spren Wyndle. Lift is unique among Radiants in that she can convert food directly into Stormlight through a process related to her connection to Cultivation, bypassing the need for highstorms. She speaks with a modern slang that baffles other Rosharans, is fiercely independent, and has declared herself the unofficial hero of her people, though she would deny wanting any such responsibility. Her ability to touch the Cognitive Realm and her connection to ancient powers make her more significant than even she realizes.",
     "planet": "roshar",
     "requiredBooks": ["words_of_radiance", "oathbringer", "rhythm_of_war", "wind_and_truth"]
   },
   {
     "id": "taln",
     "name": "Taln",
-    "description": "Herald of War. The Unbroken. Endured millennia of torture on Braize without breaking.",
+    "description": "Herald of War, patron of the Stonewards, and known as Talenelat'Elin or simply the Unbroken. Of all the Heralds, Taln endured the longest on Braize without breaking—over four thousand years of torture after the last Desolation—and never once gave in to Odium's demands. When he finally did break, it was because humans had failed, not him. Upon returning to Roshar, he appears in the warcamps as a delusional, broken man mumbling about the Desolation, dismissed as a mad beggar by those who should have revered him. His nobility and endurance are legendary among the Heralds.",
     "planet": "roshar",
     "requiredBooks": ["oathbringer", "rhythm_of_war", "wind_and_truth"]
   },
   {
     "id": "asha",
     "name": "Ash (Shalash)",
-    "description": "Herald of Beauty. Known for destroying artwork depicting herself.",
+    "description": "Herald of Beauty, patron of the Lightweavers, and daughter of the Herald Ishar. As Shalash, she is the patron of artists and beauty, but after millennia of being worshipped through art, she developed an obsessive compulsion to destroy any depiction of herself. She roams Roshar as a wanderer known simply as Ash, working alongside other Heralds in secret to hide the truth of the Oathpact and the origin of the Heralds' powers. Her relationship with Taln is one of deep, painful loyalty.",
     "planet": "roshar",
     "requiredBooks": ["oathbringer", "rhythm_of_war", "wind_and_truth"]
   },
   {
     "id": "nale",
     "name": "Nale",
-    "description": "Herald of Justice. Leader of the Skybreaker order.",
+    "description": "Herald of Justice, patron of the Skybreakers, and the only Herald to have remained active throughout the millennia between Desolations. Known as Nalan'Elin, he is the leader of the Skybreaker order and personally recruits and trains new members, enforcing his rigid interpretation of law across Roshar. Unlike the other Heralds, Nale never abandoned his duties and fully embraces the Oathpact, believing that strict adherence to law—even Odium's law—is the only path to justice. His actions in protecting the Listeners and later serving Odium make him one of the most controversial Heralds.",
     "planet": "roshar",
     "requiredBooks": ["words_of_radiance", "oathbringer", "rhythm_of_war", "wind_and_truth"]
   },
   {
     "id": "vin",
     "name": "Vin",
-    "description": "A street urchin from Luthadel who discovers she is a Mistborn. Joins Kelsier to overthrow the Lord Ruler.",
+    "description": "A street urchin from the skaa slums of Luthadel who discovers she is one of the most powerful Mistborn in Scadrial's history. Taken under the wing of Kelsier, Vin infiltrates the noble houses, learns to master all sixteen allomantic metals, and falls in love with Elend Venture. She becomes the vessel of Preservation before ultimately sacrificing herself to defeat Ruin, cementing her legacy as one of the Cosmere's most powerful and beloved figures. Her journey from abused street child to savior of a world is the heart of the original Mistborn trilogy.",
     "planet": "scadrial",
     "requiredBooks": ["the_final_empire", "the_well_of_ascension", "the_hero_of_ages", "arcanum_unbounded"]
   },
   {
     "id": "kiin",
     "name": "Kiin",
-    "description": "Sarene's uncle. A former pirate and restaurateur in Kae who plays a key role in the Elantris resistance.",
+    "description": "Sarene's uncle in Teod, a former pirate captain who now runs a modest restaurant in the city of Kae. Despite his unassuming appearance and love of cooking, Kiin is a former pirate king with extensive knowledge of Arelon's underworld and political intrigues. He becomes a key figure in the Elantris resistance, using his old contacts and his surprisingly strategic mind to organize opposition to Hrathen's coup. His relationship with his estranged brother, King Eventeo, and his devotion to his niece Sarene reveal a man of deep principle beneath the jovial exterior.",
     "planet": "sel",
     "requiredBooks": ["elantris"]
   },
   {
     "id": "kelsier",
     "name": "Kelsier",
-    "description": "The Survivor of Hathsin. A Mistborn who leads the rebellion against the Lord Ruler.",
+    "description": "The Survivor of Hathsin, a Mistborn of unparalleled skill and charisma who leads the skaa rebellion against the Lord Ruler. After surviving the brutal Pits of Hathsin where his wife Mare was killed, Kelsier emerges as a revolutionary legend, inspiring the skaa to believe they can overthrow a being worshipped as a god for a thousand years. Though he dies in the process, his cognitive shadow persists beyond death, eventually returning as a figure of religious worship—the Survivor—and playing a pivotal role in Scadrial's affairs across centuries. His legend extends beyond Scadrial, making him one of the Cosmere's most influential non-Shardic figures.",
     "planet": "scadrial",
     "pronunciation": "KEL-see-er",
     "requiredBooks": ["the_final_empire", "the_hero_of_ages", "arcanum_unbounded", "the_lost_metal"]
@@ -144,28 +144,28 @@
   {
     "id": "mare",
     "name": "Mare",
-    "description": "Kelsier's late wife. A skaa woman who was executed in the Pits of Hathsin.",
+    "description": "Kelsier's late wife and a fellow skaa rebel. She was a clever and resourceful woman who helped Kelsier plan some of his most daring heists before being captured and executed in the Pits of Hathsin. Kelsier's love for Mare—and his guilt over her death—drives his entire rebellion against the Lord Ruler. The flower she drew in the Pits becomes the symbol of the skaa rebellion, and her memory fuels Kelsier's determination to create a world where the skaa can live free.",
     "planet": "scadrial",
     "requiredBooks": ["the_final_empire"]
   },
   {
     "id": "reene",
     "name": "Reen",
-    "description": "Vin's older half-brother. A cruel and abusive figure from Vin's past.",
+    "description": "Vin's older half-brother who raised her on the streets of Luthadel. A brutal and abusive figure, Reen taught Vin the hard lessons she needed to survive: trust no one, always have an escape route, and never show weakness. His cruelty was born of a desperate desire to keep her alive in a world that would destroy her, and his voice echoes in Vin's head throughout her journey long after his death. His murder at the hands of the Inquisitors is the final trauma that pushes Vin toward her destiny.",
     "planet": "scadrial",
     "requiredBooks": ["the_final_empire"]
   },
   {
     "id": "elend",
     "name": "Elend Venture",
-    "description": "Heir to House Venture and later king. A philosopher and idealist who dreams of democracy.",
+    "description": "Heir to House Venture, the most powerful noble house in the Final Empire, and later king of the New Empire. An idealist and scholar who dreams of democracy and equality between skaa and nobles, Elend is initially a poor Allomancer—but after burning the mists and ingesting a bead of lerasium, he becomes a Mistborn of extraordinary power. His rule is marked by his struggle to balance his philosophical ideals with the brutal realities of war. He marries Vin and ultimately sacrifices himself alongside her to save Scadrial, becoming a martyr for the world he helped free.",
     "planet": "scadrial",
     "requiredBooks": ["the_final_empire", "the_well_of_ascension", "the_hero_of_ages"]
   },
   {
     "id": "sazed",
     "name": "Sazed",
-    "description": "A Terris Keeper, scholar and feruchemist. Serves as advisor and bearer of religious knowledge.",
+    "description": "A Terris Keeper of the Synod, born with the ability to store attributes in metalminds through Feruchemy. As a Keeper, Sazed preserves the knowledge of all of Scadrial's religions and cultures, believing that information must survive even if the civilizations that created it do not. He serves as advisor, historian, and friend to both Vin and Elend, carrying the weight of a thousand faiths on his shoulders. After the death of Vin and Elend, Sazed ascends as Harmony, the combined Shard of Preservation and Ruin, becoming the god of Scadrial and guiding its civilization through the next thousand years.",
     "planet": "scadrial",
     "pronunciation": "sah-ZED",
     "requiredBooks": [
@@ -181,161 +181,161 @@
   {
     "id": "marsh",
     "name": "Marsh",
-    "description": "Kelsier's older brother. Dedicated to the skaa rebellion. Later becomes a Steel Inquisitor.",
+    "description": "Kelsier's older brother, a dedicated skaa revolutionary and member of the original rebellion. Unlike Kelsier's flamboyant charisma, Marsh is serious, skeptical, and driven by a quiet but intense hatred of the nobility. He is forcibly transformed into a Steel Inquisitor—his eyes pierced with metal spikes—becoming a tool of Ruin while fighting to maintain his own identity. After Harmony's ascension, Marsh is freed and becomes an immortal servant of Harmony, continuing to protect Scadrial in secret, his appearance as an Inquisitor making him a terrifying figure even to his allies.",
     "planet": "scadrial",
     "requiredBooks": ["the_final_empire", "the_well_of_ascension", "the_hero_of_ages", "the_lost_metal"]
   },
   {
     "id": "rashek",
     "name": "The Lord Ruler",
-    "description": "The immortal ruler of the Final Empire. His true identity and origins are shrouded in mystery.",
+    "description": "The immortal tyrant who ruled the Final Empire with an iron fist for over a thousand years. Born Rashek, a Terris packman who killed the original Hero of Ages—his friend Alendi—and took the power of the Well of Ascension for himself. He used this power to remake Scadrial, creating the ash-choked world the skaa know, and used the power of the metal Atium to sustain his immortality through Compounding. Despite his tyranny, the Lord Ruler genuinely believed he was saving the world from Ruin, containing the Deepness through brutal but necessary measures. His death at Vin's hands unleashes chaos on Scadrial but also frees it from a thousand years of oppression.",
     "planet": "scadrial",
     "requiredBooks": ["the_final_empire", "the_well_of_ascension", "the_hero_of_ages"]
   },
   {
     "id": "spook",
     "name": "Spook",
-    "description": "A young Tineye from Kelsier's crew. Known for his loyalty and quiet nature.",
+    "description": "The youngest member of Kelsier's crew, a Tineye with the ability to flare his senses physically. Quiet, overlooked, and desperately seeking validation, Spook's journey from a shy teenager to a hardened leader is one of the most dramatic transformations in the series. He is burned by a mysterious fire that leaves him scarred but grants him a unique allomantic ability, and later leads the underground resistance in Luthadel after Vin and Elend leave. He marries Beldre and becomes a revered figure known as the Lord Mistborn, but his later life is complicated by the discovery of his true heritage and his role in Scadrial's history.",
     "planet": "scadrial",
     "requiredBooks": ["the_final_empire", "the_well_of_ascension", "the_hero_of_ages"]
   },
   {
     "id": "wax",
     "name": "Waxillium Ladrian",
-    "description": "A Mistborn and lawman from the Roughs. Inherits the title of lord of House Ladrian.",
+    "description": "A Twinborn from a noble house, combining Steel Allomancy (Coinshot) with Iron Feruchemy (Skimmer). Wax spent his youth in the Roughs—the frontier beyond the Elendel Basin—working as a lawman, bringing justice to the lawless towns of Scadrial's wild west. Called back to Elendel after his uncle's death, he inherits the title of Lord Ladrian and must balance his duties as a nobleman with his instincts as a investigator. Wax is a man of faith in Harmony, though his confidence in the god's plans is repeatedly tested. His journey forces him to reconcile the violence of his past with the responsibilities of his present, culminating in a confrontation with forces from beyond Scadrial itself.",
     "planet": "scadrial",
     "requiredBooks": ["the_alloy_of_law", "shadows_of_self", "the_bands_of_mourning", "the_lost_metal"]
   },
   {
     "id": "wayne",
     "name": "Wayne",
-    "description": "Wax's partner. An eccentric feruchemist with a talent for disguises and thievery.",
+    "description": "Wax's eccentric partner and best friend, a Feruchemist with the ability to store speed in metalminds—allowing him to move impossibly fast, stand perfectly still, or exchange speed for healing. Wayne is a master of disguise, able to mimic accents and mannerisms so perfectly that he can pass as anyone. Despite his childish love of hats, cheap alcohol, and mischief, Wayne is deeply philosophical, haunted by his past and the man he killed in his youth. His journey toward forgiveness and his ultimate sacrifice in the Lost Metal cement him as one of Scadrial's most beloved and tragic figures.",
     "planet": "scadrial",
     "requiredBooks": ["the_alloy_of_law", "shadows_of_self", "the_bands_of_mourning", "the_lost_metal"]
   },
   {
     "id": "marasi",
     "name": "Marasi Colms",
-    "description": "Steris's half-sister. A student of the law and Mistborn, seeking justice in Elendel.",
+    "description": "Steris's half-sister, a dedicated law student and a Mistborn who can burn cadmium and bendalloy—slowing or speeding time in bubbles. Unlike the more famous Mistborn of the past, Marasi is methodical, bookish, and principled, preferring evidence and procedure to brute force. She becomes one of Elendel's finest constables and later its governor, using her sharp legal mind and growing understanding of the Cosmere to protect her city. Her discoveries about the nature of investiture and external investiture interference mark her as one of Scadrial's most important scholars.",
     "planet": "scadrial",
     "requiredBooks": ["the_alloy_of_law", "shadows_of_self", "the_bands_of_mourning", "the_lost_metal"]
   },
   {
     "id": "steris",
     "name": "Steris Harms",
-    "description": "Waxillium's fiancée. A meticulous, organized, and surprisingly brave woman.",
+    "description": "Waxillium's fiancée and later wife, a woman whose extreme organization, list-making, and social awkwardness initially make her seem cold and unapproachable. Beneath her meticulous exterior lies a fiercely brave and resourceful woman who proves invaluable on Wax's adventures: her countless contingency plans, legal knowledge, and unexpected physical courage save the day more than once. Her relationship with Wax grows from an arranged engagement into a genuine partnership, and her journey from a socially anxious noblewoman to a confident leader is one of the most quietly powerful arcs in the Wax and Wayne series.",
     "planet": "scadrial",
     "requiredBooks": ["the_alloy_of_law", "shadows_of_self", "the_bands_of_mourning", "the_lost_metal"]
   },
   {
     "id": "syl",
     "name": "Sylphrena",
-    "description": "An honorspren bonded to Kaladin. She is his conscience, guide, and friend.",
+    "description": "An honorspren bonded to Kaladin, who serves as his conscience, guide, and closest friend. Syl was one of the last of the ancient spren born in the cognitive realm, drawn to Kaladin because of his innate protection of others. She takes the form of a young woman, often seen as a faint blue figure or a floating trail of light. Her bond with Kaladin was severely damaged when he broke his oath to protect Elhokar, nearly killing her, but the Windrunner's Fourth Ideal restored her fully. Syl is fiercely protective of Kaladin, with a playful, curious personality that belies her ancient nature as a splinter of Honor.",
     "planet": "roshar",
     "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer", "rhythm_of_war", "wind_and_truth"]
   },
   {
     "id": "tenSoon",
     "name": "TenSoon",
-    "description": "A kandra of the Third Generation who helps Vin and eventually gains his freedom.",
+    "description": "A kandra of the Third Generation who becomes one of the most important figures in Scadrial's history. Initially assigned by the First Contract to be the Lord Ruler's spy, TenSoon is given to Vin as a companion in the form of a dog named OreSeur. After OreSeur's death, TenSoon takes his place and helps Vin discover the truth about the kandra and the Lord Ruler's secrets. He later becomes the third Kandra, receiving the Blessing of Presence and ushering in a new era of freedom for his people. His loyalty to Vin and his willingness to defy the First Contract make him a revolutionary among the kandra.",
     "planet": "scadrial",
     "requiredBooks": ["the_hero_of_ages"]
   },
   {
     "id": "raoden",
     "name": "Raoden",
-    "description": "Prince of Arelon, transformed by the Shaod of Elantris. Finds purpose among the fallen.",
+    "description": "Prince of Arelon, the heir to the throne of the kingdom that contains the fallen city of Elantris. Struck by the Shaod—the magical transformation that turns people into Elantrians—Raoden is secretly thrown into the cursed city by his father, who pretends he died of illness. Inside the rotting city, Raoden discovers a hidden community of survivors and becomes their leader, organizing them, providing hope, and using the remnants of AonDor to create a semblance of civilization. His gentle, determined nature and his refusal to abandon hope even in Elantris's hell make him the moral compass of the story.",
     "planet": "sel",
     "requiredBooks": ["elantris"]
   },
   {
     "id": "sadeas",
     "name": "Torol Sadeas",
-    "description": "Highprince of Alethkar. A cunning and ruthless political rival of Dalinar Kholin.",
+    "description": "Highprince of Alethkar and Dalinar's most persistent rival. A cunning, ruthless, and charismatic political operator who believes that honor is a luxury for the powerful and that the only true victory is personal advancement. Sadeas betrays Dalinar in the Shattered Plains, feeds his own men into battles for Shards, and plots to seize the throne of Alethkar for himself. His manipulation of the Alethi political system and his coalition with the other highprinces make him one of the most dangerous men on Roshar. His death at the hands of Adolin Kholin—a moment of un-Radiant vengeance—sends shockwaves through the court.",
     "planet": "roshar",
     "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer"]
   },
   {
     "id": "sarene",
     "name": "Sarene",
-    "description": "Princess of Teod. Intelligent and diplomatic. Arrives in Arelon for a political marriage.",
+    "description": "Princess of Teod, a kingdom across the sea from Arelon. Intelligent, diplomatic, and fiercely independent, Sarene arrives in Arelon for a political marriage to Prince Raoden only to find he has—officially—died before she arrived. Rather than return home, she uses her position to infiltrate Arelon's political and social elite, organizing a secret resistance against the scheming high priest Hrathen. Sarene is a master of political manipulation and etiquette, using the very systems designed to constrain women to her advantage. Her wit, determination, and strategic mind make her Raoden's equal in every way.",
     "planet": "sel",
     "requiredBooks": ["elantris"]
   },
   {
     "id": "shai",
     "name": "Wan ShaiLu",
-    "description": "A master Forger from Sel, skilled in the art of soulforging.",
+    "description": "A master Forger from the MaiPon region of Sel, a practitioner of Forgery—the art of rewriting an object's history through meticulous stamps infused with investiture. Shai is captured while attempting to steal the Sceptre of the Rose Palace and is recruited to create a Forged copy of the empire's dying emperor. Her story in The Emperor's Soul explores the philosophical implications of Forgery: if you rewrite a thing's entire history, does it become a different thing? Shai's brilliance, resourcefulness, and deep understanding of the spiritual essence of objects make her one of the most compelling characters in Sel's magical traditions.",
     "planet": "sel",
     "requiredBooks": ["arcanum_unbounded"]
   },
   {
     "id": "hrathen",
     "name": "Hrathen",
-    "description": "A high priest of Fjordell sent to convert Arelon. Fierce in his faith but tormented by doubt.",
+    "description": "A high priest of the Fjordell Empire sent to convert the kingdom of Arelon to the Shu-Dereth faith—by persuasion if possible, by conquest if necessary. Fierce in his devotion to his god Jaddeth but tormented by doubt about his methods, Hrathen is one of the Cosmere's most compelling antagonists. He donates his Breath to the people of Arelon, preparing them for war, and ultimately betrays his own empire to help save the very people he was sent to conquer. His crisis of faith and his relationship with Sarene, based on mutual respect and opposition, create one of the most nuanced villain arcs in the Cosmere.",
     "planet": "sel",
     "requiredBooks": ["elantris"]
   },
   {
     "id": "vasher",
     "name": "Vasher",
-    "description": "Kalad the Usurper. A warrior skilled in Awakening who carries a sentient sword.",
+    "description": "Also known as Kalad the Usurper, the master Awakener who created the sentient sword Nightblood and the legendary army of Kalad's Phantoms. A warrior from Nalthis who has lived for centuries through the power of Returned Breath, Vasher is a grumpy, pragmatic, and deeply tired immortal who has seen too much death. He teaches Vivenna how to Awaken and later travels to Roshar, where he becomes known as Zahel, an unassuming swordmaster training the Kholin youth. His deep understanding of BioChromatic Breath and the mechanics of investiture makes him one of the most knowledgeable beings in the Cosmere, though he prefers to keep his secrets.",
     "planet": "nalthis",
     "requiredBooks": ["warbreaker", "words_of_radiance", "oathbringer", "rhythm_of_war", "wind_and_truth"]
   },
   {
     "id": "nightblood",
     "name": "Nightblood",
-    "description": "A sentient sword forged with the purpose of destroying evil. Dangerously literal.",
+    "description": "A sentient sword forged on Nalthis with a single Command: destroy evil. Created by the scholars Shashara and Vasher using a dangerous variant of Awakening, Nightblood is a sword of immense power that consumes investiture from its wielder and the world around it. It is dangerously literal, has a childlike but murderous personality, and speaks telepathically to its wielder, offering constant advice about killing. On Roshar, Nightblood proves capable of cutting through almost anything—including the Unmade and even the concept of investiture itself—and its unique nature makes it one of the most feared and unpredictable weapons in the Cosmere.",
     "planet": "nalthis",
     "requiredBooks": ["warbreaker", "words_of_radiance", "oathbringer", "rhythm_of_war", "wind_and_truth"]
   },
   {
     "id": "siri",
     "name": "Siri",
-    "description": "The younger princess of Idris, unexpectedly sent to T'Telir in her sister's place.",
+    "description": "The younger princess of Idris, a spontaneous and rebellious young woman who is unexpectedly sent to T'Telir in place of her more refined sister Vivenna to marry the God-King Susebron. Initially terrified and overwhelmed by the divine politics of the Court of Gods, Siri discovers that the God-King is not the monster she was led to expect. Her relationship with Susebron grows from fear to genuine affection, and she becomes a key figure in the conspiracy against the priests who control the throne. Siri's journey from impulsive girl to determined queen demonstrates that courage and love can overcome even the most rigid systems of power.",
     "planet": "nalthis",
     "requiredBooks": ["warbreaker"]
   },
   {
     "id": "vivenna",
     "name": "Vivenna",
-    "description": "Princess of Idris, trained from childhood to save her kingdom by marrying the god-king.",
+    "description": "The elder princess of Idris, trained from birth to marry the God-King of T'Telir and save her people from political annihilation. When her younger sister Siri is sent instead, Vivenna follows to T'Telir intending to rescue her, only to be corrupted by her own prejudices and nearly destroyed by the city's dangers. After training with Vasher, Vivenna becomes a powerful Awakener in her own right, learning to command the Lifeless and use BioChromatic Breath effectively. She cuts her hair, dons a sword, and becomes a warrior who ultimately chooses her own path—one of independence and strength—rather than the marriage she was raised for. Later, she travels to Roshar as one of the Cosmere's most capable worldhoppers.",
     "planet": "nalthis",
     "requiredBooks": ["warbreaker", "oathbringer", "rhythm_of_war", "wind_and_truth"]
   },
   {
     "id": "susebron",
     "name": "Susebron",
-    "description": "The God-King of T'Telir, whose breath is the key to Nalthis's power.",
+    "description": "The God-King of T'Telir, the absolute ruler of Hallandren who has been manipulated and silenced by his priests for most of his life. As a Returned god, Susebron has a divine Breath and incredible power, but his tongue was cut out as a child to prevent him from giving commands or revealing the truth of his imprisonment. His relationship with Siri awakens him to the reality of his situation, and he eventually recovers his tongue and his voice, unleashing his power as the most powerful Awakener in Nalthis. His quiet dignity, patience, and capacity for love despite his imprisonment make him one of the Cosmere's most sympathetic rulers.",
     "planet": "nalthis",
     "requiredBooks": ["warbreaker"]
   },
   {
     "id": "lightsong",
     "name": "Lightsong",
-    "description": "A god of the Court of Gods who doubts his own purpose and seeks answers.",
+    "description": "A Returned god of the Court of Gods, known for his laid-back, skeptical demeanor and his refusal to take his divine responsibilities seriously. Unlike the other Returned, Lightsong does not believe he was sent back for any great purpose and spends his days lounging, gambling, and making sarcastic observations. However, beneath his cynical exterior lies a profound sense of worthlessness and a desperate search for meaning. His investigation into the conspiracy against the God-King reveals the depth of his intelligence and his capacity for self-sacrifice. Lightsong's journey from a god who believes in nothing to one who gives everything for others is one of the most emotionally resonant arcs in the Cosmere.",
     "planet": "nalthis",
     "requiredBooks": ["warbreaker"]
   },
   {
     "id": "khriss",
     "name": "Khriss",
-    "description": "A scholar from Taldain who studies the investiture systems of the Cosmere.",
+    "description": "A scholar from the Darkside of Taldain who becomes the Cosmere's foremost expert on investiture and the fundamental laws of magic across all worlds. Trained as a scientist, Khriss travels across the Cosmere with her assistant Nazh, documenting planetary systems, studying Shards, and analyzing the various manifestations of investiture. She provides the scientific framework for understanding the Cosmere's magic systems, writing the planetary essays in Arcanum Unbounded. Her involvement in the events of White Sand, her knowledge of the Dor, and her network of worldhoppers make her one of the most influential non-Shardic figures in the Cosmere. She is the author of the Ars Arcanum found at the end of many Cosmere books.",
     "planet": "taldain",
     "requiredBooks": ["white_sand_vol_1", "white_sand_vol_2", "white_sand_vol_3", "arcanum_unbounded"]
   },
   {
     "id": "kenton",
     "name": "Kenton",
-    "description": "A sand master of Taldain, the last of the Diem.",
+    "description": "The last surviving sand master of the Diem on Taldain's Dayside. Arrogant, stubborn, and fiercely devoted to his dying order, Kenton is the sole survivor of a coup that destroys the Diem, forcing him to rebuild from nothing. He must navigate the perilous politics of the Taishin council, prove that sand mastery is worth preserving, and confront the limits of his own pride. His relationship with Khriss, the off-world scholar who refuses to leave him alone, grows from annoyance to respect as they work together to uncover the secrets of investiture on Taldain. Kenton's journey is one of humility, sacrifice, and the realization that some battles require allies, not just individual strength.",
     "planet": "taldain",
     "requiredBooks": ["white_sand_vol_1", "white_sand_vol_2", "white_sand_vol_3"]
   },
   {
     "id": "hoid",
     "name": "Hoid",
-    "description": "A mysterious wanderer who appears throughout the Cosmere. Tells stories and seeks something he lost.",
+    "description": "A mysterious and immortal wanderer who appears throughout the Cosmere, known by many names: Cephandrius, the Drifter, Wit, Midius, and the King's Wit of Alethkar. An original being from before the Shattering of Adonalsium who refused to take up a Shard, Hoid has dedicated his existence to opposing the Shards and seeking something he lost—perhaps his original purpose, or the power to match them. He appears in almost every Cosmere novel, often as a storyteller, beggar, or advisor, dispensing cryptic wisdom and collecting secrets. Hoid is a Lightweaver bonded to the cryptic spren Design, and his true nature and goals remain the overarching mystery of the Cosmere.",
     "planet": "roshar",
     "requiredBooks": [
       "the_final_empire",
@@ -355,329 +355,329 @@
   {
     "id": "silence",
     "name": "Silence Montane",
-    "description": "A shadow hunter and innkeeper on Threnody, fighting to survive in a world of deadly shades.",
+    "description": "A shadow hunter and innkeeper on the haunted world of Threnody, where deadly shades—the cognitive shadows of the dead—hunt the living at night. Silence runs the Waystop inn with her family while secretly working as a bounty hunter, tracking down criminals through the forest of shadows. Her story in Shadows for Silence in the Forests of Hell explores the desperate measures a mother will take to protect her family in a world where the slightest mistake invites death by shades. Silence is practical, ruthless, and deeply protective, embodying the harsh survival instinct that life on Threnody demands.",
     "planet": "threnody",
     "requiredBooks": ["arcanum_unbounded"]
   },
   {
     "id": "nazh",
     "name": "Nazh",
-    "description": "A mysterious collector of maps and information who works for Khriss.",
+    "description": "A mysterious collector of maps and information who works as an agent for Khriss, traveling across the Cosmere to document planetary systems and gather intelligence. Hailing from Threnody, Nazh is resourceful, grumpy, and perpetually exasperated by the dangers of his job. His hand-drawn maps and notes appear in the Arcanum Unbounded system essays, providing invaluable geographical insight into the Cosmere's worlds. Despite his complaints, his dedication to the work and his skill at surviving impossible situations make him an indispensable asset to Khriss's research.",
     "planet": "threnody",
     "requiredBooks": ["arcanum_unbounded"]
   },
   {
     "id": "tress",
     "name": "Tress",
-    "description": "A young woman from a remote island who crosses spore seas to rescue her love.",
+    "description": "A young woman from a remote island on the spore-covered world of Lumar, where she lives a simple life as a cupwasher. When her love, the adventurous Charlie, is kidnapped and cursed by the Sorceress of the Midnight Sea, Tress leaves her sheltered home for the first time and embarks on a perilous journey across the dangerous spore seas. Crewed by a motley assortment of pirates, dragons, and a talking rat, she discovers unexpected depths of courage, resourcefulness, and determination. Narrated by Hoid with characteristic wit, Tress's journey from ordinary cupwasher to legendary explorer is a celebration of the idea that anyone can become a hero when they have something worth fighting for.",
     "planet": "lumar",
     "requiredBooks": ["tress_of_the_emerald_sea"]
   },
   {
     "id": "charlie",
     "name": "Charlie",
-    "description": "A boy from the Rock who Tress sets out to rescue. Cursed and sent to the Sorceress's island.",
+    "description": "A young man from the Rock nation on Lumar, the adventurous and kind-hearted son of the duke who wins Tress's heart with his genuine interest in her opinions and his stories of the wider world. After offending the Sorceress of the Midnight Sea, Charlie is cursed and taken to her island, setting in motion Tress's epic journey to rescue him. Despite his curse, which prevents him from speaking the truth, Charlie's inherent goodness and love for Tress endure, and he proves himself worthy of her sacrifice by actively working against the Sorceress in his own way.",
     "planet": "lumar",
     "requiredBooks": ["tress_of_the_emerald_sea"]
   },
   {
     "id": "rysn",
     "name": "Rysn Ftori",
-    "description": "A Rosharan trader who becomes the Dawnshard and bonds the greatshell Chiri-Chiri.",
+    "description": "A young Rosharan woman who begins as a brash and overconfident trader's apprentice from Thaylenah. After a fall during her first expedition leaves her paralyzed from the waist down, Rysn must adapt to a new life of physical limitation—but her mind and spirit remain sharp. She bonds the greatshell Chiri-Chiri, becomes a skilled trader and captain in her own right, and is eventually chosen by the Sleepless to lead the expedition to Akinah, where she bonds with the Dawnshard—an ancient Command of creation that transforms her into something more than human. Rysn's story is about finding strength in vulnerability and discovering that the most important adventures are the ones that challenge your perception of yourself.",
     "planet": "roshar",
     "requiredBooks": ["words_of_radiance", "oathbringer", "dawnshard", "rhythm_of_war"]
   },
   {
     "id": "lopen",
     "name": "Lopen",
-    "description": "A Herdazian Windrunner of Bridge Four. Known for his humor, missing arm, and cheerful disposition.",
+    "description": "A Herdazian bridgeman from Bridge Four who becomes one of the first Windrunner squires and later a full Knight Radiant. Known for his irreverent humor, his missing arm (which he treats with characteristic nonchalance), his large extended family, and his endless supply of jokes and insults. Lopen is the heart of Bridge Four's morale, using his relentless optimism and wit to keep the bridgemen's spirits up even in the darkest moments. He eventually regrows his arm through Stormlight and speaks his oaths, becoming a Windrunner who proves that Radiants come from all walks of life.",
     "planet": "roshar",
     "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer", "rhythm_of_war", "wind_and_truth"]
   },
   {
     "id": "aux",
     "name": "Auxiliary",
-    "description": "A sentient spren bonded to Nomad, capable of becoming various weapons and tools.",
+    "description": "A sentient spren bonded to Sigzil—later known as Nomad—who takes the form of a silver metallic rod that can transform into various weapons and tools. Auxiliary is a highspren, the type bonded by the Skybreakers, and has a formal, logical, and occasionally sarcastic personality. As a spren bound by a Dawnshard, Auxiliary is uniquely affected by Nomad's inability to harm others, which forces them to find creative non-lethal solutions to problems. Their relationship, built on centuries of partnership and mutual respect, is central to Nomad's journey on Canticle in The Sunlit Man.",
     "planet": "roshar",
     "requiredBooks": ["the_sunlit_man"]
   },
   {
     "id": "denth",
     "name": "Denth",
-    "description": "A mercenary captain on Nalthis. Charming and deadly, with a mysterious past tied to Kalad's Phantoms.",
+    "description": "A mercenary captain on Nalthis, charming, deadly, and deeply mysterious. Denth is one of the most skilled fighters in Hallandren, secretly a Returned from a previous era and one of the original leaders of the cult that seeks to control the God-King. He is also one of Kalad's Phantoms—a legendary army created by Vasher—and holds a centuries-old grudge against his former leader. Under his friendly, easygoing demeanor lies a ruthless pragmatist who will kill anyone who threatens his mission. His duel with Vasher is one of the most dramatic confrontations in Warbreaker, revealing the depth of their shared and bitter history.",
     "planet": "nalthis",
     "requiredBooks": ["warbreaker"]
   },
   {
     "id": "blushweaver",
     "name": "Blushweaver",
-    "description": "A Returned goddess of the Court of Gods. Bold, strategic, and fiercely independent.",
+    "description": "A Returned goddess of the Court of Gods, known for her boldness, strategic cunning, and unapologetic embrace of her own power. Unlike the other Returned who play politics carefully, Blushweaver is direct, ambitious, and willing to manipulate or seduce to achieve her goals. She becomes a key ally of Lightsong in investigating the conspiracy against the God-King, though her motivations are always her own. Her death at the hands of the conspirators is a brutal reminder that even the immortal Returned are not safe from the machinations of mortals.",
     "planet": "nalthis",
     "requiredBooks": ["warbreaker"]
   },
   {
     "id": "yumi",
     "name": "Yumi",
-    "description": "A yoki-hijo from Komashi who stacks stones for her people, trapped in a strange curse that swaps her world.",
+    "description": "A revered yoki-hijo from the world of Komashi, a young woman who summons benevolent spirits to stack stones into intricate, towering structures for her people. Her life is one of ritual, duty, and isolation—she cannot marry, cannot touch the ground, and must spend her days in precise, ritualized service. When a mysterious force swaps her consciousness with Nikaro (Painter) from a parallel futuristic Komashi, she must learn to navigate a world of machines, nightmarish entities, and personal freedom for the first time. Yumi's story explores the tension between duty and desire, tradition and progress, and the profound connection that can form between two people who see the world completely differently.",
     "planet": "komashi",
     "requiredBooks": ["yumi_and_the_nightmare_painter"]
   },
   {
     "id": "jezrien",
     "name": "Jezrien",
-    "description": "Herald of Kings. Patron of the Windrunners. His Honorblade grants the Surges of Adhesion and Gravitation.",
+    "description": "Herald of Kings, patron of the Windrunners, and the leader of the Heralds of the Almighty. Jezrien was the first Herald to abandon the Oathpact, leading the others in deciding that humanity should be left to fight the Desolations alone rather than continue the cycle of torture on Braize. In the modern era, he was found by Dalinar living as a mad beggar in the warcamps, his mind broken by millennia of guilt and trauma. His Honorblade—which granted the Surges of Adhesion and Gravitation—was taken by the Assassin in White. Jezrien was eventually killed by Moash using a dagger infused with anti-investiture, making him the first Herald to permanently die.",
     "planet": "roshar",
     "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer"]
   },
   {
     "id": "ishar",
     "name": "Ishar",
-    "description": "Herald of the Bondsmiths. The most dangerous of the Heralds, known for his madness and manipulation of Connection.",
+    "description": "Herald of the Bondsmiths and the oldest and most dangerous of the Heralds. Ishar was the first Bondsmith, capable of manipulating Connection at a fundamental level—he could steal powers, bind people against their will, and even create new laws of reality. After millennia of torture on Braize, his mind shattered into religious fervor, leading him to establish his own kingdom in the mountains where he experiments on spren and followers to try to recreate the Oathpact. His madness makes him unpredictable, but his power is immense: he is the only being alive who understands the deep mechanics of investiture on Roshar.",
     "planet": "roshar",
     "requiredBooks": ["oathbringer", "rhythm_of_war", "wind_and_truth"]
   },
   {
     "id": "kalak",
     "name": "Kalak",
-    "description": "Herald of the Willshapers. One of the ten Heralds of the Almighty who founded the Oathpact.",
+    "description": "Herald of the Willshapers, one of the ten Heralds of the Almighty who founded the Oathpact. Kalak appears in the prelude of The Way of Kings, where he is seen arguing with Jezrien about abandoning the Oathpact after the last Desolation. Unlike the other Heralds who were driven mad by their suffering on Braize, Kalak has largely disappeared from Rosharan affairs, his current whereabouts and status unknown. He is a figure of guilt and abandonment, representing the weight of the Heralds' failure to protect humanity from the cycle of Desolations.",
     "planet": "roshar",
     "requiredBooks": ["the_way_of_kings"]
   },
   {
     "id": "chanarach",
     "name": "Chanarach",
-    "description": "Herald of the Dustbringers. Little is known of her among modern Rosharans.",
+    "description": "Herald of the Dustbringers, patron of the order of Dustbringers. Very little is known about Chana among modern Rosharans, as her involvement in events after the abandonment of the Oathpact is mysterious. Her unique connection to the cognitive realm and her role among the Heralds suggests she may have knowledge crucial to understanding the true nature of the Desolations. Her presence in the modern story has been largely hidden, and her daughter may be connected to the events unfolding in the Stormlight Archive.",
     "planet": "roshar",
     "requiredBooks": ["rhythm_of_war"]
   },
   {
     "id": "pailiah",
     "name": "Pailiah",
-    "description": "Herald of the Truthwatchers. Patron of the Order of Truthwatchers.",
+    "description": "Herald of the Truthwatchers, patron of the Order of Truthwatchers. Of all the Heralds, Pailiah is the most reclusive, having disappeared from Rosharan history almost entirely after the abandonment of the Oathpact. Her order of Truthwatchers, now returning with the resurgence of the Knights Radiant, follows her ideals of seeking truth in all things—though the modern Truthwatchers seem to follow a different path than their Herald envisioned.",
     "planet": "roshar",
     "requiredBooks": ["oathbringer"]
   },
   {
     "id": "battar",
     "name": "Battar",
-    "description": "Herald of the Elsecallers. Her current whereabouts and status are unknown.",
+    "description": "Herald of the Elsecallers, patron of the Order of Elsecallers. Battar's current whereabouts and status are unknown, and she has not been seen in modern Rosharan records since the abandonment of the Oathpact. Her order, the Elsecallers, specialize in Soulcasting and traveling between the Physical and Cognitive Realms—abilities now practiced by Jasnah Kholin. The mystery of Battar's disappearance and her potential knowledge of the Heralds' deeper secrets remains unresolved.",
     "planet": "roshar",
     "requiredBooks": ["oathbringer"]
   },
   {
     "id": "vedel",
     "name": "Vedel",
-    "description": "Herald of the Edgedancers. Patron of the Order of Edgedancers.",
+    "description": "Herald of the Edgedancers, patron of the Order of Edgedancers. Like most of the Heralds who abandoned the Oathpact, Vedel has not been seen in the modern era and her current status is unknown. The Edgedancers, now returning with Radiants like Lift, embody the ideals of remembering the forgotten and listening to those who have been ignored. Vedel's ancient connection to her order suggests she may have knowledge crucial to understanding the Edgedancers' unique place among the Radiants.",
     "planet": "roshar",
     "requiredBooks": ["oathbringer"]
   },
   {
     "id": "painter",
     "name": "Nikaro (Painter)",
-    "description": "A nightmare painter from Komashi tasked with sealing nightmarish entities with his art.",
+    "description": "A lonely young man from the futuristic city of Torio on Komashi who works as a nightmare painter—an artist who paints nightmarish entities born of human fear to trap them in canvas before they can harm anyone. Isolated and unappreciated, Painter lives a quiet life of duty until a mysterious force swaps his consciousness with Yumi, a yoki-hijo from Komashi's parallel past. Forced to inhabit each other's worlds, Painter discovers that his seemingly mundane talent for painting and his unique perspective on fear are more important than he ever imagined. His journey is about finding purpose and connection in a world that has made him feel invisible.",
     "planet": "komashi",
     "requiredBooks": ["yumi_and_the_nightmare_painter"]
   },
   {
     "id": "sylphrena",
     "name": "Sylphrena (Syl)",
-    "description": "An honorspren bonded to Kaladin. She serves as his spren and partner as a Knight Radiant of the Windrunners.",
+    "description": "An honorspren of the highest order, bonded to Kaladin Stormblessed as his partner in the Windrunner order of the Knights Radiant. Syl first appeared to Kaladin as a tiny blue fairy-like figure, growing in size and complexity as their bond deepened. She is playful, curious, and fiercely protective of Kaladin, but also ancient and wise in ways she does not always express. As an honorspren, Syl embodies the fundamental nature of Honor—keeping oaths, protecting the innocent, and resisting oppression. She was nearly killed when Kaladin broke his oath, but the Windrunner's Fourth Ideal saved her, restoring her fully and marking their bond as the strongest among the Radiants.",
     "planet": "roshar",
     "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer", "rhythm_of_war", "wind_and_truth"]
   },
   {
     "id": "teft",
     "name": "Teft",
-    "description": "A former soldier turned bridgeman and Knight Radiant of the Windrunners. Mentor to Kaladin and a member of Bridge Four.",
+    "description": "A former soldier in the Alethi army turned bridgeman and one of the first members of Bridge Four. A Windrunner of the Knights Radiant, Teft is the oldest of the new Radiants and serves as a mentor and father figure to Kaladin, though he struggles with his own demons—specifically his addiction to the narcotic known as moss, born from guilt over his family's past. His enforcer spren Phendorana bonds with him as he speaks his oaths, but the trauma of his past nearly destroys him. Teft's sacrifice in Rhythm of War, where he is killed by Moash while protecting his Radiant ideals, is one of the most heart-wrenching moments in the series.",
     "planet": "roshar",
     "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer", "rhythm_of_war"]
   },
   {
     "id": "rock",
     "name": "Rock (Numuhukumakiaki'aialunamor)",
-    "description": "A Horneater bridgeman turned chef. Known for his humor, cooking, and deep connection to the Unkalaki traditions.",
+    "description": "A Horneater bridgeman from the Unkalaki highlands who becomes Bridge Four's cook and spiritual heart. Rock is a large, gentle, and deeply humorous man with a peculiar way of speaking in third person, a profound reverence for food and cooking, and a connection to the mystical hot springs of the Horneater Peaks—which he claims are gateways to the realm of the gods. He refuses to fight, believing the Unkalaki honor code forbids him from taking a life, but his courage and loyalty are unquestionable. Rock eventually leaves Bridge Four to return to his people, becoming their chieftain in the Horneater Peaks.",
     "planet": "roshar",
     "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer"]
   },
   {
     "id": "moash",
     "name": "Moash (Vyre)",
-    "description": "A former bridgeman who becomes Odium's champion. Once a friend of Kaladin, he eventually embraces his role as Vyre, a servant of Odium.",
+    "description": "A former bridgeman of Bridge Four who becomes one of the most tragic and reviled figures in the Stormlight Archive. Once Kaladin's friend and ally, Moash's grandparents were executed by lighteyes for defending their property, filling him with a burning hatred of the nobility. After being recruited by Odium, Moash embraces his role as Vyre—the instrument of the God of Hatred—and commits increasingly horrific acts, including killing Elhokar Kholin and Teft. His deliberate rejection of hope and redemption, even when offered, makes him a chilling portrayal of how grief and hatred can consume a person entirely. Moash is Kaladin's dark mirror: a man who could have been a Radiant but chose to become a monster.",
     "planet": "roshar",
     "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer", "rhythm_of_war"]
   },
   {
     "id": "dabbid",
     "name": "Dabbid",
-    "description": "A silent bridgeman from Bridge Four. Though unable to speak, he shows remarkable loyalty and resourcefulness during the occupation of Urithiru.",
+    "description": "A silent bridgeman from Bridge Four who cannot speak due to a traumatic event in his past—or so it seems. Dabbid is often underestimated by the other bridgemen, seen as simple or slow, but he possesses remarkable loyalty, observation skills, and courage. During the occupation of Urithiru in Rhythm of War, Dabbid emerges as a hero, taking care of a catatonic Kaladin, communicating through written notes, and coordinating the resistance within the Tower. He is revealed to be a squire of the Windrunners, speaking his first words in years during the crisis. Dabbid's story proves that heroism comes in all forms, and that silence does not mean absence.",
     "planet": "roshar",
     "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer", "rhythm_of_war"]
   },
   {
     "id": "rlain",
     "name": "Rlain",
-    "description": "A listener scout who joins Bridge Four. The only listener remaining in Urithiru, he becomes a Truthwatcher and a bridge between humans and singers.",
+    "description": "A listener scout who infiltrated the Alethi warcamps and later joined Bridge Four, becoming the only listener to be fully accepted among humans during the war between their peoples. After the listeners transformed into the Fused and stormform, Rlain was left alone, caught between two worlds—distrusted by humans for being a singer and rejected by his own people for failing to join the transformation. His bond with the spren Tumi makes him the first singer Truthwatcher in the history of the Knights Radiant, and his friendship with Renarin Kholin offers hope for reconciliation between humans and singers. Rlain's quiet dignity and resilience in the face of alienation from both sides of the war make him one of the most compelling characters in the Stormlight Archive.",
     "planet": "roshar",
     "requiredBooks": ["the_way_of_kings", "words_of_radiance", "oathbringer", "rhythm_of_war", "wind_and_truth"]
   },
   {
     "id": "raboniel",
     "name": "Raboniel (Lady of Wishes)",
-    "description": "A Fused scholar and commander who leads the occupation of Urithiru. She seeks a way to end the cycle of war between humans and singers.",
+    "description": "A Fused scholar and commander of the forces of Odium, one of the most ancient and dangerous of the singers' immortal souls. Known as the Lady of Wishes, Raboniel leads the occupation of Urithiru with the stated goal of ending the cycle of war between humans and singers—by any means necessary. She is brilliant, patient, and terrifying, able to work alongside Navani on revolutionary scientific discoveries while simultaneously using her children as tools for her plans. Her ultimate goal—to give all of Roshar a permanent death through anti-investiture—reveals the depth of her despair after millennia of conflict. Raboniel is one of the Cosmere's most complex antagonists, driven by genuine love for her people twisted into monstrous resolve.",
     "planet": "roshar",
     "requiredBooks": ["rhythm_of_war"]
   },
   {
     "id": "eshonai",
     "name": "Eshonai",
-    "description": "A listener explorer and warleader who discovered the shattered plains and sought a peaceful future for her people. Former Shardbearer and Willshaper.",
+    "description": "A listener explorer and warleader who dreamed of discovering what lay beyond the Shattered Plains. Eshonai was the first of her people to explore the world beyond the listeners' lands, learning to read and write in the human tongue and negotiating with the Alethi before the war began. She discovered the ancient city of Urithiru in her journeys and sought a peaceful future for her people, but was pressured into taking stormform—a parasitic transformation that robbed her of her will and made her a tool of Odium. As a Shardbearer and proto-Willshaper, Eshonai's story is one of hope destroyed by desperation, and the tragedy of a peacemaker forced into a war she never wanted. Her flashbacks in Words of Radiance and Rhythm of War reveal the listener perspective on the human invasion of Roshar.",
     "planet": "roshar",
     "requiredBooks": ["the_way_of_kings", "words_of_radiance"]
   },
   {
     "id": "gavilar",
     "name": "Gavilar Kholin",
-    "description": "The late king of Alethkar, father of Dalinar and Elhokar. His assassination by Szeth set the events of the Stormlight Archive in motion.",
+    "description": "The late King of Alethkar, brother of Dalinar Kholin, and father of Jasnah and Elhokar. A visionary king who united the warring princedoms of Alethkar under one banner, Gavilar was also a man with dangerous ambitions. His research into the Heralds, his discovery of the true nature of the Knights Radiant, and his desire to become a Herald himself led to his assassination by Szeth on the night he signed a treaty with the Parshendi. Gavilar's death set the events of the Stormlight Archive in motion, but his legacy is far more complex than the heroic king the stories remember: his ambition may have been the catalyst that brought the Desolation itself.",
     "planet": "roshar",
     "requiredBooks": ["the_way_of_kings", "oathbringer"]
   },
   {
     "id": "breeze",
     "name": "Breeze",
-    "description": "A Soother and member of Kelsier's crew. Known for his elegant demeanor and ability to manipulate emotions through Allomancy.",
+    "description": "A Soother and one of the most charismatic members of Kelsier's crew. A well-dressed, elegant nobleman with a flair for the dramatic, Breeze uses his Allomantic ability to soothe emotions—calming anger, doubt, and fear—to manipulate crowds, nobles, and enemies alike. Despite his lazy and self-serving demeanor, Breeze is deeply loyal to his crew and spends years protecting Elend's government through subtle emotional manipulation. After the war, he becomes an advisor to the new empire, using his powers for the good of the skaa he claims not to care about.",
     "planet": "scadrial",
     "requiredBooks": ["the_final_empire", "the_well_of_ascension", "the_hero_of_ages"]
   },
   {
     "id": "ham",
     "name": "Hammond (Ham)",
-    "description": "A Pewterarm and member of Kelsier's crew. A philosopher at heart who questions the morality of the crew's actions while fighting for the skaa.",
+    "description": "A Pewterarm and philosopher who serves as Kelsier's muscle and moral sounding board. Ham is a man of contradictions: a powerful warrior who would rather discuss philosophy, a loyal soldier who questions the morality of the crew's actions, and a family man who walks the edge of death every day. His ability to burn pewter grants him superhuman strength and endurance, making him one of the most dangerous fighters in the crew. Ham's ongoing debates with Breeze about the nature of good and evil, and his unwavering loyalty to his friends, make him one of the most thoughtful members of Kelsier's rebellion.",
     "planet": "scadrial",
     "requiredBooks": ["the_final_empire", "the_well_of_ascension", "the_hero_of_ages"]
   },
   {
     "id": "dockson",
     "name": "Dockson",
-    "description": "The organizational mastermind of Kelsier's crew. He manages logistics and finances for the rebellion against the Lord Ruler.",
+    "description": "The organizational mastermind of Kelsier's crew, the man who manages the logistics, finances, and planning that allow the rebellion to function. Dockson is not an Allomancer, but his strategic mind and administrative skills make him invaluable. He is the steady, reliable heart of the crew, the one who holds everything together while the more flashy members pursue their goals. After the Lord Ruler's fall, Dockson struggles with the transition from revolutionary to bureaucrat and ultimately dies defending the new government during the siege of Luthadel.",
     "planet": "scadrial",
     "requiredBooks": ["the_final_empire", "the_well_of_ascension"]
   },
   {
     "id": "clubs",
     "name": "Clubs (Mennis)",
-    "description": "A Smoker and member of Kelsier's crew. His Allomantic coppercloud hides the crew's activities from Inquisitors and obligators.",
+    "description": "A Smoker and grumpy old man who provides the crucial Allomantic coppercloud that hides Kelsier's crew from the Lord Ruler's Inquisitors and obligators. Clubs runs a carpenter's shop that serves as the crew's headquarters, taking in street urchins as apprentices while training them as part of the rebellion. Despite his constant complaining and gruff exterior, Clubs is deeply protective of his people and his principles. He ends up as a member of Elend's council after the Lord Ruler's fall, his coppercloud continuing to hide the crew's activities from prying eyes.",
     "planet": "scadrial",
     "requiredBooks": ["the_final_empire", "the_well_of_ascension"]
   },
   {
     "id": "tindwyl",
     "name": "Tindwyl",
-    "description": "A Feruchemist of the Synod who trains Elend Venture to be a proper leader. A Terris elder known for her wisdom and stern demeanor.",
+    "description": "A Terris Feruchemist of the Synod, sent to Luthadel during the siege to train Elend Venture as a proper leader. Tindwyl is a stern, wise, and no-nonsense elder who forces Elend to confront his weaknesses and grow into the ruler the new empire needs. She is also a Keeper, preserving the wisdom of ancient Terris knowledge. Her relationship with Sazed, built on mutual respect and shared purpose, blossoms into a deep love—making her death at the hands of the Koloss one of the most painful blows Sazed ever endures.",
     "planet": "scadrial",
     "requiredBooks": ["the_well_of_ascension", "the_hero_of_ages"]
   },
   {
     "id": "straff",
     "name": "Straff Venture",
-    "description": "The high noble lord of House Venture and father of Elend. A powerful Allomancer and one of the most dangerous men in Luthadel.",
+    "description": "The high noble lord of House Venture, father of Elend, and one of the most powerful and ruthless men in the Final Empire. A powerful Allomancer who burns tin with extreme precision, Straff is paranoid, cruel, and willing to sacrifice anyone—including his own children—to maintain his power. He leads a massive army to Luthadel during the siege, seeking to claim the city for himself, and his constant tension with his Mistborn son Zane makes him an unpredictable force. His death at the hands of Vin is a turning point in the siege of Luthadel.",
     "planet": "scadrial",
     "requiredBooks": ["the_final_empire", "the_well_of_ascension"]
   },
   {
     "id": "zane",
     "name": "Zane",
-    "description": "Straff Venture's Mistborn son, secretly working for the Lord Ruler. Tormented by a voice in his head, he becomes an unpredictable player in the siege of Luthadel.",
+    "description": "Straff Venture's Mistborn son, a secret weapon and a broken man. Zane is a Pewterarm and Tineye who can also burn atium, making him one of the most dangerous Allomancers alive. He is tormented by a voice in his head—which may be a manifestation of Ruin—that drives him toward increasingly erratic and violent behavior. Zane serves as his father's assassin and spy while secretly working for the Lord Ruler, but his connection to Vin and his desperate search for meaning make him a tragic figure. His death at Elend's hands ends the threat he posed while leaving the mystery of his voice unresolved.",
     "planet": "scadrial",
     "requiredBooks": ["the_well_of_ascension"]
   },
   {
     "id": "miles_dagouter",
     "name": "Miles Dagouter (Miles Hundredlives)",
-    "description": "A Twinborn bounty hunter with steel Allomancy and gold Feruchemy. His Compounding healing makes him nearly immortal. A religious zealot targeting corrupt nobles.",
+    "description": "A Twinborn bounty hunter combining steel Allomancy (Coinshot) with gold Feruchemy (Bloodmaker), creating a Compounding healing loop that makes him virtually immortal. Miles is a religious zealot who sees the corruption of Elendel's nobility as a sin requiring violent cleansing, leading him to become a mass murderer in the name of justice. His immunity to conventional death—he has been killed hundreds of times and regenerated—makes him one of the most terrifying opponents Wax has ever faced. The question of whether an immortal criminal can truly be stopped, and at what moral cost, is central to his arc.",
     "planet": "scadrial",
     "requiredBooks": ["the_alloy_of_law", "shadows_of_self"]
   },
   {
     "id": "telsin_ladrian",
     "name": "Telsin Ladrian",
-    "description": "Waxillium's sister and the leader of the Set. She opposes Harmony and works to free Scadrial from his influence.",
+    "description": "Waxillium's sister and the true leader of the Set, the secret organization working to free Scadrial from Harmony's influence and align with the Shard Autonomy. Telsin is brilliant, manipulative, and utterly convinced that Harmony's control over Scadrial is a form of slavery that must be broken. Her relationship with Wax is defined by their childhood bond and her gradual transformation into an enemy who genuinely believes she is fighting for the right side. The confrontation between brother and sister in The Lost Metal forces Wax to choose between family and duty, with devastating consequences.",
     "planet": "scadrial",
     "requiredBooks": ["shadows_of_self", "the_bands_of_mourning", "the_lost_metal"]
   },
   {
     "id": "galladon",
     "name": "Galladon",
-    "description": "An Elantrian from Sel. Survived the Shaod and guided Raoden through Elantris. His stoic demeanor masks deep loyalty and wisdom.",
+    "description": "An Elantrian from Sel who survived the Shaod and was living in the fallen city of Elantris when Raoden arrived. Stoic, pessimistic, and deeply loyal, Galladon was one of the first to recognize Raoden's leadership potential and became his most trusted ally inside the city. His signature phrase, 'Kolo,' and his dry humor mask a profound wisdom and an unbreakable spirit. Galladon plays a crucial role in the restoration of Elantris, helping Raoden rediscover AonDor and proving that even the most broken people can find purpose.",
     "planet": "sel",
     "requiredBooks": ["elantris"]
   },
   {
     "id": "dilaf",
     "name": "Dilaf",
-    "description": "A Fjordell priest and leader of the Dakhor monks. A fanatical follower of Wulfden the Fourth who seeks to destroy Elantris and its people.",
+    "description": "A Fjordell priest and leader of the Dakhor monks, a secret order of religious fanatics who use a forbidden form of bone-based Forgery to gain supernatural power. Dilaf is a zealot of the highest order, hating Elantris and all Elantrians with a burning passion born from personal tragedy. He serves as Hrathen's assistant while secretly pursuing his own agenda of total destruction. Dilaf is a terrifying figure of religious extremism, his face covered in ritual scars and his body twisted by the Dakhor transformations. His final confrontation with Raoden and Sarene reveals the true horror of what Shaod can do to a person.",
     "planet": "sel",
     "requiredBooks": ["elantris"]
   },
   {
     "id": "parlin",
     "name": "Parlin",
-    "description": "Siri's cousin and Idrian guard. A loyal but reluctant soldier assigned to protect Siri during her journey to T'Telir.",
+    "description": "Siri's cousin and an Idrian guard assigned to protect her during her journey to T'Telir. A reluctant soldier who follows orders despite his fear and uncertainty, Parlin represents the ordinary person caught in the currents of history. He accompanies Siri into the Court of Gods and struggles to adjust to the strange, dangerous world of Hallandren. His loyalty to Siri and his gradual realization that the priests are not to be trusted make him an important supporting figure in Siri's story.",
     "planet": "nalthis",
     "requiredBooks": ["warbreaker"]
   },
   {
     "id": "baon",
     "name": "Baon",
-    "description": "A Darksider mercenary from Taldain and member of Khriss's expedition to Dayside. Skilled in combat and knowledgeable about Sand Mastery.",
+    "description": "A Darksider mercenary from Taldain who serves as Khriss's bodyguard and guide during her expedition to Dayside. Skilled in combat and unusually knowledgeable about Sand Mastery for a Darksider, Baon is protective, pragmatic, and quietly observant. His loyalty to Khriss and his expertise in survival on the harsh Dayside make him invaluable to her research. Baon's past and his connection to the wider Cosmere suggest depths that are only hinted at in the White Sand graphic novels.",
     "planet": "taldain",
     "requiredBooks": ["white_sand_vol_1", "white_sand_vol_2", "white_sand_vol_3"]
   },
   {
     "id": "ais",
     "name": "Ais",
-    "description": "A Dayside Taldain woman and leader of the Lady Masks. She aids Khriss's expedition across the Deep Desert.",
+    "description": "A Daysider woman from Taldain and the leader of the Lady Masks, a group of warriors who protect travelers across the Deep Desert. Ais is tough, resourceful, and deeply connected to the traditions of Dayside. She provides crucial assistance to Khriss's expedition, guiding them through the treacherous desert and the political intrigues of the various factions. Her knowledge of the Deep Desert and its secrets plays a key role in the discovery of the Sand Lord's truth.",
     "planet": "taldain",
     "requiredBooks": ["white_sand_vol_1", "white_sand_vol_2", "white_sand_vol_3"]
   },
   {
     "id": "demoux",
     "name": "Demoux",
-    "description": "A general in the armies of the Final Empire and later a member of the Seventeenth Shard. One of Kelsier's original crew and a loyal ally of Elend Venture.",
+    "description": "A general in the armies of the Final Empire and later the New Empire, originally one of Kelsier's crew members. A loyal soldier and a dedicated follower of the Survivor's teachings, Demoux fights in the siege of Luthadel and the final battle against Ruin. Centuries later, he appears on the island of First of the Sun as a member of the Seventeenth Shard—a mysterious organization that monitors Shardic activity across the Cosmere. His appearance in Sixth of the Dusk reveals that he has become a worldhopper, his loyalty to the Survivor's cause extending beyond Scadrial itself.",
     "planet": "scadrial",
     "requiredBooks": ["the_final_empire", "the_well_of_ascension", "the_hero_of_ages"]
   },
   {
     "id": "sixth_of_the_dusk",
     "name": "Sixth of the Dusk",
-    "description": "A trapper from First of the Sun. Uses Aviar to survive the dangerous jungles of his homeworld. Later meets off-worlders and becomes involved in larger Cosmere events.",
+    "description": "A trapper from the islands of First of the Sun, a world of jungles, predatory wildlife, and mysterious ancient ruins. Dusk uses a bond with his Aviar—a bird gifted by the local gods—to see the immediate future and avoid danger. He is one of the most skilled hunters on his world, navigating the deadly Pantheon with practiced ease. When off-worlders arrive on First of the Sun seeking to exploit its resources, Dusk must confront the reality that his world is part of a much larger Cosmere. His story explores the collision between primitive survival and interstellar colonization, and the price of progress.",
     "planet": "first-of-the-sun",
     "requiredBooks": ["arcanum_unbounded"]
   },
   {
     "id": "vathi",
     "name": "Vathi",
-    "description": "A scholar from First of the Sun who studies the Aviar and the Pantheon. She accompanies Sixth of the Dusk on expeditions.",
+    "description": "A scholar from First of the Sun who studies the Aviar—the magical birds that grant cognitive abilities like future sight—and the mysterious ruins of the Pantheon. Vathi is an academic, curious about the world's mysteries and dedicated to preserving its knowledge. She accompanies Sixth of the Dusk on expeditions into the deadly jungle, her scientific mind complementing his survival instincts. Her discovery of the off-worlders' interest in her planet and her role in the events of the story make her a key figure in First of the Sun's future.",
     "planet": "first-of-the-sun",
     "requiredBooks": ["arcanum_unbounded"]
   },
   {
     "id": "the_cinder_king",
     "name": "The Cinder King",
-    "description": "The tyrannical ruler of Canticle who uses Torment bonds to control the planet's population. He endlessly pursues the sun across the scorched world.",
+    "description": "The tyrannical ruler of Canticle, a world orbiting so close to its sun that civilization exists only on a massive train track that constantly moves ahead of the scorching dawn. The Cinder King uses Torment bonds—a perversion of investiture—to control the planet's population, forcing them to serve him or be left behind to burn in the sun. He is cruel, manipulative, and deeply paranoid, endlessly pursuing the sun across Canticle's surface and crushing anyone who challenges his absolute authority. His confrontation with Nomad reveals the cost of absolute power and the darkness that can consume even those who started with good intentions.",
     "planet": "canticle",
     "requiredBooks": ["the_sunlit_man"]
   },
   {
     "id": "fort",
     "name": "Fort",
-    "description": "A thick-browed foxlike alien from the planet UTol who joins Nomad on his journey. Consumed by a desire for vengeance against the Night Brigade.",
+    "description": "A thick-browed, foxlike humanoid alien from the planet UTol who joins Nomad on his journey to Canticle. Consumed by an unquenchable desire for vengeance against the Night Brigade for the destruction of his homeworld, Fort is gruff, pragmatic, and deeply wounded by the loss of everything he loved. His partnership with Nomad is built on mutual need rather than friendship, but over time, Fort's rigid exterior begins to crack as he discovers that revenge may not bring the peace he seeks. His physical strength and his knowledge of the Night Brigade make him a valuable ally in Nomad's struggle on Canticle.",
     "planet": "canticle",
     "requiredBooks": ["the_sunlit_man"]
   },
   {
     "id": "kokerlii",
     "name": "Kokerlii",
-    "description": "A small squat humanoid alien from the planet UTol. A traveling companion of Nomad who provides comic relief and moral support.",
+    "description": "A small, squat humanoid alien from the planet UTol who becomes one of Nomad's traveling companions on Canticle. Kokerlii is chatty, optimistic, and provides much-needed comic relief in the grim setting of the sun-scorched world. Despite his small size and apparent weakness, Kokerlii possesses a surprisingly sharp mind and an unbreakable spirit. He serves as a moral compass for Nomad, reminding him of the value of hope and friendship even in the most desperate circumstances.",
     "planet": "canticle",
     "requiredBooks": ["the_sunlit_man"]
   }

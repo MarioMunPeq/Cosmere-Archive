@@ -127,8 +127,14 @@ export default function CharactersPage() {
   const { enabled: spoilerEnabled, isCharacterVisible, spoilerCount } = useSpoilerMode()
 
   const [selectedFamily, setSelectedFamily] = useState(FAMILY_TREES[0]!.id)
-  const [detailId, setDetailId] = useState<string | undefined>(undefined)
-  const [detailChar, setDetailChar] = useState<(typeof ALL_CHARACTERS)[number] | null>(null)
+  const [detailId, setDetailId] = useState<string | undefined>(() => {
+    const param = searchParams.get('character')
+    return param ?? undefined
+  })
+  const [detailChar, setDetailChar] = useState<(typeof ALL_CHARACTERS)[number] | null>(() => {
+    const param = searchParams.get('character')
+    return ALL_CHARACTERS.find((c) => c.id === param) ?? null
+  })
   const [detailOrigin, setDetailOrigin] = useState<DOMRect | null>(null)
 
   const scrollRef = useRef<HTMLDivElement>(null)
