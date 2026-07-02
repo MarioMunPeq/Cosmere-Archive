@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import BackToMapButton from '@/components/ui/BackToMapButton'
 import { BOOKS, PLANETS, SAGAS, ALL_CHARACTERS, SHARD_COLORS, SAGA_NAME_COLORS } from '@/data/static'
-import { MAGIC_SYSTEMS, MAGIC_SYSTEM_CATEGORIES } from '@/data/static/magic-systems'
 import { TIMELINE_EVENTS, ERAS } from '@/data/static/timeline'
 import { HERALDS } from '@/data/static/heralds'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
@@ -12,26 +11,6 @@ const SHARD_NAMES = Object.keys(SHARD_COLORS)
 const SAGA_LIST = (SAGAS as { id: string; name: string; color: string; order: number; description?: string }[]).filter(
   (s) => s.id !== 'pre-cosmere',
 )
-
-function useOnScreen(ref: React.RefObject<Element | null>) {
-  const [visible, setVisible] = useState(false)
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          setVisible(true)
-          obs.disconnect()
-        }
-      },
-      { threshold: 0.15 },
-    )
-    obs.observe(el)
-    return () => obs.disconnect()
-  }, [ref])
-  return visible
-}
 
 function AnimatedCounter({ end, ...props }: { end: number } & React.HTMLAttributes<HTMLSpanElement>) {
   const [val, setVal] = useState(0)
@@ -51,36 +30,6 @@ function AnimatedCounter({ end, ...props }: { end: number } & React.HTMLAttribut
     requestAnimationFrame(raf)
   }, [end])
   return <span {...props}>{val.toLocaleString()}</span>
-}
-
-function SectionWrap({ children, className = '' }: { children: React.ReactNode; className?: string }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const visible = useOnScreen(ref)
-  return (
-    <div
-      ref={ref}
-      className={`transition-all duration-700 ease-out ${visible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'} ${className}`}
-    >
-      {children}
-    </div>
-  )
-}
-
-function SectionTitle({ children, subtitle }: { children: React.ReactNode; subtitle?: string }) {
-  return (
-    <div className="mb-8 text-center">
-      <h2 className="bg-gradient-to-r from-cyan-300 via-purple-300 to-cyan-400 bg-clip-text text-2xl font-bold text-transparent sm:text-3xl">
-        {children}
-      </h2>
-      {subtitle && <p className="mt-1 text-gray-400 text-base">{subtitle}</p>}
-    </div>
-  )
-}
-
-function Divider() {
-  return (
-    <div className="mx-auto mt-24 mb-8 h-px max-w-lg bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent" />
-  )
 }
 
 export default function StatsPage() {
@@ -113,14 +62,6 @@ export default function StatsPage() {
   }, [])
 
   const maxWords = useMemo(() => Math.max(...booksByWordCount.map((b) => b.wordCount ?? 0), 1), [booksByWordCount])
-
-  const magicByCategory = useMemo(() => {
-    const map = new Map<string, number>()
-    for (const ms of MAGIC_SYSTEMS) map.set(ms.category, (map.get(ms.category) ?? 0) + 1)
-    return Array.from(map.entries())
-      .sort(([, a], [, b]) => b - a)
-      .map(([cat, count]) => ({ cat, count, name: MAGIC_SYSTEM_CATEGORIES.find((c) => c.id === cat)?.name ?? cat }))
-  }, [])
 
   const totalWords = useMemo(() => BOOKS.reduce((sum, b) => sum + (b.wordCount ?? 0), 0), [])
 
@@ -184,441 +125,588 @@ export default function StatsPage() {
   const maxSagaCount = Math.max(...bookCountBySaga.map(([, c]) => c), 1)
   const maxMagicCount = Math.max(...magicByCategory.map((m) => m.count), 1)
 
+  const [activeStep, setActiveStep] = useState(0)
+  const totalSteps = 9
+  const stepLabels = [
+    'Overview',
+    'Books by Saga',
+    'Characters by Planet',
+    'Word Count',
+    'Publication Timeline',
+    'Shards',
+    'Magic Systems',
+    'Event Density',
+    'The Heralds',
+  ]
+
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-gray-950">
-      <div className="relative z-10 mx-auto max-w-5xl px-4 pb-24 pt-12 sm:px-6">
-        <BackToMapButton className="mb-6" />
+    <div className="fixed inset-0 flex flex-col bg-gray-950">
+      {/* Header */}
+      <div className="flex shrink-0 items-center gap-4 border-b border-white/5 px-4 py-2 sm:px-6 sm:py-3">
+        <BackToMapButton />
+        <h1 className="bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-300 bg-clip-text text-lg font-bold text-transparent sm:text-xl">
+          Cosmere in Numbers
+        </h1>
+        <span className="ml-auto text-xs text-gray-500 sm:text-sm">
+          {activeStep + 1} / {totalSteps}
+        </span>
+      </div>
 
-        {/* 1. Hero */}
-        <SectionWrap>
-          <div className="text-center">
-            <h1 className="bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-300 bg-clip-text text-4xl font-extrabold text-transparent sm:text-5xl">
-              Cosmere in Numbers
-            </h1>
-            <p className="mt-3 text-lg text-gray-500">
-              {BOOKS.length} books &middot; {ALL_CHARACTERS.length} characters &middot; {SHARD_COUNT} shards &middot;
-              One universe
-            </p>
-          </div>
-        </SectionWrap>
-
-        {/* 2. Stat Cards */}
-        <SectionWrap className="mt-12">
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {statCards.map((card) => (
-              <div
-                key={card.label}
-                className="group relative overflow-hidden rounded-xl border border-white/5 bg-white/[0.03] p-6 text-center backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:shadow-lg hover:shadow-cyan-500/5"
-              >
-                <div className="text-3xl font-bold" style={{ color: card.color }}>
-                  <AnimatedCounter end={card.value} />
-                </div>
-                <div className="mt-1 text-base text-gray-500">{card.label}</div>
-              </div>
-            ))}
-          </div>
-        </SectionWrap>
-
-        <Divider />
-
-        {/* 3. Books by Saga */}
-        <SectionWrap className="mt-10">
-          <SectionTitle subtitle={`${BOOKS.length} books across ${bookCountBySaga.length} sagas`}>
-            Books by Saga
-          </SectionTitle>
-          <div className="mx-auto max-w-2xl space-y-5">
-            {bookCountBySaga.map(([sagaId, count]) => {
-              const saga = SAGA_LIST.find((s) => s.id === sagaId)
-              const pct = (count / maxSagaCount) * 100
-              const barColor = SAGA_NAME_COLORS[sagaId as keyof typeof SAGA_NAME_COLORS] ?? '#a78bfa'
-              return (
-                <div key={sagaId}>
-                  <div className="mb-1 flex items-center justify-between">
-                    <span className="text-base font-medium text-gray-200">{saga?.name ?? sagaId}</span>
-                    <span className="text-sm text-gray-500">
-                      {count} book{count !== 1 ? 's' : ''}
-                    </span>
-                  </div>
-                  <div className="h-4 overflow-hidden rounded-full bg-gray-800">
-                    <div
-                      className="h-full rounded-full transition-all duration-1000 ease-out"
-                      style={{ width: `${pct}%`, background: `linear-gradient(90deg, ${barColor}, ${barColor}88)` }}
-                    />
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </SectionWrap>
-
-        <Divider />
-
-        {/* 4. Characters by Planet */}
-        <SectionWrap className="mt-10">
-          <SectionTitle subtitle={`${ALL_CHARACTERS.length} characters across ${charCountByPlanet.length} worlds`}>
-            Characters by Planet
-          </SectionTitle>
-          <div className="mx-auto flex max-w-3xl flex-col items-center gap-8 sm:flex-row sm:items-start">
-            <svg viewBox="0 0 280 280" className="h-72 w-72 shrink-0">
-              {(() => {
-                const total = charCountByPlanet.reduce((s, c) => s + c.count, 0)
-                let angle = -90
-                const r = 120
-                const cx = 140
-                const cy = 140
-                const segments: {
-                  name: string
-                  count: number
-                  planetId: string
-                  start: number
-                  end: number
-                  color: string
-                }[] = []
-                for (const item of charCountByPlanet) {
-                  const pct = item.count / total
-                  const deg = pct * 360
-                  const planet = PLANETS.find((p) => p.id === item.id)
-                  const color = planet?.color ?? '#6b7280'
-                  segments.push({ ...item, planetId: item.id, start: angle, end: angle + deg, color })
-                  angle += deg
-                }
-                return segments.map((seg, i) => {
-                  const sr = ((seg.start - 90) * Math.PI) / 180
-                  const er = ((seg.end - 90) * Math.PI) / 180
-                  const x1 = cx + r * Math.cos(sr)
-                  const y1 = cy + r * Math.sin(sr)
-                  const x2 = cx + r * Math.cos(er)
-                  const y2 = cy + r * Math.sin(er)
-                  const large = seg.end - seg.start > 180 ? 1 : 0
-                  return (
-                    <path
-                      key={i}
-                      d={`M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} Z`}
-                      fill={seg.color}
-                      opacity={0.7}
-                      className="transition-opacity hover:opacity-100"
-                    >
-                      <title>{`${seg.name}: ${seg.count}`}</title>
-                    </path>
-                  )
-                })
-              })()}
-              <circle cx={140} cy={140} r={60} fill="#030712" />
-              <text x={140} y={134} textAnchor="middle" fill="#9ca3af" fontSize="20" fontWeight="bold">
-                {ALL_CHARACTERS.length}
-              </text>
-              <text x={140} y={155} textAnchor="middle" fill="#6b7280" fontSize="14">
-                characters
-              </text>
-            </svg>
-            <div className="flex shrink-0 flex-col gap-2 pt-2">
-              {charCountByPlanet.map((item) => {
-                const planet = PLANETS.find((p) => p.id === item.id)
-                return (
-                  <div key={item.id} className="flex items-center gap-2">
-                    <span
-                      className="inline-block h-3 w-3 shrink-0 rounded-full"
-                      style={{ backgroundColor: planet?.color ?? '#6b7280' }}
-                    />
-                    <span className="text-base text-gray-300">{item.name}</span>
-                    <span className="ml-auto text-sm text-gray-500">{item.count}</span>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        </SectionWrap>
-
-        <Divider />
-
-        {/* 5. Word Count — Cover Mountain Range */}
-        <SectionWrap className="mt-10">
-          <SectionTitle
-            subtitle={`${totalWords.toLocaleString()} total words · ${booksByWordCount.length} books · Avg ${Math.round(totalWords / booksByWordCount.length).toLocaleString()} per book`}
+      {/* Stat cards row */}
+      <div className="flex shrink-0 gap-2 overflow-x-auto border-b border-white/5 px-4 py-2 sm:px-6">
+        {statCards.map((card) => (
+          <div
+            key={card.label}
+            className="flex shrink-0 items-center gap-2 rounded-lg border border-white/5 bg-white/[0.03] px-3 py-1.5 backdrop-blur-sm"
           >
-            Word Count by Book
-          </SectionTitle>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-            {(() => {
-              const minWc = Math.min(...booksByWordCount.map((b) => b.wordCount ?? 0))
-              const range = maxWords - minWc || 1
-              return booksByWordCount.map((book) => {
-                const wc = book.wordCount ?? 0
-                const pct = (wc - minWc) / range
-                const hiddenPct = 8 + (1 - pct) * 75
-                const color = SAGA_NAME_COLORS[book.saga as keyof typeof SAGA_NAME_COLORS] ?? '#a78bfa'
-                const badge = wc >= 1000000 ? `${(wc / 1000000).toFixed(1)}M` : `${Math.round(wc / 1000)}K`
-                const coverUrl = `${import.meta.env.BASE_URL}${book.cover}`
-                return (
-                  <Link
-                    key={book.id}
-                    to={`/book/${book.id}`}
-                    className="group relative overflow-hidden rounded-xl bg-gray-800 transition-all duration-500 hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-500/10"
+            <span className="text-sm font-bold sm:text-base" style={{ color: card.color }}>
+              <AnimatedCounter end={card.value} />
+            </span>
+            <span className="text-xs text-gray-500">{card.label}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Navigation */}
+      <div className="flex shrink-0 items-center gap-1 overflow-x-auto border-b border-white/5 px-4 py-2 sm:px-6">
+        <button
+          onClick={() => setActiveStep((s) => Math.max(s - 1, 0))}
+          disabled={activeStep === 0}
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-white/10 hover:text-white disabled:cursor-not-allowed disabled:opacity-20"
+        >
+          ‹
+        </button>
+        {stepLabels.map((label, i) => (
+          <button
+            key={i}
+            onClick={() => setActiveStep(i)}
+            className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-all duration-300 sm:text-sm ${
+              i === activeStep
+                ? 'bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-white ring-1 ring-cyan-500/30'
+                : 'text-gray-500 hover:bg-white/5 hover:text-gray-300'
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+        <button
+          onClick={() => setActiveStep((s) => Math.min(s + 1, totalSteps - 1))}
+          disabled={activeStep === totalSteps - 1}
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-white/10 hover:text-white disabled:cursor-not-allowed disabled:opacity-20"
+        >
+          ›
+        </button>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 min-h-0 p-4 sm:p-6">
+        <div key={activeStep} className="h-full w-full animate-fade-in-up">
+          {/* Step 0: Overview */}
+          {activeStep === 0 && (
+            <div className="flex h-full flex-col items-center justify-center gap-6">
+              <h2 className="bg-gradient-to-r from-cyan-300 via-purple-300 to-cyan-400 bg-clip-text text-3xl font-bold text-transparent sm:text-5xl">
+                Cosmere in Numbers
+              </h2>
+              <p className="text-base text-gray-500 sm:text-lg">
+                {BOOKS.length} books · {ALL_CHARACTERS.length} characters · {SHARD_COUNT} shards · One universe
+              </p>
+              <div className="grid w-full max-w-3xl grid-cols-2 gap-4 sm:grid-cols-4">
+                {statCards.map((card) => (
+                  <div
+                    key={card.label}
+                    className="rounded-xl border border-white/5 bg-white/[0.03] p-6 text-center backdrop-blur-sm sm:p-8"
                   >
-                    <div className="relative aspect-[2/3]">
-                      <div
-                        className="absolute inset-0"
-                        style={{ background: `linear-gradient(135deg, ${color}33, #030712)` }}
-                      />
-                      <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-105">
-                        <img
-                          src={coverUrl}
-                          alt=""
-                          className="absolute inset-0 h-full w-full object-cover"
-                          onError={(e) => {
-                            ;(e.target as HTMLImageElement).style.display = 'none'
-                          }}
-                          loading="lazy"
-                        />
-                        <img
-                          src={coverUrl}
-                          alt=""
-                          className="absolute inset-0 h-full w-full object-cover"
-                          style={{
-                            filter: 'grayscale(100%) brightness(0.15) contrast(0.5)',
-                            clipPath: `inset(0 0 ${100 - hiddenPct}% 0)`,
-                          }}
-                        />
-                      </div>
-                      <div
-                        className="absolute left-0 right-0 top-0 z-20 overflow-hidden"
-                        style={{ height: `${Math.max(hiddenPct, 18)}%` }}
-                      >
-                        <div className="flex flex-col items-center px-1 pt-2">
-                          <span className="text-lg font-extrabold leading-tight text-white drop-shadow-xl sm:text-xl md:text-2xl">
-                            {badge}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="absolute bottom-0 left-0 right-0 z-10 pb-2 text-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                        <span className="text-[11px] font-medium text-gray-400 drop-shadow-lg">{book.title}</span>
-                      </div>
+                    <div className="text-3xl font-bold sm:text-5xl" style={{ color: card.color }}>
+                      <AnimatedCounter end={card.value} />
                     </div>
-                  </Link>
-                )
-              })
-            })()}
-          </div>
-        </SectionWrap>
-
-        <Divider />
-
-        {/* 6. Publication Timeline */}
-        <SectionWrap className="mt-10">
-          <SectionTitle subtitle={`From ${pubMin} to ${pubMax} — ${pubYears.length} release years`}>
-            Publication Timeline
-          </SectionTitle>
-          <div className="mx-auto max-w-4xl">
-            <svg viewBox="0 0 900 200" className="w-full">
-              <line x1={30} y1={100} x2={870} y2={100} stroke="#374151" strokeWidth={3} />
-              {pubYears.map((year) => {
-                const yearBooks = BOOKS.filter((b) => b.year === year)
-                const x = 30 + ((year - pubMin) / pubSpan) * 840
-                const first = yearBooks[0]
-                if (!first) return null
-                const color = SAGA_NAME_COLORS[first.saga as keyof typeof SAGA_NAME_COLORS] ?? '#a78bfa'
-                return (
-                  <g key={year}>
-                    <line x1={x} y1={85} x2={x} y2={115} stroke={color} strokeWidth={3} opacity={0.6} />
-                    <circle cx={x} cy={100} r={7} fill={color}>
-                      <title>{yearBooks.map((b) => b.title).join(', ')}</title>
-                    </circle>
-                    <text x={x} y={138} textAnchor="middle" fill="#9ca3af" fontSize="14">
-                      {year}
-                    </text>
-                    {yearBooks.map((b, bi) => {
-                      const yo = yearBooks.length > 1 ? 158 + bi * 18 : 158
-                      return (
-                        <text key={b.id} x={x} y={yo} textAnchor="middle" fill="#6b7280" fontSize="11">
-                          {b.title.length > 20 ? b.title.slice(0, 19) + '…' : b.title}
-                        </text>
-                      )
-                    })}
-                  </g>
-                )
-              })}
-            </svg>
-          </div>
-        </SectionWrap>
-
-        <Divider />
-
-        {/* 7. Shards Across the Cosmere */}
-        <SectionWrap className="mt-10">
-          <SectionTitle subtitle={`${SHARD_COUNT} shards manifest across the Cosmere`}>
-            Shards Across the Cosmere
-          </SectionTitle>
-          <div className="overflow-x-auto">
-            <div className="mx-auto" style={{ minWidth: 640 }}>
-              <div
-                className="mb-3 grid items-center"
-                style={{ gridTemplateColumns: `140px repeat(${SHARD_NAMES.length}, 1fr)` }}
-              >
-                <div />
-                {SHARD_NAMES.map((s) => (
-                  <div key={s} className="text-center text-xs font-medium text-gray-500" title={s}>
-                    {s.length > 8 ? s.slice(0, 7) + '…' : s}
+                    <div className="mt-2 text-sm text-gray-500 sm:text-base">{card.label}</div>
                   </div>
                 ))}
               </div>
-              {PLANETS.filter((p) => p.shard).map((planet) => {
-                const pShards = planet.shard!.split(/[,&]|\s+and\s+/).map((s) => s.trim())
-                return (
-                  <div
-                    key={planet.id}
-                    className="mb-2 grid items-center"
-                    style={{ gridTemplateColumns: `140px repeat(${SHARD_NAMES.length}, 1fr)` }}
-                  >
-                    <div className="flex items-center gap-2">
-                      <span
-                        className="inline-block h-3 w-3 shrink-0 rounded-full"
-                        style={{ backgroundColor: planet.color }}
-                      />
-                      <span className="text-base text-gray-300">{planet.name}</span>
-                    </div>
-                    {SHARD_NAMES.map((s) => {
-                      const present = pShards.includes(s)
-                      return (
-                        <div key={s} className="flex justify-center">
-                          <span
-                            className={`inline-block h-6 w-6 rounded-sm transition-all ${present ? 'shadow-sm' : 'opacity-10'}`}
-                            style={{ backgroundColor: present ? (SHARD_COLORS[s] ?? '#6366f1') : '#1f2937' }}
-                          />
-                        </div>
-                      )
-                    })}
-                  </div>
-                )
-              })}
             </div>
-          </div>
-        </SectionWrap>
+          )}
 
-        <Divider />
+          {/* Step 1: Books by Saga */}
+          {activeStep === 1 && (
+            <div className="flex h-full flex-col items-center justify-center px-4 sm:px-12">
+              <h2 className="mb-6 bg-gradient-to-r from-cyan-300 via-purple-300 to-cyan-400 bg-clip-text text-2xl font-bold text-transparent sm:mb-8 sm:text-3xl">
+                Books by Saga
+              </h2>
+              <div className="w-full max-w-4xl space-y-6 sm:space-y-8">
+                {bookCountBySaga.map(([sagaId, count]) => {
+                  const saga = SAGA_LIST.find((s) => s.id === sagaId)
+                  const pct = (count / maxSagaCount) * 100
+                  const barColor = SAGA_NAME_COLORS[sagaId as keyof typeof SAGA_NAME_COLORS] ?? '#a78bfa'
+                  return (
+                    <div key={sagaId}>
+                      <div className="mb-3 flex items-center justify-between">
+                        <span className="text-lg font-medium text-gray-200 sm:text-2xl">{saga?.name ?? sagaId}</span>
+                        <span className="text-base text-gray-500 sm:text-lg">
+                          {count} book{count !== 1 ? 's' : ''}
+                        </span>
+                      </div>
+                      <div className="h-8 overflow-hidden rounded-full bg-gray-800 sm:h-12">
+                        <div
+                          className="h-full rounded-full transition-all duration-1000"
+                          style={{ width: `${pct}%`, background: `linear-gradient(90deg, ${barColor}, ${barColor}88)` }}
+                        />
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
 
-        {/* 8. Magic Systems by Category */}
-        <SectionWrap className="mt-10">
-          <SectionTitle subtitle={`${MAGIC_SYSTEMS.length} magic systems in ${magicByCategory.length} categories`}>
-            Magic Systems by Category
-          </SectionTitle>
-          <div className="mx-auto max-w-2xl space-y-5">
-            {magicByCategory.map((item, i) => {
-              const pct = (item.count / maxMagicCount) * 100
-              const colors = [
-                '#06b6d4',
-                '#a78bfa',
-                '#d946ef',
-                '#f59e0b',
-                '#22c55e',
-                '#f97316',
-                '#ef4444',
-                '#14b8a6',
-                '#3b82f6',
-                '#ec4899',
-              ]
-              return (
-                <div key={item.cat}>
-                  <div className="mb-1 flex items-center justify-between">
-                    <span className="text-base text-gray-300">{item.name}</span>
-                    <span className="text-sm text-gray-500">{item.count}</span>
-                  </div>
-                  <div className="h-4 overflow-hidden rounded-full bg-gray-800">
-                    <div
-                      className="h-full rounded-full transition-all duration-1000"
-                      style={{
-                        width: `${pct}%`,
-                        background: `linear-gradient(90deg, ${colors[i % colors.length]}, ${colors[(i + 2) % colors.length]})`,
-                      }}
-                    />
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </SectionWrap>
-
-        <Divider />
-
-        {/* 9. Timeline Event Density */}
-        <SectionWrap className="mt-10">
-          <SectionTitle subtitle={`${TIMELINE_EVENTS.length} events across ${ERAS.length} cosmic eras`}>
-            Timeline Event Density
-          </SectionTitle>
-          <div className="mx-auto max-w-4xl">
-            <svg viewBox="0 0 900 260" className="w-full">
-              {(() => {
-                const barHeight = 180
-                return (
-                  <>
-                    {erasLayout.map((era, i) => {
-                      const h = ((eventCountByEra[i]?.count ?? 0) / maxEvents) * barHeight
+          {/* Step 2: Characters by Planet */}
+          {activeStep === 2 && (
+            <div className="flex h-full flex-col items-center justify-center">
+              <h2 className="mb-6 bg-gradient-to-r from-cyan-300 via-purple-300 to-cyan-400 bg-clip-text text-2xl font-bold text-transparent sm:mb-8 sm:text-3xl">
+                Characters by Planet
+              </h2>
+              <div className="flex flex-col items-center gap-8 sm:flex-row sm:gap-16">
+                <svg
+                  viewBox="0 0 400 400"
+                  className="h-[35vh] w-[35vh] max-h-[420px] max-w-[420px] sm:h-[50vh] sm:w-[50vh]"
+                >
+                  {(() => {
+                    const total = charCountByPlanet.reduce((s, c) => s + c.count, 0)
+                    let angle = -90
+                    const r = 180
+                    const cx = 200
+                    const cy = 200
+                    const segments: { name: string; count: number; start: number; end: number; color: string }[] = []
+                    for (const item of charCountByPlanet) {
+                      const pct = item.count / total
+                      const deg = pct * 360
+                      const planet = PLANETS.find((p) => p.id === item.id)
+                      const color = planet?.color ?? '#6b7280'
+                      segments.push({ name: item.name, count: item.count, start: angle, end: angle + deg, color })
+                      angle += deg
+                    }
+                    return segments.map((seg, i) => {
+                      const sr = ((seg.start - 90) * Math.PI) / 180
+                      const er = ((seg.end - 90) * Math.PI) / 180
+                      const x1 = cx + r * Math.cos(sr)
+                      const y1 = cy + r * Math.sin(sr)
+                      const x2 = cx + r * Math.cos(er)
+                      const y2 = cy + r * Math.sin(er)
+                      const large = seg.end - seg.start > 180 ? 1 : 0
                       return (
-                        <g key={era.id}>
-                          <rect
-                            x={era.x}
-                            y={barHeight + 30 - h}
-                            width={Math.max(era.w - 1, 1)}
-                            height={Math.max(h, 2)}
-                            fill={era.color}
-                            opacity={0.6}
-                            rx={3}
-                            className="transition-opacity hover:opacity-100"
+                        <path
+                          key={i}
+                          d={`M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} Z`}
+                          fill={seg.color}
+                          opacity={0.7}
+                          style={{ '--seg-color': seg.color } as React.CSSProperties}
+                          className="transition-all duration-300 hover:cursor-pointer hover:opacity-100"
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.filter = `drop-shadow(0 0 10px ${seg.color}) drop-shadow(0 0 20px ${seg.color})`
+                            e.currentTarget.style.opacity = '1'
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.filter = 'none'
+                            e.currentTarget.style.opacity = '0.7'
+                          }}
+                        >
+                          <title>{`${seg.name}: ${seg.count}`}</title>
+                        </path>
+                      )
+                    })
+                  })()}
+                  <circle cx={200} cy={200} r={90} fill="#030712" />
+                  <text x={200} y={190} textAnchor="middle" fill="#9ca3af" fontSize="30" fontWeight="bold">
+                    {ALL_CHARACTERS.length}
+                  </text>
+                  <text x={200} y={220} textAnchor="middle" fill="#6b7280" fontSize="18">
+                    characters
+                  </text>
+                </svg>
+                <div className="flex flex-col gap-3">
+                  {charCountByPlanet.map((item) => {
+                    const planet = PLANETS.find((p) => p.id === item.id)
+                    return (
+                      <div key={item.id} className="flex items-center gap-3">
+                        <span
+                          className="inline-block h-4 w-4 shrink-0 rounded-full"
+                          style={{ backgroundColor: planet?.color ?? '#6b7280' }}
+                        />
+                        <span className="text-base text-gray-300 sm:text-lg">{item.name}</span>
+                        <span className="ml-4 text-sm text-gray-500 sm:text-base">{item.count}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Step 3: Word Count — Cosmic Bar Chart */}
+          {activeStep === 3 && (
+            <div className="flex h-full w-full flex-col">
+              <style>{`
+                @keyframes wc-pulse {
+                  0%, 100% { text-shadow: 0 0 4px rgba(255,255,255,0.2), 0 0 12px rgba(6,182,212,0.1); }
+                  50% { text-shadow: 0 0 12px rgba(255,255,255,0.7), 0 0 24px rgba(6,182,212,0.4), 0 0 40px rgba(6,182,212,0.2); }
+                }
+                .wc-pulse { animation: wc-pulse 3s ease-in-out infinite; }
+              `}</style>
+              <div className="flex shrink-0 items-center justify-between px-2 pb-2 sm:px-4">
+                <h2 className="bg-gradient-to-r from-cyan-300 via-purple-300 to-cyan-400 bg-clip-text text-xl font-bold text-transparent sm:text-2xl">
+                  Word Count by Book
+                </h2>
+                <span className="text-xs text-gray-500 sm:text-sm">
+                  {totalWords.toLocaleString()} total · Avg{' '}
+                  {Math.round(totalWords / booksByWordCount.length).toLocaleString()}
+                </span>
+              </div>
+              <div className="relative flex-1 min-h-0 overflow-hidden rounded-xl">
+                {/* Subtle star field background */}
+                <div
+                  className="pointer-events-none absolute inset-0 opacity-[0.04]"
+                  style={{
+                    backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(6,182,212,0.5) 1px, transparent 0)',
+                    backgroundSize: '20px 20px',
+                  }}
+                />
+                <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-16 bg-gradient-to-r from-gray-950 to-transparent" />
+                <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-16 bg-gradient-to-l from-gray-950 to-transparent" />
+                {/* Bars */}
+                <div className="relative z-[5] h-full overflow-x-auto pb-4">
+                  <div
+                    className="flex h-full items-end gap-3 px-8"
+                    style={{ minWidth: `${booksByWordCount.length * 136}px` }}
+                  >
+                    {booksByWordCount.map((book) => {
+                      const wc = book.wordCount ?? 0
+                      const sqrtWc = Math.sqrt(wc)
+                      const sqrtMax = Math.sqrt(maxWords)
+                      const pct = sqrtWc / sqrtMax
+                      const barH = `${Math.max(14, Math.round(pct * 84))}%`
+                      const color = SAGA_NAME_COLORS[book.saga as keyof typeof SAGA_NAME_COLORS] ?? '#a78bfa'
+                      const badge = wc >= 1000000 ? `${(wc / 1000000).toFixed(1)}M` : `${Math.round(wc / 1000)}K`
+                      const coverUrl = `${import.meta.env.BASE_URL}${book.cover}`
+                      return (
+                        <Link
+                          key={book.id}
+                          to={`/book/${book.id}`}
+                          className="group flex shrink-0 flex-col items-center justify-end transition-all duration-500 hover:-translate-y-2"
+                          style={{ width: '130px' }}
+                        >
+                          {/* Word count label */}
+                          <div className="mb-1 text-center">
+                            <span className="wc-pulse text-2xl font-extrabold text-white drop-shadow-xl sm:text-4xl">
+                              {badge}
+                            </span>
+                          </div>
+                          {/* Cover as capstone at top of bar */}
+                          <div
+                            className="mb-0.5 overflow-hidden rounded-md bg-gradient-to-br from-gray-700 to-gray-900 shadow-lg shadow-black/50 ring-1 ring-white/10 transition-all duration-300 group-hover:scale-110 group-hover:shadow-cyan-500/30"
+                            style={{ width: '64px', height: '96px' }}
                           >
-                            <title>{`${era.name}: ${eventCountByEra[i]?.count ?? 0} events (${era.startYear}–${era.endYear})`}</title>
-                          </rect>
-                        </g>
+                            <img
+                              src={coverUrl}
+                              alt={book.title}
+                              className="h-full w-full object-cover"
+                              loading="lazy"
+                              onError={(e) => {
+                                ;(e.target as HTMLImageElement).style.display = 'none'
+                              }}
+                            />
+                          </div>
+                          {/* Bar */}
+                          <div
+                            className="w-14 rounded-t-lg sm:w-20"
+                            style={{
+                              height: barH,
+                              background: `linear-gradient(180deg, ${color} 0%, ${color}dd 25%, ${color}77 55%, ${color}22 85%, transparent 100%)`,
+                              boxShadow: `0 -4px 30px ${color}44, 0 0 60px ${color}22`,
+                            }}
+                          />
+                          {/* Glow base */}
+                          <div
+                            className="h-4 w-20 rounded-full blur-md sm:w-24"
+                            style={{ backgroundColor: color, opacity: 0.12 }}
+                          />
+                          {/* Title on hover */}
+                          <div className="mt-1 h-6 text-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                            <span className="block max-w-[122px] truncate text-sm font-medium text-gray-400">
+                              {book.title}
+                            </span>
+                          </div>
+                        </Link>
                       )
                     })}
-                    <line x1={30} y1={barHeight + 30} x2={870} y2={barHeight + 30} stroke="#374151" strokeWidth={2} />
-                    {erasLayout
-                      .filter((e) => e.w > 50)
-                      .map((era) => (
-                        <text
-                          key={era.id}
-                          x={era.x + era.w / 2}
-                          y={barHeight + 52}
-                          textAnchor="middle"
-                          fill="#6b7280"
-                          fontSize="11"
-                        >
-                          {era.name.length > 16 ? era.name.slice(0, 15) + '…' : era.name}
-                        </text>
-                      ))}
-                  </>
-                )
-              })()}
-            </svg>
-          </div>
-        </SectionWrap>
-
-        <Divider />
-
-        {/* 10. The Heralds */}
-        <SectionWrap className="mt-10">
-          <SectionTitle subtitle={`${HERALDS.length} Heralds of the Almighty`}>The Heralds</SectionTitle>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
-            {HERALDS.map((herald) => (
-              <div
-                key={herald.id}
-                className="rounded-lg border border-white/5 bg-white/[0.02] p-5 text-center backdrop-blur-sm transition-all duration-300 hover:border-white/20"
-              >
-                <div
-                  className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full text-lg font-bold text-gray-950"
-                  style={{ backgroundColor: herald.color }}
-                >
-                  {herald.name[0]}
+                  </div>
                 </div>
-                <div className="text-base font-medium text-gray-200">{herald.name}</div>
-                <div className="mt-1 text-sm text-gray-500">{herald.title}</div>
               </div>
-            ))}
-          </div>
-        </SectionWrap>
+            </div>
+          )}
 
-        {/* Footer */}
-        <p className="mt-24 text-center text-xs text-gray-800">
-          Cosmere Archive &mdash; Data compiled from the works of Brandon Sanderson
-        </p>
+          {/* Step 4: Publication Timeline */}
+          {activeStep === 4 && (
+            <div className="flex h-full flex-col items-center justify-center px-4">
+              <h2 className="mb-6 bg-gradient-to-r from-cyan-300 via-purple-300 to-cyan-400 bg-clip-text text-2xl font-bold text-transparent sm:mb-8 sm:text-3xl">
+                Publication Timeline
+              </h2>
+              <p className="mb-4 text-sm text-gray-500 sm:text-base">
+                From {pubMin} to {pubMax} — {pubYears.length} release years
+              </p>
+              <div className="w-full max-w-5xl">
+                <svg viewBox="0 0 900 360" className="w-full" style={{ maxHeight: '65vh' }}>
+                  <line x1={30} y1={160} x2={870} y2={160} stroke="#374151" strokeWidth={4} />
+                  {pubYears.map((year, yi) => {
+                    const yearBooks = BOOKS.filter((b) => b.year === year)
+                    const x = 30 + ((year - pubMin) / pubSpan) * 840
+                    const first = yearBooks[0]
+                    if (!first) return null
+                    const color = SAGA_NAME_COLORS[first.saga as keyof typeof SAGA_NAME_COLORS] ?? '#a78bfa'
+                    const isEven = yi % 2 === 0
+                    return (
+                      <g key={year}>
+                        <line x1={x} y1={140} x2={x} y2={180} stroke={color} strokeWidth={4} opacity={0.5} />
+                        <circle
+                          cx={x}
+                          cy={160}
+                          r={12}
+                          fill={color}
+                          stroke="#030712"
+                          strokeWidth={3}
+                          className="transition-all duration-300 hover:brightness-125"
+                        >
+                          <title>{yearBooks.map((b) => b.title).join(', ')}</title>
+                        </circle>
+                        {/* Year labels — alternate above/below every other year */}
+                        <text
+                          x={x}
+                          y={isEven ? 128 : 215}
+                          textAnchor="middle"
+                          fill="#9ca3af"
+                          fontSize="16"
+                          fontWeight="bold"
+                        >
+                          {year}
+                        </text>
+                        {/* Book labels — same side as year */}
+                        {yearBooks.map((b, bi) => {
+                          if (isEven) {
+                            const yo = 232 + bi * 22
+                            return (
+                              <text key={b.id} x={x} y={yo} textAnchor="middle" fill="#6b7280" fontSize="14">
+                                {b.title.length > 24 ? b.title.slice(0, 23) + '…' : b.title}
+                              </text>
+                            )
+                          } else {
+                            const yo = 112 - (yearBooks.length - bi) * 22
+                            return (
+                              <text key={b.id} x={x} y={yo} textAnchor="middle" fill="#6b7280" fontSize="14">
+                                {b.title.length > 24 ? b.title.slice(0, 23) + '…' : b.title}
+                              </text>
+                            )
+                          }
+                        })}
+                      </g>
+                    )
+                  })}
+                </svg>
+              </div>
+            </div>
+          )}
+
+          {/* Step 5: Shards Across the Cosmere */}
+          {activeStep === 5 && (
+            <div className="flex h-full flex-col items-center justify-center px-4">
+              <h2 className="mb-6 bg-gradient-to-r from-cyan-300 via-purple-300 to-cyan-400 bg-clip-text text-2xl font-bold text-transparent sm:mb-8 sm:text-3xl">
+                Shards Across the Cosmere
+              </h2>
+              <p className="mb-4 text-sm text-gray-500 sm:text-base">
+                {SHARD_COUNT} shards manifest across the Cosmere
+              </p>
+              <div className="w-full max-w-4xl overflow-x-auto">
+                <div style={{ minWidth: 700 }}>
+                  <div
+                    className="mb-4 grid items-center gap-3"
+                    style={{ gridTemplateColumns: `160px repeat(${SHARD_NAMES.length}, 1fr)` }}
+                  >
+                    <div />
+                    {SHARD_NAMES.map((s) => (
+                      <div key={s} className="text-center text-sm font-medium text-gray-500 sm:text-base" title={s}>
+                        {s.length > 10 ? s.slice(0, 9) + '…' : s}
+                      </div>
+                    ))}
+                  </div>
+                  {PLANETS.filter((p) => p.shard).map((planet) => {
+                    const pShards = planet.shard!.split(/[,&]|\s+and\s+/).map((s) => s.trim())
+                    return (
+                      <div
+                        key={planet.id}
+                        className="mb-4 grid items-center gap-3"
+                        style={{ gridTemplateColumns: `160px repeat(${SHARD_NAMES.length}, 1fr)` }}
+                      >
+                        <div className="flex items-center gap-3">
+                          <span
+                            className="inline-block h-4 w-4 shrink-0 rounded-full"
+                            style={{ backgroundColor: planet.color }}
+                          />
+                          <span className="text-lg text-gray-300 sm:text-xl">{planet.name}</span>
+                        </div>
+                        {SHARD_NAMES.map((s) => {
+                          const present = pShards.includes(s)
+                          return (
+                            <div key={s} className="flex justify-center">
+                              <span
+                                className={`inline-block h-8 w-8 rounded-md transition-all sm:h-10 sm:w-10 ${present ? 'shadow-md' : 'opacity-10'}`}
+                                style={{
+                                  backgroundColor: present ? (SHARD_COLORS[s] ?? '#6366f1') : '#1f2937',
+                                }}
+                              />
+                            </div>
+                          )
+                        })}
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Step 6: Magic Systems by Category */}
+          {activeStep === 6 && (
+            <div className="flex h-full flex-col items-center justify-center px-4 sm:px-12">
+              <h2 className="mb-6 bg-gradient-to-r from-cyan-300 via-purple-300 to-cyan-400 bg-clip-text text-2xl font-bold text-transparent sm:mb-8 sm:text-3xl">
+                Magic Systems by Category
+              </h2>
+              <p className="mb-4 text-sm text-gray-500 sm:text-base">
+                {MAGIC_SYSTEMS.length} magic systems in {magicByCategory.length} categories
+              </p>
+              <div className="w-full max-w-3xl space-y-6 sm:space-y-8">
+                {magicByCategory.map((item, i) => {
+                  const pct = (item.count / maxMagicCount) * 100
+                  const colors = [
+                    '#06b6d4',
+                    '#a78bfa',
+                    '#d946ef',
+                    '#f59e0b',
+                    '#22c55e',
+                    '#f97316',
+                    '#ef4444',
+                    '#14b8a6',
+                    '#3b82f6',
+                    '#ec4899',
+                  ]
+                  return (
+                    <div key={item.cat}>
+                      <div className="mb-2 flex items-center justify-between">
+                        <span className="text-lg text-gray-300 sm:text-xl">{item.name}</span>
+                        <span className="text-base text-gray-500 sm:text-lg">{item.count}</span>
+                      </div>
+                      <div className="h-8 overflow-hidden rounded-full bg-gray-800 sm:h-12">
+                        <div
+                          className="h-full rounded-full transition-all duration-1000"
+                          style={{
+                            width: `${pct}%`,
+                            background: `linear-gradient(90deg, ${colors[i % colors.length]}, ${colors[(i + 2) % colors.length]})`,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Step 7: Timeline Event Density */}
+          {activeStep === 7 && (
+            <div className="flex h-full flex-col items-center justify-center px-4">
+              <h2 className="mb-6 bg-gradient-to-r from-cyan-300 via-purple-300 to-cyan-400 bg-clip-text text-2xl font-bold text-transparent sm:mb-8 sm:text-3xl">
+                Timeline Event Density
+              </h2>
+              <p className="mb-4 text-sm text-gray-500 sm:text-base">
+                {TIMELINE_EVENTS.length} events across {ERAS.length} cosmic eras
+              </p>
+              <div className="w-full max-w-5xl">
+                <svg viewBox="0 0 900 360" className="w-full" style={{ maxHeight: '65vh' }}>
+                  {(() => {
+                    const barHeight = 280
+                    return (
+                      <>
+                        {erasLayout.map((era, i) => {
+                          const h = ((eventCountByEra[i]?.count ?? 0) / maxEvents) * barHeight
+                          return (
+                            <g key={era.id}>
+                              <rect
+                                x={era.x}
+                                y={barHeight + 30 - h}
+                                width={Math.max(era.w - 1, 1)}
+                                height={Math.max(h, 2)}
+                                fill={era.color}
+                                opacity={0.6}
+                                rx={3}
+                                className="transition-opacity hover:opacity-100"
+                              >
+                                <title>{`${era.name}: ${eventCountByEra[i]?.count ?? 0} events (${era.startYear}–${era.endYear})`}</title>
+                              </rect>
+                            </g>
+                          )
+                        })}
+                        <line
+                          x1={30}
+                          y1={barHeight + 30}
+                          x2={870}
+                          y2={barHeight + 30}
+                          stroke="#374151"
+                          strokeWidth={2}
+                        />
+                        {erasLayout
+                          .filter((e) => e.w > 50)
+                          .map((era) => (
+                            <text
+                              key={era.id}
+                              x={era.x + era.w / 2}
+                              y={barHeight + 52}
+                              textAnchor="middle"
+                              fill="#6b7280"
+                              fontSize="12"
+                            >
+                              {era.name.length > 16 ? era.name.slice(0, 15) + '…' : era.name}
+                            </text>
+                          ))}
+                      </>
+                    )
+                  })()}
+                </svg>
+              </div>
+            </div>
+          )}
+
+          {/* Step 8: The Heralds */}
+          {activeStep === 8 && (
+            <div className="flex h-full flex-col items-center justify-center px-4">
+              <h2 className="mb-6 bg-gradient-to-r from-cyan-300 via-purple-300 to-cyan-400 bg-clip-text text-2xl font-bold text-transparent sm:mb-8 sm:text-3xl">
+                The Heralds
+              </h2>
+              <div className="grid w-full max-w-5xl grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
+                {HERALDS.map((herald) => (
+                  <div
+                    key={herald.id}
+                    className="rounded-xl border border-white/5 bg-white/[0.02] p-6 text-center backdrop-blur-sm transition-all duration-300 hover:border-white/20"
+                  >
+                    <div
+                      className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full text-2xl font-bold text-gray-950 sm:h-24 sm:w-24 sm:text-3xl"
+                      style={{ backgroundColor: herald.color }}
+                    >
+                      {herald.name[0]}
+                    </div>
+                    <div className="text-lg font-medium text-gray-200 sm:text-xl">{herald.name}</div>
+                    <div className="mt-2 text-sm text-gray-500 sm:text-base">{herald.title}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

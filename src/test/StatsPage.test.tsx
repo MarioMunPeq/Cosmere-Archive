@@ -14,15 +14,16 @@ function renderPage() {
 describe('StatsPage', () => {
   it('renders the hero title', () => {
     renderPage()
-    expect(screen.getByRole('heading', { name: /cosmere in numbers/i })).toBeInTheDocument()
+    const headings = screen.getAllByRole('heading', { name: /cosmere in numbers/i })
+    expect(headings.length).toBeGreaterThanOrEqual(1)
   })
 
   it('renders stat cards with counts', () => {
     renderPage()
-    expect(screen.getByText('Books')).toBeInTheDocument()
-    expect(screen.getByText('Characters')).toBeInTheDocument()
-    expect(screen.getByText('Planets')).toBeInTheDocument()
-    expect(screen.getByText('Sagas')).toBeInTheDocument()
+    expect(screen.getAllByText('Books').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByText('Characters').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByText('Planets').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByText('Sagas').length).toBeGreaterThanOrEqual(1)
   })
 
   it('renders books by saga section', () => {
@@ -37,27 +38,27 @@ describe('StatsPage', () => {
 
   it('renders word count section', () => {
     renderPage()
-    expect(screen.getByText(/word count by book/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Word Count' })).toBeInTheDocument()
   })
 
   it('renders publication timeline section', () => {
     renderPage()
-    expect(screen.getByText(/publication timeline/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /publication timeline/i })).toBeInTheDocument()
   })
 
   it('renders shards section', () => {
     renderPage()
-    expect(screen.getByText(/Shards Across the Cosmere/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Shards' })).toBeInTheDocument()
   })
 
   it('renders magic systems section', () => {
     renderPage()
-    expect(screen.getByText(/Magic Systems by Category/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Magic Systems' })).toBeInTheDocument()
   })
 
   it('renders timeline density section', () => {
     renderPage()
-    expect(screen.getByText(/Timeline Event Density/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Event Density' })).toBeInTheDocument()
   })
 
   it('renders the heralds section', () => {
