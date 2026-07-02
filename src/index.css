@@ -84,6 +84,61 @@
     }
   }
 
+  @keyframes twinkle-slow {
+    0%,
+    100% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    50% {
+      opacity: 0.6;
+      transform: scale(1.2);
+    }
+  }
+
+  .animate-twinkle-slow {
+    animation: twinkle-slow 4s ease-in-out infinite;
+  }
+
+  @keyframes glow-pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 4px var(--glow-color, transparent);
+    }
+    50% {
+      box-shadow:
+        0 0 12px var(--glow-color, transparent),
+        0 0 24px var(--glow-color, transparent);
+    }
+  }
+
+  .animate-glow-pulse {
+    animation: glow-pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+
+  .animate-float {
+    animation: float 4s ease-in-out infinite;
+  }
+
+  @keyframes orbit {
+    from {
+      transform: rotate(0deg) translateX(var(--orbit-radius, 40px)) rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg) translateX(var(--orbit-radius, 40px)) rotate(-360deg);
+    }
+  }
+
   @keyframes divider-grow {
     from {
       width: 0%;
@@ -309,6 +364,21 @@ input,
   .orbit-ring {
     display: none;
   }
+}
+
+/* Detail panel slide-in */
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s ease-out both;
 }
 
 /* View Transitions API */

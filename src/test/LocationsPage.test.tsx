@@ -34,7 +34,7 @@ describe('LocationsPage', () => {
   it('shows saga names for planets', () => {
     renderPage()
     expect(screen.getAllByText(/sagas:/i).length).toBeGreaterThanOrEqual(1)
-    expect(screen.getByText(/Mistborn Era 1/)).toBeInTheDocument()
+    expect(screen.getAllByText(/Mistborn Era 1/).length).toBeGreaterThanOrEqual(1)
   })
 
   it('has a back link to the map', () => {
