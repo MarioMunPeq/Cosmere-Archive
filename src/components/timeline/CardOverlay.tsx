@@ -18,9 +18,9 @@ interface Props {
 export default function CardOverlay({ event, x, y, eventTypeBadgeClass, onClose, toViewport }: Props) {
   const navigate = useNavigate()
   const vp = toViewport(x, y)
-  const cardW = 280
+  const cardW = 360
   let cardLeft = vp.left - cardW / 2
-  const cardTop = vp.top + 14
+  const cardTop = vp.top + 16
   if (cardLeft + cardW > window.innerWidth - 8) cardLeft = window.innerWidth - cardW - 8
   if (cardLeft < 8) cardLeft = 8
 
@@ -29,33 +29,37 @@ export default function CardOverlay({ event, x, y, eventTypeBadgeClass, onClose,
       role="dialog"
       aria-modal="true"
       aria-label={event.title}
-      className="fixed z-50 w-[280px] rounded-lg border border-gray-700 bg-gray-900/95 shadow-xl backdrop-blur-sm"
+      className="fixed z-50 w-[360px] animate-slide-up rounded-xl border border-cyan-500/20 bg-gradient-to-br from-gray-900 via-gray-950 to-gray-900 shadow-2xl shadow-cyan-900/30 backdrop-blur-xl"
       style={{ left: cardLeft, top: cardTop }}
     >
-      <div className="flex items-center justify-between border-b border-gray-800 px-3 py-2">
-        <div className="flex items-center gap-1.5">
-          <span className={eventTypeBadgeClass(event.type)}>{TYPE_LABELS[event.type]}</span>
-          <span className="text-[11px] text-gray-500">{formatJourneyYear(event.year)}</span>
+      {/* Gradient header */}
+      <div className="rounded-t-xl bg-gradient-to-r from-cyan-900/40 via-purple-900/30 to-transparent px-4 py-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className={eventTypeBadgeClass(event.type)}>{TYPE_LABELS[event.type]}</span>
+            <span className="text-xs text-gray-500">{formatJourneyYear(event.year)}</span>
+          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              onClose()
+            }}
+            className="flex h-5 w-5 items-center justify-center rounded text-xs text-gray-600 hover:bg-gray-800 hover:text-cyan-300 transition-colors"
+            aria-label="Close"
+          >
+            &times;
+          </button>
         </div>
-        <button
-          onClick={(e) => {
-            e.stopPropagation()
-            onClose()
-          }}
-          className="flex h-5 w-5 items-center justify-center rounded text-xs text-gray-600 hover:bg-gray-800 hover:text-gray-300"
-          aria-label="Close"
-        >
-          &times;
-        </button>
       </div>
-      <div className="px-3 py-2">
-        <h3 className="text-sm font-bold text-purple-300">{event.title}</h3>
-        <p className="mt-1 text-[12px] leading-relaxed text-gray-300">{event.description}</p>
 
-        <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xxs text-gray-500">
+      <div className="px-4 py-3.5">
+        <h3 className="text-base font-bold text-cyan-200">{event.title}</h3>
+        <p className="mt-2 text-sm leading-relaxed text-gray-400">{event.description}</p>
+
+        <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-gray-500">
           {event.saga && (
             <span>
-              Saga: <span className="text-gray-400">{SAGA_LABELS[event.saga] || event.saga}</span>
+              Saga: <span className="font-medium text-gray-400">{SAGA_LABELS[event.saga] || event.saga}</span>
             </span>
           )}
           {event.planets.length > 0 && (

@@ -12,11 +12,6 @@ function renderPage() {
 }
 
 describe('BooksPage', () => {
-  it('renders the page title', () => {
-    renderPage()
-    expect(screen.getByRole('heading', { name: /books/i })).toBeInTheDocument()
-  })
-
   it('renders saga filter buttons', () => {
     renderPage()
     expect(screen.getByRole('button', { name: /all/i })).toBeInTheDocument()
@@ -34,11 +29,6 @@ describe('BooksPage', () => {
   it('has a search input', () => {
     renderPage()
     expect(screen.getByPlaceholderText('Search books...')).toBeInTheDocument()
-  })
-
-  it('has a back link to the map', () => {
-    renderPage()
-    expect(screen.getByText('Back to the map')).toBeInTheDocument()
   })
 
   it('links each book to its detail page', () => {

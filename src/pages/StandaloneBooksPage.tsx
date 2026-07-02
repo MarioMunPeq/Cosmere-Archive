@@ -1,7 +1,7 @@
 import BackToMapButton from '@/components/ui/BackToMapButton'
-import TimelinePage from './TimelinePage'
+import BooksPage from './BooksPage'
 
-export default function StandaloneTimelinePage() {
+export default function StandaloneBooksPage() {
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="relative px-4 pt-4 sm:px-6">
@@ -11,14 +11,14 @@ export default function StandaloneTimelinePage() {
         </div>
         <BackToMapButton className="relative" />
         <h1 className="relative mt-2 text-2xl font-bold bg-gradient-to-r from-cyan-200 via-purple-200 to-gray-100 bg-clip-text text-transparent">
-          Cosmere Timeline
+          Cosmere Books
         </h1>
         <p className="relative mt-1 text-sm text-gray-500">
-          Key events across the Cosmere, from the Shattering to the far future
+          All Cosmere books, from Elantris to the latest Secret Projects
         </p>
       </div>
       <div className="mt-2 flex min-h-0 flex-1 flex-col">
-        <TimelinePage />
+        <BooksPage />
       </div>
     </div>
   )

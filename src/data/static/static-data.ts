@@ -122,14 +122,14 @@ export const TAILWIND_TO_HEX: Record<string, string> = {
 }
 
 export const EVENT_TYPE_BADGE_COLORS: Record<string, string> = {
-  book: 'bg-blue-900/60 text-blue-300',
-  cataclysm: 'bg-red-900/60 text-red-300',
-  birth: 'bg-green-900/60 text-green-300',
-  death: 'bg-gray-800/80 text-gray-400',
-  arrival: 'bg-purple-900/60 text-purple-300',
-  departure: 'bg-yellow-900/60 text-yellow-300',
-  discovery: 'bg-cyan-900/60 text-cyan-300',
-  historical: 'bg-gray-800/60 text-gray-400',
+  book: 'rounded-full bg-blue-900/60 px-1.5 py-0.5 text-blue-300',
+  cataclysm: 'rounded-full bg-red-900/60 px-1.5 py-0.5 text-red-300',
+  birth: 'rounded-full bg-green-900/60 px-1.5 py-0.5 text-green-300',
+  death: 'rounded-full bg-gray-800/80 px-1.5 py-0.5 text-gray-400',
+  arrival: 'rounded-full bg-purple-900/60 px-1.5 py-0.5 text-purple-300',
+  departure: 'rounded-full bg-yellow-900/60 px-1.5 py-0.5 text-yellow-300',
+  discovery: 'rounded-full bg-cyan-900/60 px-1.5 py-0.5 text-cyan-300',
+  historical: 'rounded-full bg-gray-800/60 px-1.5 py-0.5 text-gray-400',
 }
 
 export const TYPE_LABELS: Record<string, string> = {

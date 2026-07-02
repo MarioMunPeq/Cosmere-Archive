@@ -12,7 +12,7 @@ const About = lazy(() => import('@/pages/About'))
 const MagicSystemsPage = lazy(() => import('@/pages/MagicSystemsPage'))
 const HeraldsPage = lazy(() => import('@/pages/HeraldsPage'))
 const BookPage = lazy(() => import('@/pages/BookPage'))
-const BooksPage = lazy(() => import('@/pages/BooksPage'))
+const StandaloneBooksPage = lazy(() => import('@/pages/StandaloneBooksPage'))
 const CharactersPage = lazy(() => import('@/pages/CharactersPage'))
 const LocationsPage = lazy(() => import('@/pages/LocationsPage'))
 const StandaloneTimelinePage = lazy(() => import('@/pages/StandaloneTimelinePage'))
@@ -80,7 +80,7 @@ export default function App() {
             path="books"
             element={
               <RouteFallback fallback={<BooksPageSkeleton />}>
-                <BooksPage />
+                <StandaloneBooksPage />
               </RouteFallback>
             }
           />

@@ -34,4 +34,20 @@ describe('BookPage', () => {
     expect(await screen.findByText('The Way of Kings')).toBeInTheDocument()
     expect(await screen.findByText('Oathbringer')).toBeInTheDocument()
   })
+
+  it('shows planets section for a book', async () => {
+    renderAt('/books/the_final_empire')
+    expect(await screen.findByText('Scadrial')).toBeInTheDocument()
+  })
+
+  it('shows magic systems section for a book', async () => {
+    renderAt('/books/the_final_empire')
+    expect(await screen.findByText('Allomancy')).toBeInTheDocument()
+  })
+
+  it('shows characters section for a book', async () => {
+    renderAt('/books/the_final_empire')
+    expect(await screen.findByText(/^Characters/)).toBeInTheDocument()
+    expect(await screen.findByText('Kelsier')).toBeInTheDocument()
+  })
 })

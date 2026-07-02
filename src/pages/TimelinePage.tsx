@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { SAGAS, SAGA_BY_ID } from '@/data/static'
-import { TIMELINE_EVENTS } from '@/data/static/timeline'
+import { TIMELINE_EVENTS, ERAS } from '@/data/static/timeline'
 import { FALLBACK_COLOR, TAILWIND_TO_HEX, EVENT_TYPE_BADGE_COLORS } from '@/data/static'
 import { MAX_FORK_SAGAS } from '@/constants'
 import { yearToX, MAIN_LINE_Y, FORK_START_Y, FORK_SPACING, TOTAL_WIDTH } from '@/utils/timeline-layout'
@@ -9,6 +9,19 @@ import TooltipOverlay from '@/components/timeline/TooltipOverlay'
 import CardOverlay from '@/components/timeline/CardOverlay'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
 import type { TimelineEvent } from '@/data/static/timeline'
+
+function hashSeed(s: string): number {
+  let h = 0
+  for (let i = 0; i < s.length; i++) {
+    h = (Math.imul(31, h) + s.charCodeAt(i)) | 0
+  }
+  return (h >>> 0) / 0xffffffff
+}
+
+function formatYear(year: number): string {
+  if (year < 0) return `${-year} BC`
+  return `${year} AD`
+}
 
 const SAGA_LABELS: Record<string, string> = {}
 const SAGA_COLORS: Record<string, string> = {}
@@ -30,6 +43,22 @@ function eventTypeBadgeClass(type: string): string {
   return EVENT_TYPE_BADGE_COLORS[type] || 'bg-gray-800/60 text-gray-400'
 }
 
+const STAR_COUNT = 80
+
+const STARS = Array.from({ length: STAR_COUNT }, (_, i) => ({
+  left: hashSeed(`sx${i}`) * 100,
+  top: hashSeed(`sy${i}`) * 100,
+  size: hashSeed(`sr${i}`) * 1.5 + 0.3,
+  delay: hashSeed(`sd${i}`) * 8,
+  opacity: hashSeed(`so${i}`) * 0.4 + 0.05,
+}))
+
+function eraEventCount(eraId: string): number {
+  const era = ERAS.find((e) => e.id === eraId)
+  if (!era) return 0
+  return TIMELINE_EVENTS.filter((e) => e.year >= era.startYear && e.year <= era.endYear).length
+}
+
 export default function TimelinePage() {
   useSEOMeta({
     title: 'Timeline — Cosmere Archive',
@@ -37,6 +66,7 @@ export default function TimelinePage() {
   })
 
   const [selectedSagas, setSelectedSagas] = useState<string[]>([])
+  const [selectedEra, setSelectedEra] = useState<string | null>(null)
   const [hoveredEvent, setHoveredEvent] = useState<{
     event: TimelineEvent
     line: 'main' | 'fork'
@@ -128,7 +158,11 @@ export default function TimelinePage() {
   )
 
   const forkCount = selectedSagas.length
-  const timelineHeight = useMemo(() => 8 + MAIN_LINE_Y + 8 + forkCount * FORK_SPACING + 16, [forkCount])
+  const timelineHeight = useMemo(() => {
+    const mainH = MAIN_LINE_Y + 28
+    const forkH = 16
+    return mainH + forkH + forkCount * FORK_SPACING + 16
+  }, [forkCount])
 
   useEffect(() => {
     if (!expandedEvent) return
@@ -139,11 +173,86 @@ export default function TimelinePage() {
     return () => window.removeEventListener('keydown', handler)
   }, [expandedEvent])
 
+  const selectedEraData = selectedEra ? (ERAS.find((e) => e.id === selectedEra) ?? null) : null
+
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
+    <div className="relative flex min-h-0 flex-1 flex-col">
+      {/* Star field */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        {STARS.map((star, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full bg-white animate-twinkle"
+            style={{
+              left: `${star.left}%`,
+              top: `${star.top}%`,
+              width: `${star.size}px`,
+              height: `${star.size}px`,
+              opacity: star.opacity,
+              animationDelay: `${star.delay}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Eras bar */}
+      <div className="relative z-10 shrink-0 flex flex-wrap items-center gap-1.5 border-b border-gray-800/50 px-4 py-2.5">
+        <span className="mr-1 text-[10px] font-semibold uppercase tracking-widest text-gray-600">Eras</span>
+        {ERAS.map((era) => {
+          const isActive = selectedEra === era.id
+          return (
+            <button
+              key={era.id}
+              onClick={() => setSelectedEra(isActive ? null : era.id)}
+              className={`rounded-full px-2.5 py-1 text-[10px] font-medium transition-all duration-300 ${
+                isActive
+                  ? 'text-white shadow-sm ring-1'
+                  : 'text-gray-500 hover:text-gray-300 ring-1 ring-gray-700/30 hover:ring-gray-600/50'
+              }`}
+              style={{
+                backgroundColor: isActive ? `${era.color}30` : 'transparent',
+                borderColor: isActive ? era.color : 'transparent',
+                ['--tw-ring-color' as string]: isActive ? era.color : undefined,
+              }}
+            >
+              {era.name}
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Selected era info */}
+      {selectedEraData && (
+        <div className="relative z-10 shrink-0 border-b border-gray-800/30 bg-gray-950/60 px-4 py-2.5 backdrop-blur-sm">
+          <div className="flex items-center gap-3">
+            <span
+              className="inline-block h-2.5 w-2.5 rounded-full animate-glow-pulse shrink-0"
+              style={{ backgroundColor: selectedEraData.color, ['--glow-color' as string]: selectedEraData.color }}
+            />
+            <div className="flex-1 min-w-0">
+              <div className="flex items-baseline gap-3">
+                <span className="text-sm font-semibold text-gray-100">{selectedEraData.name}</span>
+                <span className="text-[11px] text-gray-500 font-mono">
+                  {formatYear(selectedEraData.startYear)} — {formatYear(selectedEraData.endYear)}
+                </span>
+                <span className="text-[10px] text-gray-600">{eraEventCount(selectedEraData.id)} events</span>
+              </div>
+              <p className="mt-0.5 text-xs text-gray-500 leading-relaxed">{selectedEraData.description}</p>
+            </div>
+            <button
+              onClick={() => setSelectedEra(null)}
+              className="shrink-0 flex h-5 w-5 items-center justify-center rounded text-xs text-gray-600 hover:bg-gray-800 hover:text-cyan-300 transition-colors"
+              aria-label="Close era info"
+            >
+              &times;
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Saga selector */}
-      <div className="flex flex-wrap items-center gap-2 border-b border-gray-800 px-4 py-3">
-        <span className="mr-1 text-xs font-semibold uppercase tracking-wider text-gray-500">Forks</span>
+      <div className="relative z-10 shrink-0 flex flex-wrap items-center gap-1.5 border-b border-gray-800/50 px-4 py-2.5">
+        <span className="mr-1 text-[10px] font-semibold uppercase tracking-widest text-gray-600">Forks</span>
         {SAGA_ORDER.map((sagaId) => {
           const saga = SAGA_BY_ID.get(sagaId)
           if (!saga) return null
@@ -156,19 +265,22 @@ export default function TimelinePage() {
               onClick={() => toggleSaga(sagaId)}
               disabled={maxed}
               aria-pressed={isActive}
-              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-all ${
+              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-all duration-300 ${
                 isActive
-                  ? 'text-white shadow-sm'
-                  : 'border border-gray-700 text-gray-500 hover:border-gray-600 hover:text-gray-300'
-              } ${maxed ? 'cursor-not-allowed opacity-40' : 'cursor-pointer'}`}
+                  ? 'text-white shadow-sm ring-1'
+                  : 'text-gray-500 hover:text-gray-300 ring-1 ring-gray-700/30 hover:ring-gray-600/50'
+              } ${maxed ? 'cursor-not-allowed opacity-30' : 'cursor-pointer'}`}
               style={{
-                backgroundColor: isActive ? `${color}22` : 'transparent',
-                borderColor: isActive ? color : undefined,
+                backgroundColor: isActive ? `${color}25` : 'transparent',
+                ['--tw-ring-color' as string]: isActive ? color : undefined,
               }}
             >
               <span
-                className="inline-block h-2 w-2 rounded-full"
-                style={{ backgroundColor: isActive ? color : '#4b5563' }}
+                className="inline-block h-2 w-2 rounded-full transition-all duration-300"
+                style={{
+                  backgroundColor: isActive ? color : '#4b5563',
+                  boxShadow: isActive ? `0 0 6px ${color}` : 'none',
+                }}
               />
               {saga.name}
             </button>
@@ -177,7 +289,7 @@ export default function TimelinePage() {
       </div>
 
       {/* Timeline */}
-      <div className="relative flex min-h-0 flex-1 overflow-hidden">
+      <div className="relative z-10 flex min-h-0 flex-1 overflow-hidden">
         <div ref={scrollRef} className="absolute inset-0 overflow-x-auto overflow-y-hidden">
           <div style={{ width: TOTAL_WIDTH, height: timelineHeight }}>
             <Timeline
@@ -188,13 +300,15 @@ export default function TimelinePage() {
               sagaLabels={SAGA_LABELS}
               hoveredEvent={hoveredEvent?.event.id ?? null}
               expandedEvent={expandedEvent?.event.id ?? null}
+              selectedEra={selectedEra}
               onHoverEvent={handleHover}
               onClickEvent={handleClick}
+              onSelectEra={setSelectedEra}
             />
           </div>
         </div>
 
-        {/* Tooltip overlay — fixed to viewport, no scroll */}
+        {/* Tooltip overlay */}
         {hoveredEvent && !expandedEvent && (
           <TooltipOverlay
             event={hoveredEvent.event}
@@ -206,7 +320,7 @@ export default function TimelinePage() {
           />
         )}
 
-        {/* Expanded card overlay — fixed to viewport, no scroll */}
+        {/* Expanded card overlay */}
         {expandedEvent && (
           <CardOverlay
             event={expandedEvent.event}

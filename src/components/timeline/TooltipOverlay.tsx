@@ -12,25 +12,27 @@ interface Props {
 }
 
 export default function TooltipOverlay({ event, x, y, line, eventTypeBadgeClass, toViewport }: Props) {
-  const vp = toViewport(x + 10, line === 'main' ? y - 52 : y - 48)
+  const vp = toViewport(x + 14, line === 'main' ? y - 72 : y - 56)
   let left = vp.left
   const top = vp.top
-  const maxW = Math.min(240, window.innerWidth - 16)
+  const maxW = Math.min(320, window.innerWidth - 16)
   if (left + maxW > window.innerWidth - 8) left = window.innerWidth - maxW - 8
   if (left < 8) left = 8
 
   return (
     <div
-      className="pointer-events-none fixed z-50 rounded-md border border-gray-700 bg-gray-900/95 px-3 py-2 shadow-lg backdrop-blur-sm"
+      className="pointer-events-none fixed z-50 animate-fade-in-up rounded-lg border border-cyan-500/20 bg-gradient-to-br from-gray-900 via-gray-950 to-gray-900 px-4 py-3 shadow-2xl shadow-cyan-900/20 backdrop-blur-xl"
       style={{ left, top, maxWidth: maxW }}
     >
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-2">
         <span className={eventTypeBadgeClass(event.type)}>{TYPE_LABELS[event.type]}</span>
-        <span className="text-xxs text-gray-500">{formatJourneyYear(event.year)}</span>
+        <span className="text-xs text-gray-500">{formatJourneyYear(event.year)}</span>
       </div>
-      <p className="mt-0.5 text-sm font-semibold text-purple-300">{event.title}</p>
-      <p className="mt-0.5 text-[11px] leading-tight text-gray-400 line-clamp-2">{event.description}</p>
-      {event.importance >= 4 && <p className="mt-0.5 text-xxs text-purple-600/80">Click to expand</p>}
+      <p className="mt-1 text-base font-semibold text-cyan-200">{event.title}</p>
+      <p className="mt-1 text-xs leading-relaxed text-gray-400 line-clamp-3">{event.description}</p>
+      {event.importance >= 4 && (
+        <p className="mt-1.5 text-[11px] text-cyan-600/80 font-medium tracking-wide">Click to expand</p>
+      )}
     </div>
   )
 }

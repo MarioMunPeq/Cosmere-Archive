@@ -438,6 +438,54 @@ body {
   font-size: calc(100% * var(--font-size-scale));
 }
 
+/* Timeline dot pulse */
+@keyframes dot-pulse {
+  0%,
+  100% {
+    opacity: 0.85;
+    r: var(--dot-r, 4);
+  }
+  50% {
+    opacity: 0.55;
+    r: calc(var(--dot-r, 4) * 1.15);
+  }
+}
+
+.animate-dot-pulse {
+  animation: dot-pulse 3s ease-in-out infinite;
+}
+
+/* Era band pulse */
+@keyframes era-glow {
+  0%,
+  100% {
+    opacity: var(--era-opacity, 0.08);
+  }
+  50% {
+    opacity: calc(var(--era-opacity, 0.08) * 1.8);
+  }
+}
+
+.animate-era-glow {
+  animation: era-glow 6s ease-in-out infinite;
+}
+
+/* Staggered fade-in for timeline dots */
+@keyframes dot-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-dot-enter {
+  animation: dot-enter 0.4s ease-out both;
+}
+
 /* Print stylesheet */
 @media print {
   nav,

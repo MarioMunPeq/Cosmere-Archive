@@ -8,9 +8,9 @@ const CLUSTER_GAP_PX = 64
 const START_PAD = 80
 const END_PAD = 80
 
-export const MAIN_LINE_Y = 60
-export const FORK_START_Y = 108
-export const FORK_SPACING = 48
+export const MAIN_LINE_Y = 100
+export const FORK_START_Y = 164
+export const FORK_SPACING = 64
 
 function computeLayout(events: TimelineEvent[]) {
   const sorted = [...events].sort((a, b) => a.year - b.year)
