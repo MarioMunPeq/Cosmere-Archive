@@ -12,9 +12,9 @@ function renderPage() {
 }
 
 describe('StatsPage', () => {
-  it('renders the page title', () => {
+  it('renders the hero title', () => {
     renderPage()
-    expect(screen.getByRole('heading', { name: /cosmere stats/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /cosmere in numbers/i })).toBeInTheDocument()
   })
 
   it('renders stat cards with counts', () => {
@@ -33,6 +33,36 @@ describe('StatsPage', () => {
   it('renders characters by planet section', () => {
     renderPage()
     expect(screen.getByText('Characters by Planet')).toBeInTheDocument()
+  })
+
+  it('renders word count section', () => {
+    renderPage()
+    expect(screen.getByText(/word count by book/i)).toBeInTheDocument()
+  })
+
+  it('renders publication timeline section', () => {
+    renderPage()
+    expect(screen.getByText(/publication timeline/i)).toBeInTheDocument()
+  })
+
+  it('renders shards section', () => {
+    renderPage()
+    expect(screen.getByText(/Shards Across the Cosmere/i)).toBeInTheDocument()
+  })
+
+  it('renders magic systems section', () => {
+    renderPage()
+    expect(screen.getByText(/Magic Systems by Category/i)).toBeInTheDocument()
+  })
+
+  it('renders timeline density section', () => {
+    renderPage()
+    expect(screen.getByText(/Timeline Event Density/i)).toBeInTheDocument()
+  })
+
+  it('renders the heralds section', () => {
+    renderPage()
+    expect(screen.getByText('The Heralds')).toBeInTheDocument()
   })
 
   it('has a back link to the map', () => {

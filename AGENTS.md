@@ -41,7 +41,7 @@
 
 ### Goal
 
-Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all synopses and character descriptions to Coppermind quality.
+Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all synopses and character descriptions to Coppermind quality, redesign Stats page with 10 cosmic-themed sections.
 
 ### Constraints & Preferences
 
@@ -91,6 +91,27 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 
 - (none)
 
+#### Done (this session: Stats redesign)
+
+- Added `wordCount` field to `Book` type (`src/types/book.ts`)
+- Added `wordCount` data (approximate) to all 27 books in `books.ts` (Mistborn Era 1: ~208–248K, Era 2: ~104–157K, Stormlight: ~387–492K, etc.)
+- Rewrote `StatsPage.tsx` with 10 cosmic-themed sections:
+  1. **Hero** "Cosmere in Numbers" — gradient title, subtitle with counts
+  2. **Stat Cards** — 8 glass cards with `AnimatedCounter` component (Books, Characters, Planets, Shards, Sagas, Magic Systems, Timeline Events, Heralds)
+  3. **Books by Saga** — gradient horizontal bars with saga colors, staggered entrance
+  4. **Characters by Planet** — SVG donut chart with planet legend, center count
+  5. **Word Count by Book** — gradient bars sorted descending, total word count subtitle
+  6. **Publication Timeline** — SVG timeline with dots per year, book names, title labels
+  7. **Shards Across the Cosmere** — CSS grid: planets × shards, colored cells for presence
+  8. **Magic Systems by Category** — gradient horizontal bars per category
+  9. **Timeline Event Density** — SVG bar chart per cosmic era, width = duration, height = events
+  10. **The Heralds** — 10-card grid with color initials, names, and titles
+- Created `useOnScreen` custom hook (IntersectionObserver) for scroll-triggered section entrance animations
+- Created `SectionWrap` wrapper with fade-in-up on scroll
+- Created `StarField` component consistent with other pages
+- Updated `StatsPage.test.tsx` — 11 tests for all 10 sections + back link
+- All 263 tests pass, `tsc -b` clean, `pnpm lint` clean, `pnpm build` clean
+
 ### Key Decisions
 
 - Remove glossary entirely rather than keep as a tab
@@ -107,10 +128,20 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - Cover images stored as `.webp` in `public/images/covers/` with relative paths in `books.ts`, BookCover prepends `import.meta.env.BASE_URL`
 - Image failure falls back to SVG cover (onError handler), not broken img tag
 - Cross-reference URL params follow MagicSystemsPage `system` param pattern: CharactersPage reads `character`, PlanetsTabContent reads `planet`
+- Stats page uses scroll-triggered section reveals (IntersectionObserver), pure SVG for all charts, `AnimatedCounter` for number animations, star field background matching rest of site
+- Sections order: Hero → Stat Cards → Books by Saga → Characters by Planet → Word Count → Publication Timeline → Shards Grid → Magic Categories → Event Density → Heralds
+
+#### Fixed (StatsPage readability + layout, round 2)
+
+- **Root cause**: inner items had `animate-fade-in-up opacity-0` with CSS overlay, but parent `SectionWrap` started at `opacity: 0` — children never became visible even after their animation completed. Replaced with single `SectionWrap` that uses CSS `transition-all` (translate + opacity) triggered by IntersectionObserver — parent fades in, all children visible immediately
+- **All text sizes increased significantly**: HTML uses `text-base`/`text-lg` minimum, SVG `font-size="11/14/20"`, stat card values `text-3xl`, bar heights `h-4` (16px), heralds circles `h-14 w-14` (56px)
+- **Section dividers**: `Divider` component with `h-px bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent` between every section
+- **Removed `StarField`** from StatsPage for simplicity (was not needed for data viz page)
+- All 263 tests pass, `tsc -b` clean, `pnpm lint` clean
 
 ### Next Steps
 
-1. (all books + characters tasks completed)
+1. (all tasks completed)
 
 ### Critical Context
 
@@ -147,6 +178,8 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - `src/pages/StandaloneBooksPage.tsx`: wrapper with gradient title, BackToMapButton
 - `src/pages/BookPage.tsx`: detail page with planets, characters, magic system cross-references
 - `src/components/common/BookCover.tsx`: SVG fallback, gradient fills, star dots, `import.meta.env.BASE_URL` prefix
-- `src/data/static/books.ts`: all 27 books with Coppermind-style synopses and relative cover paths
+- `src/data/static/books.ts`: all 27 books with Coppermind-style synopses, relative cover paths, and word counts
 - `src/data/generated/characters.json`: all 93 characters with Coppermind-style descriptions
 - `public/images/covers/`: `.webp` cover image files
+- `src/pages/StatsPage.tsx`: redesigned Stats page with 10 cosmic-themed sections, SVG visualizations, scroll-triggered animations
+- `src/test/StatsPage.test.tsx`: 11 tests for all sections + back link

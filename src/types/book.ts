@@ -17,8 +17,11 @@ export interface Book {
   /** Optional: URL or path to the book cover image. */
   cover?: string
 
-  /** In-universe year (approximate), useful for timeline features later. */
+  /** Real-world publication year. */
   year?: number
+
+  /** Approximate word count. */
+  wordCount?: number
 
   /** Short description of the book. */
   description?: string
