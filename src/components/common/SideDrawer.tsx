@@ -12,6 +12,7 @@ const DRAWER_LINKS: { to: string; label: string }[] = [
   { to: '/books', label: 'Books' },
   { to: '/locations', label: 'Locations' },
   { to: '/magic', label: 'Magic Systems' },
+  { to: '/library', label: 'Library' },
   { to: '/stats', label: 'Stats' },
   { to: '/heralds', label: 'Heralds' },
 

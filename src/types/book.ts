@@ -17,6 +17,9 @@ export interface Book {
   /** Optional: URL or path to the book cover image. */
   cover?: string
 
+  /** Optional: Filename (e.g. 'stormlight.webp') for the emblem displayed on the book spine. */
+  emblem?: string
+
   /** Real-world publication year. */
   year?: number
 

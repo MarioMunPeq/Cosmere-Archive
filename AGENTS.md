@@ -100,7 +100,7 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
   2. **Stat Cards** — 8 glass cards with `AnimatedCounter` component (Books, Characters, Planets, Shards, Sagas, Magic Systems, Timeline Events, Heralds)
   3. **Books by Saga** — gradient horizontal bars with saga colors, staggered entrance
   4. **Characters by Planet** — SVG donut chart with planet legend, center count
-  5. **Word Count by Book** — gradient bars sorted descending, total word count subtitle
+  5. **Word Count by Book** — virtual bookshelf with BookShelf component (spine images, wood texture, proportional widths, tooltip, extract-on-click)
   6. **Publication Timeline** — SVG timeline with dots per year, book names, title labels
   7. **Shards Across the Cosmere** — CSS grid: planets × shards, colored cells for presence
   8. **Magic Systems by Category** — gradient horizontal bars per category
@@ -109,8 +109,14 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - Created `useOnScreen` custom hook (IntersectionObserver) for scroll-triggered section entrance animations
 - Created `SectionWrap` wrapper with fade-in-up on scroll
 - Created `StarField` component consistent with other pages
+- Created `BookShelf.tsx` — realistic virtual bookshelf with image-based spines, CSS gradient fallback, wood texture background, proportional √(wordCount) widths, saga-sorted shelves, tooltip on hover, extract-on-click animation, saga filter pills + sort toggle
+- Added optional `spine` field to `Book` type (`src/types/book.ts`)
+- Added `spine: 'images/spines/{id}.webp'` entries to all 22 books in `src/data/static/books.ts`
+- Downloaded dark walnut wood texture from Texturize.app → `public/images/wood-texture.png` (2048×2048, seamless, royalty-free)
+- Removed old `WordCountGrid` function (cover gallery with badges) from `StatsPage.tsx`
+- Fixed saga color lookup bug in `getSagaColor()` (was always falling back to purple due to ID/name mismatch)
 - Updated `StatsPage.test.tsx` — 11 tests for all 10 sections + back link
-- All 263 tests pass, `tsc -b` clean, `pnpm lint` clean, `pnpm build` clean
+- All 262 tests pass, `tsc -b` clean, `pnpm lint` clean, `pnpm build` clean
 
 ### Key Decisions
 
@@ -130,6 +136,11 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - Cross-reference URL params follow MagicSystemsPage `system` param pattern: CharactersPage reads `character`, PlanetsTabContent reads `planet`
 - Stats page uses scroll-triggered section reveals (IntersectionObserver), pure SVG for all charts, `AnimatedCounter` for number animations, star field background matching rest of site
 - Sections order: Hero → Stat Cards → Books by Saga → Characters by Planet → Word Count → Publication Timeline → Shards Grid → Magic Categories → Event Density → Heralds
+- BookShelf uses spine images when available (`book.spine` field), falls back to CSS gradient + initials for missing images
+- Word count badge removed from spine for realism; shown as tooltip on hover
+- Wood texture from Texturize.app: free, seamless, dark walnut, no attribution required
+- Click animation (300ms delay before navigate) provides tactile "extracting" feedback
+- Books per shelf determined by ResizeObserver thresholds (3/4/5/6/7 based on container width)
 
 #### Fixed (StatsPage readability + layout, round 2)
 
@@ -142,6 +153,13 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 ### Next Steps
 
 1. (all tasks completed)
+
+#### Word Count redesign (this round)
+
+- **What changed**: Step 5 of StatsPage ("Word Count by Book") was redesigned from a simple horizontal bar chart (gradient bars sorted by size) into a full virtual bookshelf (`BookShelf` component)
+- **BookShelf component**: image-based spines (`book.spine` → `<img>`), CSS gradient fallback (saga color + initials + decorative bands), wood texture background (seamless dark walnut, CSS `background-image: repeat`), proportional widths (√(wordCount) normalized to 32–64px), saga filter pills (multi-select) + sort toggle (Desc/Asc), hover lift + glow, click extract animation (slide+rotate → navigate)
+- **Data**: added `spine: 'images/spines/{id}.webp'` to all 22 books in `books.ts`, added optional `spine` field to `Book` type, downloaded `public/images/wood-texture.png`
+- **Old grid removed**: `WordCountGrid` function (cover gallery with word count badges) was deleted from StatsPage; replaced with `<BookShelf books={booksByWordCount} />`
 
 ### Critical Context
 
@@ -182,4 +200,8 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - `src/data/generated/characters.json`: all 93 characters with Coppermind-style descriptions
 - `public/images/covers/`: `.webp` cover image files
 - `src/pages/StatsPage.tsx`: redesigned Stats page with 10 cosmic-themed sections, SVG visualizations, scroll-triggered animations
+- `src/components/stats/BookShelf.tsx`: virtual bookshelf component with spine images, wood texture, tooltip, filter/sort, click animation
+- `src/types/book.ts`: added optional `spine: string` field
+- `public/images/wood-texture.png`: dark walnut wood texture (seamless, 2048×2048, Texturize.app)
+- `public/images/spines/`: directory for spine images (placeholder paths exist; actual images needed)
 - `src/test/StatsPage.test.tsx`: 11 tests for all sections + back link

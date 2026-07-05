@@ -16,6 +16,32 @@ if (typeof Element.prototype.scrollIntoView !== 'function') {
   Element.prototype.scrollIntoView = () => {}
 }
 
+if (typeof window.matchMedia !== 'function') {
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: (query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+    }),
+  })
+}
+
+if (typeof ResizeObserver !== 'function') {
+  class MockResizeObserver {
+    constructor(_callback: ResizeObserverCallback) {}
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
+  globalThis.ResizeObserver = MockResizeObserver as unknown as typeof ResizeObserver
+}
+
 if (typeof IntersectionObserver !== 'function') {
   class MockIntersectionObserver {
     readonly root: Element | Document | null = null

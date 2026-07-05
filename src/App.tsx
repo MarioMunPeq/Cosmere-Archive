@@ -16,6 +16,7 @@ const StandaloneBooksPage = lazy(() => import('@/pages/StandaloneBooksPage'))
 const CharactersPage = lazy(() => import('@/pages/CharactersPage'))
 const LocationsPage = lazy(() => import('@/pages/LocationsPage'))
 const StandaloneTimelinePage = lazy(() => import('@/pages/StandaloneTimelinePage'))
+const LibraryPage = lazy(() => import('@/pages/LibraryPage'))
 const StatsPage = lazy(() => import('@/pages/StatsPage'))
 const ComparePage = lazy(() => import('@/pages/ComparePage'))
 const MindMapPage = lazy(() => import('@/pages/MindMapPage'))
@@ -106,6 +107,14 @@ export default function App() {
             element={
               <RouteFallback>
                 <StandaloneTimelinePage />
+              </RouteFallback>
+            }
+          />
+          <Route
+            path="library"
+            element={
+              <RouteFallback>
+                <LibraryPage />
               </RouteFallback>
             }
           />

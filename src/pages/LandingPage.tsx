@@ -23,6 +23,14 @@ const SECTIONS: Section[] = [
     featured: true,
   },
   {
+    id: 'library',
+    label: 'Library',
+    to: '/library',
+    description: 'Virtual Cosmere book collection',
+    iconType: 'book',
+    featured: true,
+  },
+  {
     id: 'characters',
     label: 'Characters',
     to: '/characters',
@@ -77,9 +85,10 @@ export default function LandingPage() {
     description: 'An interactive guide to the Cosmere universe — explore planets, characters, books, and more',
   })
 
-  const featuredSection = SECTIONS.find((s) => s.featured)!
-  const mainSections = [SECTIONS[1]!, SECTIONS[2]!]
-  const secondarySections = SECTIONS.slice(3)
+  const featuredSections = SECTIONS.filter((s) => s.featured)
+  const nonFeatured = SECTIONS.filter((s) => !s.featured)
+  const mainSections = nonFeatured.slice(0, 2)
+  const secondarySections = nonFeatured.slice(2)
 
   return (
     <div className="relative flex min-h-0 flex-1 flex-col items-center justify-center overflow-y-auto">
@@ -93,22 +102,25 @@ export default function LandingPage() {
           <p className="mt-3 text-sm text-gray-500 sm:text-base">An interactive guide to the Cosmere universe</p>
         </div>
 
-        <div className="mt-8 w-full">
-          <button
-            onClick={() => navigate(featuredSection.to)}
-            className="group relative w-full overflow-hidden rounded-2xl border border-purple-500/30 bg-gradient-to-br from-purple-950/60 via-gray-900/80 to-cyan-950/40 p-8 text-left transition-all duration-300 hover:border-purple-400/50 hover:shadow-lg hover:shadow-purple-500/10"
-          >
-            <div className="flex items-center gap-5">
-              <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-purple-900/50 text-purple-400 transition-colors group-hover:bg-purple-800/60 group-hover:text-purple-300">
-                <SearchIcon type={featuredSection.iconType} size={32} className="text-inherit" />
+        <div className="mt-8 grid w-full gap-4 sm:grid-cols-2">
+          {featuredSections.map((section) => (
+            <button
+              key={section.id}
+              onClick={() => navigate(section.to)}
+              className="group relative w-full overflow-hidden rounded-2xl border border-purple-500/30 bg-gradient-to-br from-purple-950/60 via-gray-900/80 to-cyan-950/40 p-8 text-left transition-all duration-300 hover:border-purple-400/50 hover:shadow-lg hover:shadow-purple-500/10"
+            >
+              <div className="flex items-center gap-5">
+                <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-purple-900/50 text-purple-400 transition-colors group-hover:bg-purple-800/60 group-hover:text-purple-300">
+                  <SearchIcon type={section.iconType} size={32} className="text-inherit" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h2 className="text-2xl font-bold text-gray-100">{section.label}</h2>
+                  <p className="mt-1 text-sm text-gray-400">{section.description}</p>
+                </div>
+                <span className="text-lg text-purple-500 transition-transform group-hover:translate-x-1">→</span>
               </div>
-              <div className="min-w-0 flex-1">
-                <h2 className="text-2xl font-bold text-gray-100">{featuredSection.label}</h2>
-                <p className="mt-1 text-sm text-gray-400">{featuredSection.description}</p>
-              </div>
-              <span className="text-lg text-purple-500 transition-transform group-hover:translate-x-1">→</span>
-            </div>
-          </button>
+            </button>
+          ))}
         </div>
 
         <div className="mt-6 grid w-full gap-4 sm:grid-cols-2">

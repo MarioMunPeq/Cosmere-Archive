@@ -32,117 +32,6 @@ function AnimatedCounter({ end, ...props }: { end: number } & React.HTMLAttribut
   return <span {...props}>{val.toLocaleString()}</span>
 }
 
-function WordCountGrid({ books, colorMap }: { books: typeof BOOKS; colorMap: Record<string, string> }) {
-  const [selectedSagas, setSelectedSagas] = useState<string[]>([])
-  const [sortAsc, setSortAsc] = useState(false)
-
-  const availableSagas = useMemo(() => {
-    const sagaIds = new Set(books.map((b) => b.saga))
-    return SAGA_LIST.filter((s) => sagaIds.has(s.id))
-  }, [books])
-
-  const displayBooks = useMemo(() => {
-    let filtered = books
-    if (selectedSagas.length > 0) {
-      filtered = filtered.filter((b) => selectedSagas.includes(b.saga))
-    }
-    return [...filtered].sort((a, b) => {
-      const diff = (a.wordCount ?? 0) - (b.wordCount ?? 0)
-      return sortAsc ? diff : -diff
-    })
-  }, [books, selectedSagas, sortAsc])
-
-  const toggleSaga = (id: string) => {
-    setSelectedSagas((prev) => (prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]))
-  }
-
-  const allSelected = selectedSagas.length === 0
-
-  return (
-    <div className="flex-1 min-h-0 overflow-y-auto rounded-xl">
-      <div className="flex items-center gap-2 px-1 pb-3 sm:px-2">
-        <button
-          onClick={() => setSelectedSagas([])}
-          className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-all ${
-            allSelected
-              ? 'bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-white ring-1 ring-cyan-500/30'
-              : 'text-gray-500 hover:bg-white/5 hover:text-gray-300'
-          }`}
-        >
-          All
-        </button>
-        {availableSagas.map((saga) => (
-          <button
-            key={saga.id}
-            onClick={() => toggleSaga(saga.id)}
-            className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-all ${
-              selectedSagas.includes(saga.id)
-                ? 'bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-white ring-1 ring-cyan-500/30'
-                : 'text-gray-500 hover:bg-white/5 hover:text-gray-300'
-            }`}
-          >
-            {saga.name}
-          </button>
-        ))}
-        <div className="ml-auto" />
-        <button
-          onClick={() => setSortAsc((prev) => !prev)}
-          className="flex shrink-0 items-center gap-1 rounded-lg border border-white/5 px-2 py-1 text-xs text-gray-500 transition-all hover:border-white/20 hover:text-gray-300"
-        >
-          {sortAsc ? '↑ Asc' : '↓ Desc'}
-        </button>
-      </div>
-      <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4 p-1 sm:gap-5 sm:p-2">
-        {displayBooks.map((book) => {
-          const wc = book.wordCount ?? 0
-          const color = colorMap[book.saga as keyof typeof colorMap] ?? '#a78bfa'
-          const coverUrl = `${import.meta.env.BASE_URL}${book.cover}`
-          const badge = wc >= 1_000_000 ? `${(wc / 1_000_000).toFixed(1)}M` : `${Math.round(wc / 1_000)}K`
-          return (
-            <Link
-              key={book.id}
-              to={`/books/${book.id}`}
-              className="group relative flex flex-col items-center overflow-hidden rounded-xl bg-white/[0.02] transition-all duration-300 hover:bg-white/[0.05]"
-            >
-              <div
-                className="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                style={{
-                  background: `radial-gradient(ellipse at 50% 30%, ${color}25 0%, transparent 70%)`,
-                }}
-              />
-              {/* Cover — top ⅔ */}
-              <div className="relative px-4 pt-4">
-                <img
-                  src={coverUrl}
-                  alt={book.title}
-                  className="relative rounded object-cover shadow-lg transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-2xl"
-                  style={{ width: 200, height: 300 }}
-                  loading="lazy"
-                />
-              </div>
-              {/* Word count — hero */}
-              <div className="relative z-10 mt-4 w-full px-4 text-center">
-                <span
-                  className="block text-4xl font-bold tracking-tight text-white transition-all duration-300 group-hover:scale-110"
-                  style={{ textShadow: `0 0 30px ${color}60` }}
-                >
-                  {badge}
-                </span>
-              </div>
-              {/* Title — secondary */}
-              <div className="relative z-10 mb-4 w-full px-4 text-center">
-                <span className="block truncate text-sm text-gray-400 transition-all duration-300 group-hover:text-gray-200">
-                  {book.title}
-                </span>
-              </div>
-            </Link>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
-
 export default function StatsPage() {
   useSEOMeta({
     title: 'Stats — Cosmere Archive',
@@ -421,19 +310,22 @@ export default function StatsPage() {
               </div>
             </div>
           )}
-          {/* Step 3: Word Count — Grid with horizontal ranking bars */}
+          {/* Step 3: Word Count — link to full library */}
           {activeStep === 3 && (
-            <div className="flex h-full w-full flex-col">
-              <div className="flex shrink-0 items-center justify-between px-1 pb-2 sm:px-2">
-                <h2 className="bg-gradient-to-r from-cyan-300 via-purple-300 to-cyan-400 bg-clip-text text-xl font-bold text-transparent sm:text-2xl">
-                  Word Count by Book
-                </h2>
-                <span className="text-xs text-gray-500 sm:text-sm">
-                  {totalWords.toLocaleString()} total · Avg{' '}
-                  {Math.round(totalWords / booksByWordCount.length).toLocaleString()}
-                </span>
-              </div>
-              <WordCountGrid books={booksByWordCount} colorMap={SAGA_NAME_COLORS} />
+            <div className="flex h-full w-full flex-col items-center justify-center gap-6 px-4">
+              <h2 className="bg-gradient-to-r from-cyan-300 via-purple-300 to-cyan-400 bg-clip-text text-2xl font-bold text-transparent sm:text-3xl">
+                Word Count by Book
+              </h2>
+              <p className="max-w-xl text-center text-base text-gray-500 sm:text-lg">
+                {totalWords.toLocaleString()} total words across {booksByWordCount.length} books — avg{' '}
+                {Math.round(totalWords / booksByWordCount.length).toLocaleString()} per volume
+              </p>
+              <Link
+                to="/library"
+                className="inline-block rounded-xl border border-amber-500/30 bg-gradient-to-r from-amber-500/10 to-amber-600/10 px-8 py-4 text-lg font-semibold text-amber-300 shadow-lg shadow-amber-500/10 transition-all duration-300 hover:border-amber-500/50 hover:shadow-xl hover:shadow-amber-500/20"
+              >
+                Explore the Cosmere Library →
+              </Link>
             </div>
           )}
 
