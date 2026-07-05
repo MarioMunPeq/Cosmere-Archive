@@ -366,7 +366,7 @@ input,
   }
 }
 
-/* Detail panel slide-in */
+/* Directional slide-in animations */
 @keyframes slide-in-right {
   from {
     transform: translateX(100%);
@@ -378,7 +378,20 @@ input,
   }
 }
 .animate-slide-in-right {
-  animation: slide-in-right 0.3s ease-out both;
+  animation: slide-in-right 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+.animate-slide-in-left {
+  animation: slide-in-left 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 /* View Transitions API */

@@ -51,14 +51,9 @@ describe('StatsPage', () => {
     expect(screen.getByRole('button', { name: 'Shards' })).toBeInTheDocument()
   })
 
-  it('renders magic systems section', () => {
+  it('renders the heralds step button', () => {
     renderPage()
-    expect(screen.getByRole('button', { name: 'Magic Systems' })).toBeInTheDocument()
-  })
-
-  it('renders timeline density section', () => {
-    renderPage()
-    expect(screen.getByRole('button', { name: 'Event Density' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'The Heralds' })).toBeInTheDocument()
   })
 
   it('renders the heralds section', () => {

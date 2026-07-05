@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import BackToMapButton from '@/components/ui/BackToMapButton'
 import { BOOKS, PLANETS, SAGAS, ALL_CHARACTERS, SHARD_COLORS, SAGA_NAME_COLORS } from '@/data/static'
-import { TIMELINE_EVENTS, ERAS } from '@/data/static/timeline'
+import { TIMELINE_EVENTS } from '@/data/static/timeline'
 import { HERALDS } from '@/data/static/heralds'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
 
@@ -30,6 +30,117 @@ function AnimatedCounter({ end, ...props }: { end: number } & React.HTMLAttribut
     requestAnimationFrame(raf)
   }, [end])
   return <span {...props}>{val.toLocaleString()}</span>
+}
+
+function WordCountGrid({ books, colorMap }: { books: typeof BOOKS; colorMap: Record<string, string> }) {
+  const [selectedSagas, setSelectedSagas] = useState<string[]>([])
+  const [sortAsc, setSortAsc] = useState(false)
+
+  const availableSagas = useMemo(() => {
+    const sagaIds = new Set(books.map((b) => b.saga))
+    return SAGA_LIST.filter((s) => sagaIds.has(s.id))
+  }, [books])
+
+  const displayBooks = useMemo(() => {
+    let filtered = books
+    if (selectedSagas.length > 0) {
+      filtered = filtered.filter((b) => selectedSagas.includes(b.saga))
+    }
+    return [...filtered].sort((a, b) => {
+      const diff = (a.wordCount ?? 0) - (b.wordCount ?? 0)
+      return sortAsc ? diff : -diff
+    })
+  }, [books, selectedSagas, sortAsc])
+
+  const toggleSaga = (id: string) => {
+    setSelectedSagas((prev) => (prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]))
+  }
+
+  const allSelected = selectedSagas.length === 0
+
+  return (
+    <div className="flex-1 min-h-0 overflow-y-auto rounded-xl">
+      <div className="flex items-center gap-2 px-1 pb-3 sm:px-2">
+        <button
+          onClick={() => setSelectedSagas([])}
+          className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-all ${
+            allSelected
+              ? 'bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-white ring-1 ring-cyan-500/30'
+              : 'text-gray-500 hover:bg-white/5 hover:text-gray-300'
+          }`}
+        >
+          All
+        </button>
+        {availableSagas.map((saga) => (
+          <button
+            key={saga.id}
+            onClick={() => toggleSaga(saga.id)}
+            className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-all ${
+              selectedSagas.includes(saga.id)
+                ? 'bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-white ring-1 ring-cyan-500/30'
+                : 'text-gray-500 hover:bg-white/5 hover:text-gray-300'
+            }`}
+          >
+            {saga.name}
+          </button>
+        ))}
+        <div className="ml-auto" />
+        <button
+          onClick={() => setSortAsc((prev) => !prev)}
+          className="flex shrink-0 items-center gap-1 rounded-lg border border-white/5 px-2 py-1 text-xs text-gray-500 transition-all hover:border-white/20 hover:text-gray-300"
+        >
+          {sortAsc ? '↑ Asc' : '↓ Desc'}
+        </button>
+      </div>
+      <div className="grid w-full grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-4 p-1 sm:gap-5 sm:p-2">
+        {displayBooks.map((book) => {
+          const wc = book.wordCount ?? 0
+          const color = colorMap[book.saga as keyof typeof colorMap] ?? '#a78bfa'
+          const coverUrl = `${import.meta.env.BASE_URL}${book.cover}`
+          const badge = wc >= 1_000_000 ? `${(wc / 1_000_000).toFixed(1)}M` : `${Math.round(wc / 1_000)}K`
+          return (
+            <Link
+              key={book.id}
+              to={`/books/${book.id}`}
+              className="group relative flex flex-col items-center overflow-hidden rounded-xl bg-white/[0.02] transition-all duration-300 hover:bg-white/[0.05]"
+            >
+              <div
+                className="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                style={{
+                  background: `radial-gradient(ellipse at 50% 30%, ${color}25 0%, transparent 70%)`,
+                }}
+              />
+              {/* Cover — top ⅔ */}
+              <div className="relative px-4 pt-4">
+                <img
+                  src={coverUrl}
+                  alt={book.title}
+                  className="relative rounded object-cover shadow-lg transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-2xl"
+                  style={{ width: 200, height: 300 }}
+                  loading="lazy"
+                />
+              </div>
+              {/* Word count — hero */}
+              <div className="relative z-10 mt-4 w-full px-4 text-center">
+                <span
+                  className="block text-4xl font-bold tracking-tight text-white transition-all duration-300 group-hover:scale-110"
+                  style={{ textShadow: `0 0 30px ${color}60` }}
+                >
+                  {badge}
+                </span>
+              </div>
+              {/* Title — secondary */}
+              <div className="relative z-10 mb-4 w-full px-4 text-center">
+                <span className="block truncate text-sm text-gray-400 transition-all duration-300 group-hover:text-gray-200">
+                  {book.title}
+                </span>
+              </div>
+            </Link>
+          )
+        })}
+      </div>
+    </div>
+  )
 }
 
 export default function StatsPage() {
@@ -61,52 +172,13 @@ export default function StatsPage() {
     return [...BOOKS].filter((b) => b.wordCount).sort((a, b) => (b.wordCount ?? 0) - (a.wordCount ?? 0))
   }, [])
 
-  const maxWords = useMemo(() => Math.max(...booksByWordCount.map((b) => b.wordCount ?? 0), 1), [booksByWordCount])
-
   const totalWords = useMemo(() => BOOKS.reduce((sum, b) => sum + (b.wordCount ?? 0), 0), [])
-
-  const eventCountByEra = useMemo(() => {
-    return ERAS.map((era) => {
-      const count = TIMELINE_EVENTS.filter((e) => e.year >= era.startYear && e.year <= era.endYear).length
-      return { ...era, count }
-    })
-  }, [])
-
-  const maxEvents = useMemo(() => Math.max(...eventCountByEra.map((e) => e.count), 1), [eventCountByEra])
-
-  const erasLayout = useMemo(() => {
-    const totalSpan = (ERAS[ERAS.length - 1]?.endYear ?? 2000) - (ERAS[0]?.startYear ?? -20000)
-    const result: {
-      id: string
-      name: string
-      w: number
-      x: number
-      color: string
-      startYear: number
-      endYear: number
-    }[] = []
-    let x = 30
-    for (const era of ERAS) {
-      const span = era.endYear - era.startYear
-      const w = (span / totalSpan) * 840
-      result.push({
-        id: era.id,
-        name: era.name,
-        w,
-        x,
-        color: era.color,
-        startYear: era.startYear,
-        endYear: era.endYear,
-      })
-      x += w
-    }
-    return result
-  }, [])
 
   const pubYears = useMemo(() => [...new Set(BOOKS.map((b) => b.year).filter((y): y is number => !!y))].sort(), [])
   const pubMin = pubYears[0] ?? 2005
   const pubMax = pubYears[pubYears.length - 1] ?? 2024
-  const pubSpan = pubMax - pubMin || 1
+  void pubMin
+  void pubMax
 
   const statCards = useMemo(
     () => [
@@ -115,7 +187,6 @@ export default function StatsPage() {
       { label: 'Planets', value: PLANETS.length, color: '#22c55e' },
       { label: 'Shards', value: SHARD_COUNT, color: '#f59e0b' },
       { label: 'Sagas', value: SAGA_LIST.length, color: '#ef4444' },
-      { label: 'Magic Systems', value: MAGIC_SYSTEMS.length, color: '#d946ef' },
       { label: 'Timeline Events', value: TIMELINE_EVENTS.length, color: '#14b8a6' },
       { label: 'Heralds', value: HERALDS.length, color: '#f97316' },
     ],
@@ -123,10 +194,10 @@ export default function StatsPage() {
   )
 
   const maxSagaCount = Math.max(...bookCountBySaga.map(([, c]) => c), 1)
-  const maxMagicCount = Math.max(...magicByCategory.map((m) => m.count), 1)
 
   const [activeStep, setActiveStep] = useState(0)
-  const totalSteps = 9
+  const [animDir, setAnimDir] = useState<'left' | 'right'>('left')
+  const totalSteps = 7
   const stepLabels = [
     'Overview',
     'Books by Saga',
@@ -134,8 +205,6 @@ export default function StatsPage() {
     'Word Count',
     'Publication Timeline',
     'Shards',
-    'Magic Systems',
-    'Event Density',
     'The Heralds',
   ]
 
@@ -170,7 +239,10 @@ export default function StatsPage() {
       {/* Navigation */}
       <div className="flex shrink-0 items-center gap-1 overflow-x-auto border-b border-white/5 px-4 py-2 sm:px-6">
         <button
-          onClick={() => setActiveStep((s) => Math.max(s - 1, 0))}
+          onClick={() => {
+            setAnimDir('right')
+            setActiveStep((s) => Math.max(s - 1, 0))
+          }}
           disabled={activeStep === 0}
           className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-white/10 hover:text-white disabled:cursor-not-allowed disabled:opacity-20"
         >
@@ -179,7 +251,10 @@ export default function StatsPage() {
         {stepLabels.map((label, i) => (
           <button
             key={i}
-            onClick={() => setActiveStep(i)}
+            onClick={() => {
+              setAnimDir(i > activeStep ? 'left' : 'right')
+              setActiveStep(i)
+            }}
             className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-all duration-300 sm:text-sm ${
               i === activeStep
                 ? 'bg-gradient-to-r from-cyan-500/20 to-purple-500/20 text-white ring-1 ring-cyan-500/30'
@@ -190,7 +265,10 @@ export default function StatsPage() {
           </button>
         ))}
         <button
-          onClick={() => setActiveStep((s) => Math.min(s + 1, totalSteps - 1))}
+          onClick={() => {
+            setAnimDir('left')
+            setActiveStep((s) => Math.min(s + 1, totalSteps - 1))
+          }}
           disabled={activeStep === totalSteps - 1}
           className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-white/10 hover:text-white disabled:cursor-not-allowed disabled:opacity-20"
         >
@@ -200,26 +278,29 @@ export default function StatsPage() {
 
       {/* Content */}
       <div className="flex-1 min-h-0 p-4 sm:p-6">
-        <div key={activeStep} className="h-full w-full animate-fade-in-up">
-          {/* Step 0: Overview */}
+        <div
+          key={activeStep}
+          className={`h-full w-full ${animDir === 'left' ? 'animate-slide-in-right' : 'animate-slide-in-left'}`}
+        >
+          {/* Step 0: Overview — 2x */}
           {activeStep === 0 && (
-            <div className="flex h-full flex-col items-center justify-center gap-6">
-              <h2 className="bg-gradient-to-r from-cyan-300 via-purple-300 to-cyan-400 bg-clip-text text-3xl font-bold text-transparent sm:text-5xl">
+            <div className="flex h-full flex-col items-center justify-center gap-8">
+              <h2 className="bg-gradient-to-r from-cyan-300 via-purple-300 to-cyan-400 bg-clip-text text-5xl font-bold text-transparent sm:text-7xl">
                 Cosmere in Numbers
               </h2>
-              <p className="text-base text-gray-500 sm:text-lg">
+              <p className="text-lg text-gray-500 sm:text-2xl">
                 {BOOKS.length} books · {ALL_CHARACTERS.length} characters · {SHARD_COUNT} shards · One universe
               </p>
-              <div className="grid w-full max-w-3xl grid-cols-2 gap-4 sm:grid-cols-4">
+              <div className="grid w-full max-w-5xl grid-cols-2 gap-6 sm:grid-cols-4">
                 {statCards.map((card) => (
                   <div
                     key={card.label}
-                    className="rounded-xl border border-white/5 bg-white/[0.03] p-6 text-center backdrop-blur-sm sm:p-8"
+                    className="rounded-xl border border-white/5 bg-white/[0.03] p-10 text-center backdrop-blur-sm sm:p-12"
                   >
-                    <div className="text-3xl font-bold sm:text-5xl" style={{ color: card.color }}>
+                    <div className="text-5xl font-bold sm:text-7xl" style={{ color: card.color }}>
                       <AnimatedCounter end={card.value} />
                     </div>
-                    <div className="mt-2 text-sm text-gray-500 sm:text-base">{card.label}</div>
+                    <div className="mt-3 text-lg text-gray-500 sm:text-xl">{card.label}</div>
                   </div>
                 ))}
               </div>
@@ -340,18 +421,10 @@ export default function StatsPage() {
               </div>
             </div>
           )}
-
-          {/* Step 3: Word Count — Cosmic Bar Chart */}
+          {/* Step 3: Word Count — Grid with horizontal ranking bars */}
           {activeStep === 3 && (
             <div className="flex h-full w-full flex-col">
-              <style>{`
-                @keyframes wc-pulse {
-                  0%, 100% { text-shadow: 0 0 4px rgba(255,255,255,0.2), 0 0 12px rgba(6,182,212,0.1); }
-                  50% { text-shadow: 0 0 12px rgba(255,255,255,0.7), 0 0 24px rgba(6,182,212,0.4), 0 0 40px rgba(6,182,212,0.2); }
-                }
-                .wc-pulse { animation: wc-pulse 3s ease-in-out infinite; }
-              `}</style>
-              <div className="flex shrink-0 items-center justify-between px-2 pb-2 sm:px-4">
+              <div className="flex shrink-0 items-center justify-between px-1 pb-2 sm:px-2">
                 <h2 className="bg-gradient-to-r from-cyan-300 via-purple-300 to-cyan-400 bg-clip-text text-xl font-bold text-transparent sm:text-2xl">
                   Word Count by Book
                 </h2>
@@ -360,206 +433,123 @@ export default function StatsPage() {
                   {Math.round(totalWords / booksByWordCount.length).toLocaleString()}
                 </span>
               </div>
-              <div className="relative flex-1 min-h-0 overflow-hidden rounded-xl">
-                {/* Subtle star field background */}
-                <div
-                  className="pointer-events-none absolute inset-0 opacity-[0.04]"
-                  style={{
-                    backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(6,182,212,0.5) 1px, transparent 0)',
-                    backgroundSize: '20px 20px',
-                  }}
-                />
-                <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-16 bg-gradient-to-r from-gray-950 to-transparent" />
-                <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-16 bg-gradient-to-l from-gray-950 to-transparent" />
-                {/* Bars */}
-                <div className="relative z-[5] h-full overflow-x-auto pb-4">
-                  <div
-                    className="flex h-full items-end gap-3 px-8"
-                    style={{ minWidth: `${booksByWordCount.length * 136}px` }}
-                  >
-                    {booksByWordCount.map((book) => {
-                      const wc = book.wordCount ?? 0
-                      const sqrtWc = Math.sqrt(wc)
-                      const sqrtMax = Math.sqrt(maxWords)
-                      const pct = sqrtWc / sqrtMax
-                      const barH = `${Math.max(14, Math.round(pct * 84))}%`
-                      const color = SAGA_NAME_COLORS[book.saga as keyof typeof SAGA_NAME_COLORS] ?? '#a78bfa'
-                      const badge = wc >= 1000000 ? `${(wc / 1000000).toFixed(1)}M` : `${Math.round(wc / 1000)}K`
-                      const coverUrl = `${import.meta.env.BASE_URL}${book.cover}`
-                      return (
-                        <Link
-                          key={book.id}
-                          to={`/book/${book.id}`}
-                          className="group flex shrink-0 flex-col items-center justify-end transition-all duration-500 hover:-translate-y-2"
-                          style={{ width: '130px' }}
-                        >
-                          {/* Word count label */}
-                          <div className="mb-1 text-center">
-                            <span className="wc-pulse text-2xl font-extrabold text-white drop-shadow-xl sm:text-4xl">
-                              {badge}
-                            </span>
-                          </div>
-                          {/* Cover as capstone at top of bar */}
-                          <div
-                            className="mb-0.5 overflow-hidden rounded-md bg-gradient-to-br from-gray-700 to-gray-900 shadow-lg shadow-black/50 ring-1 ring-white/10 transition-all duration-300 group-hover:scale-110 group-hover:shadow-cyan-500/30"
-                            style={{ width: '64px', height: '96px' }}
-                          >
-                            <img
-                              src={coverUrl}
-                              alt={book.title}
-                              className="h-full w-full object-cover"
-                              loading="lazy"
-                              onError={(e) => {
-                                ;(e.target as HTMLImageElement).style.display = 'none'
-                              }}
-                            />
-                          </div>
-                          {/* Bar */}
-                          <div
-                            className="w-14 rounded-t-lg sm:w-20"
-                            style={{
-                              height: barH,
-                              background: `linear-gradient(180deg, ${color} 0%, ${color}dd 25%, ${color}77 55%, ${color}22 85%, transparent 100%)`,
-                              boxShadow: `0 -4px 30px ${color}44, 0 0 60px ${color}22`,
-                            }}
-                          />
-                          {/* Glow base */}
-                          <div
-                            className="h-4 w-20 rounded-full blur-md sm:w-24"
-                            style={{ backgroundColor: color, opacity: 0.12 }}
-                          />
-                          {/* Title on hover */}
-                          <div className="mt-1 h-6 text-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                            <span className="block max-w-[122px] truncate text-sm font-medium text-gray-400">
-                              {book.title}
-                            </span>
-                          </div>
-                        </Link>
-                      )
-                    })}
-                  </div>
-                </div>
-              </div>
+              <WordCountGrid books={booksByWordCount} colorMap={SAGA_NAME_COLORS} />
             </div>
           )}
 
-          {/* Step 4: Publication Timeline */}
+          {/* Step 4: Publication Timeline — Vertical */}
           {activeStep === 4 && (
-            <div className="flex h-full flex-col items-center justify-center px-4">
-              <h2 className="mb-6 bg-gradient-to-r from-cyan-300 via-purple-300 to-cyan-400 bg-clip-text text-2xl font-bold text-transparent sm:mb-8 sm:text-3xl">
-                Publication Timeline
-              </h2>
-              <p className="mb-4 text-sm text-gray-500 sm:text-base">
-                From {pubMin} to {pubMax} — {pubYears.length} release years
-              </p>
-              <div className="w-full max-w-5xl">
-                <svg viewBox="0 0 900 360" className="w-full" style={{ maxHeight: '65vh' }}>
-                  <line x1={30} y1={160} x2={870} y2={160} stroke="#374151" strokeWidth={4} />
-                  {pubYears.map((year, yi) => {
+            <div className="flex h-full w-full flex-col">
+              <div className="flex shrink-0 items-center justify-between px-2 pb-2 sm:px-4">
+                <h2 className="bg-gradient-to-r from-cyan-300 via-purple-300 to-cyan-400 bg-clip-text text-xl font-bold text-transparent sm:text-2xl">
+                  Publication Timeline
+                </h2>
+                <span className="text-xs text-gray-500 sm:text-sm">
+                  {pubMin}–{pubMax} · {pubYears.length} release years
+                </span>
+              </div>
+              <div className="relative flex-1 min-h-0 overflow-y-auto px-4 sm:px-8">
+                <div className="relative py-6">
+                  <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-800 sm:left-12" />
+                  {pubYears.map((year) => {
                     const yearBooks = BOOKS.filter((b) => b.year === year)
-                    const x = 30 + ((year - pubMin) / pubSpan) * 840
                     const first = yearBooks[0]
                     if (!first) return null
                     const color = SAGA_NAME_COLORS[first.saga as keyof typeof SAGA_NAME_COLORS] ?? '#a78bfa'
-                    const isEven = yi % 2 === 0
                     return (
-                      <g key={year}>
-                        <line x1={x} y1={140} x2={x} y2={180} stroke={color} strokeWidth={4} opacity={0.5} />
-                        <circle
-                          cx={x}
-                          cy={160}
-                          r={12}
-                          fill={color}
-                          stroke="#030712"
-                          strokeWidth={3}
-                          className="transition-all duration-300 hover:brightness-125"
-                        >
-                          <title>{yearBooks.map((b) => b.title).join(', ')}</title>
-                        </circle>
-                        {/* Year labels — alternate above/below every other year */}
-                        <text
-                          x={x}
-                          y={isEven ? 128 : 215}
-                          textAnchor="middle"
-                          fill="#9ca3af"
-                          fontSize="16"
-                          fontWeight="bold"
-                        >
-                          {year}
-                        </text>
-                        {/* Book labels — same side as year */}
-                        {yearBooks.map((b, bi) => {
-                          if (isEven) {
-                            const yo = 232 + bi * 22
+                      <div key={year} className="group relative mb-6 flex items-start gap-4 sm:gap-6">
+                        <div className="z-10 flex shrink-0 items-center justify-center">
+                          <div
+                            className="h-5 w-5 shrink-0 rounded-full border-2 border-gray-950 sm:h-6 sm:w-6"
+                            style={{ backgroundColor: color }}
+                          />
+                        </div>
+                        <div className="z-10 mt-[-2px] shrink-0">
+                          <span className="text-xl font-bold text-gray-200 sm:text-3xl">{year}</span>
+                        </div>
+                        <div className="z-10 flex flex-wrap gap-2 pt-1 sm:gap-3">
+                          {yearBooks.map((b) => {
+                            const bc = SAGA_NAME_COLORS[b.saga as keyof typeof SAGA_NAME_COLORS] ?? '#a78bfa'
                             return (
-                              <text key={b.id} x={x} y={yo} textAnchor="middle" fill="#6b7280" fontSize="14">
-                                {b.title.length > 24 ? b.title.slice(0, 23) + '…' : b.title}
-                              </text>
+                              <Link
+                                key={b.id}
+                                to={`/book/${b.id}`}
+                                className="inline-block rounded-lg border px-3 py-1.5 text-sm text-gray-400 transition-all duration-300 hover:border-white/20 hover:text-white sm:px-4 sm:py-2 sm:text-base"
+                                style={{
+                                  borderColor: `${bc}33`,
+                                  backgroundColor: `${bc}08`,
+                                  boxShadow: `0 0 12px ${bc}11`,
+                                }}
+                              >
+                                {b.title}
+                              </Link>
                             )
-                          } else {
-                            const yo = 112 - (yearBooks.length - bi) * 22
-                            return (
-                              <text key={b.id} x={x} y={yo} textAnchor="middle" fill="#6b7280" fontSize="14">
-                                {b.title.length > 24 ? b.title.slice(0, 23) + '…' : b.title}
-                              </text>
-                            )
-                          }
-                        })}
-                      </g>
+                          })}
+                        </div>
+                      </div>
                     )
                   })}
-                </svg>
+                </div>
               </div>
             </div>
           )}
 
           {/* Step 5: Shards Across the Cosmere */}
           {activeStep === 5 && (
-            <div className="flex h-full flex-col items-center justify-center px-4">
-              <h2 className="mb-6 bg-gradient-to-r from-cyan-300 via-purple-300 to-cyan-400 bg-clip-text text-2xl font-bold text-transparent sm:mb-8 sm:text-3xl">
-                Shards Across the Cosmere
-              </h2>
-              <p className="mb-4 text-sm text-gray-500 sm:text-base">
-                {SHARD_COUNT} shards manifest across the Cosmere
-              </p>
-              <div className="w-full max-w-4xl overflow-x-auto">
-                <div style={{ minWidth: 700 }}>
+            <div className="flex h-full w-full flex-col">
+              <div className="flex shrink-0 items-center justify-between px-2 pb-2 sm:px-4">
+                <h2 className="bg-gradient-to-r from-cyan-300 via-purple-300 to-cyan-400 bg-clip-text text-xl font-bold text-transparent sm:text-2xl">
+                  Shards Across the Cosmere
+                </h2>
+                <span className="text-xs text-gray-500 sm:text-sm">
+                  {SHARD_COUNT} shards · {PLANETS.filter((p) => p.shard).length} planets
+                </span>
+              </div>
+              <div className="relative flex-1 min-h-0 overflow-x-auto px-4 sm:px-8">
+                <div className="inline-block min-w-full py-4">
+                  {/* Header row */}
                   <div
-                    className="mb-4 grid items-center gap-3"
-                    style={{ gridTemplateColumns: `160px repeat(${SHARD_NAMES.length}, 1fr)` }}
+                    className="mb-4 grid items-center gap-4"
+                    style={{ gridTemplateColumns: `180px repeat(${SHARD_NAMES.length}, 64px)` }}
                   >
                     <div />
                     {SHARD_NAMES.map((s) => (
-                      <div key={s} className="text-center text-sm font-medium text-gray-500 sm:text-base" title={s}>
-                        {s.length > 10 ? s.slice(0, 9) + '…' : s}
+                      <div key={s} className="text-center text-base font-semibold text-gray-400" title={s}>
+                        {s.length > 6 ? s.slice(0, 5) : s}
                       </div>
                     ))}
                   </div>
+                  {/* Planet rows */}
                   {PLANETS.filter((p) => p.shard).map((planet) => {
                     const pShards = planet.shard!.split(/[,&]|\s+and\s+/).map((s) => s.trim())
                     return (
                       <div
                         key={planet.id}
-                        className="mb-4 grid items-center gap-3"
-                        style={{ gridTemplateColumns: `160px repeat(${SHARD_NAMES.length}, 1fr)` }}
+                        className="mb-5 grid items-center gap-4"
+                        style={{ gridTemplateColumns: `180px repeat(${SHARD_NAMES.length}, 64px)` }}
                       >
                         <div className="flex items-center gap-3">
                           <span
-                            className="inline-block h-4 w-4 shrink-0 rounded-full"
+                            className="inline-block h-5 w-5 shrink-0 rounded-full"
                             style={{ backgroundColor: planet.color }}
                           />
-                          <span className="text-lg text-gray-300 sm:text-xl">{planet.name}</span>
+                          <span className="text-xl font-medium text-gray-200">{planet.name}</span>
                         </div>
                         {SHARD_NAMES.map((s) => {
                           const present = pShards.includes(s)
                           return (
                             <div key={s} className="flex justify-center">
-                              <span
-                                className={`inline-block h-8 w-8 rounded-md transition-all sm:h-10 sm:w-10 ${present ? 'shadow-md' : 'opacity-10'}`}
+                              <div
+                                className={`flex h-10 w-10 items-center justify-center rounded-full transition-all sm:h-12 sm:w-12 ${present ? 'shadow-lg' : 'opacity-8'}`}
                                 style={{
                                   backgroundColor: present ? (SHARD_COLORS[s] ?? '#6366f1') : '#1f2937',
+                                  boxShadow: present
+                                    ? `0 0 20px ${SHARD_COLORS[s] ?? '#6366f1'}44, 0 0 60px ${SHARD_COLORS[s] ?? '#6366f1'}22`
+                                    : 'none',
                                 }}
-                              />
+                              >
+                                {present && <span className="text-lg font-bold text-gray-950 sm:text-xl">✦</span>}
+                              </div>
                             </div>
                           )
                         })}
@@ -571,118 +561,8 @@ export default function StatsPage() {
             </div>
           )}
 
-          {/* Step 6: Magic Systems by Category */}
+          {/* Step 6: The Heralds */}
           {activeStep === 6 && (
-            <div className="flex h-full flex-col items-center justify-center px-4 sm:px-12">
-              <h2 className="mb-6 bg-gradient-to-r from-cyan-300 via-purple-300 to-cyan-400 bg-clip-text text-2xl font-bold text-transparent sm:mb-8 sm:text-3xl">
-                Magic Systems by Category
-              </h2>
-              <p className="mb-4 text-sm text-gray-500 sm:text-base">
-                {MAGIC_SYSTEMS.length} magic systems in {magicByCategory.length} categories
-              </p>
-              <div className="w-full max-w-3xl space-y-6 sm:space-y-8">
-                {magicByCategory.map((item, i) => {
-                  const pct = (item.count / maxMagicCount) * 100
-                  const colors = [
-                    '#06b6d4',
-                    '#a78bfa',
-                    '#d946ef',
-                    '#f59e0b',
-                    '#22c55e',
-                    '#f97316',
-                    '#ef4444',
-                    '#14b8a6',
-                    '#3b82f6',
-                    '#ec4899',
-                  ]
-                  return (
-                    <div key={item.cat}>
-                      <div className="mb-2 flex items-center justify-between">
-                        <span className="text-lg text-gray-300 sm:text-xl">{item.name}</span>
-                        <span className="text-base text-gray-500 sm:text-lg">{item.count}</span>
-                      </div>
-                      <div className="h-8 overflow-hidden rounded-full bg-gray-800 sm:h-12">
-                        <div
-                          className="h-full rounded-full transition-all duration-1000"
-                          style={{
-                            width: `${pct}%`,
-                            background: `linear-gradient(90deg, ${colors[i % colors.length]}, ${colors[(i + 2) % colors.length]})`,
-                          }}
-                        />
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Step 7: Timeline Event Density */}
-          {activeStep === 7 && (
-            <div className="flex h-full flex-col items-center justify-center px-4">
-              <h2 className="mb-6 bg-gradient-to-r from-cyan-300 via-purple-300 to-cyan-400 bg-clip-text text-2xl font-bold text-transparent sm:mb-8 sm:text-3xl">
-                Timeline Event Density
-              </h2>
-              <p className="mb-4 text-sm text-gray-500 sm:text-base">
-                {TIMELINE_EVENTS.length} events across {ERAS.length} cosmic eras
-              </p>
-              <div className="w-full max-w-5xl">
-                <svg viewBox="0 0 900 360" className="w-full" style={{ maxHeight: '65vh' }}>
-                  {(() => {
-                    const barHeight = 280
-                    return (
-                      <>
-                        {erasLayout.map((era, i) => {
-                          const h = ((eventCountByEra[i]?.count ?? 0) / maxEvents) * barHeight
-                          return (
-                            <g key={era.id}>
-                              <rect
-                                x={era.x}
-                                y={barHeight + 30 - h}
-                                width={Math.max(era.w - 1, 1)}
-                                height={Math.max(h, 2)}
-                                fill={era.color}
-                                opacity={0.6}
-                                rx={3}
-                                className="transition-opacity hover:opacity-100"
-                              >
-                                <title>{`${era.name}: ${eventCountByEra[i]?.count ?? 0} events (${era.startYear}–${era.endYear})`}</title>
-                              </rect>
-                            </g>
-                          )
-                        })}
-                        <line
-                          x1={30}
-                          y1={barHeight + 30}
-                          x2={870}
-                          y2={barHeight + 30}
-                          stroke="#374151"
-                          strokeWidth={2}
-                        />
-                        {erasLayout
-                          .filter((e) => e.w > 50)
-                          .map((era) => (
-                            <text
-                              key={era.id}
-                              x={era.x + era.w / 2}
-                              y={barHeight + 52}
-                              textAnchor="middle"
-                              fill="#6b7280"
-                              fontSize="12"
-                            >
-                              {era.name.length > 16 ? era.name.slice(0, 15) + '…' : era.name}
-                            </text>
-                          ))}
-                      </>
-                    )
-                  })()}
-                </svg>
-              </div>
-            </div>
-          )}
-
-          {/* Step 8: The Heralds */}
-          {activeStep === 8 && (
             <div className="flex h-full flex-col items-center justify-center px-4">
               <h2 className="mb-6 bg-gradient-to-r from-cyan-300 via-purple-300 to-cyan-400 bg-clip-text text-2xl font-bold text-transparent sm:mb-8 sm:text-3xl">
                 The Heralds
