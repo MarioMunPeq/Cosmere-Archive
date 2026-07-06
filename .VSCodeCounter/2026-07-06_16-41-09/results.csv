@@ -1,0 +1,189 @@
+"filename", "language", "TypeScript", "TypeScript JSX", "PostCSS", "JSON", "comment", "blank", "total"
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\App.tsx", "TypeScript JSX", 0, 154, 0, 0, 0, 5, 159
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\common\BookCover.tsx", "TypeScript JSX", 0, 118, 0, 0, 0, 11, 129
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\common\ErrorBoundary.tsx", "TypeScript JSX", 0, 34, 0, 0, 0, 8, 42
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\common\Layout.tsx", "TypeScript JSX", 0, 129, 0, 0, 0, 11, 140
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\common\MapSkeleton.tsx", "TypeScript JSX", 0, 10, 0, 0, 0, 1, 11
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\common\ParticlesBackground.tsx", "TypeScript JSX", 0, 63, 0, 0, 0, 11, 74
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\common\SearchBar.tsx", "TypeScript JSX", 0, 56, 0, 0, 0, 3, 59
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\common\SideDrawer.tsx", "TypeScript JSX", 0, 94, 0, 0, 0, 12, 106
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\common\SplitPane.tsx", "TypeScript JSX", 0, 61, 0, 0, 0, 9, 70
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\common\icons.tsx", "TypeScript JSX", 0, 171, 0, 0, 0, 16, 187
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\common\index.ts", "TypeScript", 7, 0, 0, 0, 0, 1, 8
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\detail\BookPanel.tsx", "TypeScript JSX", 0, 28, 0, 0, 0, 10, 38
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\detail\CharacterDetailModal.tsx", "TypeScript JSX", 0, 302, 0, 0, 0, 24, 326
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\detail\CharacterPanel.tsx", "TypeScript JSX", 0, 57, 0, 0, 0, 10, 67
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\detail\CharacterRelationships.tsx", "TypeScript JSX", 0, 165, 0, 0, 0, 14, 179
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\detail\FamilyTreeView.tsx", "TypeScript JSX", 0, 295, 0, 0, 0, 27, 322
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\detail\ForceGraph.tsx", "TypeScript JSX", 0, 309, 0, 0, 0, 27, 336
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\detail\PlanetDetailPanel.tsx", "TypeScript JSX", 0, 175, 0, 0, 0, 12, 187
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\detail\PlanetForceGraph.tsx", "TypeScript JSX", 0, 305, 0, 0, 0, 27, 332
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\detail\PlanetsTabContent.tsx", "TypeScript JSX", 0, 206, 0, 0, 0, 15, 221
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\detail\RelationshipsTabContent.tsx", "TypeScript JSX", 0, 248, 0, 0, 0, 15, 263
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\detail\ShardsTabContent.tsx", "TypeScript JSX", 0, 270, 0, 0, 0, 15, 285
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\detail\herald\HonorbladeSVG.tsx", "TypeScript JSX", 0, 299, 0, 0, 0, 17, 316
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\detail\index.ts", "TypeScript", 9, 0, 0, 0, 0, 1, 10
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\library\BookSpine.tsx", "TypeScript JSX", 0, 285, 0, 0, 4, 25, 314
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\library\CosmereLibrary.tsx", "TypeScript JSX", 0, 162, 0, 0, 6, 13, 181
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\library\Plaque.tsx", "TypeScript JSX", 0, 56, 0, 0, 1, 4, 61
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\magic\AllomanticTable.tsx", "TypeScript JSX", 0, 99, 0, 0, 0, 8, 107
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\magic\MagicSystemCard.tsx", "TypeScript JSX", 0, 91, 0, 0, 0, 9, 100
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\magic\MagicSystemDetail.tsx", "TypeScript JSX", 0, 113, 0, 0, 0, 9, 122
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\magic\index.ts", "TypeScript", 2, 0, 0, 0, 0, 1, 3
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\CharacterComparison.tsx", "TypeScript JSX", 0, 167, 0, 0, 0, 15, 182
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\CharacterGrid.tsx", "TypeScript JSX", 0, 193, 0, 0, 0, 22, 215
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\ConstellationLines.tsx", "TypeScript JSX", 0, 86, 0, 0, 0, 9, 95
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\CosmicDust.tsx", "TypeScript JSX", 0, 44, 0, 0, 0, 6, 50
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\JourneyAnimation.tsx", "TypeScript JSX", 0, 149, 0, 0, 0, 14, 163
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\JourneyContext.tsx", "TypeScript JSX", 0, 249, 0, 0, 0, 27, 276
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\LayersToggle.tsx", "TypeScript JSX", 0, 52, 0, 0, 0, 6, 58
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\NavigationConsole.tsx", "TypeScript JSX", 0, 220, 0, 0, 0, 10, 230
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\NavigationGrid.tsx", "TypeScript JSX", 0, 24, 0, 0, 0, 4, 28
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\OrbitRing.tsx", "TypeScript JSX", 0, 36, 0, 0, 0, 5, 41
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\PlanetHero.tsx", "TypeScript JSX", 0, 359, 0, 0, 0, 21, 380
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\PlanetLabels.tsx", "TypeScript JSX", 0, 38, 0, 0, 0, 3, 41
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\PlanetPanel.tsx", "TypeScript JSX", 0, 287, 0, 0, 0, 23, 310
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\PlanetRenderer.tsx", "TypeScript JSX", 0, 395, 0, 0, 0, 24, 419
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\PlanetTooltip.tsx", "TypeScript JSX", 0, 41, 0, 0, 0, 5, 46
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\ShardIcons.tsx", "TypeScript JSX", 0, 50, 0, 0, 0, 5, 55
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\ShardLegend.tsx", "TypeScript JSX", 0, 55, 0, 0, 0, 5, 60
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\StarField.tsx", "TypeScript JSX", 0, 39, 0, 0, 0, 6, 45
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\UniverseMap.tsx", "TypeScript JSX", 0, 321, 0, 0, 0, 26, 347
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\WorldhopperDetailPanel.tsx", "TypeScript JSX", 0, 80, 0, 0, 0, 9, 89
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\WorldhopperGallery.tsx", "TypeScript JSX", 0, 122, 0, 0, 0, 11, 133
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\WorldhopperHeatmap.tsx", "TypeScript JSX", 0, 57, 0, 0, 0, 8, 65
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\WorldhopperJourneyPlayer.tsx", "TypeScript JSX", 0, 135, 0, 0, 0, 13, 148
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\WorldhopperPicker.tsx", "TypeScript JSX", 0, 62, 0, 0, 0, 4, 66
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\WorldhopperRoutes.tsx", "TypeScript JSX", 0, 70, 0, 0, 0, 13, 83
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\ZoomControls.tsx", "TypeScript JSX", 0, 36, 0, 0, 0, 4, 40
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\map\index.ts", "TypeScript", 19, 0, 0, 0, 0, 1, 20
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\mindmap\CosmereMindMap3D.tsx", "TypeScript JSX", 0, 603, 0, 0, 15, 84, 702
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\mindmap\index.ts", "TypeScript", 1, 0, 0, 0, 0, 1, 2
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\search\SearchInput.tsx", "TypeScript JSX", 0, 57, 0, 0, 0, 3, 60
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\search\SearchResultsList.tsx", "TypeScript JSX", 0, 111, 0, 0, 0, 4, 115
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\search\index.ts", "TypeScript", 2, 0, 0, 0, 0, 1, 3
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\timeline\CardOverlay.tsx", "TypeScript JSX", 0, 100, 0, 0, 1, 7, 108
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\timeline\Timeline.tsx", "TypeScript JSX", 0, 353, 0, 0, 11, 24, 388
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\timeline\TooltipOverlay.tsx", "TypeScript JSX", 0, 35, 0, 0, 0, 4, 39
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\timeline\index.ts", "TypeScript", 3, 0, 0, 0, 0, 1, 4
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\BackToMapButton.tsx", "TypeScript JSX", 0, 36, 0, 0, 0, 5, 41
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\BackToTop.tsx", "TypeScript JSX", 0, 41, 0, 0, 0, 8, 49
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\Breadcrumbs.tsx", "TypeScript JSX", 0, 64, 0, 0, 0, 13, 77
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\CharacterAvatar.tsx", "TypeScript JSX", 0, 37, 0, 0, 0, 5, 42
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\CloseButton.tsx", "TypeScript JSX", 0, 23, 0, 0, 0, 4, 27
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\ColorDot.tsx", "TypeScript JSX", 0, 10, 0, 0, 0, 5, 15
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\CommandPalette.tsx", "TypeScript JSX", 0, 158, 0, 0, 0, 11, 169
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\CompareCharacterPanel.tsx", "TypeScript JSX", 0, 39, 0, 0, 0, 5, 44
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\DetailPanel.tsx", "TypeScript JSX", 0, 16, 0, 0, 0, 4, 20
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\EmptyState.tsx", "TypeScript JSX", 0, 8, 0, 0, 0, 4, 12
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\ErrorFallback.tsx", "TypeScript JSX", 0, 31, 0, 0, 0, 4, 35
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\FloatingTogglePanel.tsx", "TypeScript JSX", 0, 43, 0, 0, 0, 6, 49
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\HorizontalBar.tsx", "TypeScript JSX", 0, 39, 0, 0, 0, 6, 45
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\InfoSection.tsx", "TypeScript JSX", 0, 15, 0, 0, 0, 4, 19
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\KeyboardShortcutsHelp.tsx", "TypeScript JSX", 0, 43, 0, 0, 0, 5, 48
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\LoadingSpinner.tsx", "TypeScript JSX", 0, 12, 0, 0, 0, 3, 15
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\Overlay.tsx", "TypeScript JSX", 0, 8, 0, 0, 0, 4, 12
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\PageLayout.tsx", "TypeScript JSX", 0, 17, 0, 0, 0, 5, 22
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\RouteFallback.tsx", "TypeScript JSX", 0, 14, 0, 0, 0, 3, 17
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\ShardCard.tsx", "TypeScript JSX", 0, 57, 0, 0, 0, 9, 66
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\ShareButton.tsx", "TypeScript JSX", 0, 56, 0, 0, 2, 7, 65
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\Skeleton.tsx", "TypeScript JSX", 0, 106, 0, 0, 0, 6, 112
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\SpoilerToggle.tsx", "TypeScript JSX", 0, 105, 0, 0, 0, 7, 112
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\ThemeToggle.tsx", "TypeScript JSX", 0, 30, 0, 0, 0, 3, 33
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\TransitionLink.tsx", "TypeScript JSX", 0, 18, 0, 0, 0, 5, 23
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\components\ui\index.ts", "TypeScript", 25, 0, 0, 0, 0, 1, 26
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\constants.ts", "TypeScript", 22, 0, 0, 0, 0, 4, 26
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\contexts\ShardThemeContext.tsx", "TypeScript JSX", 0, 40, 0, 0, 0, 7, 47
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\data\generated\characters.json", "JSON", 0, 0, 0, 684, 0, 1, 685
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\data\static\books.ts", "TypeScript", 248, 0, 0, 0, 8, 10, 266
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\data\static\family-data.ts", "TypeScript", 170, 0, 0, 0, 0, 15, 185
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\data\static\heralds.ts", "TypeScript", 130, 0, 0, 0, 0, 2, 132
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\data\static\index.ts", "TypeScript", 39, 0, 0, 0, 0, 7, 46
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\data\static\magic-systems.ts", "TypeScript", 436, 0, 0, 0, 0, 5, 441
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\data\static\planet-visuals.ts", "TypeScript", 206, 0, 0, 0, 0, 3, 209
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\data\static\planets.ts", "TypeScript", 301, 0, 0, 0, 0, 2, 303
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\data\static\sagas.ts", "TypeScript", 72, 0, 0, 0, 0, 2, 74
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\data\static\shard-themes.ts", "TypeScript", 221, 0, 0, 0, 0, 4, 225
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\data\static\static-data.ts", "TypeScript", 135, 0, 0, 0, 3, 13, 151
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\data\static\timeline\character-lifespans.ts", "TypeScript", 527, 0, 0, 0, 6, 8, 541
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\data\static\timeline\eras.ts", "TypeScript", 100, 0, 0, 0, 0, 2, 102
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\data\static\timeline\events.ts", "TypeScript", 1483, 0, 0, 0, 39, 14, 1536
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\data\static\timeline\index.ts", "TypeScript", 25, 0, 0, 0, 0, 5, 30
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\data\static\timeline\worldhopper-journeys.ts", "TypeScript", 113, 0, 0, 0, 0, 2, 115
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\hooks\useAnimationEngine.ts", "TypeScript", 200, 0, 0, 0, 0, 26, 226
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\hooks\useCamera.ts", "TypeScript", 266, 0, 0, 0, 0, 28, 294
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\hooks\useFocusTrap.ts", "TypeScript", 35, 0, 0, 0, 0, 9, 44
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\hooks\useInfiniteScroll.ts", "TypeScript", 30, 0, 0, 0, 1, 10, 41
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\hooks\useKeyboardShortcut.ts", "TypeScript", 23, 0, 0, 0, 0, 2, 25
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\hooks\useLocalStorage.ts", "TypeScript", 25, 0, 0, 0, 1, 4, 30
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\hooks\useMapInteraction.ts", "TypeScript", 237, 0, 0, 0, 0, 16, 253
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\hooks\useResizeObserver.ts", "TypeScript", 14, 0, 0, 0, 0, 2, 16
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\hooks\useSEOMeta.ts", "TypeScript", 48, 0, 0, 0, 0, 7, 55
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\hooks\useSearch.ts", "TypeScript", 246, 0, 0, 0, 0, 25, 271
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\hooks\useSpoilerMode.ts", "TypeScript", 57, 0, 0, 0, 0, 12, 69
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\hooks\useTextFilter.ts", "TypeScript", 8, 0, 0, 0, 0, 2, 10
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\hooks\useTheme.ts", "TypeScript", 20, 0, 0, 0, 0, 7, 27
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\hooks\useViewTransition.ts", "TypeScript", 20, 0, 0, 0, 0, 4, 24
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\index.css", "PostCSS", 0, 0, 605, 0, 15, 96, 716
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\main.tsx", "TypeScript JSX", 0, 14, 0, 0, 0, 2, 16
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\pages\About.tsx", "TypeScript JSX", 0, 83, 0, 0, 0, 8, 91
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\pages\BookPage.tsx", "TypeScript JSX", 0, 185, 0, 0, 0, 20, 205
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\pages\BooksPage.tsx", "TypeScript JSX", 0, 172, 0, 0, 0, 11, 183
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\pages\CharactersPage.tsx", "TypeScript JSX", 0, 693, 0, 0, 0, 52, 745
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\pages\ComparePage.tsx", "TypeScript JSX", 0, 113, 0, 0, 0, 13, 126
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\pages\HeraldsPage.tsx", "TypeScript JSX", 0, 199, 0, 0, 0, 20, 219
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\pages\LandingPage.tsx", "TypeScript JSX", 0, 158, 0, 0, 0, 11, 169
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\pages\LibraryPage.tsx", "TypeScript JSX", 0, 24, 0, 0, 2, 4, 30
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\pages\LocationsPage.tsx", "TypeScript JSX", 0, 71, 0, 0, 0, 7, 78
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\pages\MagicSystemsPage.tsx", "TypeScript JSX", 0, 176, 0, 0, 0, 13, 189
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\pages\MapPage.tsx", "TypeScript JSX", 0, 167, 0, 0, 0, 11, 178
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\pages\MindMapPage.tsx", "TypeScript JSX", 0, 20, 0, 0, 0, 3, 23
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\pages\NotFound.tsx", "TypeScript JSX", 0, 22, 0, 0, 0, 2, 24
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\pages\StandaloneBooksPage.tsx", "TypeScript JSX", 0, 24, 0, 0, 0, 2, 26
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\pages\StandaloneTimelinePage.tsx", "TypeScript JSX", 0, 24, 0, 0, 0, 2, 26
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\pages\StatsPage.tsx", "TypeScript JSX", 0, 452, 0, 0, 13, 21, 486
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\pages\TimelinePage.tsx", "TypeScript JSX", 0, 303, 0, 0, 7, 28, 338
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\About.test.tsx", "TypeScript JSX", 0, 33, 0, 0, 0, 6, 39
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\BackToTop.test.tsx", "TypeScript JSX", 0, 20, 0, 0, 0, 5, 25
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\BookCover.test.tsx", "TypeScript JSX", 0, 28, 0, 0, 0, 5, 33
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\BookPage.test.tsx", "TypeScript JSX", 0, 45, 0, 0, 0, 9, 54
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\BooksPage.test.tsx", "TypeScript JSX", 0, 34, 0, 0, 0, 6, 40
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\Breadcrumbs.test.tsx", "TypeScript JSX", 0, 42, 0, 0, 0, 8, 50
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\CharactersPage.test.tsx", "TypeScript JSX", 0, 66, 0, 0, 0, 14, 80
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\ErrorBoundary.test.tsx", "TypeScript JSX", 0, 74, 0, 0, 0, 12, 86
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\HeraldsPage.test.tsx", "TypeScript JSX", 0, 75, 0, 0, 0, 14, 89
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\JourneyAnimation.test.tsx", "TypeScript JSX", 0, 461, 0, 0, 25, 87, 573
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\LibraryPage.test.tsx", "TypeScript JSX", 0, 25, 0, 0, 0, 5, 30
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\LocationsPage.test.tsx", "TypeScript JSX", 0, 38, 0, 0, 0, 7, 45
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\MagicSystemsPage.test.tsx", "TypeScript JSX", 0, 87, 0, 0, 0, 16, 103
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\NotFound.test.tsx", "TypeScript JSX", 0, 31, 0, 0, 0, 6, 37
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\StandaloneBooksPage.test.tsx", "TypeScript JSX", 0, 36, 0, 0, 0, 7, 43
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\StandaloneTimelinePage.test.tsx", "TypeScript JSX", 0, 38, 0, 0, 0, 7, 45
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\StatsPage.test.tsx", "TypeScript JSX", 0, 57, 0, 0, 0, 12, 69
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\TransitionLink.test.tsx", "TypeScript JSX", 0, 25, 0, 0, 0, 4, 29
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\a11y.test.tsx", "TypeScript JSX", 0, 34, 0, 0, 0, 6, 40
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\data-integrity.test.ts", "TypeScript", 322, 0, 0, 0, 0, 46, 368
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\fixtures\index.ts", "TypeScript", 2, 0, 0, 0, 0, 2, 4
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\fly-to.test.ts", "TypeScript", 42, 0, 0, 0, 0, 10, 52
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\journey-utils.test.ts", "TypeScript", 295, 0, 0, 0, 28, 47, 370
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\setup.ts", "TypeScript", 53, 0, 0, 0, 1, 6, 60
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\test-utils.tsx", "TypeScript JSX", 0, 6, 0, 0, 0, 2, 8
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\useViewTransition.test.tsx", "TypeScript JSX", 0, 17, 0, 0, 0, 4, 21
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\test\validate.test.ts", "TypeScript", 115, 0, 0, 0, 0, 18, 133
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\types\book.ts", "TypeScript", 10, 0, 0, 0, 10, 9, 29
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\types\character.ts", "TypeScript", 9, 0, 0, 0, 13, 8, 30
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\types\family.ts", "TypeScript", 17, 0, 0, 0, 0, 2, 19
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\types\force-graph.ts", "TypeScript", 11, 0, 0, 0, 0, 3, 14
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\types\herald.ts", "TypeScript", 14, 0, 0, 0, 0, 1, 15
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\types\index.ts", "TypeScript", 6, 0, 0, 0, 0, 1, 7
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\types\planet-visuals.ts", "TypeScript", 63, 0, 0, 0, 0, 10, 73
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\types\planet.ts", "TypeScript", 21, 0, 0, 0, 0, 2, 23
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\types\relationships.ts", "TypeScript", 55, 0, 0, 0, 0, 4, 59
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\types\search.ts", "TypeScript", 6, 0, 0, 0, 0, 1, 7
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\utils\fly-to.ts", "TypeScript", 15, 0, 0, 0, 0, 2, 17
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\utils\index.ts", "TypeScript", 13, 0, 0, 0, 0, 1, 14
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\utils\journey.ts", "TypeScript", 178, 0, 0, 0, 0, 27, 205
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\utils\shelf-layout.ts", "TypeScript", 39, 0, 0, 0, 6, 13, 58
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\utils\timeline-layout.ts", "TypeScript", 50, 0, 0, 0, 0, 10, 60
+"c:\Users\Mario\Documents\PROYECTOS\Cosmere Archive\src\utils\validate.ts", "TypeScript", 50, 0, 0, 0, 0, 14, 64
+"Total", "-", 6911, 14219, 605, 684, 218, 2006, 24643

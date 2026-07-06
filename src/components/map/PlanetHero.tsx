@@ -177,6 +177,111 @@ function HeroSurfacePattern({ pid, cx, cy, r }: { pid: string; cx: number; cy: n
         }
         break
       }
+      case 'geometric': {
+        const ringCount = 4
+        for (let i = 0; i < ringCount; i++) {
+          const rr = r * (0.2 + (i / ringCount) * 0.7)
+          list.push(
+            <circle
+              key={`ring${i}`}
+              cx={cx}
+              cy={cy}
+              r={rr}
+              fill="none"
+              stroke={c.colors[i % c.colors.length]}
+              strokeWidth={0.5}
+              opacity={0.15 + seeded(i, seed) * 0.1}
+            />,
+          )
+        }
+        const spokeCount = 12
+        for (let i = 0; i < spokeCount; i++) {
+          const angle = (i / spokeCount) * 360
+          const rad = (angle * Math.PI) / 180
+          list.push(
+            <line
+              key={`spoke${i}`}
+              x1={cx}
+              y1={cy}
+              x2={cx + r * 0.9 * Math.cos(rad)}
+              y2={cy + r * 0.9 * Math.sin(rad)}
+              stroke={c.colors[0]}
+              strokeWidth={0.3 + seeded(i, seed + 1) * 0.3}
+              opacity={0.08}
+            />,
+          )
+        }
+        const aonCx = cx + (seeded(0, seed + 10) - 0.5) * r * 0.4
+        const aonCy = cy + (seeded(1, seed + 10) - 0.5) * r * 0.4
+        const aonR = r * 0.15
+        list.push(
+          <circle
+            key="aon"
+            cx={aonCx}
+            cy={aonCy}
+            r={aonR}
+            fill="none"
+            stroke={c.colors[1] ?? c.colors[0]}
+            strokeWidth={1.5}
+            opacity={0.6}
+          />,
+        )
+        list.push(
+          <circle key="aon-dot" cx={aonCx} cy={aonCy} r={1.5} fill={c.colors[1] ?? c.colors[0]} opacity={0.8} />,
+        )
+        for (let i = 0; i < 6; i++) {
+          const aRad = (i / 6) * 2 * Math.PI
+          const lx = aonCx + aonR * Math.cos(aRad)
+          const ly = aonCy + aonR * Math.sin(aRad)
+          list.push(
+            <line
+              key={`aon-line${i}`}
+              x1={aonCx + aonR * 0.3 * Math.cos(aRad)}
+              y1={aonCy + aonR * 0.3 * Math.sin(aRad)}
+              x2={lx}
+              y2={ly}
+              stroke={c.colors[1] ?? c.colors[0]}
+              strokeWidth={0.4}
+              opacity={0.4}
+            />,
+          )
+        }
+        break
+      }
+      case 'horizontals': {
+        const stripeCount = 10
+        const stripeH = (r * 2) / stripeCount
+        for (let i = 0; i < stripeCount; i++) {
+          const yOff = -r + i * stripeH
+          list.push(
+            <rect
+              key={i}
+              x={cx - r}
+              y={cy + yOff}
+              width={r * 2}
+              height={stripeH + 1}
+              fill={c.colors[i % c.colors.length]}
+              opacity={0.25 + seeded(i, seed) * 0.2}
+            />,
+          )
+        }
+        const accentW = r * 0.03 + 1
+        for (let i = 0; i < 3; i++) {
+          const yOff = -r * 0.6 + i * r * 0.6
+          list.push(
+            <rect
+              key={`accent${i}`}
+              x={cx - r}
+              y={cy + yOff}
+              width={r * 2}
+              height={accentW}
+              fill={c.colors[3] ?? c.colors[0]}
+              opacity={0.4}
+            />,
+          )
+        }
+        break
+      }
     }
     return list
   }, [c, cx, cy, r, seed])
@@ -202,11 +307,12 @@ const PlanetHero = memo(function PlanetHero({ planet, size = 220 }: Props) {
 
   const particles = useMemo(() => {
     if (!v.particles) return []
-    return Array.from({ length: v.particles.count }, (_, i) => ({
+    const pc = v.particles
+    return Array.from({ length: pc.count }, (_, i) => ({
       angle: seeded(i, seed) * 360,
-      dist: r * (0.8 + seeded(i, seed + 1) * (v.particles!.spread - 0.8)),
-      pr: v.particles!.size[0] + seeded(i, seed + 2) * (v.particles!.size[1] - v.particles!.size[0]),
-      delay: seeded(i, seed + 3) * v.particles!.speed,
+      dist: r * (0.8 + seeded(i, seed + 1) * (pc.spread - 0.8)),
+      pr: pc.size[0] + seeded(i, seed + 2) * (pc.size[1] - pc.size[0]),
+      delay: seeded(i, seed + 3) * pc.speed,
       opacity: seeded(i, seed + 4) * 0.12 + 0.04,
     }))
   }, [v.particles, r, seed])
@@ -343,10 +449,10 @@ const PlanetHero = memo(function PlanetHero({ planet, size = 220 }: Props) {
         />
       )}
 
-      {particles.length > 0 && (
+      {v.particles && particles.length > 0 && (
         <g
           style={{
-            animation: `planet-rotate ${v.particles!.speed}s linear infinite`,
+            animation: `planet-rotate ${v.particles.speed}s linear infinite`,
             transformOrigin: `${cx}px ${cy}px`,
           }}
         >

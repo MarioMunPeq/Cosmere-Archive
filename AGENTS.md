@@ -73,50 +73,22 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - Fixed overflow bug on Locations/Shards tabs: removed extra flex wrappers, added `min-h-0` to `mx-auto` div, `h-full` to grid container, `shrink-0` to non-scrollable elements
 - All 251 tests pass, `tsc -b` clean, `pnpm lint` clean, ESLint clean (can commit)
 
-#### Done (this session: Books + synopses)
+##### Done (this session: Map + Highstorm redesign)
 
-- Improved `BookCover.tsx` — `lg` size (160×240), gradient fills, star dots, `onError` SVG fallback with `import.meta.env.BASE_URL` prefix
-- Rewrote `BooksPage.tsx` — flat card grid, star field, saga filter pills, stagger animation, cosmic hover effects, no page chrome
-- Created `StandaloneBooksPage.tsx` — gradient title, BackToMapButton, nebula blur
-- Rewrote `BookPage.tsx` — planets section (PLANETS filtered by book.id), magic systems section (MAGIC_SYSTEMS filtered by book.id), cosmic gradient cards, hover glow
-- Updated `public/images/covers/` with cover paths in `books.ts`
-- Updated `App.tsx` — `/books` route uses StandaloneBooksPage
-- Rewrote all 27 book synopses in `books.ts` — Coppermind-style, 4–6 sentences each, lore-rich, covering setting/protagonist/conflict/significance
-- Rewrote all 93 character descriptions in `characters.json` — Coppermind-style, 2–4 sentences each, covering origin/role/abilities/significance
-- Added cross-reference URL params: CharactersPage reads `character` param to auto-open detail modal; PlanetsTabContent reads `planet` param to auto-select planet and open PlanetDetailPanel (matching MagicSystemsPage `system` param pattern)
-- Updated BooksPage.test.tsx, BookPage.test.tsx, created StandaloneBooksPage.test.tsx
-- All 257 tests pass, `tsc -b` clean, `pnpm lint` clean, `pnpm build` clean
-
-#### Blocked
-
-- (none)
-
-#### Done (this session: Stats redesign)
-
-- Added `wordCount` field to `Book` type (`src/types/book.ts`)
-- Added `wordCount` data (approximate) to all 27 books in `books.ts` (Mistborn Era 1: ~208–248K, Era 2: ~104–157K, Stormlight: ~387–492K, etc.)
-- Rewrote `StatsPage.tsx` with 10 cosmic-themed sections:
-  1. **Hero** "Cosmere in Numbers" — gradient title, subtitle with counts
-  2. **Stat Cards** — 8 glass cards with `AnimatedCounter` component (Books, Characters, Planets, Shards, Sagas, Magic Systems, Timeline Events, Heralds)
-  3. **Books by Saga** — gradient horizontal bars with saga colors, staggered entrance
-  4. **Characters by Planet** — SVG donut chart with planet legend, center count
-  5. **Word Count by Book** — virtual bookshelf with BookShelf component (spine images, wood texture, proportional widths, tooltip, extract-on-click)
-  6. **Publication Timeline** — SVG timeline with dots per year, book names, title labels
-  7. **Shards Across the Cosmere** — CSS grid: planets × shards, colored cells for presence
-  8. **Magic Systems by Category** — gradient horizontal bars per category
-  9. **Timeline Event Density** — SVG bar chart per cosmic era, width = duration, height = events
-  10. **The Heralds** — 10-card grid with color initials, names, and titles
-- Created `useOnScreen` custom hook (IntersectionObserver) for scroll-triggered section entrance animations
-- Created `SectionWrap` wrapper with fade-in-up on scroll
-- Created `StarField` component consistent with other pages
-- Created `BookShelf.tsx` — realistic virtual bookshelf with image-based spines, CSS gradient fallback, wood texture background, proportional √(wordCount) widths, saga-sorted shelves, tooltip on hover, extract-on-click animation, saga filter pills + sort toggle
-- Added optional `spine` field to `Book` type (`src/types/book.ts`)
-- Added `spine: 'images/spines/{id}.webp'` entries to all 22 books in `src/data/static/books.ts`
-- Downloaded dark walnut wood texture from Texturize.app → `public/images/wood-texture.png` (2048×2048, seamless, royalty-free)
-- Removed old `WordCountGrid` function (cover gallery with badges) from `StatsPage.tsx`
-- Fixed saga color lookup bug in `getSagaColor()` (was always falling back to purple due to ID/name mismatch)
-- Updated `StatsPage.test.tsx` — 11 tests for all 10 sections + back link
-- All 262 tests pass, `tsc -b` clean, `pnpm lint` clean, `pnpm build` clean
+- Fixed `HighstormLayer.tsx` bugs:
+  - Fixed `boltCount === 0` returning `<boltCount>return null</boltCount>` → `if (bolts.length === 0) return null`
+  - Removed useless `boltCount` function at bottom
+  - Removed unused parameters: `s` from `gaussValue()`, `cx`/`cy` from `generatePuffs()`, `r`/`config` from `renderPuffs()`, `cx`/`cy`/`r` from `HighstormDefs`
+  - Updated all call sites to match new signatures
+  - Simplified `HighstormDefs` prop type from `LayerProps` to `{ pid: string }`
+  - Updated `PlanetRenderer.tsx` call to match
+- Updated `src/index.css`:
+  - Added `hs-orbit` keyframe (0→360deg rotation)
+  - Simplified `hs-lightning-flash` to 180ms flash (3% on, 6% off, 12% echo)
+  - Replaced `hs-stormlight-drift` with `hs-stormlight-pulse` (simple opacity pulse)
+  - Removed `hs-lightning-glow` and `.hs-lightning-glow` (no longer needed)
+  - Removed `.hs-glow` (no longer needed)
+- All 265 tests pass, `tsc -b` clean, `pnpm lint` clean
 
 ### Key Decisions
 

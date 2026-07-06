@@ -1,5 +1,5 @@
 export interface SurfaceConfig {
-  pattern: 'bands' | 'veins' | 'speckled' | 'metallic' | 'smooth' | 'scales' | 'marble'
+  pattern: 'bands' | 'veins' | 'speckled' | 'metallic' | 'smooth' | 'scales' | 'marble' | 'geometric' | 'horizontals'
   colors: string[]
   opacity?: number
 }
@@ -50,6 +50,50 @@ export interface AnimationConfig {
   rotationSpeed: number
 }
 
+export interface StormCloudLayer {
+  count: number
+  color: string
+  opacity: number
+  blurAmount: number
+  minSize: number
+  maxSize: number
+  radialSpread: number
+  heightScale: number
+}
+
+export interface HighstormConfig {
+  layers: StormCloudLayer[]
+  arcSpan: number
+  orbitalPeriod: number
+  orbitalRadius: number
+  frontGlowColor: string
+  frontGlowOpacity: number
+  stormlightCount: number
+  stormlightColor: string
+  lightningMinInterval: number
+  lightningMaxInterval: number
+  turbulenceFrequency: number
+  turbulenceOctaves: number
+  displacementScale: number
+}
+
+export interface ThematicConfig {
+  type:
+    | 'storm-spiral'
+    | 'aon-lines'
+    | 'day-night-split'
+    | 'magma-cracks'
+    | 'mist'
+    | 'ancient-glow'
+    | 'color-waves'
+    | 'highstorm'
+  colors: string[]
+  opacity?: number
+  speed?: number
+  extendPx?: number
+  highstorm?: HighstormConfig
+}
+
 export interface PlanetVisualConfig {
   core: { colors: [string, string, string] }
   surface: SurfaceConfig
@@ -59,5 +103,6 @@ export interface PlanetVisualConfig {
   halo: HaloConfig
   shadow: ShadowConfig
   particles?: ParticleConfig
+  thematic?: ThematicConfig
   animation: AnimationConfig
 }

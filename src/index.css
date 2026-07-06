@@ -644,8 +644,200 @@ body {
   --text-main: #111827;
 }
 
+@keyframes storm-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes halo-breathe {
+  0%,
+  100% {
+    opacity: 0.06;
+  }
+  50% {
+    opacity: 0.12;
+  }
+}
+
+@keyframes magma-glow {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes aon-pulse {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes color-shift {
+  0% {
+    transform: rotate(0deg);
+    opacity: 0.08;
+  }
+  50% {
+    transform: rotate(180deg);
+    opacity: 0.18;
+  }
+  100% {
+    transform: rotate(360deg);
+    opacity: 0.08;
+  }
+}
+
+@keyframes mist-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.04;
+  }
+  50% {
+    transform: translate(3px, -2px) scale(1.05);
+    opacity: 0.1;
+  }
+}
+
+@keyframes ash-fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.15;
+  }
+  80% {
+    opacity: 0.1;
+  }
+  100% {
+    transform: translateY(12px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes spore-drift {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.12;
+  }
+  80% {
+    opacity: 0.08;
+  }
+  100% {
+    transform: translate(5px, -8px) scale(0.6);
+    opacity: 0;
+  }
+}
+
+@keyframes ember-drift {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.2;
+  }
+  100% {
+    transform: translate(-6px, -10px) scale(0.3);
+    opacity: 0;
+  }
+}
+
+@keyframes ancient-float {
+  0%,
+  100% {
+    transform: translate(0, 0);
+    opacity: 0.03;
+  }
+  25% {
+    transform: translate(4px, -3px);
+    opacity: 0.08;
+  }
+  50% {
+    transform: translate(-2px, 4px);
+    opacity: 0.05;
+  }
+  75% {
+    transform: translate(3px, 2px);
+    opacity: 0.07;
+  }
+}
+
 [data-theme='light'] body {
   background-color: var(--bg-page);
+}
+
+@keyframes hs-orbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes hs-lightning-flash {
+  0% {
+    opacity: 0;
+  }
+  3% {
+    opacity: var(--bolt-opacity, 0.6);
+  }
+  6% {
+    opacity: 0;
+  }
+  12% {
+    opacity: calc(var(--bolt-opacity, 0.6) * 0.25);
+  }
+  18% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes hs-stormlight-pulse {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.12;
+  }
+  35% {
+    opacity: 0.06;
+  }
+  50% {
+    opacity: 0.1;
+  }
+}
+
+.hs-lightning {
+  animation: hs-lightning-flash 0.3s ease-out both;
+}
+
+.hs-stormlight {
+  animation: hs-stormlight-pulse 4s ease-in-out var(--sl-delay, 0s) infinite;
+}
+
+.hs-glow {
+  mix-blend-mode: screen;
 }
 
 [data-theme='light'] ::-webkit-scrollbar-thumb {

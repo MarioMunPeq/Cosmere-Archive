@@ -1,0 +1,1124 @@
+{
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/types/planet.ts": {
+    "language": "TypeScript",
+    "code": 21,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/utils/index.ts": {
+    "language": "TypeScript",
+    "code": 13,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/utils/validate.ts": {
+    "language": "TypeScript",
+    "code": 50,
+    "comment": 0,
+    "blank": 14
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/utils/shelf-layout.ts": {
+    "language": "TypeScript",
+    "code": 39,
+    "comment": 6,
+    "blank": 13
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/utils/timeline-layout.ts": {
+    "language": "TypeScript",
+    "code": 50,
+    "comment": 0,
+    "blank": 10
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/types/search.ts": {
+    "language": "TypeScript",
+    "code": 6,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/types/planet-visuals.ts": {
+    "language": "TypeScript",
+    "code": 63,
+    "comment": 0,
+    "blank": 10
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/utils/fly-to.ts": {
+    "language": "TypeScript",
+    "code": 15,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/utils/journey.ts": {
+    "language": "TypeScript",
+    "code": 178,
+    "comment": 0,
+    "blank": 27
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/types/relationships.ts": {
+    "language": "TypeScript",
+    "code": 55,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/types/herald.ts": {
+    "language": "TypeScript",
+    "code": 14,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/types/index.ts": {
+    "language": "TypeScript",
+    "code": 6,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/types/book.ts": {
+    "language": "TypeScript",
+    "code": 10,
+    "comment": 10,
+    "blank": 9
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/types/character.ts": {
+    "language": "TypeScript",
+    "code": 9,
+    "comment": 13,
+    "blank": 8
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/types/family.ts": {
+    "language": "TypeScript",
+    "code": 17,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/types/force-graph.ts": {
+    "language": "TypeScript",
+    "code": 11,
+    "comment": 0,
+    "blank": 3
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/validate.test.ts": {
+    "language": "TypeScript",
+    "code": 115,
+    "comment": 0,
+    "blank": 18
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/TransitionLink.test.tsx": {
+    "language": "TypeScript JSX",
+    "code": 25,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/StandaloneTimelinePage.test.tsx": {
+    "language": "TypeScript JSX",
+    "code": 38,
+    "comment": 0,
+    "blank": 7
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/StatsPage.test.tsx": {
+    "language": "TypeScript JSX",
+    "code": 57,
+    "comment": 0,
+    "blank": 12
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/test-utils.tsx": {
+    "language": "TypeScript JSX",
+    "code": 6,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/StandaloneBooksPage.test.tsx": {
+    "language": "TypeScript JSX",
+    "code": 36,
+    "comment": 0,
+    "blank": 7
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/useViewTransition.test.tsx": {
+    "language": "TypeScript JSX",
+    "code": 17,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/setup.ts": {
+    "language": "TypeScript",
+    "code": 53,
+    "comment": 1,
+    "blank": 6
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/NotFound.test.tsx": {
+    "language": "TypeScript JSX",
+    "code": 31,
+    "comment": 0,
+    "blank": 6
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/LocationsPage.test.tsx": {
+    "language": "TypeScript JSX",
+    "code": 38,
+    "comment": 0,
+    "blank": 7
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/journey-utils.test.ts": {
+    "language": "TypeScript",
+    "code": 295,
+    "comment": 28,
+    "blank": 47
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/MagicSystemsPage.test.tsx": {
+    "language": "TypeScript JSX",
+    "code": 87,
+    "comment": 0,
+    "blank": 16
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/fly-to.test.ts": {
+    "language": "TypeScript",
+    "code": 42,
+    "comment": 0,
+    "blank": 10
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/JourneyAnimation.test.tsx": {
+    "language": "TypeScript JSX",
+    "code": 461,
+    "comment": 25,
+    "blank": 87
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/LibraryPage.test.tsx": {
+    "language": "TypeScript JSX",
+    "code": 25,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/fixtures/index.ts": {
+    "language": "TypeScript",
+    "code": 2,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/HeraldsPage.test.tsx": {
+    "language": "TypeScript JSX",
+    "code": 75,
+    "comment": 0,
+    "blank": 14
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/ErrorBoundary.test.tsx": {
+    "language": "TypeScript JSX",
+    "code": 74,
+    "comment": 0,
+    "blank": 12
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/BooksPage.test.tsx": {
+    "language": "TypeScript JSX",
+    "code": 34,
+    "comment": 0,
+    "blank": 6
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/Breadcrumbs.test.tsx": {
+    "language": "TypeScript JSX",
+    "code": 42,
+    "comment": 0,
+    "blank": 8
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/CharactersPage.test.tsx": {
+    "language": "TypeScript JSX",
+    "code": 66,
+    "comment": 0,
+    "blank": 14
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/BookCover.test.tsx": {
+    "language": "TypeScript JSX",
+    "code": 28,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/data-integrity.test.ts": {
+    "language": "TypeScript",
+    "code": 322,
+    "comment": 0,
+    "blank": 46
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/BookPage.test.tsx": {
+    "language": "TypeScript JSX",
+    "code": 45,
+    "comment": 0,
+    "blank": 9
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/a11y.test.tsx": {
+    "language": "TypeScript JSX",
+    "code": 34,
+    "comment": 0,
+    "blank": 6
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/BackToTop.test.tsx": {
+    "language": "TypeScript JSX",
+    "code": 20,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/pages/TimelinePage.tsx": {
+    "language": "TypeScript JSX",
+    "code": 303,
+    "comment": 7,
+    "blank": 28
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/pages/StatsPage.tsx": {
+    "language": "TypeScript JSX",
+    "code": 452,
+    "comment": 13,
+    "blank": 21
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/pages/StandaloneBooksPage.tsx": {
+    "language": "TypeScript JSX",
+    "code": 24,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/pages/StandaloneTimelinePage.tsx": {
+    "language": "TypeScript JSX",
+    "code": 24,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/pages/MapPage.tsx": {
+    "language": "TypeScript JSX",
+    "code": 167,
+    "comment": 0,
+    "blank": 11
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/test/About.test.tsx": {
+    "language": "TypeScript JSX",
+    "code": 33,
+    "comment": 0,
+    "blank": 6
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/pages/MindMapPage.tsx": {
+    "language": "TypeScript JSX",
+    "code": 20,
+    "comment": 0,
+    "blank": 3
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/pages/NotFound.tsx": {
+    "language": "TypeScript JSX",
+    "code": 22,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/pages/LocationsPage.tsx": {
+    "language": "TypeScript JSX",
+    "code": 71,
+    "comment": 0,
+    "blank": 7
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/pages/MagicSystemsPage.tsx": {
+    "language": "TypeScript JSX",
+    "code": 176,
+    "comment": 0,
+    "blank": 13
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/pages/LibraryPage.tsx": {
+    "language": "TypeScript JSX",
+    "code": 24,
+    "comment": 2,
+    "blank": 4
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/pages/LandingPage.tsx": {
+    "language": "TypeScript JSX",
+    "code": 158,
+    "comment": 0,
+    "blank": 11
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/pages/HeraldsPage.tsx": {
+    "language": "TypeScript JSX",
+    "code": 199,
+    "comment": 0,
+    "blank": 20
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/pages/ComparePage.tsx": {
+    "language": "TypeScript JSX",
+    "code": 113,
+    "comment": 0,
+    "blank": 13
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/pages/CharactersPage.tsx": {
+    "language": "TypeScript JSX",
+    "code": 693,
+    "comment": 0,
+    "blank": 52
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/index.css": {
+    "language": "PostCSS",
+    "code": 605,
+    "comment": 15,
+    "blank": 96
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/pages/About.tsx": {
+    "language": "TypeScript JSX",
+    "code": 83,
+    "comment": 0,
+    "blank": 8
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/pages/BookPage.tsx": {
+    "language": "TypeScript JSX",
+    "code": 185,
+    "comment": 0,
+    "blank": 20
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/pages/BooksPage.tsx": {
+    "language": "TypeScript JSX",
+    "code": 172,
+    "comment": 0,
+    "blank": 11
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/hooks/useTheme.ts": {
+    "language": "TypeScript",
+    "code": 20,
+    "comment": 0,
+    "blank": 7
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/main.tsx": {
+    "language": "TypeScript JSX",
+    "code": 14,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/hooks/useViewTransition.ts": {
+    "language": "TypeScript",
+    "code": 20,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/hooks/useSpoilerMode.ts": {
+    "language": "TypeScript",
+    "code": 57,
+    "comment": 0,
+    "blank": 12
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/hooks/useSearch.ts": {
+    "language": "TypeScript",
+    "code": 246,
+    "comment": 0,
+    "blank": 25
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/hooks/useResizeObserver.ts": {
+    "language": "TypeScript",
+    "code": 14,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/hooks/useSEOMeta.ts": {
+    "language": "TypeScript",
+    "code": 48,
+    "comment": 0,
+    "blank": 7
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/hooks/useMapInteraction.ts": {
+    "language": "TypeScript",
+    "code": 237,
+    "comment": 0,
+    "blank": 16
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/hooks/useTextFilter.ts": {
+    "language": "TypeScript",
+    "code": 8,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/hooks/useLocalStorage.ts": {
+    "language": "TypeScript",
+    "code": 25,
+    "comment": 1,
+    "blank": 4
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/hooks/useKeyboardShortcut.ts": {
+    "language": "TypeScript",
+    "code": 23,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/hooks/useCamera.ts": {
+    "language": "TypeScript",
+    "code": 266,
+    "comment": 0,
+    "blank": 28
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/hooks/useInfiniteScroll.ts": {
+    "language": "TypeScript",
+    "code": 30,
+    "comment": 1,
+    "blank": 10
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/hooks/useAnimationEngine.ts": {
+    "language": "TypeScript",
+    "code": 200,
+    "comment": 0,
+    "blank": 26
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/hooks/useFocusTrap.ts": {
+    "language": "TypeScript",
+    "code": 35,
+    "comment": 0,
+    "blank": 9
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/data/static/timeline/worldhopper-journeys.ts": {
+    "language": "TypeScript",
+    "code": 113,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/data/static/static-data.ts": {
+    "language": "TypeScript",
+    "code": 135,
+    "comment": 3,
+    "blank": 13
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/data/static/timeline/index.ts": {
+    "language": "TypeScript",
+    "code": 25,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/data/static/shard-themes.ts": {
+    "language": "TypeScript",
+    "code": 221,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/data/static/timeline/events.ts": {
+    "language": "TypeScript",
+    "code": 1483,
+    "comment": 39,
+    "blank": 14
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/data/static/timeline/character-lifespans.ts": {
+    "language": "TypeScript",
+    "code": 527,
+    "comment": 6,
+    "blank": 8
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/data/static/timeline/eras.ts": {
+    "language": "TypeScript",
+    "code": 100,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/data/static/sagas.ts": {
+    "language": "TypeScript",
+    "code": 72,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/data/static/planets.ts": {
+    "language": "TypeScript",
+    "code": 301,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/data/static/planet-visuals.ts": {
+    "language": "TypeScript",
+    "code": 206,
+    "comment": 0,
+    "blank": 3
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/data/static/heralds.ts": {
+    "language": "TypeScript",
+    "code": 130,
+    "comment": 0,
+    "blank": 2
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/data/static/books.ts": {
+    "language": "TypeScript",
+    "code": 248,
+    "comment": 8,
+    "blank": 10
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/data/static/family-data.ts": {
+    "language": "TypeScript",
+    "code": 170,
+    "comment": 0,
+    "blank": 15
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/contexts/ShardThemeContext.tsx": {
+    "language": "TypeScript JSX",
+    "code": 40,
+    "comment": 0,
+    "blank": 7
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/data/static/index.ts": {
+    "language": "TypeScript",
+    "code": 39,
+    "comment": 0,
+    "blank": 7
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/data/generated/characters.json": {
+    "language": "JSON",
+    "code": 684,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/data/static/magic-systems.ts": {
+    "language": "TypeScript",
+    "code": 436,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/constants.ts": {
+    "language": "TypeScript",
+    "code": 22,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/common/SplitPane.tsx": {
+    "language": "TypeScript JSX",
+    "code": 61,
+    "comment": 0,
+    "blank": 9
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/App.tsx": {
+    "language": "TypeScript JSX",
+    "code": 154,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/common/SideDrawer.tsx": {
+    "language": "TypeScript JSX",
+    "code": 94,
+    "comment": 0,
+    "blank": 12
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/common/SearchBar.tsx": {
+    "language": "TypeScript JSX",
+    "code": 56,
+    "comment": 0,
+    "blank": 3
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/common/index.ts": {
+    "language": "TypeScript",
+    "code": 7,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/common/Layout.tsx": {
+    "language": "TypeScript JSX",
+    "code": 129,
+    "comment": 0,
+    "blank": 11
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/common/ParticlesBackground.tsx": {
+    "language": "TypeScript JSX",
+    "code": 63,
+    "comment": 0,
+    "blank": 11
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/common/MapSkeleton.tsx": {
+    "language": "TypeScript JSX",
+    "code": 10,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/common/BookCover.tsx": {
+    "language": "TypeScript JSX",
+    "code": 118,
+    "comment": 0,
+    "blank": 11
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/common/icons.tsx": {
+    "language": "TypeScript JSX",
+    "code": 171,
+    "comment": 0,
+    "blank": 16
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/search/SearchResultsList.tsx": {
+    "language": "TypeScript JSX",
+    "code": 111,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/search/index.ts": {
+    "language": "TypeScript",
+    "code": 2,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/common/ErrorBoundary.tsx": {
+    "language": "TypeScript JSX",
+    "code": 34,
+    "comment": 0,
+    "blank": 8
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/search/SearchInput.tsx": {
+    "language": "TypeScript JSX",
+    "code": 57,
+    "comment": 0,
+    "blank": 3
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/timeline/TooltipOverlay.tsx": {
+    "language": "TypeScript JSX",
+    "code": 35,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/timeline/index.ts": {
+    "language": "TypeScript",
+    "code": 3,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/timeline/CardOverlay.tsx": {
+    "language": "TypeScript JSX",
+    "code": 100,
+    "comment": 1,
+    "blank": 7
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/CharacterComparison.tsx": {
+    "language": "TypeScript JSX",
+    "code": 167,
+    "comment": 0,
+    "blank": 15
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/CosmicDust.tsx": {
+    "language": "TypeScript JSX",
+    "code": 44,
+    "comment": 0,
+    "blank": 6
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/index.ts": {
+    "language": "TypeScript",
+    "code": 19,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/timeline/Timeline.tsx": {
+    "language": "TypeScript JSX",
+    "code": 353,
+    "comment": 11,
+    "blank": 24
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/CharacterGrid.tsx": {
+    "language": "TypeScript JSX",
+    "code": 193,
+    "comment": 0,
+    "blank": 22
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/library/CosmereLibrary.tsx": {
+    "language": "TypeScript JSX",
+    "code": 162,
+    "comment": 6,
+    "blank": 13
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/ConstellationLines.tsx": {
+    "language": "TypeScript JSX",
+    "code": 86,
+    "comment": 0,
+    "blank": 9
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/JourneyAnimation.tsx": {
+    "language": "TypeScript JSX",
+    "code": 149,
+    "comment": 0,
+    "blank": 14
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/library/BookSpine.tsx": {
+    "language": "TypeScript JSX",
+    "code": 285,
+    "comment": 4,
+    "blank": 25
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/magic/MagicSystemDetail.tsx": {
+    "language": "TypeScript JSX",
+    "code": 113,
+    "comment": 0,
+    "blank": 9
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/library/Plaque.tsx": {
+    "language": "TypeScript JSX",
+    "code": 56,
+    "comment": 1,
+    "blank": 4
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/mindmap/index.ts": {
+    "language": "TypeScript",
+    "code": 1,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/PlanetRenderer.tsx": {
+    "language": "TypeScript JSX",
+    "code": 395,
+    "comment": 0,
+    "blank": 24
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/magic/MagicSystemCard.tsx": {
+    "language": "TypeScript JSX",
+    "code": 91,
+    "comment": 0,
+    "blank": 9
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/magic/index.ts": {
+    "language": "TypeScript",
+    "code": 2,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/PlanetPanel.tsx": {
+    "language": "TypeScript JSX",
+    "code": 287,
+    "comment": 0,
+    "blank": 23
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/mindmap/CosmereMindMap3D.tsx": {
+    "language": "TypeScript JSX",
+    "code": 603,
+    "comment": 15,
+    "blank": 84
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/PlanetLabels.tsx": {
+    "language": "TypeScript JSX",
+    "code": 38,
+    "comment": 0,
+    "blank": 3
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/magic/AllomanticTable.tsx": {
+    "language": "TypeScript JSX",
+    "code": 99,
+    "comment": 0,
+    "blank": 8
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/PlanetHero.tsx": {
+    "language": "TypeScript JSX",
+    "code": 359,
+    "comment": 0,
+    "blank": 21
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/StarField.tsx": {
+    "language": "TypeScript JSX",
+    "code": 39,
+    "comment": 0,
+    "blank": 6
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/ShardLegend.tsx": {
+    "language": "TypeScript JSX",
+    "code": 55,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/NavigationConsole.tsx": {
+    "language": "TypeScript JSX",
+    "code": 220,
+    "comment": 0,
+    "blank": 10
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/OrbitRing.tsx": {
+    "language": "TypeScript JSX",
+    "code": 36,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/LayersToggle.tsx": {
+    "language": "TypeScript JSX",
+    "code": 52,
+    "comment": 0,
+    "blank": 6
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/ShardIcons.tsx": {
+    "language": "TypeScript JSX",
+    "code": 50,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/PlanetTooltip.tsx": {
+    "language": "TypeScript JSX",
+    "code": 41,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/NavigationGrid.tsx": {
+    "language": "TypeScript JSX",
+    "code": 24,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/WorldhopperHeatmap.tsx": {
+    "language": "TypeScript JSX",
+    "code": 57,
+    "comment": 0,
+    "blank": 8
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/JourneyContext.tsx": {
+    "language": "TypeScript JSX",
+    "code": 249,
+    "comment": 0,
+    "blank": 27
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/UniverseMap.tsx": {
+    "language": "TypeScript JSX",
+    "code": 321,
+    "comment": 0,
+    "blank": 26
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/WorldhopperDetailPanel.tsx": {
+    "language": "TypeScript JSX",
+    "code": 80,
+    "comment": 0,
+    "blank": 9
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/WorldhopperJourneyPlayer.tsx": {
+    "language": "TypeScript JSX",
+    "code": 135,
+    "comment": 0,
+    "blank": 13
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/WorldhopperGallery.tsx": {
+    "language": "TypeScript JSX",
+    "code": 122,
+    "comment": 0,
+    "blank": 11
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/WorldhopperRoutes.tsx": {
+    "language": "TypeScript JSX",
+    "code": 70,
+    "comment": 0,
+    "blank": 13
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/WorldhopperPicker.tsx": {
+    "language": "TypeScript JSX",
+    "code": 62,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/map/ZoomControls.tsx": {
+    "language": "TypeScript JSX",
+    "code": 36,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/detail/CharacterPanel.tsx": {
+    "language": "TypeScript JSX",
+    "code": 57,
+    "comment": 0,
+    "blank": 10
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/detail/CharacterDetailModal.tsx": {
+    "language": "TypeScript JSX",
+    "code": 302,
+    "comment": 0,
+    "blank": 24
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/detail/BookPanel.tsx": {
+    "language": "TypeScript JSX",
+    "code": 28,
+    "comment": 0,
+    "blank": 10
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/detail/CharacterRelationships.tsx": {
+    "language": "TypeScript JSX",
+    "code": 165,
+    "comment": 0,
+    "blank": 14
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/BackToMapButton.tsx": {
+    "language": "TypeScript JSX",
+    "code": 36,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/HorizontalBar.tsx": {
+    "language": "TypeScript JSX",
+    "code": 39,
+    "comment": 0,
+    "blank": 6
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/ErrorFallback.tsx": {
+    "language": "TypeScript JSX",
+    "code": 31,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/FloatingTogglePanel.tsx": {
+    "language": "TypeScript JSX",
+    "code": 43,
+    "comment": 0,
+    "blank": 6
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/index.ts": {
+    "language": "TypeScript",
+    "code": 25,
+    "comment": 0,
+    "blank": 1
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/detail/FamilyTreeView.tsx": {
+    "language": "TypeScript JSX",
+    "code": 295,
+    "comment": 0,
+    "blank": 27
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/EmptyState.tsx": {
+    "language": "TypeScript JSX",
+    "code": 8,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/DetailPanel.tsx": {
+    "language": "TypeScript JSX",
+    "code": 16,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/CompareCharacterPanel.tsx": {
+    "language": "TypeScript JSX",
+    "code": 39,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/CommandPalette.tsx": {
+    "language": "TypeScript JSX",
+    "code": 158,
+    "comment": 0,
+    "blank": 11
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/CharacterAvatar.tsx": {
+    "language": "TypeScript JSX",
+    "code": 37,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/ColorDot.tsx": {
+    "language": "TypeScript JSX",
+    "code": 10,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/Breadcrumbs.tsx": {
+    "language": "TypeScript JSX",
+    "code": 64,
+    "comment": 0,
+    "blank": 13
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/CloseButton.tsx": {
+    "language": "TypeScript JSX",
+    "code": 23,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/RouteFallback.tsx": {
+    "language": "TypeScript JSX",
+    "code": 14,
+    "comment": 0,
+    "blank": 3
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/Overlay.tsx": {
+    "language": "TypeScript JSX",
+    "code": 8,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/PageLayout.tsx": {
+    "language": "TypeScript JSX",
+    "code": 17,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/LoadingSpinner.tsx": {
+    "language": "TypeScript JSX",
+    "code": 12,
+    "comment": 0,
+    "blank": 3
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/KeyboardShortcutsHelp.tsx": {
+    "language": "TypeScript JSX",
+    "code": 43,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/Skeleton.tsx": {
+    "language": "TypeScript JSX",
+    "code": 106,
+    "comment": 0,
+    "blank": 6
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/ShardCard.tsx": {
+    "language": "TypeScript JSX",
+    "code": 57,
+    "comment": 0,
+    "blank": 9
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/ShareButton.tsx": {
+    "language": "TypeScript JSX",
+    "code": 56,
+    "comment": 2,
+    "blank": 7
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/BackToTop.tsx": {
+    "language": "TypeScript JSX",
+    "code": 41,
+    "comment": 0,
+    "blank": 8
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/SpoilerToggle.tsx": {
+    "language": "TypeScript JSX",
+    "code": 105,
+    "comment": 0,
+    "blank": 7
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/InfoSection.tsx": {
+    "language": "TypeScript JSX",
+    "code": 15,
+    "comment": 0,
+    "blank": 4
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/ThemeToggle.tsx": {
+    "language": "TypeScript JSX",
+    "code": 30,
+    "comment": 0,
+    "blank": 3
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/detail/ForceGraph.tsx": {
+    "language": "TypeScript JSX",
+    "code": 309,
+    "comment": 0,
+    "blank": 27
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/detail/RelationshipsTabContent.tsx": {
+    "language": "TypeScript JSX",
+    "code": 248,
+    "comment": 0,
+    "blank": 15
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/detail/PlanetDetailPanel.tsx": {
+    "language": "TypeScript JSX",
+    "code": 175,
+    "comment": 0,
+    "blank": 12
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/detail/PlanetsTabContent.tsx": {
+    "language": "TypeScript JSX",
+    "code": 206,
+    "comment": 0,
+    "blank": 15
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/ui/TransitionLink.tsx": {
+    "language": "TypeScript JSX",
+    "code": 18,
+    "comment": 0,
+    "blank": 5
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/detail/ShardsTabContent.tsx": {
+    "language": "TypeScript JSX",
+    "code": 270,
+    "comment": 0,
+    "blank": 15
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/detail/PlanetForceGraph.tsx": {
+    "language": "TypeScript JSX",
+    "code": 305,
+    "comment": 0,
+    "blank": 27
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/detail/herald/HonorbladeSVG.tsx": {
+    "language": "TypeScript JSX",
+    "code": 299,
+    "comment": 0,
+    "blank": 17
+  },
+  "file:///c%3A/Users/Mario/Documents/PROYECTOS/Cosmere%20Archive/src/components/detail/index.ts": {
+    "language": "TypeScript",
+    "code": 9,
+    "comment": 0,
+    "blank": 1
+  }
+}
