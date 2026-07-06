@@ -28,7 +28,7 @@ function BookCover({ book, size = 'sm' }: { book: Book; size?: 'sm' | 'md' | 'lg
   const onLoad = useCallback(() => setImgStatus('loaded'), [])
   const onError = useCallback(() => setImgStatus('error'), [])
 
-  const imgSrc = book.cover ? `${import.meta.env.BASE_URL}${book.cover}` : undefined
+  const imgSrc = `${import.meta.env.BASE_URL}images/covers/${book.id}.webp`
 
   if (imgSrc && imgStatus !== 'error') {
     return (

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import BookCover from '@/components/common/BookCover'
 import type { Book } from '@/types/book'
 
@@ -12,14 +12,21 @@ const mockBook: Book = {
   description: 'The first book of The Stormlight Archive.',
 }
 
+function triggerImgError(container: HTMLElement) {
+  const img = container.querySelector('img')
+  if (img) fireEvent.error(img)
+}
+
 describe('BookCover', () => {
   it('renders book title', () => {
-    render(<BookCover book={mockBook} />)
+    const { container } = render(<BookCover book={mockBook} />)
+    triggerImgError(container)
     expect(screen.getByLabelText('Cover of The Way of Kings')).toBeInTheDocument()
   })
 
   it('renders with md size', () => {
-    render(<BookCover book={mockBook} size="md" />)
+    const { container } = render(<BookCover book={mockBook} size="md" />)
+    triggerImgError(container)
     expect(screen.getByLabelText('Cover of The Way of Kings').closest('svg')).toBeInTheDocument()
   })
 })

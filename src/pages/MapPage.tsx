@@ -1,14 +1,12 @@
-import { useState, useCallback, useEffect, useMemo, lazy, Suspense } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { BOOKS, PLANETS, getPlanetById, SAGA_BY_ID } from '@/data/static'
+import { BOOKS, getPlanetById, SAGA_BY_ID } from '@/data/static'
 import ColorDot from '@/components/ui/ColorDot'
-import { TIMELINE_EVENTS, CHARACTER_SPANS } from '@/data/static/timeline'
+import { CHARACTER_SPANS } from '@/data/static/timeline'
 import UniverseMap from '@/components/map/UniverseMap'
-import MapSkeleton from '@/components/common/MapSkeleton'
 import SplitPane from '@/components/common/SplitPane'
 import CloseButton from '@/components/ui/CloseButton'
 import BookCover from '@/components/common/BookCover'
-import { JourneyProvider, JourneySvgContent } from '@/components/map/JourneyContext'
 import type { Book } from '@/types'
 import type { CharacterSpan } from '@/data/static/timeline/character-lifespans'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
@@ -18,8 +16,6 @@ function formatCharacterYear(year: number | null): string {
   if (year < 0) return `${Math.abs(year)} FE`
   return `${year}`
 }
-
-const JourneyAnimation = lazy(() => import('@/components/map/JourneyAnimation'))
 
 export default function MapPage() {
   useSEOMeta({
@@ -32,22 +28,6 @@ export default function MapPage() {
   const [selectedPlanet, setSelectedPlanet] = useState<string | null>(null)
   const [activeWorldhoppers, setActiveWorldhoppers] = useState<string[]>([])
   const [highlightedPlanet, setHighlightedPlanet] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [activeJourney, setActiveJourney] = useState<string | null>(null)
-  const [flyToTarget, setFlyToTarget] = useState<{ planetId: string; x: number; y: number } | null>(null)
-
-  const planetMap = useMemo(() => {
-    const m = new Map<string, { x: number; y: number }>()
-    PLANETS.forEach((p) => m.set(p.id, { x: p.x, y: p.y }))
-    return m
-  }, [])
-
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 300)
-    return () => clearTimeout(timer)
-  }, [])
-
-  const paramsStr = searchParams.toString()
 
   const detailBook = useMemo<Book | null>(() => {
     if (searchParams.get('focus') !== 'book') return null
@@ -62,55 +42,6 @@ export default function MapPage() {
     if (!id) return null
     return CHARACTER_SPANS.find((c) => c.id === id) ?? null
   }, [searchParams])
-
-  useEffect(() => {
-    if (!paramsStr) return
-    const focus = searchParams.get('focus')
-    const id = searchParams.get('id')
-    if (!focus || !id) return
-
-    if (focus === 'book' || focus === 'character') {
-      return
-    }
-
-    switch (focus) {
-      case 'planet': {
-        const p = getPlanetById(id)
-        queueMicrotask(() => {
-          setSelectedPlanet(id)
-          setHighlightedPlanet(id)
-          if (p) setFlyToTarget({ planetId: p.id, x: p.x, y: p.y })
-        })
-        break
-      }
-      case 'event': {
-        const planet = searchParams.get('planet')
-        if (planet) {
-          queueMicrotask(() => {
-            setSelectedPlanet(planet)
-            setHighlightedPlanet(planet)
-          })
-        } else {
-          const event = TIMELINE_EVENTS.find((e) => e.id === id)
-          if (event && event.planets.length > 0) {
-            const eventPlanet = event.planets[0]!
-            queueMicrotask(() => {
-              setSelectedPlanet(eventPlanet)
-              setHighlightedPlanet(eventPlanet)
-            })
-          }
-        }
-        break
-      }
-      case 'worldhopper':
-        queueMicrotask(() => {
-          setActiveWorldhoppers((prev) => (prev.includes(id) ? prev : [...prev, id]))
-        })
-        break
-    }
-
-    setSearchParams({}, { replace: true })
-  }, [paramsStr, searchParams, setSearchParams])
 
   const handleCloseDetail = useCallback(() => {
     setSearchParams({}, { replace: true })
@@ -129,25 +60,9 @@ export default function MapPage() {
     [handleCloseDetail],
   )
 
-  const handleStartJourney = useCallback((id: string) => {
-    setActiveJourney(id)
-    setActiveWorldhoppers((prev) => prev.filter((x) => x !== id))
-  }, [])
-
-  const handleCloseJourney = useCallback(() => {
-    setActiveJourney(null)
-  }, [])
-
   const handleSelectMapPlanet = useCallback((id: string | null) => {
     setSelectedPlanet(id)
-    if (id) setHighlightedPlanet(null)
   }, [])
-
-  const handleFlyToDone = useCallback(() => {
-    setFlyToTarget(null)
-  }, [])
-
-  if (loading) return <MapSkeleton />
 
   return (
     <div className="relative flex min-h-0 flex-1 flex-col">
@@ -155,25 +70,13 @@ export default function MapPage() {
         <SplitPane
           left={
             <div className="flex h-full min-h-0 flex-1 flex-col">
-              <JourneyProvider worldhopperId={activeJourney ?? ''} planetMap={planetMap} speed={1}>
-                <UniverseMap
-                  selectedPlanet={null}
-                  onSelectPlanet={handleSelectMapPlanet}
-                  activeWorldhoppers={activeWorldhoppers}
-                  onToggleWorldhopper={toggleWorldhopper}
-                  highlightedPlanet={highlightedPlanet}
-                  onStartJourney={handleStartJourney}
-                  flyToTarget={flyToTarget}
-                  onFlyToDone={handleFlyToDone}
-                >
-                  {activeJourney && <JourneySvgContent />}
-                </UniverseMap>
-                {activeJourney && (
-                  <Suspense fallback={null}>
-                    <JourneyAnimation onClose={handleCloseJourney} />
-                  </Suspense>
-                )}
-              </JourneyProvider>
+              <UniverseMap
+                selectedPlanet={null}
+                onSelectPlanet={handleSelectMapPlanet}
+                activeWorldhoppers={activeWorldhoppers}
+                onToggleWorldhopper={toggleWorldhopper}
+                highlightedPlanet={highlightedPlanet}
+              />
             </div>
           }
           right={
@@ -260,26 +163,13 @@ export default function MapPage() {
         />
       ) : (
         <div className="relative flex min-h-0 flex-1">
-          <JourneyProvider worldhopperId={activeJourney ?? ''} planetMap={planetMap} speed={1}>
-            <UniverseMap
-              selectedPlanet={selectedPlanet}
-              onSelectPlanet={handleSelectMapPlanet}
-              activeWorldhoppers={activeWorldhoppers}
-              onToggleWorldhopper={toggleWorldhopper}
-              highlightedPlanet={highlightedPlanet}
-              onStartJourney={handleStartJourney}
-              flyToTarget={flyToTarget}
-              onFlyToDone={handleFlyToDone}
-            >
-              {activeJourney && <JourneySvgContent />}
-            </UniverseMap>
-
-            {activeJourney && (
-              <Suspense fallback={null}>
-                <JourneyAnimation onClose={handleCloseJourney} />
-              </Suspense>
-            )}
-          </JourneyProvider>
+          <UniverseMap
+            selectedPlanet={selectedPlanet}
+            onSelectPlanet={handleSelectMapPlanet}
+            activeWorldhoppers={activeWorldhoppers}
+            onToggleWorldhopper={toggleWorldhopper}
+            highlightedPlanet={highlightedPlanet}
+          />
         </div>
       )}
     </div>
