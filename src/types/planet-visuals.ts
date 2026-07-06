@@ -63,9 +63,10 @@ export interface StormCloudLayer {
 
 export interface HighstormConfig {
   layers: StormCloudLayer[]
-  arcSpan: number
-  orbitalPeriod: number
-  orbitalRadius: number
+  traversalPeriod: number
+  bandHeight: number
+  curvatureFactor: number
+  shadowOpacity: number
   frontGlowColor: string
   frontGlowOpacity: number
   stormlightCount: number

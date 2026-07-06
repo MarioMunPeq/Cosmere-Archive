@@ -73,21 +73,20 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - Fixed overflow bug on Locations/Shards tabs: removed extra flex wrappers, added `min-h-0` to `mx-auto` div, `h-full` to grid container, `shrink-0` to non-scrollable elements
 - All 251 tests pass, `tsc -b` clean, `pnpm lint` clean, ESLint clean (can commit)
 
-##### Done (this session: Map + Highstorm redesign)
+##### Done (this session: Highstorm V4 — canvas-based fluid storm)
 
-- Fixed `HighstormLayer.tsx` bugs:
-  - Fixed `boltCount === 0` returning `<boltCount>return null</boltCount>` → `if (bolts.length === 0) return null`
-  - Removed useless `boltCount` function at bottom
-  - Removed unused parameters: `s` from `gaussValue()`, `cx`/`cy` from `generatePuffs()`, `r`/`config` from `renderPuffs()`, `cx`/`cy`/`r` from `HighstormDefs`
-  - Updated all call sites to match new signatures
-  - Simplified `HighstormDefs` prop type from `LayerProps` to `{ pid: string }`
-  - Updated `PlanetRenderer.tsx` call to match
-- Updated `src/index.css`:
-  - Added `hs-orbit` keyframe (0→360deg rotation)
-  - Simplified `hs-lightning-flash` to 180ms flash (3% on, 6% off, 12% echo)
-  - Replaced `hs-stormlight-drift` with `hs-stormlight-pulse` (simple opacity pulse)
-  - Removed `hs-lightning-glow` and `.hs-lightning-glow` (no longer needed)
-  - Removed `.hs-glow` (no longer needed)
+- **Complete rewrite from scratch**: deleted `HighstormLayer.tsx` and all SVG-based highstorm code (3 iterations over previous sessions: orbital ring, atmospheric belt, compact storm entity). Replaced with canvas-based dynamic fluid storm system
+- **New architecture**: Two `<foreignObject>` canvas overlays inside the SVG — `HighstormBackCanvas` (behind planet, larger extent for limb glow) and `HighstormFrontCanvas` (on planet disk, clipped circular). Planet SVG naturally occludes the back canvas. No masks, no filters
+- **Fluid storm**: Per-pixel simplex noise (4-octave FBM) sampled at spherical coordinates on the planet surface. Storm density follows a Gaussian envelope centered at a moving longitude (band wraps around equator). Noise advection + evolution creates continuous organic flow
+- **3D wrap**: Canvas coordinates mapped to sphere (u, v → longitude, latitude via atan2 + asin). Storm center rotates at `STORM_SPEED = 0.03 rad/s` (~209s per revolution). Noise sampled in 3D: longitude drift + latitude drift + temporal evolution
+- **Back canvas glow**: Renders annular region (0.92r to 1.25r) with same noise-based storm density at low opacity (max 0.12). Creates subtle limb illumination when storm passes behind
+- **Front canvas storm**: Cold white/blue palette (R 200-255, G 205-255, B 215-255). Density-driven opacity (cap at 0.6). FBM noise creates wisps, filaments, dense patches
+- **Stormlight particles**: 8 particles advected along storm flow, rendered as cyan glow circles with pulsing brightness
+- **Lightning**: Occasional (<200ms) polyline flash, 5-15s interval, simple white stroke
+- **Performance**: Canvas at native resolution (~r² pixels, typically 10-40K). Single `putImageData` per frame. Test suite 8.52s
+- **Files created**: `src/utils/simplex-noise.ts` (pure TS 3D simplex noise), `src/components/map/HighstormFluid.tsx` (canvas storm with back/front layers)
+- **Files deleted**: `src/components/map/HighstormLayer.tsx`
+- **Files modified**: `PlanetRenderer.tsx` (replaced SVG highstorm imports), `index.css` (removed all `hs-*` CSS keyframes/classes), `AGENTS.md`
 - All 265 tests pass, `tsc -b` clean, `pnpm lint` clean
 
 ### Key Decisions

@@ -2,7 +2,7 @@ import { memo, useState, useContext, useMemo } from 'react'
 import type { Planet } from '@/types/planet'
 import { ShardThemeContext } from '@/contexts/ShardThemeContext'
 import { getPlanetVisual } from '@/data/static/planet-visuals'
-import { HighstormDefs, HighstormBack, HighstormFront } from './HighstormLayer'
+import { HighstormBackCanvas, HighstormFrontCanvas } from './HighstormFluid'
 
 interface Props {
   planet: Planet
@@ -693,8 +693,6 @@ const PlanetRenderer = memo(function PlanetRenderer({
         filter: isPrimary ? 'brightness(1.15)' : 'none',
       }}
     >
-      {v.thematic?.type === 'highstorm' && <HighstormDefs pid={planet.id} />}
-
       {showHalo && (
         <circle
           cx={planet.x}
@@ -731,7 +729,7 @@ const PlanetRenderer = memo(function PlanetRenderer({
         />
       )}
 
-      {v.thematic?.type === 'highstorm' && <HighstormBack pid={planet.id} cx={planet.x} cy={planet.y} r={r} />}
+      {v.thematic?.type === 'highstorm' && <HighstormBackCanvas cx={planet.x} cy={planet.y} r={r} />}
 
       <circle
         cx={planet.x}
@@ -774,7 +772,7 @@ const PlanetRenderer = memo(function PlanetRenderer({
         </g>
       )}
 
-      {v.thematic?.type === 'highstorm' && <HighstormFront pid={planet.id} cx={planet.x} cy={planet.y} r={r} />}
+      {v.thematic?.type === 'highstorm' && <HighstormFrontCanvas cx={planet.x} cy={planet.y} r={r} />}
       {v.thematic && v.thematic.type !== 'highstorm' && (
         <ThematicLayer pid={planet.id} cx={planet.x} cy={planet.y} r={r} />
       )}

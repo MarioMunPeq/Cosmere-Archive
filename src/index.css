@@ -782,64 +782,6 @@ body {
   background-color: var(--bg-page);
 }
 
-@keyframes hs-orbit {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes hs-lightning-flash {
-  0% {
-    opacity: 0;
-  }
-  3% {
-    opacity: var(--bolt-opacity, 0.6);
-  }
-  6% {
-    opacity: 0;
-  }
-  12% {
-    opacity: calc(var(--bolt-opacity, 0.6) * 0.25);
-  }
-  18% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes hs-stormlight-pulse {
-  0%,
-  100% {
-    opacity: 0;
-  }
-  15% {
-    opacity: 0.12;
-  }
-  35% {
-    opacity: 0.06;
-  }
-  50% {
-    opacity: 0.1;
-  }
-}
-
-.hs-lightning {
-  animation: hs-lightning-flash 0.3s ease-out both;
-}
-
-.hs-stormlight {
-  animation: hs-stormlight-pulse 4s ease-in-out var(--sl-delay, 0s) infinite;
-}
-
-.hs-glow {
-  mix-blend-mode: screen;
-}
-
 [data-theme='light'] ::-webkit-scrollbar-thumb {
   background: #d1d5db;
 }
