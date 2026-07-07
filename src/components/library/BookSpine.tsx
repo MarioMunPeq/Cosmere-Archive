@@ -296,13 +296,14 @@ const BookEmblem = memo(function BookEmblem({
 
 interface Props {
   book: Book
-  onOpen: (id: string) => void
+  onOpen: (id: string, rect: DOMRect) => void
   width: number
   height: number
   fontSize: number
+  isHidden?: boolean
 }
 
-export default function BookSpine({ book, onOpen, width, height, fontSize }: Props) {
+export default function BookSpine({ book, onOpen, width, height, fontSize, isHidden }: Props) {
   const material = getMaterial(book.saga)
   const imp = useMemo(() => imperfection(book.id), [book.id])
 
@@ -348,11 +349,14 @@ export default function BookSpine({ book, onOpen, width, height, fontSize }: Pro
     book.id === 'tress_of_the_emerald_sea' ? 'tress' : book.id === 'yumi_and_the_nightmare_painter' ? 'yumi' : book.saga
 
   return (
-    <div className="group relative shrink-0" style={{ width }}>
+    <div className="group relative shrink-0" style={{ width, visibility: isHidden ? 'hidden' : undefined }}>
       <div
         className="relative cursor-pointer select-none"
         style={{ perspective: `${Math.round(width * 12)}px`, transform: `rotate(${imp.rotate}deg)` }}
-        onClick={() => onOpen(book.id)}
+        onClick={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect()
+          onOpen(book.id, rect)
+        }}
       >
         <div
           className="relative flex flex-col items-center overflow-hidden transition-all duration-[350ms] ease-out group-hover:translate-y-[-8px] group-hover:scale-[1.02]"

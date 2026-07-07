@@ -509,6 +509,24 @@ html {
   }
 }
 
+@keyframes book-settle {
+  0% {
+    transform: translateY(0);
+  }
+  35% {
+    transform: translateY(-3.5px);
+  }
+  65% {
+    transform: translateY(1.5px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+.book-settle {
+  animation: book-settle 0.35s ease-in-out;
+}
+
 [data-theme='light'] body {
   background-color: var(--bg-page);
 }

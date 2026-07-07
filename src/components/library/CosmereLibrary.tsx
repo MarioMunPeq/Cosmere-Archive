@@ -4,7 +4,7 @@ import { BOOKS } from '@/data/static'
 import { calcShelfLayout } from '@/utils/shelf-layout'
 import BookSpine from './BookSpine'
 import Plaque from './Plaque'
-import OpenedBook from './OpenedBook'
+import BookViewer from './BookViewer'
 
 interface ShelfDef {
   id: string
@@ -92,15 +92,18 @@ function ShelfPlank({ height }: { height: number }) {
 }
 
 export default function CosmereLibrary() {
-  const [openedBookId, setOpenedBookId] = useState<string | null>(null)
+  const [activeBookId, setActiveBookId] = useState<string | null>(null)
+  const [spineRect, setSpineRect] = useState<{ x: number; y: number; w: number; h: number } | null>(null)
   const [containerRefObj, containerWidth] = useContainerWidth()
 
-  const handleOpen = useCallback((bookId: string) => {
-    setOpenedBookId(bookId)
+  const handleOpen = useCallback((id: string, rect: DOMRect) => {
+    setActiveBookId(id)
+    setSpineRect({ x: rect.x, y: rect.y, w: rect.width, h: rect.height })
   }, [])
 
   const handleClose = useCallback(() => {
-    setOpenedBookId(null)
+    setActiveBookId(null)
+    setSpineRect(null)
   }, [])
 
   const shelvesWithBooks = useMemo(
@@ -126,15 +129,31 @@ export default function CosmereLibrary() {
 
   const plankHeight = Math.max(10, Math.round(availableWidth * 0.006))
 
-  const openedBook = openedBookId
-    ? (shelvesWithBooks.flatMap((s) => s.books).find((b) => b.id === openedBookId) ?? null)
+  const activeBook = activeBookId
+    ? (shelvesWithBooks.flatMap((s) => s.books).find((b) => b.id === activeBookId) ?? null)
     : null
+
+  const isDimmed = activeBookId !== null
 
   return (
     <>
       <div
         ref={containerRefObj}
         className="relative flex min-h-0 flex-1 flex-col gap-28 overflow-y-auto px-20 pb-16 pt-12"
+        style={{
+          ...(isDimmed
+            ? {
+                opacity: 0.35,
+                filter: 'blur(1.5px)',
+                transition: 'opacity 600ms ease, filter 600ms ease',
+                pointerEvents: 'none' as const,
+              }
+            : {
+                opacity: 1,
+                filter: 'blur(0px)',
+                transition: 'opacity 600ms ease, filter 600ms ease',
+              }),
+        }}
       >
         {shelvesWithBooks.map((shelf, si) => {
           const layout = shelfLayouts[si]!
@@ -166,6 +185,7 @@ export default function CosmereLibrary() {
                         width={bl.width}
                         height={bl.height}
                         fontSize={bl.fontSize}
+                        isHidden={book.id === activeBookId}
                       />
                     )
                   })}
@@ -177,7 +197,7 @@ export default function CosmereLibrary() {
         })}
       </div>
 
-      {openedBook && <OpenedBook book={openedBook} onClose={handleClose} />}
+      {activeBook && spineRect && <BookViewer book={activeBook} rect={spineRect} onClose={handleClose} />}
     </>
   )
 }
