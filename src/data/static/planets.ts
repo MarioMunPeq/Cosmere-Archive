@@ -12,7 +12,6 @@ export const PLANETS: Planet[] = [
     color: '#a78bfa',
     size: 20,
     sagas: [],
-    magicSystem: 'Unknown — the original investiture of Adonalsium, before the Shattering.',
     investiture: [
       {
         name: "Adonalsium's Investiture",
@@ -33,8 +32,6 @@ export const PLANETS: Planet[] = [
     color: '#06b6d4',
     size: 60,
     sagas: ['stormlight', 'arcanum-unbounded'],
-    magicSystem:
-      'Surgebinding — using Stormlight to fuel the ten orders of Knights Radiant. Also Old Magic and Voidbinding.',
     investiture: [
       {
         name: 'Surgebinding',
@@ -72,8 +69,6 @@ export const PLANETS: Planet[] = [
     color: '#ef4444',
     size: 55,
     sagas: ['mistborn-era-1', 'mistborn-era-2', 'arcanum-unbounded'],
-    magicSystem:
-      'The Metallic Arts — Allomancy (burning metals), Feruchemy (storing attributes), and Hemalurgy (stealing via spikes).',
     investiture: [
       {
         name: 'Allomancy',
@@ -112,8 +107,6 @@ export const PLANETS: Planet[] = [
     color: '#14b8a6',
     size: 45,
     sagas: ['elantris', 'arcanum-unbounded'],
-    magicSystem:
-      'Location-based Investiture — AonDor (Arelon), Dakhor (Fjordell), Forgery (MaiPon), ChayShan (Hrovell). Each tied to specific geography.',
     investiture: [
       {
         name: 'AonDor',
@@ -148,8 +141,6 @@ export const PLANETS: Planet[] = [
     color: '#d946ef',
     size: 40,
     sagas: ['warbreaker'],
-    magicSystem:
-      'Awakening — using BioChromatic Breath to animate objects and grant sentience. Color perception determines power.',
     investiture: [
       {
         name: 'Awakening',
@@ -171,7 +162,6 @@ export const PLANETS: Planet[] = [
     color: '#eab308',
     size: 35,
     sagas: ['white-sand'],
-    magicSystem: 'Sand Mastery — manipulating sand using Investiture. Also Sand Toning, a lesser-known variant.',
     investiture: [
       {
         name: 'Sand Mastery',
@@ -196,8 +186,6 @@ export const PLANETS: Planet[] = [
     color: '#8b5cf6',
     size: 30,
     sagas: ['arcanum-unbounded'],
-    magicSystem:
-      'Shades — the cognitive shadows of the dead that inhabit the Forests of Hell. Simple Rules govern survival.',
     investiture: [
       {
         name: 'Shades',
@@ -217,8 +205,6 @@ export const PLANETS: Planet[] = [
     color: '#22c55e',
     size: 28,
     sagas: ['arcanum-unbounded', 'secret-projects'],
-    magicSystem:
-      'Aviar bonds — birds that bond with humans granting various abilities. Patji is a sentient perpendicularity.',
     investiture: [
       {
         name: 'Aviar Bond',
@@ -239,8 +225,6 @@ export const PLANETS: Planet[] = [
     color: '#0ea5e9',
     size: 32,
     sagas: ['secret-projects'],
-    magicSystem:
-      'Yoki-Hijo (spirit summoning) and Nightmare painting (trapping emotions in art). Powered by Hion lines.',
     investiture: [
       {
         name: 'Yoki-Hijo',
@@ -265,8 +249,6 @@ export const PLANETS: Planet[] = [
     color: '#f472b6',
     size: 28,
     sagas: ['secret-projects'],
-    magicSystem:
-      'Spores — twelve types of magical spores make up the seas. Each type has unique properties when activated by water.',
     investiture: [
       {
         name: 'Spore Magic',
@@ -287,8 +269,6 @@ export const PLANETS: Planet[] = [
     color: '#f97316',
     size: 25,
     sagas: ['secret-projects'],
-    magicSystem:
-      'Torment bonds — Investiture bonded to individuals grants heat resistance and other abilities. The planet itself is a trapped entity.',
     investiture: [
       {
         name: 'Torment Bond',

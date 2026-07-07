@@ -2,7 +2,7 @@ interface SkeletonBarProps {
   className?: string
 }
 
-export function SkeletonBar({ className = '' }: SkeletonBarProps) {
+function SkeletonBar({ className = '' }: SkeletonBarProps) {
   return <div className={`animate-pulse rounded bg-gray-800 ${className}`} />
 }
 
@@ -76,33 +76,6 @@ export function CharactersPageSkeleton() {
               </div>
             </div>
             <SkeletonBar className="mt-2 h-8 w-full" />
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-export function ShardsPageSkeleton() {
-  return (
-    <div className="flex min-h-0 flex-1 flex-col gap-4 p-4 sm:p-6">
-      <SkeletonBar className="h-4 w-32" />
-      <SkeletonBar className="h-8 w-64" />
-      <SkeletonBar className="h-4 w-96" />
-      <div className="grid gap-4 sm:grid-cols-2">
-        {Array.from({ length: 6 }, (_, i) => (
-          <div key={i} className="rounded-lg border border-gray-800 p-5">
-            <div className="flex items-center gap-3">
-              <SkeletonBar className="h-4 w-4 shrink-0 rounded-full" />
-              <SkeletonBar className="h-6 w-32" />
-            </div>
-            <div className="mt-3 space-y-2">
-              <SkeletonBar className="h-3 w-16" />
-              <SkeletonBar className="h-4 w-48" />
-              <SkeletonBar className="h-3 w-24" />
-              <SkeletonBar className="h-4 w-64" />
-              <SkeletonBar className="h-4 w-56" />
-            </div>
           </div>
         ))}
       </div>

@@ -278,63 +278,6 @@ function ThematicLayer({ pid, cx, cy, r }: { pid: string; cx: number; cy: number
   const seed = pid.charCodeAt(0) + pid.charCodeAt(pid.length - 1)
 
   switch (t.type) {
-    case 'storm-spiral': {
-      const turns = 4
-      const segments = 60
-      let d = ''
-      for (let i = 0; i <= segments; i++) {
-        const progress = i / segments
-        const angle = progress * turns * 360
-        const rad = (angle * Math.PI) / 180
-        const dist = r * 0.15 + progress * r * 0.85
-        const x = cx + dist * Math.cos(rad)
-        const y = cy + dist * Math.sin(rad)
-        d += i === 0 ? `M ${x} ${y}` : ` L ${x} ${y}`
-      }
-      const spiralPath = d
-
-      return (
-        <g
-          style={{
-            animation: 'storm-spin 30s linear infinite',
-            transformOrigin: `${cx}px ${cy}px`,
-          }}
-        >
-          <path
-            d={spiralPath}
-            fill="none"
-            stroke={t.colors[1]}
-            strokeWidth={r * 0.04}
-            strokeLinecap="round"
-            opacity={t.opacity ?? 0.35}
-            filter="url(#glow)"
-          />
-          <path
-            d={spiralPath}
-            fill="none"
-            stroke={t.colors[0]}
-            strokeWidth={r * 0.015}
-            strokeLinecap="round"
-            opacity={(t.opacity ?? 0.35) + 0.15}
-          />
-          {Array.from({ length: 4 }, (_, i) => {
-            const a = seeded(i, seed) * 360
-            const rad = (a * Math.PI) / 180
-            const dist = r * (0.4 + seeded(i, seed + 1) * 0.5)
-            return (
-              <circle
-                key={i}
-                cx={cx + dist * Math.cos(rad)}
-                cy={cy + dist * Math.sin(rad)}
-                r={r * 0.03 + seeded(i, seed + 2) * r * 0.02}
-                fill={t.colors[0]}
-                opacity={0.3 + seeded(i, seed + 3) * 0.2}
-              />
-            )
-          })}
-        </g>
-      )
-    }
     case 'aon-lines': {
       return (
         <g

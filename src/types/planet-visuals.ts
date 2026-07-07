@@ -19,7 +19,7 @@ export interface CloudConfig {
 export interface AtmosphereConfig {
   color: string
   opacity: number
-  animation: 'breathe' | 'rotate' | 'steady'
+  animation: 'breathe' | 'steady'
   speed: number
 }
 
@@ -27,7 +27,7 @@ export interface HaloConfig {
   color: string
   size: number
   opacity: number
-  animation: 'pulse' | 'glow' | 'steady'
+  animation: 'pulse' | 'glow'
   speed: number
 }
 
@@ -47,52 +47,12 @@ export interface ParticleConfig {
 
 export interface AnimationConfig {
   breatheSpeed: number
-  rotationSpeed: number
-}
-
-export interface StormCloudLayer {
-  count: number
-  color: string
-  opacity: number
-  blurAmount: number
-  minSize: number
-  maxSize: number
-  radialSpread: number
-  heightScale: number
-}
-
-export interface HighstormConfig {
-  layers: StormCloudLayer[]
-  traversalPeriod: number
-  bandHeight: number
-  curvatureFactor: number
-  shadowOpacity: number
-  frontGlowColor: string
-  frontGlowOpacity: number
-  stormlightCount: number
-  stormlightColor: string
-  lightningMinInterval: number
-  lightningMaxInterval: number
-  turbulenceFrequency: number
-  turbulenceOctaves: number
-  displacementScale: number
 }
 
 export interface ThematicConfig {
-  type:
-    | 'storm-spiral'
-    | 'aon-lines'
-    | 'day-night-split'
-    | 'magma-cracks'
-    | 'mist'
-    | 'ancient-glow'
-    | 'color-waves'
-    | 'highstorm'
+  type: 'aon-lines' | 'day-night-split' | 'magma-cracks' | 'mist' | 'ancient-glow' | 'color-waves' | 'highstorm'
   colors: string[]
   opacity?: number
-  speed?: number
-  extendPx?: number
-  highstorm?: HighstormConfig
 }
 
 export interface PlanetVisualConfig {

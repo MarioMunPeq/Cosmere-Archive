@@ -5,10 +5,8 @@ export type RelationshipType =
   | 'mentee'
   | 'ally'
   | 'rival'
-  | 'partner'
   | 'creator'
   | 'creation'
-  | 'friend'
   | 'parent'
   | 'bonded'
   | 'allegiance'
@@ -28,10 +26,8 @@ export const RELATIONSHIP_LABELS: Record<RelationshipType, string> = {
   mentee: 'Mentee',
   ally: 'Ally',
   rival: 'Rival',
-  partner: 'Partner',
   creator: 'Creator',
   creation: 'Creation',
-  friend: 'Friend',
   parent: 'Parent',
   bonded: 'Bonded',
   allegiance: 'Allegiance',
@@ -46,10 +42,8 @@ export const RELATIONSHIP_COLORS: Record<RelationshipType, string> = {
   mentee: '#a78bfa',
   ally: '#fbbf24',
   rival: '#f87171',
-  partner: '#2dd4bf',
   creator: '#a3e635',
   creation: '#a3e635',
-  friend: '#38bdf8',
   parent: '#60a5fa',
   bonded: '#60a5fa',
   allegiance: '#fbbf24',

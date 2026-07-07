@@ -89,6 +89,18 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - **Files modified**: `PlanetRenderer.tsx` (replaced SVG highstorm imports), `index.css` (removed all `hs-*` CSS keyframes/classes), `AGENTS.md`
 - All 265 tests pass, `tsc -b` clean, `pnpm lint` clean
 
+##### Done (this session: Second-pass dead code audit)
+
+- **Three parallel audits** (CSS, types/interfaces, imports/dead-code) across the entire codebase
+- **CSS removed**: `@utility flex-between`, `@utility text-muted`, `@keyframes route-pulse`, `@keyframes storm-spin`, `--font-size-scale` + `body { font-size: calc(100% * ...) }`, dead `@media print` selectors (`.back-to-top`, `.theme-toggle`, `.font-size-controls`, `.command-palette-trigger`, `#search-bar`, `.breadcrumbs`)
+- **Types simplified**: deleted `HighstormConfig` interface (all 7 fields unused) + removed `highstorm`, `speed`, `extendPx` from `ThematicConfig`; removed `rotationSpeed` from `AnimationConfig` (all unused); removed `magicSystem` from `Planet` type; pruned `RelationshipType` (`partner`, `friend`); pruned `SearchResult['type']` (`glossary`); pruned `AtmosphereConfig.animation` (`rotate`); pruned `HaloConfig.animation` (`steady`); pruned `ThematicConfig.type` (`storm-spiral`)
+- **Data files cleaned**: all `magicSystem` fields removed from `planets.ts` (11 planets); all `rotationSpeed` / thematic `speed` / `extendPx` / `highstorm` removed from `planet-visuals.ts`
+- **PlanetRenderer.tsx**: removed `storm-spiral` case (dead branch, no planet uses it)
+- **Constants cleaned**: removed 8 unreferenced exports from `constants.ts` (`ZOOM_STEP`, `FLY_MIN_MS`, `FLY_MAX_MS`, `FLY_PULLBACK_FACTOR`, `FLY_OVERSHOOT`, `PANEL_ANIM_MS`, `PANEL_FADE_MS`, `WORLDHOPPER_PAUSE_MS`)
+- **Icons cleaned**: removed `PlusIcon` and `MinusIcon` from `icons.tsx` and barrel export
+- Confirmed `useCamera.ts` and `useAnimationEngine.ts` already deleted in first pass; `void pubMin; void pubMax;` already removed
+- `tsc -b` clean, 220/220 tests pass
+
 ### Key Decisions
 
 - Remove glossary entirely rather than keep as a tab

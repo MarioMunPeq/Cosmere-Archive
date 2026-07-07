@@ -15,7 +15,6 @@ export interface Planet {
   color: string
   size: number
   sagas?: string[]
-  magicSystem?: string
   investiture?: InvestitureSystem[]
   connectedPlanets?: string[]
   books?: string[]

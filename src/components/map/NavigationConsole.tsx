@@ -1,6 +1,12 @@
 import { memo } from 'react'
 import type { WorldhopperDisplay } from '@/data/static/timeline'
-import type { MapLayers } from './LayersToggle'
+export interface MapLayers {
+  labels: boolean
+  routes: boolean
+  shardIcons: boolean
+  constellation: boolean
+  heatmap: boolean
+}
 
 interface ShardEntry {
   name: string

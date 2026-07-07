@@ -4,28 +4,6 @@
   font-size: 10px;
 }
 
-@utility flex-between {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-@utility text-muted {
-  font-size: 0.75rem;
-  line-height: 1rem;
-  color: #9ca3af;
-}
-
-@keyframes route-pulse {
-  0%,
-  100% {
-    opacity: 0.15;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
 @keyframes panel-slide-in {
   from {
     opacity: 0;
@@ -57,15 +35,6 @@
   }
 }
 
-@keyframes orbit-particle {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 @keyframes dust-drift {
   from {
     transform: translate(0, 0);
@@ -85,16 +54,6 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  @keyframes emerge-from-planet {
-    from {
-      opacity: 0;
-      transform: scale(0.25) translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1) translateY(0);
-    }
-  }
   @keyframes page-enter {
     from {
       opacity: 0;
@@ -108,23 +67,6 @@
 
   .animate-page-enter {
     animation: page-enter 0.25s ease-out both;
-  }
-
-  @keyframes dash-move {
-    to {
-      stroke-dashoffset: -40;
-    }
-  }
-
-  @keyframes content-stagger {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
   }
 
   @keyframes fade-in-up {
@@ -149,10 +91,6 @@
     }
   }
 
-  .animate-dash {
-    animation: dash-move 2s linear infinite;
-  }
-
   .animate-fade-in-up {
     animation: fade-in-up 0.35s ease-out both;
     will-change: transform, opacity;
@@ -161,16 +99,6 @@
   .animate-scale-in {
     animation: scale-in 0.25s ease-out both;
     will-change: transform, opacity;
-  }
-
-  @keyframes twinkle {
-    0%,
-    100% {
-      opacity: 0;
-    }
-    50% {
-      opacity: 0.4;
-    }
   }
 
   @keyframes twinkle-slow {
@@ -219,53 +147,6 @@
     animation: float 4s ease-in-out infinite;
   }
 
-  @keyframes orbit {
-    from {
-      transform: rotate(0deg) translateX(var(--orbit-radius, 40px)) rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg) translateX(var(--orbit-radius, 40px)) rotate(-360deg);
-    }
-  }
-
-  @keyframes divider-grow {
-    from {
-      width: 0%;
-    }
-    to {
-      width: 100%;
-    }
-  }
-
-  .animate-divider-grow {
-    animation: divider-grow 1s ease-out both;
-  }
-
-  @keyframes planet-enter {
-    from {
-      opacity: 0;
-      transform: scale(0);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-
-  .animate-emerge {
-    animation: emerge-from-planet 0.5s ease-out both;
-    will-change: transform, opacity;
-  }
-
-  .animate-content-stagger {
-    animation: content-stagger 0.4s ease-out both;
-    will-change: transform, opacity;
-  }
-
-  .animate-planet-enter {
-    animation: planet-enter 0.5s ease-out both;
-  }
-
   @keyframes breathe {
     0%,
     100% {
@@ -278,62 +159,6 @@
 
   .animate-breathe {
     animation: breathe 6s ease-in-out infinite;
-  }
-
-  @keyframes nebula-drift {
-    0%,
-    100% {
-      transform: translate(0, 0);
-    }
-    33% {
-      transform: translate(15px, -10px);
-    }
-    66% {
-      transform: translate(-8px, 12px);
-    }
-  }
-
-  @keyframes line-pulse {
-    0%,
-    100% {
-      opacity: 0.12;
-    }
-    50% {
-      opacity: 0.25;
-    }
-  }
-
-  .animate-line-pulse {
-    animation: line-pulse 4s ease-in-out infinite;
-  }
-
-  @keyframes constellation-pulse {
-    0%,
-    100% {
-      opacity: 0.1;
-    }
-    50% {
-      opacity: 0.35;
-    }
-  }
-
-  .animate-constellation-pulse {
-    animation: constellation-pulse 6s ease-in-out infinite;
-  }
-
-  @keyframes label-fade {
-    from {
-      opacity: 0;
-      transform: translateX(-4px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-
-  .animate-label-fade {
-    animation: label-fade 0.4s ease-out both;
   }
 
   @keyframes slide-up {
@@ -361,22 +186,6 @@
 
   .animate-twinkle {
     animation: twinkle 4s ease-in-out infinite;
-  }
-
-  @keyframes symbol-float {
-    0%,
-    100% {
-      transform: translateY(0) rotate(0deg);
-      opacity: 0.12;
-    }
-    50% {
-      transform: translateY(-8px) rotate(3deg);
-      opacity: 0.28;
-    }
-  }
-
-  .animate-symbol-float {
-    animation: symbol-float 7s ease-in-out infinite;
   }
 }
 
@@ -413,10 +222,6 @@ input,
     border-color 0.2s ease-out;
 }
 
-.planet-label {
-  font-size: clamp(8px, 1.2vw, 11px);
-}
-
 /* Custom scrollbar — dark, thin, subtle */
 ::-webkit-scrollbar {
   width: 6px;
@@ -440,29 +245,6 @@ input,
 * {
   scrollbar-width: thin;
   scrollbar-color: #4b5563 transparent;
-}
-
-/* Orbit animations */
-@keyframes orbit-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes orbit-pulse {
-  0%,
-  100% {
-    opacity: 0.3;
-  }
-  50% {
-    opacity: 0.8;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .orbit-ring {
-    display: none;
-  }
 }
 
 /* Directional slide-in animations */
@@ -494,11 +276,6 @@ input,
 }
 
 /* View Transitions API */
-@keyframes vt-fade-in {
-  from {
-    opacity: 0;
-  }
-}
 @keyframes vt-fade-out {
   to {
     opacity: 0;
@@ -507,12 +284,6 @@ input,
 @keyframes vt-slide-from-right {
   from {
     transform: translateX(30px);
-    opacity: 0;
-  }
-}
-@keyframes vt-slide-to-left {
-  to {
-    transform: translateX(-30px);
     opacity: 0;
   }
 }
@@ -537,34 +308,11 @@ input,
   --bg-page: #030712;
   --bg-nav: rgba(3, 7, 18, 0.8);
   --text-main: #f3f4f6;
-  --font-size-scale: 1;
 }
 
 /* Full-page dark background (prevents white flash when scrolling past 100vh) */
 html {
   background-color: var(--bg-page);
-}
-
-/* Font size scaling */
-body {
-  font-size: calc(100% * var(--font-size-scale));
-}
-
-/* Timeline dot pulse */
-@keyframes dot-pulse {
-  0%,
-  100% {
-    opacity: 0.85;
-    r: var(--dot-r, 4);
-  }
-  50% {
-    opacity: 0.55;
-    r: calc(var(--dot-r, 4) * 1.15);
-  }
-}
-
-.animate-dot-pulse {
-  animation: dot-pulse 3s ease-in-out infinite;
 }
 
 /* Era band pulse */
@@ -598,19 +346,9 @@ body {
   animation: dot-enter 0.4s ease-out both;
 }
 
-.animate-spin-slow {
-  animation: spin-slow 120s linear infinite;
-}
-
 /* Print stylesheet */
 @media print {
   nav,
-  .back-to-top,
-  .theme-toggle,
-  .font-size-controls,
-  .command-palette-trigger,
-  #search-bar,
-  .breadcrumbs,
   .skip-link,
   button,
   [role='button'] {
@@ -642,15 +380,6 @@ body {
   --bg-page: #f9fafb;
   --bg-nav: rgba(255, 255, 255, 0.85);
   --text-main: #111827;
-}
-
-@keyframes storm-spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
 }
 
 @keyframes halo-breathe {
