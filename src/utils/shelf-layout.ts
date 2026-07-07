@@ -2,7 +2,6 @@ export interface BookLayout {
   width: number
   height: number
   fontSize: number
-  charWidth: number
 }
 
 export interface ShelfLayout {
@@ -12,46 +11,44 @@ export interface ShelfLayout {
   totalWidth: number
 }
 
+const WORD_MIN = 0
+const WORD_MAX = 500_000
+const SPINE_MIN = 28
+const SPINE_MAX = 130
+
 function lerp(a: number, b: number, t: number): number {
   return a + (b - a) * Math.max(0, Math.min(1, t))
+}
+
+function spineWidth(wc: number): number {
+  const t = (Math.max(WORD_MIN, Math.min(WORD_MAX, wc)) - WORD_MIN) / (WORD_MAX - WORD_MIN)
+  return lerp(SPINE_MIN, SPINE_MAX, t)
 }
 
 export function calcShelfLayout(wordCounts: number[], availableWidth: number): ShelfLayout {
   const n = wordCounts.length
   if (n === 0) return { books: [], gap: 0, sidePadding: 0, totalWidth: 0 }
 
-  const sqrts = wordCounts.map((w) => Math.sqrt(Math.max(w, 1000)))
-  const totalSqrt = sqrts.reduce((a, b) => a + b, 0)
+  const rawWidths = wordCounts.map((w) => spineWidth(w ?? 50000))
+  const rawTotal = rawWidths.reduce((a, b) => a + b, 0)
 
-  // Gap and padding adapt to book count — more books = tighter spacing
-  const gap = Math.max(4, Math.min(20, Math.round(120 / n)))
-  const sidePadding = Math.max(10, Math.min(40, Math.round(200 / n)))
+  const gap = Math.max(10, Math.min(36, Math.round(220 / n)))
+  const sidePadding = Math.max(24, Math.min(64, Math.round(300 / n)))
   const fixedWidth = (n - 1) * gap + 2 * sidePadding
-  const booksWidth = Math.max(100, availableWidth - fixedWidth)
+  const usableWidth = Math.max(300, availableWidth - fixedWidth)
 
-  // Scale: maps sqrt(wordCount) sum to usable width
-  const scaleFactor = booksWidth / totalSqrt
+  const scale = usableWidth / rawTotal
+  const scaledWidths = rawWidths.map((w) => Math.max(SPINE_MIN, Math.round(w * scale)))
 
-  // Unclamped widths — proportional to sqrt(wordCount)
-  const rawWidths = sqrts.map((s) => Math.round(s * scaleFactor))
+  const avgWidth = scaledWidths.reduce((a, b) => a + b, 0) / n
+  const height = Math.max(340, Math.min(760, Math.round(avgWidth * 4.6)))
 
-  // Clamp: never narrower than 90px, never wider than 380px
-  const clampedWidths = rawWidths.map((w) => Math.max(90, Math.min(380, w)))
-
-  // Height: derived from average width × adaptive aspect ratio
-  const avgWidth = clampedWidths.reduce((a, b) => a + b, 0) / n
-  const aspectRatio = lerp(3.5, 2.8, (n - 3) / 12)
-  const rawHeight = Math.round(avgWidth * aspectRatio)
-  const height = Math.max(350, Math.min(1100, rawHeight))
-
-  // Font size: proportional to width, clamped for readability
-  const books: BookLayout[] = clampedWidths.map((w) => {
-    const fontSize = Math.round(Math.max(13, Math.min(42, w * 0.13)))
-    const charWidth = Math.max(4, Math.floor((w - 8) / (fontSize * 0.58)))
-    return { width: w, height, fontSize, charWidth }
+  const books: BookLayout[] = scaledWidths.map((w) => {
+    const fontSize = Math.round(Math.max(12, Math.min(18, w * 0.14)))
+    return { width: w, height, fontSize }
   })
 
-  const totalWidth = clampedWidths.reduce((a, b) => a + b, 0) + fixedWidth
+  const totalWidth = scaledWidths.reduce((a, b) => a + b, 0) + fixedWidth
 
   return { books, gap, sidePadding, totalWidth }
 }

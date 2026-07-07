@@ -1,15 +1,41 @@
+function adjust(hex: string, amount: number): string {
+  const num = parseInt(hex.slice(1), 16)
+  const r = Math.min(255, Math.max(0, ((num >> 16) & 0xff) + amount))
+  const g = Math.min(255, Math.max(0, ((num >> 8) & 0xff) + amount))
+  const b = Math.min(255, Math.max(0, (num & 0xff) + amount))
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`
+}
+
+const METAL: Record<
+  string,
+  {
+    base: string
+    dark: string
+    text: string
+  }
+> = {
+  stormlight: { base: '#8890a0', dark: '#585e6e', text: '#181c2a' },
+  mistborn: { base: '#8a7e6a', dark: '#5a4e3e', text: '#100c08' },
+  'mistborn-era2': { base: '#8a8468', dark: '#5a5438', text: '#181208' },
+  warbreaker: { base: '#988e6a', dark: '#685e3e', text: '#181208' },
+  elantris: { base: '#9ea0a8', dark: '#6e7078', text: '#1a1c2a' },
+  'white-sand': { base: '#8a7e6a', dark: '#5a4e3e', text: '#100c08' },
+  arcanum: { base: '#8890a0', dark: '#585e6e', text: '#181c2a' },
+}
+
 interface Props {
   title: string
   width: number
+  saga: string
 }
 
-export default function Plaque({ title, width }: Props) {
-  const fontSize = Math.round(Math.max(14, Math.min(48, width * 0.025)))
-  const padX = Math.round(width * 0.022)
-  const padY = Math.round(fontSize * 0.5)
-  const borderR = Math.round(fontSize * 0.22)
-  const screwSize = Math.round(fontSize * 0.3)
-  const shadowBlur = Math.round(fontSize * 0.25)
+export default function Plaque({ title, width, saga }: Props) {
+  const m = METAL[saga] ?? { base: '#8a8a90', dark: '#5a5a60', text: '#18181e' }
+  const fontSize = Math.round(Math.max(12, Math.min(36, width * 0.018)))
+  const padX = Math.round(width * 0.015)
+  const padY = Math.round(fontSize * 0.35)
+  const screwSize = Math.round(fontSize * 0.18)
+  const borderR = Math.round(fontSize * 0.12)
 
   return (
     <div
@@ -17,26 +43,25 @@ export default function Plaque({ title, width }: Props) {
       style={{
         width,
         padding: `${padY}px ${padX}px`,
-        background: 'linear-gradient(180deg, #7a6548 0%, #a0885a 25%, #c4a44a 50%, #a0885a 75%, #7a6548 100%)',
+        background: `linear-gradient(180deg, ${adjust(m.base, -6)} 0%, ${m.base} 50%, ${adjust(m.base, -4)} 100%)`,
         borderRadius: borderR,
-        boxShadow: `0 ${Math.round(fontSize * 0.12)}px ${shadowBlur}px rgba(0,0,0,0.5), inset 0 ${Math.round(fontSize * 0.06)}px 0 rgba(255,255,255,0.2)`,
-        border: `1px solid #5a4a30`,
-        marginBottom: Math.round(fontSize * 0.7),
+        boxShadow: `0 ${Math.round(fontSize * 0.06)}px ${Math.round(fontSize * 0.15)}px rgba(0,0,0,0.25), inset 0 ${Math.round(fontSize * 0.02)}px 0 rgba(255,255,255,0.06)`,
+        border: `1px solid ${m.dark}`,
+        marginBottom: Math.round(fontSize * 0.5),
       }}
     >
-      {/* Screws */}
       {['top', 'bottom'].flatMap((v) =>
         ['left', 'right'].map((h) => (
           <span
             key={`${v}-${h}`}
             className="absolute rounded-full"
             style={{
-              [v]: padY * 0.4,
-              [h]: padX * 0.4,
+              [v]: padY * 0.3,
+              [h]: padX * 0.3,
               width: screwSize,
               height: screwSize,
-              background: 'radial-gradient(circle at 35% 35%, #d4c8a0 0%, #8a7a5a 60%, #5a4a30 100%)',
-              boxShadow: `inset 0 ${Math.round(fontSize * 0.03)}px ${Math.round(fontSize * 0.06)}px rgba(0,0,0,0.4), 0 0 ${Math.round(fontSize * 0.06)}px rgba(0,0,0,0.3)`,
+              background: `radial-gradient(circle at 35% 35%, ${adjust(m.base, 8)} 0%, ${m.dark} 60%, ${adjust(m.dark, -10)} 100%)`,
+              boxShadow: `inset 0 ${Math.round(fontSize * 0.02)}px ${Math.round(fontSize * 0.04)}px rgba(0,0,0,0.25), 0 0 ${Math.round(fontSize * 0.04)}px rgba(0,0,0,0.15)`,
             }}
           />
         )),
@@ -45,11 +70,12 @@ export default function Plaque({ title, width }: Props) {
       <span
         style={{
           fontSize,
-          fontWeight: 700,
-          fontFamily: "'Times New Roman', 'Georgia', serif",
+          fontWeight: 500,
+          fontFamily: "'Cormorant Garamond', 'Georgia', serif",
+          fontVariant: 'all-small-caps',
           letterSpacing: '0.15em',
-          color: '#2a1f0a',
-          textShadow: `0 ${Math.round(fontSize * 0.03)}px 0 rgba(255,255,255,0.12), 0 ${Math.round(-fontSize * 0.02)}px ${Math.round(fontSize * 0.03)}px rgba(0,0,0,0.15)`,
+          color: m.text,
+          textShadow: `0 ${Math.round(fontSize * 0.02)}px 0 rgba(255,255,255,0.06), 0 ${Math.round(-fontSize * 0.01)}px ${Math.round(fontSize * 0.015)}px rgba(0,0,0,0.08)`,
           whiteSpace: 'nowrap',
         }}
       >
