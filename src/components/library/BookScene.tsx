@@ -1,20 +1,11 @@
 import { useRef, useEffect, useMemo } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { type Group, type PerspectiveCamera as PC, PlaneGeometry, MeshBasicMaterial, DoubleSide } from 'three'
-import * as THREE from 'three'
+import { type Group, type PerspectiveCamera as PC } from 'three'
 import type { Book } from '@/types'
 import { type BookState, type BookEvent, ANIM_TIMING } from './BookAnimator'
 import BookModel3D from './BookModel3D'
 import { createPageTexture } from '@/utils/page-texture'
 import type { PageData } from './BookContent'
-
-const shadowMat = new MeshBasicMaterial({
-  color: 0x000000,
-  transparent: true,
-  opacity: 0,
-  side: DoubleSide,
-  depthWrite: false,
-})
 
 interface Props {
   book: Book
@@ -26,7 +17,6 @@ interface Props {
   rightDepth: number
   pages: PageData[]
   curPage: number
-  coverTexture: THREE.Texture | null
 }
 
 function easeOutExpo(t: number) {
@@ -37,18 +27,9 @@ function easeInOutCubic(t: number) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 3
 }
 
-function easeOutBack(t: number) {
-  const c1 = 1.70158
-  const c3 = c1 + 1
-  return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2)
-}
-
-const MAX_COVER_DEG = -155
 const CAM_VEC: [number, number, number] = [0.3, 0.9, 3.0]
 
 export interface AnimProgress {
-  coverDeg: number
-  pageSpread: number
   groupPos: [number, number, number]
   groupScale: [number, number, number]
   groupRotY: number
@@ -66,11 +47,9 @@ export default function BookScene({
   rightDepth,
   pages,
   curPage,
-  coverTexture,
 }: Props) {
   const { bookW, bookH, spineT, pageW } = dim
   const groupRef = useRef<Group>(null)
-  const shadowRef = useRef<Group>(null)
   const animTime = useRef(0)
   const prevState = useRef<BookState>('idle')
   const camera = useThree((s) => s.camera) as PC
@@ -94,8 +73,6 @@ export default function BookScene({
   const safeYOffset = -vh * 0.1
 
   const progress = useRef<AnimProgress>({
-    coverDeg: 0,
-    pageSpread: 0,
     groupPos: [0, 0, 0],
     groupScale: [fittedScale, fittedScale, fittedScale],
     groupRotY: 0,
@@ -118,8 +95,6 @@ export default function BookScene({
     camera.lookAt(0, 0, 0)
     camera.updateProjectionMatrix()
   }, [camera])
-
-  const shadowGeo = useMemo(() => new PlaneGeometry(bookW * 1.4, bookH * 0.4), [bookW, bookH])
 
   const spreadIndex = Math.floor(curPage / 2) * 2
   const leftPage: PageData | undefined = pages[spreadIndex]
@@ -182,28 +157,18 @@ export default function BookScene({
       }
       case 'opening': {
         const t = Math.min(animTime.current / (ANIM_TIMING.open / 1000), 1)
-        const ot = easeOutBack(t)
-        p.coverDeg = MAX_COVER_DEG * ot
-        p.pageSpread = Math.min(t * 1.2, 1)
         if (t >= 1) dispatch('OPEN_DONE')
         break
       }
-      case 'opened': {
-        p.coverDeg = MAX_COVER_DEG
-        p.pageSpread = 1
+      case 'opened':
         break
-      }
       case 'turningPage': {
         const t = Math.min(animTime.current / (ANIM_TIMING.pageTurn / 1000), 1)
-        p.coverDeg = MAX_COVER_DEG
-        p.pageSpread = 1
         if (t >= 1) dispatch('TURN_DONE')
         break
       }
       case 'closing': {
         const t = Math.min(animTime.current / (ANIM_TIMING.closeCover / 1000), 1)
-        p.coverDeg = MAX_COVER_DEG * (1 - t)
-        p.pageSpread = Math.max(1 - t * 1.2, 0)
         if (t >= 1) dispatch('COVER_CLOSED')
         break
       }
@@ -229,19 +194,6 @@ export default function BookScene({
       g.scale.set(p.groupScale[0], p.groupScale[1], p.groupScale[2])
       g.rotation.set(p.groupRotX, p.groupRotY, p.groupRotZ)
     }
-
-    if (shadowRef.current) {
-      const opened = state === 'opened' || state === 'turningPage'
-      shadowMat.opacity = opened ? 0.2 : 0
-      shadowMat.needsUpdate = true
-      shadowRef.current.position.set(
-        p.groupPos[0],
-        p.groupPos[1] - bookH * 0.55 * p.groupScale[1],
-        p.groupPos[2] + 0.05,
-      )
-      shadowRef.current.scale.set(p.groupScale[0], 1, p.groupScale[2])
-      shadowRef.current.rotation.x = -Math.PI / 2
-    }
   })
 
   return (
@@ -251,8 +203,6 @@ export default function BookScene({
       <directionalLight position={[-1.5, 2, -1]} intensity={0.3} color="#cce4ff" />
       <directionalLight position={[2.5, 0.5, -2.5]} intensity={0.2} color="#ffe4cc" />
       <directionalLight position={[0, 3, 0]} intensity={0.15} color="#ffffff" />
-
-      <mesh ref={shadowRef} geometry={shadowGeo} material={shadowMat} />
 
       <group ref={groupRef}>
         <BookModel3D
@@ -266,7 +216,7 @@ export default function BookScene({
           rightDepth={rightDepth}
           leftPageTexture={leftPageTexture}
           rightPageTexture={rightPageTexture}
-          coverTexture={coverTexture}
+          state={state}
         />
       </group>
     </>
