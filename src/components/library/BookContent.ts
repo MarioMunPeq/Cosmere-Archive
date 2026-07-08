@@ -110,8 +110,6 @@ export function generatePages(book: Book): PageData[] {
   const hero = (v: string): PageContent => ({ type: 'hero', value: v })
   const subtitle = (v: string): PageContent => ({ type: 'subtitle', value: v })
   const divider = (): PageContent => ({ type: 'divider' }) as PageContent
-  const ah = (v: string): PageContent => ({ type: 'archive-header', value: v })
-
   const pages: PageData[] = []
 
   // Page 1: Archive Record (cosmic archive entry)
@@ -130,12 +128,6 @@ export function generatePages(book: Book): PageData[] {
   pages.push({
     title: 'Volume Record',
     content: [
-      ah(archiveEntry ? 'COSMERE ARCHIVE · VOLUME RECORD' : 'VOLUME RECORD'),
-      ah(
-        archiveEntry
-          ? `ACCESSION: ${archiveEntry.volumeNumber} · ${archiveEntry.classification}`
-          : `ACCESSION: UNC · CLASSIFICATION: UNCATALOGUED`,
-      ),
       hero(book.title),
       subtitle(`${sagaLabel} · Book ${getOrdinal(book.order)}`),
       ...(archiveEntry ? [tx(archiveEntry.archiveDescription)] : []),

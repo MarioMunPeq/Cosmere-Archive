@@ -139,20 +139,22 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
         <div
           style={{
             position: 'fixed',
-            bottom: 32,
+            bottom: 36,
             left: '50%',
             transform: 'translateX(-50%)',
             zIndex: 60,
             display: 'flex',
             alignItems: 'center',
-            gap: 24,
-            background: 'rgba(0,0,0,0.35)',
-            backdropFilter: 'blur(8px)',
-            WebkitBackdropFilter: 'blur(8px)',
-            borderRadius: 28,
-            padding: '8px 20px',
+            gap: 20,
+            background: 'rgba(16,14,24,0.7)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: 32,
+            padding: '6px 18px',
             pointerEvents: 'auto',
             userSelect: 'none',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
           }}
         >
           <button
@@ -160,24 +162,51 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
             disabled={curSpread === 0}
             aria-label="Previous page"
             style={{
-              background: 'none',
-              border: 'none',
-              color: curSpread > 0 ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.2)',
-              fontSize: 22,
+              width: 32,
+              height: 32,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: curSpread > 0 ? 'rgba(255,255,255,0.06)' : 'transparent',
+              border: curSpread > 0 ? '1px solid rgba(255,255,255,0.12)' : '1px solid rgba(255,255,255,0.04)',
+              borderRadius: '50%',
+              color: curSpread > 0 ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.15)',
+              fontSize: 18,
               cursor: curSpread > 0 ? 'pointer' : 'default',
-              padding: '4px 8px',
+              padding: 0,
               lineHeight: 1,
+              transition: 'all 200ms ease',
+            }}
+            onMouseEnter={(e) => {
+              if (curSpread > 0) {
+                e.currentTarget.style.background = 'rgba(255,255,255,0.12)'
+                e.currentTarget.style.color = 'rgba(255,255,255,0.9)'
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = curSpread > 0 ? 'rgba(255,255,255,0.06)' : 'transparent'
+              e.currentTarget.style.color = curSpread > 0 ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.15)'
             }}
           >
-            &#8249;
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path
+                d="M9 3L5 7L9 11"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </button>
 
           <span
             style={{
-              color: 'rgba(255,255,255,0.4)',
-              fontSize: 13,
+              color: 'rgba(255,255,255,0.35)',
+              fontSize: 12,
               fontFamily: 'Georgia, serif',
-              letterSpacing: '0.08em',
+              letterSpacing: '0.1em',
+              minWidth: 48,
+              textAlign: 'center',
             }}
           >
             {curSpread + 1} / {totalSpreads}
@@ -188,34 +217,78 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
             disabled={curSpread >= totalSpreads - 1}
             aria-label="Next page"
             style={{
-              background: 'none',
-              border: 'none',
-              color: curSpread < totalSpreads - 1 ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.2)',
-              fontSize: 22,
+              width: 32,
+              height: 32,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: curSpread < totalSpreads - 1 ? 'rgba(255,255,255,0.06)' : 'transparent',
+              border:
+                curSpread < totalSpreads - 1 ? '1px solid rgba(255,255,255,0.12)' : '1px solid rgba(255,255,255,0.04)',
+              borderRadius: '50%',
+              color: curSpread < totalSpreads - 1 ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.15)',
+              fontSize: 18,
               cursor: curSpread < totalSpreads - 1 ? 'pointer' : 'default',
-              padding: '4px 8px',
+              padding: 0,
               lineHeight: 1,
+              transition: 'all 200ms ease',
+            }}
+            onMouseEnter={(e) => {
+              if (curSpread < totalSpreads - 1) {
+                e.currentTarget.style.background = 'rgba(255,255,255,0.12)'
+                e.currentTarget.style.color = 'rgba(255,255,255,0.9)'
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = curSpread < totalSpreads - 1 ? 'rgba(255,255,255,0.06)' : 'transparent'
+              e.currentTarget.style.color =
+                curSpread < totalSpreads - 1 ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.15)'
             }}
           >
-            &#8250;
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path
+                d="M5 3L9 7L5 11"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </button>
 
-          <div style={{ width: 1, height: 20, background: 'rgba(255,255,255,0.15)', margin: '0 4px' }} />
+          <div style={{ width: 1, height: 18, background: 'rgba(255,255,255,0.08)' }} />
 
           <button
             onClick={handleClose}
             aria-label="Close book"
             style={{
-              background: 'none',
+              width: 28,
+              height: 28,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'transparent',
               border: 'none',
-              color: 'rgba(255,255,255,0.5)',
-              fontSize: 16,
+              borderRadius: '50%',
+              color: 'rgba(255,255,255,0.3)',
+              fontSize: 14,
               cursor: 'pointer',
-              padding: '4px 8px',
+              padding: 0,
               lineHeight: 1,
+              transition: 'all 200ms ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = 'rgba(255,255,255,0.6)'
+              e.currentTarget.style.background = 'rgba(255,255,255,0.06)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = 'rgba(255,255,255,0.3)'
+              e.currentTarget.style.background = 'transparent'
             }}
           >
-            &#10005;
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M2 2L10 10M10 2L2 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
           </button>
         </div>
       )}

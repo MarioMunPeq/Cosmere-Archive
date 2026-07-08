@@ -164,7 +164,11 @@ export default function BookScene({
         break
       case 'turningPage': {
         const t = Math.min(animTime.current / (ANIM_TIMING.pageTurn / 1000), 1)
-        if (t >= 1) dispatch('TURN_DONE')
+        p.groupRotX = Math.sin(t * Math.PI) * 0.025
+        if (t >= 1) {
+          p.groupRotX = 0
+          dispatch('TURN_DONE')
+        }
         break
       }
       case 'closing': {
