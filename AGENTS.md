@@ -135,7 +135,23 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 
 ### Next Steps
 
-1. (all tasks completed)
+1. Verify page-turn animation (currently instant swap, could add 3D paper-flip)
+2. Confirm production build works (`pnpm build` — untested with R3F deps)
+
+#### Hybrid R3F book architecture (this round)
+
+- **Complete rewrite**: Replaced CSS-only book viewer (BookViewer.tsx, BookModel.tsx, PageTurn.tsx, BookPaper.tsx, BookAnimation.ts) with hybrid HTML + React Three Fiber (R3F) architecture. Opened book is a physically rendered 3D hardcover in Three.js; text content remains HTML overlay for perfect rendering/accessibility.
+- **New deps**: `@react-three/fiber 9.6.1`, `@react-three/drei 10.7.7`, `three 0.185.1`, `@types/three 0.185.0`
+- **Deterministic state machine**: `BookAnimator.ts` — 10 states (`idle → extracting → rotating → centering → opening → opened → turningPage → closing → returning → finished`), pure-function `transition(state, event)`, all timing in `ANIM_TIMING` constants. Event-driven (no chained useEffects).
+- **3D book model**: `BookModel3D.tsx` — back cover box, spine box, left/right page stack boxes (depth adjusts for turned pages), left/right page surfaces, front cover group hinged at left edge. Reads `AnimProgress` ref for per-frame cover rotation during opening/closing.
+- **Scene orchestration**: `BookScene.tsx` — camera `fov 35, position (0, 0.3, 3)`, 3-point lighting (warm key, cool fill, rim backlight), `useFrame` driving extraction/rotation/centering/opening/closing/returning via shared `AnimProgress` ref.
+- **HTML overlay**: `BookOverlay.tsx` — absolute div centered over 3D pages with left-page + spine-gap + right-page layout + BookControls navigation at bottom.
+- **Canvas wrapper**: `BookCanvas.tsx` — R3F `<Canvas>` with `useReducer`-style dispatch, backdrop blur/dim during reading, page-content sync from `generatePages()`, resize listener. `pointerEvents: none` on Canvas, `auto` on overlay. Handles `onPointerMissed` for close.
+- **Typography overhaul**: `BookContentRenderer.tsx` — body text `clamp(15px, 1.05vw, 19px)`, headings `clamp(28px, 2.6vw, 44px)`, drop cap `clamp(48px, 4vw, 72px)` with float, running header + thin rule, decorative divider (line + dot + line), page number footer.
+- **Dynamic pagination**: `BookContent.ts` — `chunk()` splitter (6 characters/page, 4 magic systems/page, connections grouped), new `dropcap-text` page type for synopsis. No content truncation — generates additional spreads as needed.
+- **Old files deleted**: `BookViewer.tsx`, `BookModel.tsx`, `PageTurn.tsx`, `BookPaper.tsx`, `BookAnimation.ts`
+- **New files created**: `BookAnimator.ts`, `BookModel3D.tsx`, `BookScene.tsx`, `BookOverlay.tsx`, `BookCanvas.tsx`
+- All 220 tests pass, `npx tsc -b` clean, `pnpm lint` clean
 
 #### Word Count redesign (this round)
 
@@ -163,6 +179,13 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 
 ### Relevant Files
 
+- `src/components/library/BookAnimator.ts`: deterministic state machine (10 states, pure-function transitions, timing constants in ANIM_TIMING)
+- `src/components/library/BookModel3D.tsx`: 3D book mesh (back cover, spine, left/right page stacks, page surfaces, front cover hinged at left edge)
+- `src/components/library/BookScene.tsx`: R3F scene with camera fov 35 at (0,0.3,3), 3-point lighting, useFrame animation loop
+- `src/components/library/BookOverlay.tsx`: HTML content overlay positioned over 3D pages, wraps left/right page divs + BookControls
+- `src/components/library/BookCanvas.tsx`: R3F Canvas wrapper, dispatch-based state machine, backdrop blur/dim, page-content sync
+- `src/components/library/BookContent.ts`: dynamic pagination with chunk() splitter (6 chars/page, 4 magic/page), dropcap-text type
+- `src/components/library/BookContentRenderer.tsx`: typography 15-44px, drop caps, running header, decorative divider, page number
 - `src/pages/TimelinePage.tsx`: main timeline page with star field, eras bar, era detail panel, saga selector, SVG container
 - `src/pages/StandaloneTimelinePage.tsx`: wrapper with gradient title, back button
 - `src/components/timeline/Timeline.tsx`: SVG timeline with era bands, glow dots, curved fork connections, staggered entrance

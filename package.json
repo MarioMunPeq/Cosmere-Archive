@@ -22,11 +22,14 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.6.1",
     "@tanstack/react-virtual": "^3.14.3",
     "d3-force": "^3.0.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "react-router-dom": "^7.18.0"
+    "react-router-dom": "^7.18.0",
+    "three": "^0.185.1"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
@@ -48,6 +51,7 @@
     "@types/node": "^24.12.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@types/three": "^0.185.0",
     "@vitejs/plugin-react": "^6.0.1",
     "@vitest/coverage-v8": "4.1.9",
     "eslint": "^10.3.0",

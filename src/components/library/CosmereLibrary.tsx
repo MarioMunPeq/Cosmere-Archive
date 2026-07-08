@@ -4,7 +4,7 @@ import { BOOKS } from '@/data/static'
 import { calcShelfLayout } from '@/utils/shelf-layout'
 import BookSpine from './BookSpine'
 import Plaque from './Plaque'
-import BookViewer from './BookViewer'
+import BookCanvas from './BookCanvas'
 
 interface ShelfDef {
   id: string
@@ -185,7 +185,6 @@ export default function CosmereLibrary() {
                         width={bl.width}
                         height={bl.height}
                         fontSize={bl.fontSize}
-                        isHidden={book.id === activeBookId}
                       />
                     )
                   })}
@@ -197,7 +196,7 @@ export default function CosmereLibrary() {
         })}
       </div>
 
-      {activeBook && spineRect && <BookViewer book={activeBook} rect={spineRect} onClose={handleClose} />}
+      {activeBook && spineRect && <BookCanvas book={activeBook} rect={spineRect} onClose={handleClose} />}
     </>
   )
 }

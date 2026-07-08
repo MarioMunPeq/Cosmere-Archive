@@ -300,10 +300,9 @@ interface Props {
   width: number
   height: number
   fontSize: number
-  isHidden?: boolean
 }
 
-export default function BookSpine({ book, onOpen, width, height, fontSize, isHidden }: Props) {
+export default function BookSpine({ book, onOpen, width, height, fontSize }: Props) {
   const material = getMaterial(book.saga)
   const imp = useMemo(() => imperfection(book.id), [book.id])
 
@@ -349,7 +348,7 @@ export default function BookSpine({ book, onOpen, width, height, fontSize, isHid
     book.id === 'tress_of_the_emerald_sea' ? 'tress' : book.id === 'yumi_and_the_nightmare_painter' ? 'yumi' : book.saga
 
   return (
-    <div className="group relative shrink-0" style={{ width, visibility: isHidden ? 'hidden' : undefined }}>
+    <div className="group relative shrink-0" style={{ width }}>
       <div
         className="relative cursor-pointer select-none"
         style={{ perspective: `${Math.round(width * 12)}px`, transform: `rotate(${imp.rotate}deg)` }}
