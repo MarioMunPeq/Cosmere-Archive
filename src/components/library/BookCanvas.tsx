@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, useCallback, startTransition } from 'react'
 import { Canvas } from '@react-three/fiber'
+import * as THREE from 'three'
 import type { Book } from '@/types'
 import { type BookState, type BookEvent, transition, isOpen } from './BookAnimator'
 import BookScene from './BookScene'
@@ -11,7 +12,6 @@ interface Props {
   onClose: () => void
 }
 
-/** Scene dimensions (3D units) */
 function getSceneDimensions(ww: number, wh: number, wc: number) {
   const camDist = Math.sqrt(0.3 ** 2 + 0.9 ** 2 + 3.0 ** 2)
   const vh = 2 * Math.tan((35 * Math.PI) / 360) * camDist
@@ -24,10 +24,33 @@ function getSceneDimensions(ww: number, wh: number, wc: number) {
   return { bookW: bw, bookH: bh, spineT, pageW: pw }
 }
 
+function CoverTextureLoader({ book, onLoad }: { book: Book; onLoad: (t: THREE.Texture | null) => void }) {
+  const url = import.meta.env.BASE_URL + 'images/covers/' + book.id + '.webp'
+  useEffect(() => {
+    const loader = new THREE.TextureLoader()
+    let cancelled = false
+    loader.load(
+      url,
+      (texture) => {
+        if (!cancelled) onLoad(texture)
+      },
+      undefined,
+      () => {
+        if (!cancelled) onLoad(null)
+      },
+    )
+    return () => {
+      cancelled = true
+    }
+  }, [url, onLoad])
+  return null
+}
+
 export default function BookCanvas({ book, rect, onClose }: Props) {
   const [ws, setWs] = useState({ ww: window.innerWidth, wh: window.innerHeight })
   const [state, setState] = useState<BookState>('idle')
   const [curPage, setCurPage] = useState(0)
+  const [coverTexture, setCoverTexture] = useState<THREE.Texture | null>(null)
 
   const sceneDim = useMemo(() => getSceneDimensions(ws.ww, ws.wh, book.wordCount ?? 100000), [ws, book.wordCount])
 
@@ -54,7 +77,6 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Delay unmount to let return animation finish visually
   useEffect(() => {
     if (state === 'finished') {
       const t = setTimeout(onClose, 150)
@@ -82,23 +104,26 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
     }
   }, [dispatch, state])
 
+  const bookOpen = isOpen(state)
+  const showControls = state === 'opened'
+
   return (
     <>
-      {/* Backdrop */}
+      <CoverTextureLoader book={book} onLoad={setCoverTexture} />
+
       <div
         style={{
           position: 'fixed',
           inset: 0,
           zIndex: 49,
           background: `rgba(0,0,0,${state === 'finished' || state === 'idle' ? 0 : 0.2})`,
-          backdropFilter: isOpen(state) ? 'blur(1.5px)' : 'blur(0.5px)',
-          WebkitBackdropFilter: isOpen(state) ? 'blur(1.5px)' : 'blur(0.5px)',
+          backdropFilter: bookOpen ? 'blur(1.5px)' : 'blur(0.5px)',
+          WebkitBackdropFilter: bookOpen ? 'blur(1.5px)' : 'blur(0.5px)',
           transition: 'background 700ms ease, backdrop-filter 700ms ease',
           pointerEvents: 'none',
         }}
       />
 
-      {/* 3D Canvas */}
       <div
         style={{
           position: 'fixed',
@@ -112,7 +137,7 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
           gl={{ alpha: true, antialias: true }}
           style={{ width: '100%', height: '100%' }}
           dpr={[1, 1.5]}
-          onPointerMissed={isOpen(state) ? handleClose : undefined}
+          onPointerMissed={bookOpen ? handleClose : undefined}
         >
           <BookScene
             book={book}
@@ -124,13 +149,95 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
             rightDepth={rightDepth}
             pages={pages}
             curPage={curPage}
-            totalSpreads={totalSpreads}
-            onPrev={handlePrev}
-            onNext={handleNext}
-            onClose={handleClose}
+            coverTexture={coverTexture}
           />
         </Canvas>
       </div>
+
+      {showControls && (
+        <div
+          style={{
+            position: 'fixed',
+            bottom: 32,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 60,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 24,
+            background: 'rgba(0,0,0,0.35)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
+            borderRadius: 28,
+            padding: '8px 20px',
+            pointerEvents: 'auto',
+            userSelect: 'none',
+          }}
+        >
+          <button
+            onClick={handlePrev}
+            disabled={curPage === 0}
+            aria-label="Previous page"
+            style={{
+              background: 'none',
+              border: 'none',
+              color: curPage > 0 ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.2)',
+              fontSize: 22,
+              cursor: curPage > 0 ? 'pointer' : 'default',
+              padding: '4px 8px',
+              lineHeight: 1,
+            }}
+          >
+            &#8249;
+          </button>
+
+          <span
+            style={{
+              color: 'rgba(255,255,255,0.4)',
+              fontSize: 13,
+              fontFamily: 'Georgia, serif',
+              letterSpacing: '0.08em',
+            }}
+          >
+            {curPage + 1} / {totalPages}
+          </span>
+
+          <button
+            onClick={handleNext}
+            disabled={curPage >= totalPages - 1}
+            aria-label="Next page"
+            style={{
+              background: 'none',
+              border: 'none',
+              color: curPage < totalPages - 1 ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.2)',
+              fontSize: 22,
+              cursor: curPage < totalPages - 1 ? 'pointer' : 'default',
+              padding: '4px 8px',
+              lineHeight: 1,
+            }}
+          >
+            &#8250;
+          </button>
+
+          <div style={{ width: 1, height: 20, background: 'rgba(255,255,255,0.15)', margin: '0 4px' }} />
+
+          <button
+            onClick={handleClose}
+            aria-label="Close book"
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'rgba(255,255,255,0.5)',
+              fontSize: 16,
+              cursor: 'pointer',
+              padding: '4px 8px',
+              lineHeight: 1,
+            }}
+          >
+            &#10005;
+          </button>
+        </div>
+      )}
     </>
   )
 }

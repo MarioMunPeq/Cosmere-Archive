@@ -1,11 +1,14 @@
 import { useRef, useMemo } from 'react'
 import { type Group, BoxGeometry, PlaneGeometry, MeshStandardMaterial, DoubleSide } from 'three'
+import * as THREE from 'three'
 import { useFrame } from '@react-three/fiber'
 import type { Book } from '@/types'
 import type { AnimProgress } from './BookScene'
 
 const COVER_T = 0.06
 const PAGE_DEPTH_UNIT = 0.025
+const CURVE_DEPTH = 0.015
+
 const MATERIALS: Record<string, { base: string; dark: string; light: string }> = {
   stormlight: { base: '#0c1220', dark: '#060a12', light: '#1a2640' },
   'mistborn-era-1': { base: '#120a06', dark: '#0a0502', light: '#20140e' },
@@ -23,6 +26,28 @@ function getMat(saga: string) {
   return MATERIALS[saga] ?? FALLBACK_MAT
 }
 
+function createCurvedPageGeo(w: number, h: number, curve: number, reverse: boolean): PlaneGeometry {
+  const segW = 20
+  const geo = new PlaneGeometry(w, h, segW, 1)
+  const pos = geo.attributes.position
+  if (!pos) return geo
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i)
+    let t: number
+    if (reverse) {
+      t = (x + w / 2) / w
+    } else {
+      t = (w / 2 - x) / w
+    }
+    t = Math.max(0, Math.min(1, t))
+    const z = -curve * Math.sin((t * Math.PI) / 2)
+    pos.setZ(i, z)
+  }
+  pos.needsUpdate = true
+  geo.computeVertexNormals()
+  return geo
+}
+
 interface Props {
   book: Book
   bookW: number
@@ -32,28 +57,40 @@ interface Props {
   progress: React.RefObject<AnimProgress>
   leftDepth: number
   rightDepth: number
+  leftPageTexture: THREE.Texture | null
+  rightPageTexture: THREE.Texture | null
+  coverTexture: THREE.Texture | null
 }
 
-export default function BookModel3D({ book, bookW, bookH, spineT, pageW, progress, leftDepth, rightDepth }: Props) {
+export default function BookModel3D({
+  book,
+  bookW,
+  bookH,
+  spineT,
+  pageW,
+  progress,
+  leftDepth,
+  rightDepth,
+  leftPageTexture,
+  rightPageTexture,
+  coverTexture,
+}: Props) {
   const coverRef = useRef<Group>(null)
   const mat = getMat(book.saga)
 
   const leftD = leftDepth * PAGE_DEPTH_UNIT
   const rightD = rightDepth * PAGE_DEPTH_UNIT
   const totalPageD = leftD + rightD
-
-  // Each half: left pages center at x = -(pageW/2 + spineT/2), right pages at x = (pageW/2 + spineT/2)
   const halfCenter = pageW / 2 + spineT / 2
 
-  // Geometry instances
-  const pageGeo = useMemo(() => new PlaneGeometry(pageW, bookH), [pageW, bookH])
+  const leftPageGeo = useMemo(() => createCurvedPageGeo(pageW, bookH, CURVE_DEPTH, false), [pageW, bookH])
+  const rightPageGeo = useMemo(() => createCurvedPageGeo(pageW, bookH, CURVE_DEPTH, true), [pageW, bookH])
   const spineSurfaceGeo = useMemo(() => new PlaneGeometry(spineT, bookH), [spineT, bookH])
   const leftBlockGeo = useMemo(() => new BoxGeometry(pageW, bookH, leftD), [pageW, bookH, leftD])
   const rightBlockGeo = useMemo(() => new BoxGeometry(pageW, bookH, rightD), [pageW, bookH, rightD])
   const backCoverGeo = useMemo(() => new BoxGeometry(bookW, bookH, COVER_T), [bookW, bookH])
-  const frontCoverGeo = useMemo(() => new BoxGeometry(pageW, bookH, COVER_T), [pageW, bookH])
+  const coverThicknessGeo = useMemo(() => new BoxGeometry(pageW, bookH, COVER_T), [pageW, bookH])
 
-  // Materials
   const pageSurfaceMat = useMemo(
     () => new MeshStandardMaterial({ color: '#f5efe6', roughness: 0.85, metalness: 0, side: DoubleSide }),
     [],
@@ -77,6 +114,20 @@ export default function BookModel3D({ book, bookW, bookH, spineT, pageW, progres
     [mat.dark],
   )
 
+  const coverFaceMat = useMemo(() => {
+    const m = new MeshStandardMaterial({
+      color: mat.base,
+      roughness: 0.45,
+      metalness: 0.04,
+      side: DoubleSide,
+    })
+    if (coverTexture) {
+      m.map = coverTexture
+      m.needsUpdate = true
+    }
+    return m
+  }, [coverTexture, mat.base])
+
   useFrame(() => {
     if (!coverRef.current) return
     coverRef.current.rotation.y = (progress.current?.coverDeg ?? 0) * (Math.PI / 180)
@@ -84,34 +135,27 @@ export default function BookModel3D({ book, bookW, bookH, spineT, pageW, progres
 
   return (
     <>
-      {/* BACK COVER — full book width, centered, behind page block */}
       <mesh position={[0, 0, -totalPageD - COVER_T / 2]} geometry={backCoverGeo} material={coverMat} />
 
-      {/* Inside back cover surface */}
       <mesh position={[0, 0, -totalPageD]}>
         <planeGeometry args={[bookW, bookH]} />
         <primitive object={insideCoverMat} />
       </mesh>
 
-      {/* SPINE — connects both halves */}
       <mesh position={[0, 0, -totalPageD / 2 - COVER_T / 2]}>
         <boxGeometry args={[spineT, bookH, totalPageD + COVER_T]} />
         <primitive object={spineMat} />
       </mesh>
 
-      {/* Spine surface */}
       <mesh position={[0, 0, 0.001]} geometry={spineSurfaceGeo} material={spineSurfaceMat} />
 
-      {/* LEFT PAGE BLOCK */}
       {leftD > 0 && (
         <>
           <mesh position={[-halfCenter, 0, -leftD / 2]} geometry={leftBlockGeo} material={pageBlockMat} />
-          {/* Page edges on outer face (left side) */}
           <mesh position={[-halfCenter - pageW / 2, 0, -leftD / 2]}>
             <planeGeometry args={[leftD, bookH]} />
             <primitive object={pageEdgeMat} />
           </mesh>
-          {/* Page edges on bottom face */}
           <mesh position={[-halfCenter, -bookH / 2, -leftD / 2]} rotation={[Math.PI / 2, 0, 0]}>
             <planeGeometry args={[pageW, leftD]} />
             <primitive object={pageEdgeMat} />
@@ -119,19 +163,30 @@ export default function BookModel3D({ book, bookW, bookH, spineT, pageW, progres
         </>
       )}
 
-      {/* LEFT PAGE SURFACE */}
-      <mesh position={[-halfCenter, 0, 0.002]} geometry={pageGeo} material={pageSurfaceMat} />
+      <mesh position={[-halfCenter, 0, 0]} geometry={leftPageGeo}>
+        <primitive object={pageSurfaceMat} />
+      </mesh>
+      {leftPageTexture && (
+        <mesh position={[-halfCenter, 0, 0.003]} geometry={leftPageGeo}>
+          <meshStandardMaterial
+            map={leftPageTexture}
+            transparent
+            opacity={1}
+            side={DoubleSide}
+            roughness={0.9}
+            metalness={0}
+            depthWrite={false}
+          />
+        </mesh>
+      )}
 
-      {/* RIGHT PAGE BLOCK */}
       {rightD > 0 && (
         <>
           <mesh position={[halfCenter, 0, -rightD / 2]} geometry={rightBlockGeo} material={pageBlockMat} />
-          {/* Page edges on outer face (right side) */}
           <mesh position={[halfCenter + pageW / 2, 0, -rightD / 2]}>
             <planeGeometry args={[rightD, bookH]} />
             <primitive object={pageEdgeMat} />
           </mesh>
-          {/* Page edges on bottom face */}
           <mesh position={[halfCenter, -bookH / 2, -rightD / 2]} rotation={[Math.PI / 2, 0, 0]}>
             <planeGeometry args={[pageW, rightD]} />
             <primitive object={pageEdgeMat} />
@@ -139,13 +194,29 @@ export default function BookModel3D({ book, bookW, bookH, spineT, pageW, progres
         </>
       )}
 
-      {/* RIGHT PAGE SURFACE */}
-      <mesh position={[halfCenter, 0, 0.002]} geometry={pageGeo} material={pageSurfaceMat} />
+      <mesh position={[halfCenter, 0, 0]} geometry={rightPageGeo}>
+        <primitive object={pageSurfaceMat} />
+      </mesh>
+      {rightPageTexture && (
+        <mesh position={[halfCenter, 0, 0.003]} geometry={rightPageGeo}>
+          <meshStandardMaterial
+            map={rightPageTexture}
+            transparent
+            opacity={1}
+            side={DoubleSide}
+            roughness={0.9}
+            metalness={0}
+            depthWrite={false}
+          />
+        </mesh>
+      )}
 
-      {/* FRONT COVER — hinged at spine edge, pageW wide */}
       <group ref={coverRef} position={[spineT / 2, 0, 0]}>
-        <mesh position={[pageW / 2, 0, -totalPageD - COVER_T / 2]} geometry={frontCoverGeo} material={coverMat} />
-        {/* Inside front cover surface */}
+        <mesh position={[pageW / 2, 0, -totalPageD - COVER_T / 2]} geometry={coverThicknessGeo} material={coverMat} />
+        <mesh position={[pageW / 2, 0, -totalPageD - COVER_T]}>
+          <planeGeometry args={[pageW, bookH]} />
+          <primitive object={coverFaceMat} />
+        </mesh>
         <mesh position={[pageW / 2, 0, -totalPageD]}>
           <planeGeometry args={[pageW, bookH]} />
           <primitive object={insideCoverMat} />

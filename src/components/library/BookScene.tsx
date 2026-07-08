@@ -1,11 +1,11 @@
 import { useRef, useEffect, useMemo } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { Html } from '@react-three/drei'
 import { type Group, type PerspectiveCamera as PC, PlaneGeometry, MeshBasicMaterial, DoubleSide } from 'three'
+import * as THREE from 'three'
 import type { Book } from '@/types'
 import { type BookState, type BookEvent, ANIM_TIMING } from './BookAnimator'
 import BookModel3D from './BookModel3D'
-import BookContentRenderer from './BookContentRenderer'
+import { createPageTexture } from '@/utils/page-texture'
 import type { PageData } from './BookContent'
 
 const shadowMat = new MeshBasicMaterial({
@@ -26,10 +26,7 @@ interface Props {
   rightDepth: number
   pages: PageData[]
   curPage: number
-  totalSpreads: number
-  onPrev: () => void
-  onNext: () => void
-  onClose: () => void
+  coverTexture: THREE.Texture | null
 }
 
 function easeOutExpo(t: number) {
@@ -59,114 +56,6 @@ export interface AnimProgress {
   groupRotZ: number
 }
 
-function PageContentArea({
-  page,
-  side,
-  pageNum,
-  contentOpacity,
-  totalSpreads,
-  onPrev,
-  onNext,
-  onClose,
-  pxW,
-  pxH,
-}: {
-  page: PageData | undefined
-  side: 'left' | 'right'
-  pageNum: number
-  contentOpacity: number
-  totalSpreads: number
-  onPrev: () => void
-  onNext: () => void
-  onClose: () => void
-  pxW: number
-  pxH: number
-}) {
-  const visible = contentOpacity > 0.01
-
-  return (
-    <div
-      style={{
-        width: pxW,
-        height: pxH,
-        opacity: contentOpacity,
-        transition: 'opacity 300ms ease',
-        pointerEvents: visible ? 'auto' : 'none',
-        position: 'relative',
-        overflow: 'hidden',
-        fontFamily: "'Cormorant Garamond', 'Playfair Display', 'Georgia', serif",
-        color: '#1a1a2e',
-      }}
-    >
-      {page ? (
-        <BookContentRenderer page={page} side={side} pageNum={pageNum} />
-      ) : (
-        <div style={{ padding: '40%', textAlign: 'center', color: 'rgba(26,26,46,0.25)', fontSize: 14 }}>&mdash;</div>
-      )}
-
-      {/* Integrated prev control — bottom-left of left page */}
-      {visible && side === 'left' && (
-        <span
-          onClick={onPrev}
-          style={{
-            position: 'absolute',
-            bottom: 10,
-            left: 14,
-            cursor: pageNum > 1 ? 'pointer' : 'default',
-            fontSize: 18,
-            color: pageNum > 1 ? 'rgba(26,26,46,0.25)' : 'rgba(26,26,46,0.08)',
-            lineHeight: 1,
-            userSelect: 'none',
-          }}
-          aria-label="Previous"
-        >
-          &#8249;
-        </span>
-      )}
-
-      {/* Integrated next control — bottom-right of right page */}
-      {visible && side === 'right' && (
-        <span
-          onClick={onNext}
-          style={{
-            position: 'absolute',
-            bottom: 10,
-            right: 14,
-            cursor: pageNum < totalSpreads ? 'pointer' : 'default',
-            fontSize: 18,
-            color: pageNum < totalSpreads ? 'rgba(26,26,46,0.25)' : 'rgba(26,26,46,0.08)',
-            lineHeight: 1,
-            userSelect: 'none',
-          }}
-          aria-label="Next"
-        >
-          &#8250;
-        </span>
-      )}
-
-      {/* Close — top-right of right page */}
-      {visible && side === 'right' && (
-        <span
-          onClick={onClose}
-          style={{
-            position: 'absolute',
-            top: 10,
-            right: 14,
-            cursor: 'pointer',
-            fontSize: 14,
-            color: 'rgba(26,26,46,0.15)',
-            lineHeight: 1,
-            userSelect: 'none',
-          }}
-          aria-label="Close book"
-        >
-          &#10005;
-        </span>
-      )}
-    </div>
-  )
-}
-
 export default function BookScene({
   book,
   spineRect,
@@ -177,10 +66,7 @@ export default function BookScene({
   rightDepth,
   pages,
   curPage,
-  totalSpreads,
-  onPrev,
-  onNext,
-  onClose,
+  coverTexture,
 }: Props) {
   const { bookW, bookH, spineT, pageW } = dim
   const groupRef = useRef<Group>(null)
@@ -235,24 +121,22 @@ export default function BookScene({
 
   const shadowGeo = useMemo(() => new PlaneGeometry(bookW * 1.4, bookH * 0.4), [bookW, bookH])
 
-  // Page content
   const spreadIndex = Math.floor(curPage / 2) * 2
   const leftPage: PageData | undefined = pages[spreadIndex]
   const rightPage: PageData | undefined = pages[spreadIndex + 1]
   const pageNum = spreadIndex / 2 + 1
-  const halfCenter = pageW / 2 + spineT / 2
 
-  // Html pixel dimensions
-  const contentW = useMemo(() => Math.round(size.width * 0.28), [size.width])
-  const contentH = useMemo(() => Math.round(size.height * 0.7), [size.height])
+  const pageAspect = bookH / pageW
 
-  // Content opacity derived from state (no ref access during render)
-  const contentOpacity = useMemo(() => {
-    if (state === 'opened' || state === 'turningPage') return 1
-    if (state === 'opening') return 0.35
-    if (state === 'closing') return 0.2
-    return 0
-  }, [state])
+  const leftPageTexture = useMemo(
+    () => (leftPage ? createPageTexture(leftPage, pageAspect, 'left', pageNum) : null),
+    [leftPage, pageAspect, pageNum],
+  )
+
+  const rightPageTexture = useMemo(
+    () => (rightPage ? createPageTexture(rightPage, pageAspect, 'right', pageNum) : null),
+    [rightPage, pageAspect, pageNum],
+  )
 
   useFrame((_, delta) => {
     if (prevState.current !== state) {
@@ -360,8 +244,6 @@ export default function BookScene({
     }
   })
 
-  const showContent = state !== 'idle' && state !== 'finished'
-
   return (
     <>
       <ambientLight intensity={0.35} />
@@ -382,43 +264,10 @@ export default function BookScene({
           progress={progress}
           leftDepth={leftDepth}
           rightDepth={rightDepth}
+          leftPageTexture={leftPageTexture}
+          rightPageTexture={rightPageTexture}
+          coverTexture={coverTexture}
         />
-
-        {/* Left page content — Html inside the 3D group, follows all transforms */}
-        {showContent && (
-          <Html position={[-halfCenter, 0, 0.006]} transform style={{ width: contentW, height: contentH }}>
-            <PageContentArea
-              page={leftPage}
-              side="left"
-              pageNum={pageNum}
-              contentOpacity={contentOpacity}
-              totalSpreads={totalSpreads}
-              onPrev={onPrev}
-              onNext={onNext}
-              onClose={onClose}
-              pxW={contentW}
-              pxH={contentH}
-            />
-          </Html>
-        )}
-
-        {/* Right page content */}
-        {showContent && (
-          <Html position={[halfCenter, 0, 0.006]} transform style={{ width: contentW, height: contentH }}>
-            <PageContentArea
-              page={rightPage}
-              side="right"
-              pageNum={pageNum}
-              contentOpacity={contentOpacity}
-              totalSpreads={totalSpreads}
-              onPrev={onPrev}
-              onNext={onNext}
-              onClose={onClose}
-              pxW={contentW}
-              pxH={contentH}
-            />
-          </Html>
-        )}
       </group>
     </>
   )
