@@ -8,20 +8,23 @@ const PAPER = '#f5efe6'
 const MUTED = 'rgba(26,26,46,0.2)'
 const FAINT = 'rgba(26,26,46,0.06)'
 
-const MARGIN_TOP = Math.round(BASE_W * 0.11)
-const MARGIN_BOTTOM = Math.round(BASE_W * 0.1)
-const MARGIN_INNER = Math.round(BASE_W * 0.13)
-const MARGIN_OUTER = Math.round(BASE_W * 0.09)
+const MARGIN_TOP = Math.round(BASE_W * 0.09)
+const MARGIN_BOTTOM = Math.round(BASE_W * 0.08)
+const MARGIN_INNER = Math.round(BASE_W * 0.1)
+const MARGIN_OUTER = Math.round(BASE_W * 0.08)
 
-const FONT_TITLE = Math.round(BASE_W * 0.034)
-const FONT_SECTION = Math.round(BASE_W * 0.017)
-const FONT_BODY = Math.round(BASE_W * 0.0135)
-const FONT_DROPCAP = Math.round(BASE_W * 0.04)
-const FONT_SMALL = Math.round(BASE_W * 0.011)
-const FONT_GRID = Math.round(BASE_W * 0.0115)
-const FONT_GRID_LABEL = Math.round(BASE_W * 0.013)
+const FONT_TITLE = Math.round(BASE_W * 0.042)
+const FONT_SECTION = Math.round(BASE_W * 0.022)
+const FONT_BODY = Math.round(BASE_W * 0.018)
+const FONT_DROPCAP = Math.round(BASE_W * 0.044)
+const FONT_SMALL = Math.round(BASE_W * 0.014)
+const FONT_GRID = Math.round(BASE_W * 0.015)
+const FONT_GRID_LABEL = Math.round(BASE_W * 0.017)
 
-const LINE_H = 1.55
+const LINE_H = 1.6
+const DROPCAP_GAP = Math.round(BASE_W * 0.012)
+const FONT_HERO = Math.round(BASE_W * 0.055)
+const FONT_SUBTITLE = Math.round(BASE_W * 0.026)
 
 function wrapText(ctx: CanvasRenderingContext2D, text: string, maxW: number): string[] {
   const lines: string[] = []
@@ -105,6 +108,84 @@ function renderSmallHeading(
   return cy - y
 }
 
+function renderArchiveHeader(
+  ctx: CanvasRenderingContext2D,
+  item: PageContent,
+  x: number,
+  y: number,
+  maxW: number,
+): number {
+  if (!item.value) return 0
+  ctx.font = `400 ${FONT_SMALL}px ${FONT}`
+  ctx.fillStyle = MUTED
+  ctx.textBaseline = 'top'
+  ctx.textAlign = 'center'
+  const midX = x + maxW / 2
+  const lines = wrapText(ctx, item.value.toUpperCase(), maxW)
+  let cy = y
+  for (const line of lines) {
+    ctx.fillText(line, midX, cy)
+    cy += FONT_SMALL * 1.5
+  }
+  ctx.textAlign = 'left'
+  return cy - y
+}
+
+function renderHero(ctx: CanvasRenderingContext2D, item: PageContent, x: number, y: number, maxW: number): number {
+  if (!item.value) return 0
+  ctx.font = `300 ${FONT_HERO}px ${FONT}`
+  ctx.fillStyle = '#16162a'
+  ctx.textBaseline = 'top'
+  const lines = wrapText(ctx, item.value, maxW)
+  let cy = y
+  for (const line of lines) {
+    ctx.fillText(line, x, cy)
+    cy += FONT_HERO * 1.1
+  }
+  return cy - y
+}
+
+function renderSubtitle(ctx: CanvasRenderingContext2D, item: PageContent, x: number, y: number, maxW: number): number {
+  if (!item.value) return 0
+  ctx.font = `400 ${FONT_SUBTITLE}px ${FONT}`
+  ctx.fillStyle = INK
+  ctx.textBaseline = 'top'
+
+  const text = item.value
+  const tw = ctx.measureText(text).width
+  const cx = x + (maxW - tw) / 2
+  ctx.fillText(text, cx, y)
+
+  return Math.round(FONT_SUBTITLE * 1.4)
+}
+
+function renderDivider(ctx: CanvasRenderingContext2D, x: number, y: number, maxW: number): number {
+  const midX = x + maxW / 2
+  const dotR = 3
+  const lineW = (maxW - dotR * 4) / 2
+
+  ctx.strokeStyle = MUTED
+  ctx.lineWidth = 1
+  ctx.beginPath()
+  ctx.moveTo(x, y + 8)
+  ctx.lineTo(x + lineW, y + 8)
+  ctx.stroke()
+
+  ctx.fillStyle = MUTED
+  ctx.beginPath()
+  ctx.arc(midX, y + 8, dotR, 0, Math.PI * 2)
+  ctx.fill()
+
+  ctx.strokeStyle = MUTED
+  ctx.lineWidth = 1
+  ctx.beginPath()
+  ctx.moveTo(midX + dotR * 2, y + 8)
+  ctx.lineTo(x + maxW, y + 8)
+  ctx.stroke()
+
+  return Math.round(FONT_BODY * 1.4)
+}
+
 function renderDropcapText(
   ctx: CanvasRenderingContext2D,
   item: PageContent,
@@ -119,7 +200,7 @@ function renderDropcapText(
   ctx.font = `600 ${FONT_DROPCAP}px ${FONT}`
   ctx.textBaseline = 'top'
   const dcW = ctx.measureText(dcChar).width
-  const dcH = FONT_DROPCAP * 0.92
+  const dcH = Math.round(FONT_DROPCAP * 0.85)
 
   ctx.fillStyle = '#16162a'
   ctx.fillText(dcChar, x, y)
@@ -127,32 +208,34 @@ function renderDropcapText(
   ctx.font = `${FONT_BODY}px ${FONT}`
   ctx.fillStyle = INK
 
-  const restX = x + dcW + Math.round(FONT_BODY * 0.35)
+  const restX = x + dcW + DROPCAP_GAP
   const firstMaxW = maxW - (restX - x)
+  const bodyLh = Math.round(FONT_BODY * LINE_H)
 
   const words = rest.split(' ')
   let cy = y
-  let line = ''
-  let isFirstLine = true
+  let line: string[] = []
+
+  function flushLine() {
+    if (line.length === 0) return
+    const text = line.join(' ')
+    const besideDrop = cy - y < dcH
+    ctx.fillText(text, besideDrop ? restX : x, cy)
+    cy += bodyLh
+    line = []
+  }
 
   for (const word of words) {
-    const test = line ? line + ' ' + word : word
-    const mw = isFirstLine ? firstMaxW : maxW
-    if (ctx.measureText(test).width > mw && line) {
-      ctx.fillText(line, isFirstLine ? restX : x, cy)
-      cy += FONT_BODY * LINE_H
-      line = word
-      isFirstLine = false
-    } else {
-      line = test
+    const candidate = line.length === 0 ? word : line.join(' ') + ' ' + word
+    const mw = cy - y < dcH ? firstMaxW : maxW
+    if (ctx.measureText(candidate).width > mw && line.length > 0) {
+      flushLine()
     }
+    line.push(word)
   }
-  if (line) {
-    ctx.fillText(line, isFirstLine ? restX : x, cy)
-    cy += FONT_BODY * LINE_H
-  }
+  flushLine()
 
-  return Math.max(cy, y + dcH + 4) - y
+  return Math.max(cy, y + dcH + bodyLh) - y
 }
 
 function renderText(ctx: CanvasRenderingContext2D, item: PageContent, x: number, y: number, maxW: number): number {
@@ -239,6 +322,14 @@ function renderList(ctx: CanvasRenderingContext2D, item: PageContent, x: number,
 
 function renderItem(ctx: CanvasRenderingContext2D, item: PageContent, x: number, y: number, maxW: number): number {
   switch (item.type) {
+    case 'archive-header':
+      return renderArchiveHeader(ctx, item, x, y, maxW)
+    case 'hero':
+      return renderHero(ctx, item, x, y, maxW)
+    case 'subtitle':
+      return renderSubtitle(ctx, item, x, y, maxW)
+    case 'divider':
+      return renderDivider(ctx, x, y, maxW)
     case 'heading':
       return renderHeading(ctx, item, x, y, maxW)
     case 'small-heading':

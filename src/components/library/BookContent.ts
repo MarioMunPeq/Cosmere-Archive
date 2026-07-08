@@ -4,6 +4,7 @@ import { MAGIC_SYSTEMS } from '@/data/static/magic-systems'
 import ALL_CHARACTERS from '@/data/generated/characters.json'
 import { PLANETS } from '@/data/static/planets'
 import { TIMELINE_EVENTS } from '@/data/static/timeline'
+import { getBookArchiveEntry } from '@/data/static/book-archive-entries'
 
 interface CharEntry {
   id: string
@@ -26,7 +27,19 @@ export interface PageData {
 }
 
 export interface PageContent {
-  type: 'heading' | 'text' | 'list' | 'entry' | 'grid' | 'separator' | 'small-heading' | 'dropcap-text'
+  type:
+    | 'heading'
+    | 'text'
+    | 'list'
+    | 'entry'
+    | 'grid'
+    | 'separator'
+    | 'small-heading'
+    | 'dropcap-text'
+    | 'hero'
+    | 'subtitle'
+    | 'divider'
+    | 'archive-header'
   value?: string
   entries?: { label: string; value: string }[]
   items?: string[]
@@ -55,8 +68,8 @@ function getOrdinal(n: number): string {
   return `${n}th`
 }
 
-const CHARS_PER_PAGE = 8
-const MAGIC_PER_PAGE = 4
+const CHARS_PER_PAGE = 5
+const MAGIC_PER_PAGE = 3
 
 function chunk<T>(arr: T[], size: number): T[][] {
   const result: T[][] = []
@@ -94,25 +107,40 @@ export function generatePages(book: Book): PageData[] {
   const dt = (v: string): PageContent => ({ type: 'dropcap-text', value: v })
   const en = (entries: { label: string; value: string }[]): PageContent => ({ type: 'entry', entries })
   const gr = (entries: { label: string; value: string }[]): PageContent => ({ type: 'grid', entries })
+  const hero = (v: string): PageContent => ({ type: 'hero', value: v })
+  const subtitle = (v: string): PageContent => ({ type: 'subtitle', value: v })
+  const divider = (): PageContent => ({ type: 'divider' }) as PageContent
+  const ah = (v: string): PageContent => ({ type: 'archive-header', value: v })
 
   const pages: PageData[] = []
 
-  // Page 1: Title & Metadata
+  // Page 1: Archive Record (cosmic archive entry)
+  const archiveEntry = getBookArchiveEntry(book.id)
+  const bookPlanet = bookPlanets.length > 0 ? bookPlanets[0]! : undefined
+
+  const metaEntries: { label: string; value: string }[] = [
+    { label: 'World', value: bookPlanet?.name ?? 'Uncatalogued' },
+    ...(bookPlanet?.shard ? [{ label: 'Shard', value: bookPlanet.shard }] : []),
+    { label: 'Published', value: book.year ? String(book.year) : '—' },
+    { label: 'Words', value: wordCountStr },
+    { label: 'Author', value: 'Brandon Sanderson' },
+    { label: 'Saga', value: sagaLabel },
+  ]
+
   pages.push({
-    title: 'Title',
+    title: 'Volume Record',
     content: [
-      h(book.title),
-      tx('Brandon Sanderson'),
-      sep(),
-      en([
-        { label: 'Saga', value: sagaLabel },
-        { label: 'Book', value: ordinal },
-      ]),
-      en([
-        { label: 'Published', value: book.year ? String(book.year) : '—' },
-        { label: 'Length', value: wordCountStr },
-      ]),
-      en([{ label: 'Universe', value: 'Cosmere' }]),
+      ah(archiveEntry ? 'COSMERE ARCHIVE · VOLUME RECORD' : 'VOLUME RECORD'),
+      ah(
+        archiveEntry
+          ? `ACCESSION: ${archiveEntry.volumeNumber} · ${archiveEntry.classification}`
+          : `ACCESSION: UNC · CLASSIFICATION: UNCATALOGUED`,
+      ),
+      hero(book.title),
+      subtitle(`${sagaLabel} · Book ${getOrdinal(book.order)}`),
+      ...(archiveEntry ? [tx(archiveEntry.archiveDescription)] : []),
+      divider(),
+      gr(metaEntries),
     ],
   })
 
