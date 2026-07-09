@@ -351,6 +351,31 @@ function renderItem(ctx: CanvasRenderingContext2D, item: PageContent, x: number,
   }
 }
 
+// Module-level noise pattern cache
+let _noisePattern: CanvasPattern | null = null
+
+function getNoisePattern(): CanvasPattern {
+  if (_noisePattern) return _noisePattern
+  const nc = document.createElement('canvas')
+  nc.width = 256
+  nc.height = 256
+  const nctx = nc.getContext('2d')!
+  const id = nctx.createImageData(256, 256)
+  const d = id.data
+  for (let i = 0; i < d.length; i += 4) {
+    const n1 = Math.sin(i * 12.9898) * 43758.5453
+    const n2 = Math.sin((i + 1) * 78.233) * 43758.5453
+    const grain = (Math.abs(n1 - Math.floor(n1)) - 0.5) * 6
+    d[i] = 245 + grain
+    d[i + 1] = 239 + grain
+    d[i + 2] = 230 + grain
+    d[i + 3] = 18 + Math.abs(n2 - Math.floor(n2)) * 8
+  }
+  nctx.putImageData(id, 0, 0)
+  _noisePattern = nctx.createPattern(nc, 'repeat')!
+  return _noisePattern
+}
+
 export function createPageTexture(
   page: PageData | undefined,
   aspect: number,
@@ -367,6 +392,12 @@ export function createPageTexture(
 
   ctx.fillStyle = PAPER
   ctx.fillRect(0, 0, w, h)
+
+  // Paper grain texture
+  ctx.save()
+  ctx.fillStyle = getNoisePattern()
+  ctx.fillRect(0, 0, w, h)
+  ctx.restore()
 
   const innerX = side === 'left' ? MARGIN_OUTER : MARGIN_INNER
   const outerX = side === 'left' ? MARGIN_INNER : MARGIN_OUTER

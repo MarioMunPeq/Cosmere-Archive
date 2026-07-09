@@ -133,10 +133,29 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - **Removed `StarField`** from StatsPage for simplicity (was not needed for data viz page)
 - All 263 tests pass, `tsc -b` clean, `pnpm lint` clean
 
+##### Done (this session: Premium book UX, Phase 4 — paper grain + dust + Phase 1A — Direct presentation + Phase 2C — Corner-fold navigation + Phase 3A — 3D page curl)
+
+- **Phase 1A — Direct presentation**: Replaced the 4-step extract→rotate→center→open sequence with a single `spawning` state. Book materializes in center view with `easeOutBack` scale-up animation and a radial glow sprite (grows to 5×, fades out over 1.2s). Camera moved from `[0.3, 0.9, 3.0]` to `[0, 0.15, 3.0]` (centric, no tilt). Closing now fades the book out smoothly (`easeOutQuad`). `BookAnimator.ts` simplified to 6 states: `idle → spawning → opened → turningPage → closing → finished`. Removed `extracting/rotating/centering/opening/returning` states and all shelf-position/`spineRect` dependency code. Glow sprite uses `CanvasTexture` with radial gradient (white→cyan→transparent).
+
+- **Phase 2C — Corner-fold navigation**: Removed floating navigation bar (prev/next/close buttons at viewport bottom). Replaced with invisible click zones: left 45% = prev, right 45% = next, middle 10% passes through to Canvas's `onPointerMissed` for close backdrop-click. Added `CornerFold.tsx` (SVG component showing a folded page corner with gradient + shadow, mirrored for left side). Keyboard navigation: ArrowLeft/ArrowRight for page turns, Escape to close. Uses `useRef` pattern for stale-free keyboard handler.
+
+- **Phase 3A — 3D page curl**: Custom `BufferGeometry` with 36×4 subdivisions updated per-frame during `turningPage`. Vertex deformation creates a travelling wave from right to left — `sin(curlU * PI)` lifts the page while `compress` slides it inward, simulating paper curl. Shadow plane (`MeshStandardMaterial` at 0→18% opacity) beneath the curl adds depth. Right page surface hidden via `visible={state !== 'turningPage'}`. Geometry cloned from `PlaneGeometry`; vertices mutated directly via `Float32BufferAttribute`.
+
+- **First page redesigned**: Archive entry layout with hero title, subtitle, unique archive description per book (from `book-archive-entries.ts`), metadata grid (volume number, classification, archive ID, date recorded). Drop cap overlap fix: lines beside drop cap stay indented until below the drop cap
+- **Archive data**: `src/data/static/book-archive-entries.ts` with archive descriptions for all 22 books (volumeNumber, classification, archiveDescription, dateRecorded)
+- **`archive-header` page type**: Added to `page-texture.ts` (FONT_SMALL, centered, muted, uppercase). Removed archive header from first page per user request
+- **Page-turn tilt animation**: `p.groupRotX = Math.sin(t * Math.PI) * 0.025` during `turningPage` state — subtle tilt on page turn
+- **Navigation controls redesigned** (superseded by Phase 2C): SVG chevrons in circular buttons, hover glow effects, dark pill shape with blur + border — premium feel
+- **Html overlay for text selection**: `PageHtmlOverlay` component in `BookModel3D.tsx` renders page text as `color: transparent` via `@react-three/drei` `<Html>`, positioned at each page surface — allows selectable/copyable text
+- **Paper grain texture**: `createPageTexture()` now draws a canvas noise pattern (composite sinusoidal, 256×256 tile) over the paper background in `page-texture.ts`. Subtle grain at 18-28% opacity
+- **Dust motes**: 30 Three.js `Points` in `BookScene.tsx`, animated with sinusoidal drift in `useFrame` while `state === 'opened'`. Particles colored `#d4c8b0` at 15% opacity, `sizeAttenuation` on, confined to bounds with bounce-back
+- **Page edge variation**: `BookModel3D.tsx` uses two edge materials (`pageEdgeMat`, `pageEdgeMat2`) with slightly different tints — bottom edges use the lighter variant
+- All 220 tests pass, `tsc -b` clean
+
 ### Next Steps
 
-1. Verify page-turn animation (currently instant swap, could add 3D paper-flip)
-2. Confirm production build works (`pnpm build` — untested with R3F deps)
+1. **Phase 3A refinements**: Adjust curl radius, add page-turn direction support (left→right), fine-tune timing/easing
+2. **General polish**: Verify production build, check all book interactions work end-to-end
 
 #### Hybrid R3F book architecture (this round)
 
@@ -179,13 +198,13 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 
 ### Relevant Files
 
-- `src/components/library/BookAnimator.ts`: deterministic state machine (10 states, pure-function transitions, timing constants in ANIM_TIMING)
-- `src/components/library/BookModel3D.tsx`: 3D book mesh (back cover, spine, left/right page stacks, page surfaces, front cover hinged at left edge)
-- `src/components/library/BookScene.tsx`: R3F scene with camera fov 35 at (0,0.3,3), 3-point lighting, useFrame animation loop
-- `src/components/library/BookOverlay.tsx`: HTML content overlay positioned over 3D pages, wraps left/right page divs + BookControls
-- `src/components/library/BookCanvas.tsx`: R3F Canvas wrapper, dispatch-based state machine, backdrop blur/dim, page-content sync
+- `src/components/library/BookAnimator.ts`: deterministic state machine (6 states, pure-function transitions, timing constants in ANIM_TIMING)
+- `src/components/library/BookModel3D.tsx`: 3D book mesh (back cover, spine, left/right page stacks, page surfaces, front cover hinged at left edge, page edge material variants)
+- `src/components/library/BookScene.tsx`: R3F scene with camera fov 35 at (0,0.15,3), 3-point lighting, useFrame animation loop, glow sprite, dust particles, turned page geo
+- `src/components/library/BookCanvas.tsx`: R3F Canvas wrapper, dispatch-based state machine, backdrop blur/dim, invisible click zones, CornerFold, keyboard navigation
 - `src/components/library/BookContent.ts`: dynamic pagination with chunk() splitter (6 chars/page, 4 magic/page), dropcap-text type
 - `src/components/library/BookContentRenderer.tsx`: typography 15-44px, drop caps, running header, decorative divider, page number
+- `src/components/library/CornerFold.tsx`: SVG corner-fold indicator (gradient + shadow, mirrorable for left/right sides)
 - `src/pages/TimelinePage.tsx`: main timeline page with star field, eras bar, era detail panel, saga selector, SVG container
 - `src/pages/StandaloneTimelinePage.tsx`: wrapper with gradient title, back button
 - `src/components/timeline/Timeline.tsx`: SVG timeline with era bands, glow dots, curved fork connections, staggered entrance

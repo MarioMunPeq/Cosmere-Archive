@@ -1,8 +1,6 @@
 import { useMemo } from 'react'
 import { BoxGeometry, PlaneGeometry, MeshStandardMaterial, DoubleSide } from 'three'
 import * as THREE from 'three'
-import type { Book } from '@/types'
-import type { AnimProgress } from './BookScene'
 import type { BookState } from './BookAnimator'
 
 const PAGE_DEPTH_UNIT = 0.025
@@ -32,12 +30,10 @@ function createCurvedPageGeo(w: number, h: number, curve: number, reverse: boole
 }
 
 interface Props {
-  book: Book
   bookW: number
   bookH: number
   spineT: number
   pageW: number
-  progress: React.RefObject<AnimProgress>
   leftDepth: number
   rightDepth: number
   leftPageTexture: THREE.Texture | null
@@ -53,6 +49,7 @@ export default function BookModel3D({
   rightDepth,
   leftPageTexture,
   rightPageTexture,
+  state,
 }: Props) {
   const leftD = leftDepth * PAGE_DEPTH_UNIT
   const rightD = rightDepth * PAGE_DEPTH_UNIT
@@ -68,7 +65,14 @@ export default function BookModel3D({
     [],
   )
   const pageBlockMat = useMemo(() => new MeshStandardMaterial({ color: '#ede4d8', roughness: 0.9, metalness: 0 }), [])
-  const pageEdgeMat = useMemo(() => new MeshStandardMaterial({ color: '#e8dcc8', roughness: 0.95, metalness: 0 }), [])
+  const pageEdgeMat = useMemo(
+    () => new MeshStandardMaterial({ color: '#e8dcc8', roughness: 0.85, metalness: 0.02 }),
+    [],
+  )
+  const pageEdgeMat2 = useMemo(
+    () => new MeshStandardMaterial({ color: '#e4dac6', roughness: 0.85, metalness: 0.02 }),
+    [],
+  )
 
   return (
     <>
@@ -115,12 +119,12 @@ export default function BookModel3D({
           </mesh>
           <mesh position={[halfCenter, -bookH / 2, -rightD / 2 - BLOCK_Z_OFFSET]} rotation={[Math.PI / 2, 0, 0]}>
             <planeGeometry args={[pageW, rightD]} />
-            <primitive object={pageEdgeMat} />
+            <primitive object={pageEdgeMat2} />
           </mesh>
         </>
       )}
 
-      <mesh position={[halfCenter, 0, 0.003]} geometry={rightPageGeo}>
+      <mesh position={[halfCenter, 0, 0.003]} geometry={rightPageGeo} visible={state !== 'turningPage'}>
         <meshStandardMaterial
           map={rightPageTexture}
           color={rightPageTexture ? '#ffffff' : '#ede4d8'}

@@ -4,6 +4,7 @@ import type { Book } from '@/types'
 import { type BookState, type BookEvent, transition, isOpen } from './BookAnimator'
 import BookScene from './BookScene'
 import { generatePages } from './BookContent'
+import CornerFold from './CornerFold'
 
 interface Props {
   book: Book
@@ -12,7 +13,7 @@ interface Props {
 }
 
 function getSceneDimensions(ww: number, wh: number, wc: number) {
-  const camDist = Math.sqrt(0.3 ** 2 + 0.9 ** 2 + 3.0 ** 2)
+  const camDist = Math.sqrt(0 ** 2 + 0.15 ** 2 + 3.0 ** 2)
   const vh = 2 * Math.tan((35 * Math.PI) / 360) * camDist
   const vw = vh * (ww / wh)
   const spineT = Math.max(0.02, Math.min(0.1, wc / 5000000))
@@ -25,10 +26,10 @@ function getSceneDimensions(ww: number, wh: number, wc: number) {
 
 export default function BookCanvas({ book, rect, onClose }: Props) {
   const [ws, setWs] = useState({ ww: window.innerWidth, wh: window.innerHeight })
-  const [state, setState] = useState<BookState>('extracting')
+  const [state, setState] = useState<BookState>('spawning')
   const [curSpread, setCurSpread] = useState(0)
   const pendingDir = useRef<'next' | 'prev' | null>(null)
-  const prevStateRef = useRef<BookState>('extracting')
+  const prevStateRef = useRef<BookState>('spawning')
 
   const sceneDim = useMemo(() => getSceneDimensions(ws.ww, ws.wh, book.wordCount ?? 100000), [ws, book.wordCount])
 
@@ -68,6 +69,26 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
     }
   }, [state, onClose])
 
+  // ── Keyboard navigation ────────────────────────────────────
+  useEffect(() => {
+    const opened = state === 'opened'
+    const closable = state !== 'closing' && state !== 'finished'
+    const handler = (e: KeyboardEvent) => {
+      if (!opened) return
+      if (e.key === 'ArrowLeft' && curSpread > 0) {
+        pendingDir.current = 'prev'
+        dispatch('TURN_START')
+      } else if (e.key === 'ArrowRight' && curSpread < totalSpreads - 1) {
+        pendingDir.current = 'next'
+        dispatch('TURN_START')
+      } else if (e.key === 'Escape' && closable) {
+        dispatch('CLOSE')
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [state, curSpread, totalSpreads, dispatch])
+
   const handleNext = useCallback(() => {
     if (curSpread < totalSpreads - 1 && state === 'opened') {
       pendingDir.current = 'next'
@@ -83,16 +104,16 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
   }, [curSpread, dispatch, state])
 
   const handleClose = useCallback(() => {
-    if (state !== 'closing' && state !== 'returning' && state !== 'finished') {
+    if (state !== 'closing' && state !== 'finished') {
       dispatch('CLOSE')
     }
   }, [dispatch, state])
 
   const bookOpen = isOpen(state)
-  const showControls = state === 'opened'
 
   return (
     <>
+      {/* Dim backdrop */}
       <div
         style={{
           position: 'fixed',
@@ -106,6 +127,7 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
         }}
       />
 
+      {/* 3D canvas */}
       <div
         style={{
           position: 'fixed',
@@ -115,14 +137,13 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
         }}
       >
         <Canvas
-          camera={{ position: [0.3, 0.9, 3.0], fov: 35, near: 0.1, far: 10 }}
+          camera={{ position: [0, 0.15, 3.0], fov: 35, near: 0.1, far: 10 }}
           gl={{ alpha: true, antialias: true }}
           style={{ width: '100%', height: '100%' }}
           dpr={[1, 1.5]}
           onPointerMissed={bookOpen ? handleClose : undefined}
         >
           <BookScene
-            book={book}
             spineRect={rect}
             dim={sceneDim}
             state={state}
@@ -135,161 +156,69 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
         </Canvas>
       </div>
 
-      {showControls && (
+      {/* Invisible click zones + corner-fold indicators */}
+      {bookOpen && (
         <div
           style={{
             position: 'fixed',
-            bottom: 36,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            zIndex: 60,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 20,
-            background: 'rgba(16,14,24,0.7)',
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            borderRadius: 32,
-            padding: '6px 18px',
-            pointerEvents: 'auto',
-            userSelect: 'none',
-            boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
+            inset: 0,
+            zIndex: 55,
+            pointerEvents: 'none',
           }}
         >
-          <button
-            onClick={handlePrev}
-            disabled={curSpread === 0}
-            aria-label="Previous page"
+          {/* Left zone — prev */}
+          {curSpread > 0 && (
+            <div
+              onClick={handlePrev}
+              style={{
+                position: 'absolute',
+                left: 0,
+                top: 0,
+                width: '45%',
+                height: '100%',
+                pointerEvents: 'auto',
+                cursor: 'pointer',
+              }}
+            />
+          )}
+
+          {/* Right zone — next */}
+          {curSpread < totalSpreads - 1 && (
+            <div
+              onClick={handleNext}
+              style={{
+                position: 'absolute',
+                right: 0,
+                top: 0,
+                width: '45%',
+                height: '100%',
+                pointerEvents: 'auto',
+                cursor: 'pointer',
+              }}
+            />
+          )}
+
+          {/* Corner folds */}
+          <div
             style={{
-              width: 32,
-              height: 32,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: curSpread > 0 ? 'rgba(255,255,255,0.06)' : 'transparent',
-              border: curSpread > 0 ? '1px solid rgba(255,255,255,0.12)' : '1px solid rgba(255,255,255,0.04)',
-              borderRadius: '50%',
-              color: curSpread > 0 ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.15)',
-              fontSize: 18,
-              cursor: curSpread > 0 ? 'pointer' : 'default',
-              padding: 0,
-              lineHeight: 1,
-              transition: 'all 200ms ease',
-            }}
-            onMouseEnter={(e) => {
-              if (curSpread > 0) {
-                e.currentTarget.style.background = 'rgba(255,255,255,0.12)'
-                e.currentTarget.style.color = 'rgba(255,255,255,0.9)'
-              }
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = curSpread > 0 ? 'rgba(255,255,255,0.06)' : 'transparent'
-              e.currentTarget.style.color = curSpread > 0 ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.15)'
+              position: 'absolute',
+              left: '18%',
+              bottom: '15%',
+              transform: 'translateY(50%)',
             }}
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path
-                d="M9 3L5 7L9 11"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-
-          <span
+            <CornerFold side="left" visible={curSpread > 0} />
+          </div>
+          <div
             style={{
-              color: 'rgba(255,255,255,0.35)',
-              fontSize: 12,
-              fontFamily: 'Georgia, serif',
-              letterSpacing: '0.1em',
-              minWidth: 48,
-              textAlign: 'center',
+              position: 'absolute',
+              right: '18%',
+              bottom: '15%',
+              transform: 'translateY(50%)',
             }}
           >
-            {curSpread + 1} / {totalSpreads}
-          </span>
-
-          <button
-            onClick={handleNext}
-            disabled={curSpread >= totalSpreads - 1}
-            aria-label="Next page"
-            style={{
-              width: 32,
-              height: 32,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: curSpread < totalSpreads - 1 ? 'rgba(255,255,255,0.06)' : 'transparent',
-              border:
-                curSpread < totalSpreads - 1 ? '1px solid rgba(255,255,255,0.12)' : '1px solid rgba(255,255,255,0.04)',
-              borderRadius: '50%',
-              color: curSpread < totalSpreads - 1 ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.15)',
-              fontSize: 18,
-              cursor: curSpread < totalSpreads - 1 ? 'pointer' : 'default',
-              padding: 0,
-              lineHeight: 1,
-              transition: 'all 200ms ease',
-            }}
-            onMouseEnter={(e) => {
-              if (curSpread < totalSpreads - 1) {
-                e.currentTarget.style.background = 'rgba(255,255,255,0.12)'
-                e.currentTarget.style.color = 'rgba(255,255,255,0.9)'
-              }
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = curSpread < totalSpreads - 1 ? 'rgba(255,255,255,0.06)' : 'transparent'
-              e.currentTarget.style.color =
-                curSpread < totalSpreads - 1 ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.15)'
-            }}
-          >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path
-                d="M5 3L9 7L5 11"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-
-          <div style={{ width: 1, height: 18, background: 'rgba(255,255,255,0.08)' }} />
-
-          <button
-            onClick={handleClose}
-            aria-label="Close book"
-            style={{
-              width: 28,
-              height: 28,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: 'transparent',
-              border: 'none',
-              borderRadius: '50%',
-              color: 'rgba(255,255,255,0.3)',
-              fontSize: 14,
-              cursor: 'pointer',
-              padding: 0,
-              lineHeight: 1,
-              transition: 'all 200ms ease',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = 'rgba(255,255,255,0.6)'
-              e.currentTarget.style.background = 'rgba(255,255,255,0.06)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'rgba(255,255,255,0.3)'
-              e.currentTarget.style.background = 'transparent'
-            }}
-          >
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <path d="M2 2L10 10M10 2L2 10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-          </button>
+            <CornerFold side="right" visible={curSpread < totalSpreads - 1} />
+          </div>
         </div>
       )}
     </>
