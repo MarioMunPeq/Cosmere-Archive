@@ -545,6 +545,78 @@ html {
   animation: page-turn 600ms ease-out;
 }
 
+@keyframes dust-drift-1 {
+  0% {
+    transform: translate(0px, 0px);
+  }
+  25% {
+    transform: translate(4px, -3px);
+  }
+  50% {
+    transform: translate(-1px, -8px);
+  }
+  75% {
+    transform: translate(-3px, -4px);
+  }
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+
+@keyframes dust-drift-2 {
+  0% {
+    transform: translate(0px, 0px);
+  }
+  33% {
+    transform: translate(-5px, -4px);
+  }
+  66% {
+    transform: translate(3px, -9px);
+  }
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+
+@keyframes dust-drift-3 {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  25% {
+    transform: translate(6px, -2px) scale(1.1);
+  }
+  50% {
+    transform: translate(2px, -7px) scale(0.9);
+  }
+  75% {
+    transform: translate(-4px, -4px) scale(1.05);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+@keyframes dust-drift-4 {
+  0% {
+    transform: translate(0px, 0px);
+  }
+  20% {
+    transform: translate(-3px, -2px);
+  }
+  40% {
+    transform: translate(5px, -5px);
+  }
+  60% {
+    transform: translate(-2px, -8px);
+  }
+  80% {
+    transform: translate(4px, -4px);
+  }
+  100% {
+    transform: translate(0px, 0px);
+  }
+}
+
 [data-theme='light'] body {
   background-color: var(--bg-page);
 }

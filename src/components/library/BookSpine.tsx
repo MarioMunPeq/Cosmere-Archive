@@ -182,9 +182,11 @@ function imperfection(id: string) {
     return (s >>> 0) / 0xffffffff
   }
   return {
-    heightOffset: Math.floor(n() * 5) - 2,
-    shiftX: Math.floor(n() * 5) - 2,
-    rotate: (Math.floor(n() * 7) - 3) * 0.1,
+    heightOffset: Math.floor(n() * 6) - 2,
+    shiftX: Math.floor(n() * 7) - 3,
+    shiftY: Math.floor(n() * 5) - 2,
+    rotate: (Math.floor(n() * 9) - 4) * 0.1,
+    depthOffset: Math.floor(n() * 5) - 2,
   }
 }
 
@@ -308,6 +310,8 @@ export default function BookSpine({ book, onOpen, width, height, fontSize }: Pro
 
   const actualHeight = height + imp.heightOffset
   const isLight = material.isLight
+  const lightBoost = 1 + (imp.depthOffset ?? 0) * 0.06
+  const shadowBoost = 1 + (imp.depthOffset ?? 0) * 0.05
 
   const textMode = getTextMode(width)
   const titleLayout = getTitleLayout(book.title, textMode, fontSize)
@@ -319,7 +323,8 @@ export default function BookSpine({ book, onOpen, width, height, fontSize }: Pro
 
   const baseBg = `linear-gradient(180deg, ${light} 0%, ${base} 35%, ${dark} 55%, ${dark} 85%, ${base} 100%)`
 
-  const spineCurve = `linear-gradient(90deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.04) 20%, transparent 35%, transparent 65%, rgba(0,0,0,0.04) 80%, rgba(0,0,0,0.35) 100%)`
+  const specHighlight = isLight ? 0.01 : 0.025
+  const spineCurve = `linear-gradient(90deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.18) 5%, rgba(0,0,0,0.04) 12%, rgba(255,255,255,${specHighlight}) 20%, rgba(255,255,255,${isLight ? 0 : 0.01}) 25%, transparent 32%, transparent 68%, rgba(0,0,0,0.05) 78%, rgba(0,0,0,0.15) 88%, rgba(0,0,0,0.35) 100%)`
 
   const cantoLeft = `linear-gradient(90deg, rgba(255,255,255,${isLight ? 0 : 0.02}) 0%, transparent 4%, transparent 96%, rgba(0,0,0,0.03) 100%)`
 
@@ -365,18 +370,62 @@ export default function BookSpine({ book, onOpen, width, height, fontSize }: Pro
             borderRadius,
             background: bgLayers,
             border: `1px solid ${borderColor}`,
-            boxShadow: `0 4px 8px rgba(0,0,0,0.3), ${bevelShadow}`,
+            boxShadow: [
+              `0 ${Math.round(4 * shadowBoost)}px ${Math.round(8 * shadowBoost)}px rgba(0,0,0,${Math.min(0.4, 0.3 * shadowBoost).toFixed(2)})`,
+              bevelShadow,
+            ].join(', '),
             marginLeft: imp.shiftX,
+            marginTop: imp.shiftY,
           }}
         >
           <CoverFrame saga={frameKey} width={width} height={actualHeight} foil={foil} />
+
+          {/* Spine hinge grooves (joint between rounded spine and covers) */}
+          <div
+            className="pointer-events-none absolute top-[3%] bottom-[3%]"
+            style={{
+              left: '5%',
+              width: 1,
+              background: `linear-gradient(180deg, transparent, rgba(0,0,0,0.06) 20%, rgba(0,0,0,0.04) 50%, rgba(0,0,0,0.06) 80%, transparent)`,
+            }}
+          />
+          <div
+            className="pointer-events-none absolute top-[3%] bottom-[3%]"
+            style={{
+              right: '5%',
+              width: 1,
+              background: `linear-gradient(180deg, transparent, rgba(0,0,0,0.06) 20%, rgba(0,0,0,0.04) 50%, rgba(0,0,0,0.06) 80%, transparent)`,
+            }}
+          />
+
+          {/* Top headband (decorative spine cap) */}
+          <div
+            className="pointer-events-none absolute left-[14%] right-[14%]"
+            style={{
+              top: 0,
+              height: Math.max(1, Math.round(actualHeight * 0.003)),
+              background: `linear-gradient(90deg, transparent 8%, ${foil}55 20%, ${foilShine}77 40%, ${foil}77 60%, ${foilShine}66 80%, transparent 92%)`,
+              borderRadius: '0 0 1px 1px',
+            }}
+          />
+
+          {/* Bottom headband */}
+          <div
+            className="pointer-events-none absolute left-[14%] right-[14%]"
+            style={{
+              bottom: 0,
+              height: Math.max(1, Math.round(actualHeight * 0.003)),
+              background: `linear-gradient(90deg, transparent 8%, ${foilShine}55 15%, ${foil}66 40%, ${foilShine}88 70%, transparent 92%)`,
+              borderRadius: '1px 1px 0 0',
+            }}
+          />
 
           {/* Warm top light */}
           <div
             className="pointer-events-none absolute inset-0"
             style={{
               borderRadius,
-              background: `linear-gradient(180deg, rgba(255,210,170,${isLight ? 0.015 : 0.03}) 0%, transparent 35%)`,
+              background: `linear-gradient(180deg, rgba(255,210,170,${((isLight ? 0.015 : 0.03) * lightBoost).toFixed(4)}) 0%, transparent 35%)`,
               mixBlendMode: 'overlay',
             }}
           />
@@ -515,17 +564,24 @@ export default function BookSpine({ book, onOpen, width, height, fontSize }: Pro
             style={{ background: `linear-gradient(90deg, transparent, rgba(0,0,0,0.04), transparent)`, opacity: 0.5 }}
           />
 
-          {/* Contact shadow */}
+          {/* Contact shadow (book resting on shelf) */}
           <div
-            className="pointer-events-none absolute bottom-0 left-[2px] right-[2px] h-[3px] rounded-full"
-            style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.2), transparent)' }}
+            className="pointer-events-none absolute bottom-0 left-0 right-0 h-1"
+            style={{
+              background: 'linear-gradient(180deg, rgba(0,0,0,0.15) 0%, transparent 100%)',
+              borderRadius: '50%',
+              transform: 'scaleX(0.92)',
+              transformOrigin: 'bottom center',
+            }}
           />
 
-          {/* Inter-book shadow */}
+          {/* Inter-book shadow (gap between adjacent volumes) */}
           <div
-            className="pointer-events-none absolute right-0 top-0 h-full w-[2px]"
+            className="pointer-events-none absolute right-0 top-0 h-full w-[3px]"
             style={{
-              background: `linear-gradient(90deg, transparent, rgba(0,0,0,0.05))`,
+              background: [`linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.06) 30%, rgba(0,0,0,0.02) 100%)`].join(
+                ', ',
+              ),
               borderRadius: `0 ${Math.round(width * 0.03)}px ${Math.round(width * 0.03)}px 0`,
             }}
           />

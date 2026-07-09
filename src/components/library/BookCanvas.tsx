@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useCallback, useRef } from 'react'
+import { useEffect, useMemo, useState, useCallback, useRef, useLayoutEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
 import type { Book } from '@/types'
 import { type BookState, type BookEvent, type Direction, transition, isOpen } from './BookAnimator'
@@ -50,7 +50,7 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
     setState((prev) => transition(prev, event))
   }, [])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (prevStateRef.current === 'turningPage' && state === 'opened' && pendingDir.current) {
       if (pendingDir.current === 'next') {
         setCurSpread((p) => Math.min(p + 1, totalSpreads - 1))

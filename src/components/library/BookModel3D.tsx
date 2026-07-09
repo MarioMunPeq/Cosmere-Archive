@@ -122,7 +122,7 @@ export default function BookModel3D({
       <mesh name="LeftPageSurface" position={[-halfCenter, 0, 0.003]} geometry={leftPageGeo}>
         <meshStandardMaterial
           map={leftPageTexture}
-          color={leftPageTexture ? '#ffffff' : '#ede4d8'}
+          color={leftPageTexture ? '#f5efe6' : '#ede4d8'}
           side={DoubleSide}
           roughness={0.85}
           metalness={0}
@@ -170,7 +170,7 @@ export default function BookModel3D({
       >
         <meshStandardMaterial
           map={rightPageTexture}
-          color={rightPageTexture ? '#ffffff' : '#ede4d8'}
+          color={rightPageTexture ? '#f5efe6' : '#ede4d8'}
           side={DoubleSide}
           roughness={0.85}
           metalness={0}
