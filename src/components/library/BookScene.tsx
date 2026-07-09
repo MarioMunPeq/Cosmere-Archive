@@ -14,13 +14,15 @@ import {
   DoubleSide,
   PlaneGeometry,
 } from 'three'
-import { type BookState, type BookEvent, ANIM_TIMING } from './BookAnimator'
+import { type BookState, type BookEvent, type Direction, ANIM_TIMING } from './BookAnimator'
 import BookModel3D from './BookModel3D'
 import { createPageTexture } from '@/utils/page-texture'
+import { screenRectToWorld, type WorldTransform } from '@/utils/screen-to-world'
+import type { ScreenRect } from '@/utils/screen-to-world'
 import type { PageData } from './BookContent'
 
 interface Props {
-  spineRect: { x: number; y: number; w: number; h: number }
+  spineRect: ScreenRect
   dim: { bookW: number; bookH: number; spineT: number; pageW: number }
   state: BookState
   dispatch: (event: BookEvent) => void
@@ -28,12 +30,7 @@ interface Props {
   rightDepth: number
   pages: PageData[]
   curPage: number
-}
-
-function easeOutBack(t: number): number {
-  const c1 = 1.70158
-  const c3 = c1 + 1
-  return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2)
+  direction: Direction
 }
 
 function easeOutQuad(t: number): number {
@@ -44,21 +41,13 @@ function easeInOutQuad(t: number): number {
   return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2
 }
 
-// Hermite smoothstep: 0 at 0, 1 at 1, zero derivative at both ends
 function smoothstep01(edge0: number, edge1: number, x: number): number {
   const t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)))
   return t * t * (3 - 2 * t)
 }
 
 const CAM_VEC: [number, number, number] = [0, 0.15, 3.0]
-
-export interface AnimProgress {
-  groupPos: [number, number, number]
-  groupScale: [number, number, number]
-  groupRotY: number
-  groupRotX: number
-  groupRotZ: number
-}
+const HALF_PI = Math.PI / 2
 
 function createGlowTexture(): CanvasTexture {
   const c = document.createElement('canvas')
@@ -79,7 +68,7 @@ function createGlowTexture(): CanvasTexture {
 }
 
 export default function BookScene({
-  spineRect: _spineRect,
+  spineRect,
   dim,
   state,
   dispatch,
@@ -87,9 +76,11 @@ export default function BookScene({
   rightDepth,
   pages,
   curPage,
+  direction,
 }: Props) {
   const { bookW, bookH, spineT, pageW } = dim
-  const groupRef = useRef<Group>(null)
+  const layoutGroupRef = useRef<Group>(null)
+  const animGroupRef = useRef<Group>(null)
   const glowRef = useRef<SpriteImpl>(null)
   const animTime = useRef(0)
   const prevState = useRef<BookState>('idle')
@@ -98,9 +89,16 @@ export default function BookScene({
 
   const camDist = Math.sqrt(CAM_VEC[0] ** 2 + CAM_VEC[1] ** 2 + CAM_VEC[2] ** 2)
 
+  // ── Shelf-to-world transform (computed once, then frozen) ──
+  const initRef = useRef<WorldTransform>({ x: 0, y: 0, scale: 1 })
+  const layoutSetRef = useRef(false)
+  const bookReadyRef = useRef(false)
+
   const fittedScale = useMemo(() => {
     const fovRad = (camera.fov * Math.PI) / 360
-    const aspect = size.width / size.height
+    const w = size.width > 0 ? size.width : window.innerWidth
+    const h = size.height > 0 ? size.height : window.innerHeight
+    const aspect = w / h
     const vh = 2 * Math.tan(fovRad) * camDist
     const vw = vh * aspect
     const margin = 0.8
@@ -110,10 +108,50 @@ export default function BookScene({
     return Math.min(s, 1.2)
   }, [bookW, bookH, camera, size, camDist])
 
-  // ── Turned page mesh (rigid rotation around spine) ──────
-  const TURN_SEG_W = 48 // more segments = smoother spine bend
+  // Layout transform: set exactly once on the outer group (position + scale only)
+  // and set initial book rotation on the inner group.
+  // After the first successful run, layoutSetRef prevents re-applying,
+  // so the extraction animation is never reset.
+  useLayoutEffect(() => {
+    if (layoutSetRef.current) return
+    if (size.width === 0 || size.height === 0) return
+    camera.updateProjectionMatrix()
+    const t = screenRectToWorld(spineRect, size.width, size.height, camera, bookW)
+    initRef.current = t
+    const lg = layoutGroupRef.current
+    const ag = animGroupRef.current
+    if (lg && ag) {
+      lg.position.set(t.x, t.y, 0)
+      lg.scale.set(t.scale, t.scale, t.scale)
+      lg.visible = true
+      ag.rotation.set(0.08, HALF_PI, 0)
+      ag.position.set(0, 0, 0)
+      ag.scale.set(1, 1, 1)
+      layoutSetRef.current = true
+      bookReadyRef.current = true
+    }
+    animTime.current = 0
+  }, [spineRect, size, camera, bookW])
+
+  // ── Coordinate helpers (world → local space of the inner group) ──
+  // Since the outer group has no rotation, local = (world - outerPos) / outerScale
+  function toLocalX(wx: number): number {
+    const s = initRef.current.scale
+    return s > 0.001 ? (wx - initRef.current.x) / s : 0
+  }
+  function toLocalY(wy: number): number {
+    const s = initRef.current.scale
+    return s > 0.001 ? (wy - initRef.current.y) / s : 0
+  }
+  function toLocalZ(wz: number): number {
+    const s = initRef.current.scale
+    return s > 0.001 ? wz / s : 0
+  }
+
+  // ── Turned page mesh ──────────────────────────────────────
+  const TURN_SEG_W = 48
   const TURN_SEG_H = 6
-  const BEND_FRACTION = 0.18 // 18% of page width near spine is flexible
+  const BEND_FRACTION = 0.18
   const turnedRef = useRef<TurnMesh>(null)
   const turnedGeo = useMemo(() => {
     const geo = new BufferGeometry()
@@ -136,14 +174,6 @@ export default function BookScene({
     return geo
   }, [pageW, bookH])
 
-  const progress = useRef<AnimProgress>({
-    groupPos: [0, 0, 0],
-    groupScale: [fittedScale, fittedScale, fittedScale],
-    groupRotY: 0,
-    groupRotX: 0,
-    groupRotZ: 0,
-  })
-
   // ── Dust particles ─────────────────────────────────────────
   const DUST_COUNT = 30
   const [dustGeo] = useState(() => new BufferGeometry())
@@ -160,7 +190,7 @@ export default function BookScene({
     dustGeo.setAttribute('position', new Float32BufferAttribute(pos, 3))
   }, [dustGeo])
 
-  // ── Glow sprite texture — stable reference ─────────────────
+  // ── Glow sprite texture ────────────────────────────────────
   const glowTex = useMemo(() => createGlowTexture(), [])
 
   useEffect(() => {
@@ -169,6 +199,7 @@ export default function BookScene({
     camera.updateProjectionMatrix()
   }, [camera])
 
+  // ── Page textures ─────────────────────────────────────────
   const spreadIndex = Math.floor(curPage / 2) * 2
   const leftPage: PageData | undefined = pages[spreadIndex]
   const rightPage: PageData | undefined = pages[spreadIndex + 1]
@@ -186,7 +217,7 @@ export default function BookScene({
     [rightPage, pageAspect, pageNum],
   )
 
-  // ── Turned page materials (depends on rightPageTexture) ────
+  // ── Turned page materials ────────────────────────────────
   const halfCenter = pageW / 2 + spineT / 2
 
   const turnedMat = useMemo(
@@ -204,9 +235,9 @@ export default function BookScene({
   )
 
   const shadowMatRef = useRef<MeshStandardMaterial>(null!)
-
   const turnT = useRef(0)
 
+  // ── Per-frame animation loop ───────────────────────────────
   useFrame((_, delta) => {
     if (prevState.current !== state) {
       prevState.current = state
@@ -215,67 +246,106 @@ export default function BookScene({
 
     const dt = Math.min(delta, 0.05)
     animTime.current += dt
-    const p = progress.current
+    const ag = animGroupRef.current
+    const glow = glowRef.current
 
     switch (state) {
-      case 'spawning': {
-        const t = Math.min(animTime.current / (ANIM_TIMING.spawn / 1000), 1)
-        const scale = easeOutBack(t)
-        p.groupScale[0] = p.groupScale[1] = p.groupScale[2] = fittedScale * scale
-        p.groupPos[1] = -0.06 * (1 - easeOutQuad(t))
+      case 'extracting': {
+        if (!bookReadyRef.current || !ag) break
+        const raw = Math.min(animTime.current / (ANIM_TIMING.extract / 1000), 1)
+        const et = easeInOutQuad(raw)
+        const init = initRef.current
+        const sScale = init.scale > 0.001 ? init.scale : 1
 
-        // Glow sprite animation
-        const glow = glowRef.current
+        // Target local position: where the inner group must be so that
+        // total = outer(layout) × inner = reading center (0, -0.04, -0.25)
+        const lx = toLocalX(0)
+        const ly = toLocalY(-0.04)
+        const lz = toLocalZ(-0.25)
+
+        ag.position.set(lx * et, ly * et, lz * et)
+        const s = 1 + (fittedScale / sScale - 1) * et
+        ag.scale.set(s, s, s)
+
+        const wobble = Math.sin(raw * Math.PI * 3.5) * 0.008 * (1 - raw)
+        ag.rotation.set(0.08 * (1 - easeOutQuad(raw)) + wobble, HALF_PI * (1 - et), 0)
+
         if (glow) {
-          if (t < 0.35) {
-            const gt = t / 0.35
-            glow.scale.setScalar(gt * 2.5)
-            glow.material.opacity = gt * 0.7
-          } else if (t < 0.7) {
-            const gt = (t - 0.35) / 0.35
-            glow.scale.setScalar(2.5 + gt * 2.5)
-            glow.material.opacity = 0.7 * (1 - gt * 0.6)
-          } else {
-            const gt = (t - 0.7) / 0.3
-            glow.scale.setScalar(5 * (1 - gt * 0.8))
-            glow.material.opacity = 0.28 * (1 - gt)
-          }
+          const glowT = raw < 0.3 ? raw / 0.3 : raw > 0.85 ? (1 - raw) / 0.15 : 1
+          glow.scale.setScalar(glowT * 2.5)
+          glow.material.opacity = glowT * 0.5
         }
 
-        if (t >= 1) {
-          p.groupPos[1] = 0
-          p.groupScale[0] = p.groupScale[1] = p.groupScale[2] = fittedScale
-          if (glowRef.current) {
-            glowRef.current.scale.setScalar(0)
-            glowRef.current.material.opacity = 0
+        if (raw >= 1) {
+          ag.position.set(lx, ly, lz)
+          ag.scale.set(fittedScale / sScale, fittedScale / sScale, fittedScale / sScale)
+          ag.rotation.set(0, 0, 0)
+          if (glow) {
+            glow.scale.setScalar(0)
+            glow.material.opacity = 0
           }
-          dispatch('SPAWN_DONE')
+          animTime.current = 0
+          dispatch('EXTRACT_DONE')
         }
         break
       }
+
+      case 'stabilizing': {
+        if (!ag) break
+        const raw = Math.min(animTime.current / (ANIM_TIMING.stabilize / 1000), 1)
+        const st = easeOutQuad(raw)
+
+        const init = initRef.current
+        const sScale = init.scale > 0.001 ? init.scale : 1
+
+        const endX = toLocalX(0)
+        const endY = toLocalY(0)
+        const startY = toLocalY(-0.04)
+        const endZ = toLocalZ(0)
+        const startZ = toLocalZ(-0.25)
+
+        const overshoot = Math.sin(st * Math.PI * 1.5) * 0.003 * (1 - st)
+        ag.position.x = endX
+        ag.position.y = startY + (endY - startY) * st + overshoot / sScale
+        ag.position.z = startZ + (endZ - startZ) * st
+        ag.rotation.x = (overshoot / sScale) * 3
+
+        if (raw >= 1) {
+          ag.position.set(endX, endY, endZ)
+          ag.rotation.set(0, 0, 0)
+          dispatch('STABILIZE_DONE')
+        }
+        break
+      }
+
       case 'opened':
         break
+
       case 'turningPage': {
+        if (!ag) break
         const raw = Math.min(animTime.current / (ANIM_TIMING.pageTurn / 1000), 1)
         const t = easeInOutQuad(raw)
-        p.groupRotX = Math.sin(raw * Math.PI) * 0.015
+        ag.rotation.x = Math.sin(raw * Math.PI) * 0.015
 
-        // Rigid rotation around spine axis with subtle spine bend
-        const geo = turnedRef.current?.geometry as BufferGeometry | undefined
+        const turnMesh = turnedRef.current
+        if (turnMesh) turnMesh.position.x = direction === 'forward' ? halfCenter : -halfCenter
+
+        const geo = turnMesh?.geometry as BufferGeometry | undefined
         if (geo) {
           const turnPos = geo.attributes.position
           const src = geo.userData.origPos as Float32Array | undefined
           if (turnPos && src) {
             const w = pageW
+            const isFwd = direction === 'forward'
             for (let i = 0; i < turnPos.count; i++) {
               const i3 = i * 3
               const ox = src[i3]!
               const oy = src[i3 + 1]!
-              const dx = ox + w / 2
+              const dx = isFwd ? ox + w / 2 : w / 2 - ox
               const fullAngle = t * Math.PI
               const bendWidth = w * BEND_FRACTION
               const localAngle = dx < bendWidth ? fullAngle * smoothstep01(0, bendWidth, dx) : fullAngle
-              const x = -w / 2 + dx * Math.cos(localAngle)
+              const x = isFwd ? -w / 2 + dx * Math.cos(localAngle) : w / 2 - dx * Math.cos(localAngle)
               const z = dx * Math.sin(localAngle)
               turnPos.setXYZ(i, x, oy, z)
             }
@@ -284,7 +354,6 @@ export default function BookScene({
           }
         }
 
-        // Update shadow
         const shadowMat = shadowMatRef.current
         if (shadowMat) {
           shadowMat.opacity = raw * 0.12
@@ -297,32 +366,40 @@ export default function BookScene({
             shadowMatRef.current.opacity = 0
             shadowMatRef.current.needsUpdate = true
           }
-          p.groupRotX = 0
+          ag.rotation.x = 0
           dispatch('TURN_DONE')
         }
         break
       }
+
       case 'closing': {
-        const t = Math.min(animTime.current / (ANIM_TIMING.close / 1000), 1)
-        const st = 1 - easeOutQuad(t)
-        p.groupScale[0] = p.groupScale[1] = p.groupScale[2] = fittedScale * st
-        p.groupPos[1] = -0.04 * t
-        if (t >= 1) dispatch('CLOSE_DONE')
+        if (!ag) break
+        const raw = Math.min(animTime.current / (ANIM_TIMING.close / 1000), 1)
+        const et = easeInOutQuad(raw)
+
+        // Starting local position = stabilized book center (total = [0,0,0])
+        const startX = toLocalX(0)
+        const startY = toLocalY(0)
+        const startZ = toLocalZ(0)
+
+        ag.position.set(startX * (1 - et), startY * (1 - et), startZ * (1 - et))
+        const init = initRef.current
+        const sScale = init.scale > 0.001 ? init.scale : 1
+        const toScale = fittedScale / sScale
+        const s = 1 + (toScale - 1) * (1 - et)
+        ag.scale.set(s, s, s)
+        ag.rotation.set(0.08 * et, HALF_PI * et, 0)
+
+        if (raw >= 1) dispatch('CLOSE_DONE')
         break
       }
+
       case 'finished':
       case 'idle':
         break
     }
 
-    const g = groupRef.current
-    if (g) {
-      g.position.set(p.groupPos[0], p.groupPos[1], p.groupPos[2])
-      g.scale.set(p.groupScale[0], p.groupScale[1], p.groupScale[2])
-      g.rotation.set(p.groupRotX, p.groupRotY, p.groupRotZ)
-    }
-
-    // Animate dust motes
+    // ── Dust motes ─────────────────────────────────────
     const dust = dustRef.current
     if (dust && state === 'opened') {
       const dp = dustPosRef.current
@@ -348,41 +425,41 @@ export default function BookScene({
       <directionalLight position={[2.5, 0.5, -2.5]} intensity={0.2} color="#ffe4cc" />
       <directionalLight position={[0, 3, 0]} intensity={0.15} color="#ffffff" />
 
-      <group ref={groupRef}>
-        <BookModel3D
-          bookW={bookW}
-          bookH={bookH}
-          spineT={spineT}
-          pageW={pageW}
-          leftDepth={leftDepth}
-          rightDepth={rightDepth}
-          leftPageTexture={leftPageTexture}
-          rightPageTexture={rightPageTexture}
-          state={state}
-        />
-
-        {/* Turned page mesh (3D curl) */}
-        <mesh
-          ref={turnedRef}
-          position={[halfCenter, 0, 0.006]}
-          geometry={turnedGeo}
-          material={turnedMat}
-          visible={state === 'turningPage'}
-        />
-
-        {/* Shadow beneath the curl */}
-        <mesh position={[halfCenter, 0, 0.001]} visible={state === 'turningPage'}>
-          <planeGeometry args={[pageW, bookH]} />
-          <meshStandardMaterial
-            ref={shadowMatRef}
-            color="#000000"
-            transparent
-            opacity={0}
-            roughness={1}
-            metalness={0}
-            depthWrite={false}
+      <group ref={layoutGroupRef} visible={false}>
+        <group ref={animGroupRef}>
+          <BookModel3D
+            bookW={bookW}
+            bookH={bookH}
+            spineT={spineT}
+            pageW={pageW}
+            leftDepth={leftDepth}
+            rightDepth={rightDepth}
+            leftPageTexture={leftPageTexture}
+            rightPageTexture={rightPageTexture}
+            state={state}
           />
-        </mesh>
+
+          <mesh
+            ref={turnedRef}
+            position={[halfCenter, 0, 0.006]}
+            geometry={turnedGeo}
+            material={turnedMat}
+            visible={state === 'turningPage'}
+          />
+
+          <mesh position={[halfCenter, 0, 0.001]} visible={state === 'turningPage'}>
+            <planeGeometry args={[pageW, bookH]} />
+            <meshStandardMaterial
+              ref={shadowMatRef}
+              color="#000000"
+              transparent
+              opacity={0}
+              roughness={1}
+              metalness={0}
+              depthWrite={false}
+            />
+          </mesh>
+        </group>
       </group>
 
       <sprite ref={glowRef} scale={[0, 0, 0]}>

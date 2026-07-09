@@ -1,10 +1,20 @@
-export type BookState = 'idle' | 'spawning' | 'opened' | 'turningPage' | 'closing' | 'finished'
+export type BookState = 'idle' | 'extracting' | 'stabilizing' | 'opened' | 'turningPage' | 'closing' | 'finished'
 
-export type BookEvent = 'SPAWN' | 'SPAWN_DONE' | 'TURN_START' | 'TURN_DONE' | 'CLOSE' | 'CLOSE_DONE'
+export type Direction = 'forward' | 'backward'
+
+export type BookEvent =
+  | 'EXTRACT'
+  | 'EXTRACT_DONE'
+  | 'STABILIZE_DONE'
+  | 'TURN_START'
+  | 'TURN_DONE'
+  | 'CLOSE'
+  | 'CLOSE_DONE'
 
 const TRANSITIONS: Record<BookState, Partial<Record<BookEvent, BookState>>> = {
-  idle: { SPAWN: 'spawning' },
-  spawning: { SPAWN_DONE: 'opened' },
+  idle: { EXTRACT: 'extracting' },
+  extracting: { EXTRACT_DONE: 'stabilizing' },
+  stabilizing: { STABILIZE_DONE: 'opened' },
   opened: { TURN_START: 'turningPage', CLOSE: 'closing' },
   turningPage: { TURN_DONE: 'opened', CLOSE: 'closing' },
   closing: { CLOSE_DONE: 'finished' },
@@ -12,7 +22,8 @@ const TRANSITIONS: Record<BookState, Partial<Record<BookEvent, BookState>>> = {
 }
 
 export const ANIM_TIMING = {
-  spawn: 1200,
+  extract: 900,
+  stabilize: 400,
   close: 800,
   pageTurn: 600,
 }

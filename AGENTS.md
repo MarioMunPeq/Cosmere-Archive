@@ -135,7 +135,7 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 
 ##### Done (this session: Premium book UX, Phase 4 — paper grain + dust + Phase 1A — Direct presentation + Phase 2C — Corner-fold navigation + Phase 3A — 3D page curl)
 
-- **Phase 1A — Direct presentation**: Replaced the 4-step extract→rotate→center→open sequence with a single `spawning` state. Book materializes in center view with `easeOutBack` scale-up animation and a radial glow sprite (grows to 5×, fades out over 1.2s). Camera moved from `[0.3, 0.9, 3.0]` to `[0, 0.15, 3.0]` (centric, no tilt). Closing now fades the book out smoothly (`easeOutQuad`). `BookAnimator.ts` simplified to 6 states: `idle → spawning → opened → turningPage → closing → finished`. Removed `extracting/rotating/centering/opening/returning` states and all shelf-position/`spineRect` dependency code. Glow sprite uses `CanvasTexture` with radial gradient (white→cyan→transparent).
+- **Phase 1A — Physical extraction animation**: Replaced the `spawning` state with a full shelf-to-reading extraction. The book starts at its HTML getBoundingClientRect position (via `screenRectToWorld`), then animates through 7 states: `idle → extracting → stabilizing → opened → turningPage → closing → finished`. The `extracting` phase (900ms) uses `easeInOutQuad` with a rotational wobble and radial glow sprite. The `stabilizing` phase (400ms) adds a gentle overshoot settle. The `closing` phase reverses the extraction back to shelf position. Direct Three.js group mutation avoids ESLint `react-hooks/immutability` rule. `screen-to-world.ts` utility converts screen coordinates to 3D world space using camera unproject.
 
 - **Phase 2C — Corner-fold navigation**: Removed floating navigation bar (prev/next/close buttons at viewport bottom). Replaced with invisible click zones: left 45% = prev, right 45% = next, middle 10% passes through to Canvas's `onPointerMissed` for close backdrop-click. Added `CornerFold.tsx` (SVG component showing a folded page corner with gradient + shadow, mirrored for left side). Keyboard navigation: ArrowLeft/ArrowRight for page turns, Escape to close. Uses `useRef` pattern for stale-free keyboard handler.
 
@@ -161,9 +161,11 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 
 - **Complete rewrite**: Replaced CSS-only book viewer (BookViewer.tsx, BookModel.tsx, PageTurn.tsx, BookPaper.tsx, BookAnimation.ts) with hybrid HTML + React Three Fiber (R3F) architecture. Opened book is a physically rendered 3D hardcover in Three.js; text content remains HTML overlay for perfect rendering/accessibility.
 - **New deps**: `@react-three/fiber 9.6.1`, `@react-three/drei 10.7.7`, `three 0.185.1`, `@types/three 0.185.0`
-- **Deterministic state machine**: `BookAnimator.ts` — 10 states (`idle → extracting → rotating → centering → opening → opened → turningPage → closing → returning → finished`), pure-function `transition(state, event)`, all timing in `ANIM_TIMING` constants. Event-driven (no chained useEffects).
-- **3D book model**: `BookModel3D.tsx` — back cover box, spine box, left/right page stack boxes (depth adjusts for turned pages), left/right page surfaces, front cover group hinged at left edge. Reads `AnimProgress` ref for per-frame cover rotation during opening/closing.
-- **Scene orchestration**: `BookScene.tsx` — camera `fov 35, position (0, 0.3, 3)`, 3-point lighting (warm key, cool fill, rim backlight), `useFrame` driving extraction/rotation/centering/opening/closing/returning via shared `AnimProgress` ref.
+- **Deterministic state machine**: `BookAnimator.ts` — 7 states (`idle → extracting → stabilizing → opened → turningPage → closing → finished`), pure-function `transition(state, event)`, all timing in `ANIM_TIMING` constants.
+- **3D book model**: `BookModel3D.tsx` — back cover box, spine box, left/right page stack boxes (depth adjusts for turned pages), left/right page surfaces, front cover group hinged at left edge.
+- **Scene orchestration**: `BookScene.tsx` — camera `fov 35, position (0, 0.15, 3)`, 3-point lighting, `useFrame` driving extraction/stabilizing/closing via direct Three.js group mutations (`g.position.set`, `g.scale.set`, `g.rotation.set`). `initRef` + `initReadyRef` + `useLayoutEffect` (with `camera.updateProjectionMatrix()`) pattern ensures first 3D frame matches HTML book position even when `useThree().size` is {0,0} on mount. `fittedScale` falls back to `window.innerWidth/innerHeight` when size is 0.
+- **Extraction animation**: `easeInOutQuad` (900ms), rotational wobble (`sin(raw * π * 3.5) * 0.008 * (1 - raw)`), glow sprite fade-in/fade-out. Stabilization (400ms): `easeOutQuad` with sine overshoot settle.
+- **Closing animation**: reverse of extraction — returns to shelf position (`initRef.current`) with spine rotation, `easeInOutQuad` (800ms).
 - **HTML overlay**: `BookOverlay.tsx` — absolute div centered over 3D pages with left-page + spine-gap + right-page layout + BookControls navigation at bottom.
 - **Canvas wrapper**: `BookCanvas.tsx` — R3F `<Canvas>` with `useReducer`-style dispatch, backdrop blur/dim during reading, page-content sync from `generatePages()`, resize listener. `pointerEvents: none` on Canvas, `auto` on overlay. Handles `onPointerMissed` for close.
 - **Typography overhaul**: `BookContentRenderer.tsx` — body text `clamp(15px, 1.05vw, 19px)`, headings `clamp(28px, 2.6vw, 44px)`, drop cap `clamp(48px, 4vw, 72px)` with float, running header + thin rule, decorative divider (line + dot + line), page number footer.
@@ -198,10 +200,10 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 
 ### Relevant Files
 
-- `src/components/library/BookAnimator.ts`: deterministic state machine (6 states, pure-function transitions, timing constants in ANIM_TIMING)
+- `src/components/library/BookAnimator.ts`: deterministic state machine (7 states: extracting→stabilizing→opened, pure-function transitions, timing constants in ANIM_TIMING)
 - `src/components/library/BookModel3D.tsx`: 3D book mesh (back cover, spine, left/right page stacks, page surfaces, front cover hinged at left edge, page edge material variants)
-- `src/components/library/BookScene.tsx`: R3F scene with camera fov 35 at (0,0.15,3), 3-point lighting, useFrame animation loop, glow sprite, dust particles, turned page geo
-- `src/components/library/BookCanvas.tsx`: R3F Canvas wrapper, dispatch-based state machine, backdrop blur/dim, invisible click zones, CornerFold, keyboard navigation
+- `src/components/library/BookScene.tsx`: R3F scene with camera fov 35 at (0,0.15,3), 3-point lighting, useFrame animation loop, extraction from shelf (screenRectToWorld), glow sprite during extraction, dust particles, bidirectional turned page geo, stabilization overshoot
+- `src/components/library/BookCanvas.tsx`: R3F Canvas wrapper, dispatch-based state machine with `Direction` type, backdrop blur/dim, invisible click zones, CornerFold, keyboard navigation, onPointerMissed close
 - `src/components/library/BookContent.ts`: dynamic pagination with chunk() splitter (6 chars/page, 4 magic/page), dropcap-text type
 - `src/components/library/BookContentRenderer.tsx`: typography 15-44px, drop caps, running header, decorative divider, page number
 - `src/components/library/CornerFold.tsx`: SVG corner-fold indicator (gradient + shadow, mirrorable for left/right sides)

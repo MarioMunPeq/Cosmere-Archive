@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, useCallback, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
 import type { Book } from '@/types'
-import { type BookState, type BookEvent, transition, isOpen } from './BookAnimator'
+import { type BookState, type BookEvent, type Direction, transition, isOpen } from './BookAnimator'
 import BookScene from './BookScene'
 import { generatePages } from './BookContent'
 import CornerFold from './CornerFold'
@@ -26,10 +26,11 @@ function getSceneDimensions(ww: number, wh: number, wc: number) {
 
 export default function BookCanvas({ book, rect, onClose }: Props) {
   const [ws, setWs] = useState({ ww: window.innerWidth, wh: window.innerHeight })
-  const [state, setState] = useState<BookState>('spawning')
+  const [state, setState] = useState<BookState>('extracting')
   const [curSpread, setCurSpread] = useState(0)
+  const [flipDirection, setFlipDirection] = useState<Direction>('forward')
   const pendingDir = useRef<'next' | 'prev' | null>(null)
-  const prevStateRef = useRef<BookState>('spawning')
+  const prevStateRef = useRef<BookState>('extracting')
 
   const sceneDim = useMemo(() => getSceneDimensions(ws.ww, ws.wh, book.wordCount ?? 100000), [ws, book.wordCount])
 
@@ -49,7 +50,6 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
     setState((prev) => transition(prev, event))
   }, [])
 
-  // Advance spread only after turn animation completes
   useEffect(() => {
     if (prevStateRef.current === 'turningPage' && state === 'opened' && pendingDir.current) {
       if (pendingDir.current === 'next') {
@@ -76,9 +76,11 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
     const handler = (e: KeyboardEvent) => {
       if (!opened) return
       if (e.key === 'ArrowLeft' && curSpread > 0) {
+        setFlipDirection('backward')
         pendingDir.current = 'prev'
         dispatch('TURN_START')
       } else if (e.key === 'ArrowRight' && curSpread < totalSpreads - 1) {
+        setFlipDirection('forward')
         pendingDir.current = 'next'
         dispatch('TURN_START')
       } else if (e.key === 'Escape' && closable) {
@@ -91,6 +93,7 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
 
   const handleNext = useCallback(() => {
     if (curSpread < totalSpreads - 1 && state === 'opened') {
+      setFlipDirection('forward')
       pendingDir.current = 'next'
       dispatch('TURN_START')
     }
@@ -98,6 +101,7 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
 
   const handlePrev = useCallback(() => {
     if (curSpread > 0 && state === 'opened') {
+      setFlipDirection('backward')
       pendingDir.current = 'prev'
       dispatch('TURN_START')
     }
@@ -113,7 +117,6 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
 
   return (
     <>
-      {/* Dim backdrop */}
       <div
         style={{
           position: 'fixed',
@@ -127,7 +130,6 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
         }}
       />
 
-      {/* 3D canvas */}
       <div
         style={{
           position: 'fixed',
@@ -152,11 +154,11 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
             rightDepth={rightDepth}
             pages={pages}
             curPage={curSpread * 2}
+            direction={flipDirection}
           />
         </Canvas>
       </div>
 
-      {/* Invisible click zones + corner-fold indicators */}
       {bookOpen && (
         <div
           style={{
@@ -166,7 +168,6 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
             pointerEvents: 'none',
           }}
         >
-          {/* Left zone — prev */}
           {curSpread > 0 && (
             <div
               onClick={handlePrev}
@@ -182,7 +183,6 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
             />
           )}
 
-          {/* Right zone — next */}
           {curSpread < totalSpreads - 1 && (
             <div
               onClick={handleNext}
@@ -198,7 +198,6 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
             />
           )}
 
-          {/* Corner folds */}
           <div
             style={{
               position: 'absolute',

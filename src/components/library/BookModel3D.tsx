@@ -6,6 +6,8 @@ import type { BookState } from './BookAnimator'
 const PAGE_DEPTH_UNIT = 0.025
 const CURVE_DEPTH = 0.015
 const BLOCK_Z_OFFSET = CURVE_DEPTH + 0.003
+const COVER_THICKNESS = 0.008
+const COVER_Z_OFFSET = 0.003
 
 function createCurvedPageGeo(w: number, h: number, curve: number, reverse: boolean): PlaneGeometry {
   const segW = 20
@@ -60,43 +62,64 @@ export default function BookModel3D({
   const spineSurfaceGeo = useMemo(() => new PlaneGeometry(spineT, bookH), [spineT, bookH])
   const leftBlockGeo = useMemo(() => new BoxGeometry(pageW, bookH, leftD), [pageW, bookH, leftD])
   const rightBlockGeo = useMemo(() => new BoxGeometry(pageW, bookH, rightD), [pageW, bookH, rightD])
+  const leftCoverGeo = useMemo(() => new BoxGeometry(pageW + 0.004, bookH + 0.004, COVER_THICKNESS), [pageW, bookH])
+  const rightCoverGeo = useMemo(() => new BoxGeometry(pageW + 0.004, bookH + 0.004, COVER_THICKNESS), [pageW, bookH])
+
   const spineSurfaceMat = useMemo(
     () => new MeshStandardMaterial({ color: '#f0e8dc', roughness: 0.9, metalness: 0 }),
     [],
   )
   const pageBlockMat = useMemo(() => new MeshStandardMaterial({ color: '#ede4d8', roughness: 0.9, metalness: 0 }), [])
-  const pageEdgeMat = useMemo(
-    () => new MeshStandardMaterial({ color: '#e8dcc8', roughness: 0.85, metalness: 0.02 }),
-    [],
-  )
-  const pageEdgeMat2 = useMemo(
-    () => new MeshStandardMaterial({ color: '#e4dac6', roughness: 0.85, metalness: 0.02 }),
+  const coverMat = useMemo(
+    () => new MeshStandardMaterial({ color: '#f5edd6', roughness: 0.5, metalness: 0.05, side: DoubleSide }),
     [],
   )
 
   return (
-    <>
-      <mesh position={[0, 0, 0.001]} geometry={spineSurfaceGeo} material={spineSurfaceMat} />
+    <group name="BookRoot">
+      {/* Spine surface */}
+      <mesh name="SpineSurface" position={[0, 0, 0.001]} geometry={spineSurfaceGeo} material={spineSurfaceMat} />
 
+      {/* Spine spine block behind surface */}
+      <mesh name="SpineBlock" position={[0, 0, -(spineT * 0.5 + BLOCK_Z_OFFSET)]}>
+        <boxGeometry args={[spineT, bookH, spineT + 0.002]} />
+        <meshStandardMaterial color="#e8dcc8" roughness={0.85} metalness={0.02} />
+      </mesh>
+
+      {/* Left cover — behind left pages */}
+      <mesh
+        name="LeftCover"
+        position={[-halfCenter, 0, -leftD - BLOCK_Z_OFFSET - COVER_THICKNESS / 2 - COVER_Z_OFFSET]}
+        geometry={leftCoverGeo}
+        material={coverMat}
+      />
+
+      {/* Left page block */}
       {leftD > 0 && (
         <>
           <mesh
+            name="LeftPageBlock"
             position={[-halfCenter, 0, -leftD / 2 - BLOCK_Z_OFFSET]}
             geometry={leftBlockGeo}
             material={pageBlockMat}
           />
-          <mesh position={[-halfCenter - pageW / 2, 0, -leftD / 2 - BLOCK_Z_OFFSET]}>
+          <mesh name="LeftPageForeEdge" position={[-halfCenter - pageW / 2, 0, -leftD / 2 - BLOCK_Z_OFFSET]}>
             <planeGeometry args={[leftD, bookH]} />
-            <primitive object={pageEdgeMat} />
+            <meshStandardMaterial color="#e8dcc8" roughness={0.85} metalness={0.02} />
           </mesh>
-          <mesh position={[-halfCenter, -bookH / 2, -leftD / 2 - BLOCK_Z_OFFSET]} rotation={[Math.PI / 2, 0, 0]}>
+          <mesh
+            name="LeftPageBottomEdge"
+            position={[-halfCenter, -bookH / 2, -leftD / 2 - BLOCK_Z_OFFSET]}
+            rotation={[Math.PI / 2, 0, 0]}
+          >
             <planeGeometry args={[pageW, leftD]} />
-            <primitive object={pageEdgeMat} />
+            <meshStandardMaterial color="#e8dcc8" roughness={0.85} metalness={0.02} />
           </mesh>
         </>
       )}
 
-      <mesh position={[-halfCenter, 0, 0.003]} geometry={leftPageGeo}>
+      {/* Left page surface */}
+      <mesh name="LeftPageSurface" position={[-halfCenter, 0, 0.003]} geometry={leftPageGeo}>
         <meshStandardMaterial
           map={leftPageTexture}
           color={leftPageTexture ? '#ffffff' : '#ede4d8'}
@@ -106,25 +129,45 @@ export default function BookModel3D({
         />
       </mesh>
 
+      {/* Right cover — behind right pages */}
+      <mesh
+        name="RightCover"
+        position={[halfCenter, 0, -rightD - BLOCK_Z_OFFSET - COVER_THICKNESS / 2 - COVER_Z_OFFSET]}
+        geometry={rightCoverGeo}
+        material={coverMat}
+      />
+
+      {/* Right page block */}
       {rightD > 0 && (
         <>
           <mesh
+            name="RightPageBlock"
             position={[halfCenter, 0, -rightD / 2 - BLOCK_Z_OFFSET]}
             geometry={rightBlockGeo}
             material={pageBlockMat}
           />
-          <mesh position={[halfCenter + pageW / 2, 0, -rightD / 2 - BLOCK_Z_OFFSET]}>
+          <mesh name="RightPageForeEdge" position={[halfCenter + pageW / 2, 0, -rightD / 2 - BLOCK_Z_OFFSET]}>
             <planeGeometry args={[rightD, bookH]} />
-            <primitive object={pageEdgeMat} />
+            <meshStandardMaterial color="#e8dcc8" roughness={0.85} metalness={0.02} />
           </mesh>
-          <mesh position={[halfCenter, -bookH / 2, -rightD / 2 - BLOCK_Z_OFFSET]} rotation={[Math.PI / 2, 0, 0]}>
+          <mesh
+            name="RightPageBottomEdge"
+            position={[halfCenter, -bookH / 2, -rightD / 2 - BLOCK_Z_OFFSET]}
+            rotation={[Math.PI / 2, 0, 0]}
+          >
             <planeGeometry args={[pageW, rightD]} />
-            <primitive object={pageEdgeMat2} />
+            <meshStandardMaterial color="#e4dac6" roughness={0.85} metalness={0.02} />
           </mesh>
         </>
       )}
 
-      <mesh position={[halfCenter, 0, 0.003]} geometry={rightPageGeo} visible={state !== 'turningPage'}>
+      {/* Right page surface */}
+      <mesh
+        name="RightPageSurface"
+        position={[halfCenter, 0, 0.003]}
+        geometry={rightPageGeo}
+        visible={state !== 'turningPage'}
+      >
         <meshStandardMaterial
           map={rightPageTexture}
           color={rightPageTexture ? '#ffffff' : '#ede4d8'}
@@ -133,6 +176,6 @@ export default function BookModel3D({
           metalness={0}
         />
       </mesh>
-    </>
+    </group>
   )
 }
