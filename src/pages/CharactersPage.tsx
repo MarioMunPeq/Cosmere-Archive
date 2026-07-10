@@ -3,40 +3,19 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import BackToMapButton from '@/components/ui/BackToMapButton'
 import { ALL_CHARACTERS, PLANETS, SAGAS, getCharacterSagas, TAILWIND_TO_HEX } from '@/data/static'
 import type { Saga } from '@/data/static/sagas'
-import { FAMILY_TREES } from '@/data/static/family-data'
-import { CHARACTER_SPANS } from '@/data/static/timeline/character-lifespans'
+
 import PageLayout from '@/components/ui/PageLayout'
 import CharacterAvatar from '@/components/ui/CharacterAvatar'
 import ColorDot from '@/components/ui/ColorDot'
 import EmptyState from '@/components/ui/EmptyState'
 import CharacterDetailModal from '@/components/detail/CharacterDetailModal'
-import FamilyTreeView from '@/components/detail/FamilyTreeView'
 import RelationshipsTabContent from '@/components/detail/RelationshipsTabContent'
+import { GenealogyCanvas } from '@/components/genealogy'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
 import { useSpoilerMode } from '@/hooks/useSpoilerMode'
 
 function getSagaColor(saga: Saga): string {
   return TAILWIND_TO_HEX[saga.color] ?? '#6b7280'
-}
-
-function crossTreeFamilies(characterId: string): { id: string; name: string }[] {
-  const result: { id: string; name: string }[] = []
-  for (const f of FAMILY_TREES) {
-    if (f.members.some((m) => m.characterId === characterId)) {
-      result.push({ id: f.id, name: f.name })
-    }
-  }
-  return result
-}
-
-const FAMILY_ICONS: Record<string, string> = {
-  kholin: '\uD83D\uDC51',
-  davar: '\uD83C\uDF38',
-  venture: '\u2694\uFE0F',
-  survivor: '\u26A1',
-  idris: '\uD83D\uDD4A\uFE0F',
-  elantris: '\u2728',
-  era2_scadrial: '\uD83C\uDFA9',
 }
 
 const FEATURED = new Set([
@@ -126,11 +105,6 @@ export default function CharactersPage() {
   const [compareSelection, setCompareSelection] = useState<string[]>([])
   const { enabled: spoilerEnabled, isCharacterVisible, spoilerCount } = useSpoilerMode()
 
-  const [selectedFamily, setSelectedFamily] = useState(FAMILY_TREES[0]!.id)
-  const [detailId, setDetailId] = useState<string | undefined>(() => {
-    const param = searchParams.get('character')
-    return param ?? undefined
-  })
   const [detailChar, setDetailChar] = useState<(typeof ALL_CHARACTERS)[number] | null>(() => {
     const param = searchParams.get('character')
     return ALL_CHARACTERS.find((c) => c.id === param) ?? null
@@ -218,11 +192,6 @@ export default function CharactersPage() {
       return [...prev, id]
     })
   }, [])
-
-  const family = FAMILY_TREES.find((f) => f.id === selectedFamily) ?? FAMILY_TREES[0]!
-  const treeDetailChar = detailId ? (ALL_CHARACTERS.find((c) => c.id === detailId) ?? null) : null
-  const treeDetailMember = detailId ? (family.members.find((m) => m.characterId === detailId) ?? null) : null
-  const crossTrees = useMemo(() => (detailId ? crossTreeFamilies(detailId) : []), [detailId])
 
   return (
     <PageLayout variant="none">
@@ -520,209 +489,7 @@ export default function CharactersPage() {
       ) : tab === 'relationships' ? (
         <RelationshipsTabContent />
       ) : (
-        <div className="flex-1 overflow-y-auto">
-          <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
-            <BackToMapButton />
-
-            <h1 className="mt-4 text-2xl font-bold text-gray-100 sm:text-3xl">Family Trees</h1>
-            <p className="mt-1 text-sm text-gray-500">Dynastic connections across the Cosmere</p>
-
-            <div className="mt-6 flex gap-3 overflow-x-auto pb-2">
-              {FAMILY_TREES.map((f) => {
-                const isActive = selectedFamily === f.id
-                return (
-                  <button
-                    key={f.id}
-                    onClick={() => {
-                      setSelectedFamily(f.id)
-                      setDetailId(undefined)
-                    }}
-                    className={`relative shrink-0 rounded-xl border px-4 py-3.5 text-left backdrop-blur-sm transition-all duration-300 ${
-                      isActive
-                        ? 'border-gray-700/70 bg-gray-800/70 shadow-lg shadow-black/30'
-                        : 'border-gray-800/50 bg-gray-900/50 hover:border-gray-700/50 hover:bg-gray-800/50'
-                    }`}
-                    style={{ minWidth: 180 }}
-                  >
-                    {isActive && (
-                      <div
-                        className="absolute inset-0 rounded-xl opacity-10"
-                        style={{ background: `linear-gradient(135deg, ${f.color}, transparent 70%)` }}
-                      />
-                    )}
-                    <div className="relative flex items-center gap-3">
-                      <span
-                        className={`flex h-10 w-10 items-center justify-center rounded-lg border text-base transition-all duration-300 ${
-                          isActive
-                            ? 'border-gray-700/60 bg-gray-800/80 shadow-inner'
-                            : 'border-gray-800/50 bg-gray-900/60'
-                        }`}
-                      >
-                        {FAMILY_ICONS[f.id] ?? '\uD83C\uDF31'}
-                      </span>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span
-                            className={`text-sm font-semibold transition-colors duration-300 ${
-                              isActive ? 'text-gray-100' : 'text-gray-400'
-                            }`}
-                          >
-                            {f.name}
-                          </span>
-                          <span
-                            className={`h-1.5 w-1.5 shrink-0 rounded-full transition-all duration-300 ${
-                              isActive ? 'opacity-100' : 'opacity-30'
-                            }`}
-                            style={{ backgroundColor: f.color }}
-                          />
-                        </div>
-                        <p className="mt-0.5 text-xxs text-gray-600">{f.members.length} members</p>
-                      </div>
-                    </div>
-                  </button>
-                )
-              })}
-            </div>
-
-            <p className="mt-4 text-xs leading-relaxed text-gray-500">{family.description}</p>
-
-            <div className="mt-4 flex min-h-0 flex-1 flex-col gap-4 overflow-hidden lg:flex-row">
-              <div
-                className="min-h-80 flex-1 overflow-auto rounded-xl border border-gray-800/60 p-4 shadow-inner backdrop-blur-sm"
-                style={{
-                  background: `linear-gradient(135deg, ${family.color}10, ${family.color}05 40%, rgba(3,7,18,0.8) 80%)`,
-                }}
-              >
-                <FamilyTreeView family={family} onSelectCharacter={setDetailId} />
-              </div>
-
-              {treeDetailChar && treeDetailMember && (
-                <div
-                  className="w-full shrink-0 rounded-xl border border-gray-800/60 p-5 shadow-inner backdrop-blur-sm lg:w-80"
-                  style={{
-                    background: `linear-gradient(135deg, ${family.color}08, ${family.color}03 50%, rgba(17,24,39,0.7) 80%)`,
-                  }}
-                >
-                  <button
-                    onClick={() => setDetailId(undefined)}
-                    className="float-right text-xs text-gray-600 transition-colors hover:text-gray-400"
-                    aria-label="Close detail"
-                  >
-                    {'\u2715'}
-                  </button>
-
-                  <div className="flex items-center gap-3">
-                    <CharacterAvatar
-                      character={treeDetailChar}
-                      color={
-                        (treeDetailChar.planet
-                          ? PLANETS.find((p) => p.id === treeDetailChar.planet)?.color
-                          : undefined) ?? family.color
-                      }
-                      size={52}
-                      className="shrink-0 ring-1 ring-gray-700/40 shadow-md"
-                    />
-                    <div className="min-w-0">
-                      <h3 className="text-sm font-semibold text-gray-200">{treeDetailMember.name}</h3>
-                      {(() => {
-                        const span = CHARACTER_SPANS.find((s) => s.id === detailId)
-                        if (!span || span.titles.length === 0) return null
-                        return (
-                          <p className="mt-0.5 text-xxs text-gray-500 truncate">
-                            {span.titles.slice(0, 2).join(' \u00B7 ')}
-                          </p>
-                        )
-                      })()}
-                    </div>
-                  </div>
-
-                  <div className="mt-3 flex flex-wrap gap-1.5">
-                    <span
-                      className="rounded-md border px-2 py-0.5 text-xxs font-medium"
-                      style={{
-                        borderColor: `${family.color}40`,
-                        backgroundColor: `${family.color}15`,
-                        color: family.color,
-                      }}
-                    >
-                      {family.name}
-                    </span>
-                    {treeDetailMember.isDeceased && (
-                      <span className="rounded-md border border-red-900/40 bg-red-900/15 px-2 py-0.5 text-xxs font-medium text-red-400">
-                        Deceased
-                      </span>
-                    )}
-                  </div>
-
-                  <p className="mt-3 text-xs leading-relaxed text-gray-500">{treeDetailChar.description}</p>
-
-                  <div className="mt-3 flex items-center gap-2 text-xxs text-gray-600">
-                    <ColorDot
-                      color={
-                        (treeDetailChar.planet
-                          ? PLANETS.find((p) => p.id === treeDetailChar.planet)?.color
-                          : undefined) ?? '#6b7280'
-                      }
-                      size="xs"
-                    />
-                    <span className="capitalize">{treeDetailChar.planet.replace(/_/g, ' ')}</span>
-                  </div>
-
-                  <p className="mt-2 text-xxs text-gray-600">
-                    {(() => {
-                      const label = treeDetailMember.parentIds
-                        ? treeDetailMember.gender === 'female'
-                          ? 'Daughter of'
-                          : 'Son of'
-                        : treeDetailMember.spouseId
-                          ? 'Spouse of'
-                          : null
-                      if (!label) return null
-                      const names = treeDetailMember.parentIds
-                        ? treeDetailMember.parentIds
-                            .map((pid) => {
-                              const p = family.members.find((m) => m.id === pid)
-                              return p?.name ?? pid
-                            })
-                            .join(' & ')
-                        : treeDetailMember.spouseId
-                          ? (() => {
-                              const sp = family.members.find((m) => m.id === treeDetailMember.spouseId)
-                              return sp?.name ?? treeDetailMember.spouseId
-                            })()
-                          : null
-                      if (!names) return null
-                      return (
-                        <>
-                          {label} <span className="text-gray-500">{names}</span>
-                        </>
-                      )
-                    })()}
-                  </p>
-
-                  {crossTrees.length > 1 && (
-                    <div className="mt-3 flex flex-wrap gap-1.5">
-                      {crossTrees
-                        .filter((t) => t.id !== selectedFamily)
-                        .map((t) => (
-                          <button
-                            key={t.id}
-                            onClick={() => {
-                              setSelectedFamily(t.id)
-                              setDetailId(detailId)
-                            }}
-                            className="rounded-md border border-purple-800/30 bg-purple-900/20 px-2 py-0.5 text-xxs text-purple-400 transition-all hover:border-purple-700/50 hover:bg-purple-900/40"
-                          >
-                            Also in {t.name}
-                          </button>
-                        ))}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+        <GenealogyCanvas />
       )}
 
       {detailChar && (

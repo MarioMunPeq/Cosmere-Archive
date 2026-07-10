@@ -181,6 +181,33 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - **Data**: added `spine: 'images/spines/{id}.webp'` to all 22 books in `books.ts`, added optional `spine` field to `Book` type, downloaded `public/images/wood-texture.png`
 - **Old grid removed**: `WordCountGrid` function (cover gallery with word count badges) was deleted from StatsPage; replaced with `<BookShelf books={booksByWordCount} />`
 
+##### Done (this session: 3D Genealogy Scene)
+
+- **Complete rewrite from scratch**: Replaced the two-page manuscript CSS layout (`GenealogyArchive.tsx`) with a full React Three Fiber 3D scene. New architecture: `GenealogyArchiveScene.tsx` (Canvas wrapper), `ArchiveStudy3D.tsx` (desk + parchment meshes + camera animation + lighting + Html overlay), `GenealogyOverlay.tsx` (HTML content positioned via drei `<Html transform>` on the parchment surface).
+- **3D desk**: `BoxGeometry` (3.0×0.06×2.2) with procedural wood texture (dark walnut streaks via canvas noise), subtle tilt animation on camera settle.
+- **3D parchment**: Two-page `BoxGeometry` (0.7×0.004×0.5 each) with procedural parchment texture (fibre noise, age stains), center fold shadow strip, edge material variant. Pages positioned with a 0.03-unit gutter.
+- **Camera animation**: Starts at (0, 1.1, 2.8), moves to (0, 0.55, 1.6) over 2 seconds using `easeOutCubic`. Desk tilts −0.008 rad during final approach for realism.
+- **Lighting**: 4-point setup matching BookScene — ambient 0.3 + warm key (2.5,4,3) 0.85 + cool fill (−1.5,2,−1) 0.25 + rim (2.5,0.5,−2.5) 0.15 + fill (0,3,0) 0.1.
+- **HTML overlay**: Left page = archival index table (family entries with roman numerals, ink lines, active flourish marker, member count). Right page = family heading + `GenealogyTree` with `CharacterPortrait` annotation fragment. Content same as previous two-page manuscript but rendered inside `<Html transform>`.
+- **Files created**: `ArchiveStudy3D.tsx` (3D scene + procedural textures + camera + lighting + overlay), `GenealogyOverlay.tsx` (left/right page content + annotation), `GenealogyArchiveScene.tsx` (Canvas wrapper with state management).
+- **Files modified**: `CharactersPage.tsx` (imports `GenealogyArchiveScene` instead of `GenealogyArchive`), `src/components/genealogy/index.ts` (adds `GenealogyArchiveScene` export).
+- All 220 tests pass, `tsc -b` clean, `pnpm lint` clean, `pnpm build` clean (49 precached entries).
+
+##### Done (this session: Family Trees complete visual rebuild — R3F archival manuscript)
+
+- **Complete rewrite from scratch**: Replaced the previous two-page CSS layout and the interim R3F desk scene with a focused 3D archival manuscript experience. New architecture follows the same philosophy as BookCanvas/BookScene: `GenealogyCanvas` (Canvas wrapper) → `GenealogyScene` (R3F scene) → `LecternModel3D` + `ParchmentModel3D` + `GenealogyOverlay` (Html transform).
+- **No generic 3D room or environment**: Only two objects exist — the wooden study lectern and the open parchment manuscript. Dark void background, no Stormlight effects, no particles.
+- **LecternModel3D.tsx**: Dark polished wood (`#4a3020`–`#2d1a0e`) using `wood-pattern.png` texture with `RepeatWrapping`. Slanted top surface (0.22 rad), front lip to hold pages, central support column, base platform.
+- **ParchmentModel3D.tsx**: Two-page `BoxGeometry` (0.7×0.003×0.5 each) with procedural canvas textures (fibre noise, age stains, edge vignette, subtle speckling). `DoubleSide` rendering, center fold shadow strip. Pages offset with 0.038-unit gutter.
+- **GenealogyOverlay.tsx**: HTML content rendered via drei `<Html transform>` (scale 0.001) positioned on the parchment surface. Left page = manuscript-style archive index (roman numerals, ink flourish on active, thin sepia separators, page number). Right page = family heading + `GenealogyTree` SVG + ink-writing `CharacterAnnotation`.
+- **CharacterPortrait.tsx**: Rewrote from circular medallion to rectangular antique portrait frame. Gold gradient outer border (`#c4a04a`–`#907020`), inner band, `feDropShadow`, rectangular clip path for character images, grayscale for deceased.
+- **TreeConnections.tsx**: New SVG component replacing `GenealogyConnections`. Three-layer ink stroke (bleed + main + hairline) with `genea-draw` stroke-dashoffset animation, bezier curves for parent→child, straight lines for spouses.
+- **Camera animation**: Starts at (0, 1.5, 5), moves to (0, 0.9, 1.8) over 2.5s using `easeOutCubic`. Looks down at parchment center. Subtle group settle at 60% progress.
+- **Annotation writing effect**: `ink-reveal` CSS keyframe (`clip-path: inset(0 100% 0 0)` → `inset(0 0 0 0)`) with staggered delays on name (0ms), description (150ms), relations (300ms), cross-tree buttons (450ms+).
+- **Family change**: Right page uses `key={family.id}` for remount-triggered entrance animations; connections redraw with stroke animation.
+- **Files deleted**: `ArchiveStudy3D.tsx`, `GenealogyArchiveScene.tsx`, `GenealogyArchive.tsx`, `FamilyIndex.tsx`, `FamilyHeader.tsx` (all dead code from previous iterations).
+- All 220 tests pass, `tsc -b` clean, `pnpm lint` clean, `pnpm build` clean (49 precached entries).
+
 ### Critical Context
 
 - `animate-fade-in-up` is the only fade-in class available (defined in `index.css`), not `animate-fade-in`
@@ -232,3 +259,15 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - `public/images/wood-texture.png`: dark walnut wood texture (seamless, 2048×2048, Texturize.app)
 - `public/images/spines/`: directory for spine images (placeholder paths exist; actual images needed)
 - `src/test/StatsPage.test.tsx`: 11 tests for all sections + back link
+
+##### Done (this session: Family Trees camera / scale / atrium correction)
+
+- **Scene composition fixed**: Added dark floor plane for grounding, removed wood-pattern.png usage (plain MeshStandardMaterial colors only), rebuilt lectern with human-scale proportions (height ~1m, width 0.62m, slanted surface at 0.28 rad).
+- **Lectern redesign**: Inclined reading surface, front lip, central column with decorative ring, base with four feet. Dark walnut colors (#3a2212–#1a0e06), roughness 0.6-0.8.
+- **Floating manuscripts**: `ParchmentSheet.tsx` — 7 parchment sheets with procedural canvas title textures (family name, ornamental line, archive subtitle) floating in an arc above the lectern at y=1.2. Subtle vertical bob + rotation via `useFrame` sine wave. Clickable with pointer cursor.
+- **Camera approach animation**: Initial position (0, 1.7, 4) → final reading position (0, 1.15, 1.75) over 1.8s with easeOutCubic. Camera looks at (0, 0.7, 0). `camAnim` ref with `approaching` direction flag prevents return animation confusion.
+- **Two-phase interaction**: Initial "browsing" state shows floor + lectern + floating parchments. Clicking a parchment triggers approach animation and reveals the active two-page manuscript on the lectern surface. Active parchment renders the full GenealogyOverlay (archive index left, family tree right, ink-writing annotation).
+- **Active parchment positioning**: `group at position (0, 0.88, 0.04), rotation (0.28, 0, 0)` — matches lectern slanted surface angle.
+- **Files created**: `Floor.tsx`, `ParchmentSheet.tsx`.
+- **Files modified**: `LecternModel3D.tsx`, `ParchmentModel3D.tsx` (resized pages to 0.55×0.4), `GenealogyScene.tsx` (full rewrite), `GenealogyCanvas.tsx` (selectedFamily starts null), `index.ts` (added exports).
+- All 220 tests pass, `tsc -b` clean, `pnpm lint` clean, `pnpm build` clean (49 precached entries).

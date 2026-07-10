@@ -1,7 +1,6 @@
 export { default as BookPanel } from './BookPanel'
 export { default as CharacterPanel } from './CharacterPanel'
 export { default as CharacterRelationships } from './CharacterRelationships'
-export { default as FamilyTreeView } from './FamilyTreeView'
 export { default as ForceGraph } from './ForceGraph'
 export { default as PlanetsTabContent } from './PlanetsTabContent'
 export { default as ShardsTabContent } from './ShardsTabContent'
