@@ -13,7 +13,7 @@ interface Props {
 }
 
 function getSceneDimensions(ww: number, wh: number, wc: number) {
-  const camDist = Math.sqrt(0 ** 2 + 0.15 ** 2 + 3.0 ** 2)
+  const camDist = Math.hypot(0, 0.15, 3.0)
   const vh = 2 * Math.tan((35 * Math.PI) / 360) * camDist
   const vw = vh * (ww / wh)
   const spineT = Math.max(0.02, Math.min(0.1, wc / 5000000))

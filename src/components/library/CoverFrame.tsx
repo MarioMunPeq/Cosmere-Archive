@@ -9,7 +9,7 @@ interface Props {
 
 function StormlightFrame({ foil }: { foil: string }) {
   return (
-    <g stroke={foil} fill="none" strokeWidth="0.4" opacity="0.2">
+    <g stroke={foil} fill="none" strokeWidth="0.3" opacity="0.06">
       <rect x="4%" y="3%" width="92%" height="94%" rx="0.5" />
       <rect x="7%" y="5.5%" width="86%" height="89%" rx="0.3" strokeWidth="0.2" />
       <polygon points="4%,3% 12%,3% 4%,11%" strokeWidth="0.3" />
@@ -111,7 +111,7 @@ function YumiFrame({ foil }: { foil: string }) {
 
 function DefaultFrame({ foil }: { foil: string }) {
   return (
-    <g stroke={foil} fill="none" strokeWidth="0.25" opacity="0.12">
+    <g stroke={foil} fill="none" strokeWidth="0.25" opacity="0.06">
       <rect x="5%" y="4%" width="90%" height="92%" rx="0.2" />
     </g>
   )

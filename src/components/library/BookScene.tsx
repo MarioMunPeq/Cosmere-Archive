@@ -6,6 +6,7 @@ import {
   type Points as Pts,
   type Sprite as SpriteImpl,
   type Mesh as TurnMesh,
+  type Mesh as ShadowMesh,
   BufferGeometry,
   Float32BufferAttribute,
   CanvasTexture,
@@ -41,13 +42,9 @@ function easeInOutQuad(t: number): number {
   return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2
 }
 
-function smoothstep01(edge0: number, edge1: number, x: number): number {
-  const t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)))
-  return t * t * (3 - 2 * t)
-}
-
 const CAM_VEC: [number, number, number] = [0, 0.15, 3.0]
 const HALF_PI = Math.PI / 2
+const ROLL_RADIUS_FRACTION = 0.12
 
 function createGlowTexture(): CanvasTexture {
   const c = document.createElement('canvas')
@@ -87,7 +84,7 @@ export default function BookScene({
   const camera = useThree((s) => s.camera) as PC
   const { size } = useThree()
 
-  const camDist = Math.sqrt(CAM_VEC[0] ** 2 + CAM_VEC[1] ** 2 + CAM_VEC[2] ** 2)
+  const camDist = Math.hypot(...CAM_VEC)
 
   // ── Shelf-to-world transform (computed once, then frozen) ──
   const initRef = useRef<WorldTransform>({ x: 0, y: 0, scale: 1 })
@@ -151,7 +148,6 @@ export default function BookScene({
   // ── Turned page mesh ──────────────────────────────────────
   const TURN_SEG_W = 48
   const TURN_SEG_H = 6
-  const BEND_FRACTION = 0.18
   const turnedRef = useRef<TurnMesh>(null)
   const turnedGeo = useMemo(() => {
     const geo = new BufferGeometry()
@@ -220,21 +216,23 @@ export default function BookScene({
   // ── Turned page materials ────────────────────────────────
   const halfCenter = pageW / 2 + spineT / 2
 
+  const turnedTex = direction === 'forward' ? rightPageTexture : leftPageTexture
   const turnedMat = useMemo(
     () =>
       new MeshStandardMaterial({
-        map: rightPageTexture,
-        color: rightPageTexture ? '#ffffff' : '#ede4d8',
+        map: turnedTex,
+        color: turnedTex ? '#ffffff' : '#ede4d8',
         side: DoubleSide,
         roughness: 0.85,
         metalness: 0,
         transparent: true,
         opacity: 1,
       }),
-    [rightPageTexture],
+    [turnedTex],
   )
 
   const shadowMatRef = useRef<MeshStandardMaterial>(null!)
+  const shadowMeshRef = useRef<ShadowMesh>(null!)
   const turnT = useRef(0)
 
   // ── Per-frame animation loop ───────────────────────────────
@@ -323,12 +321,19 @@ export default function BookScene({
 
       case 'turningPage': {
         if (!ag) break
-        const raw = Math.min(animTime.current / (ANIM_TIMING.pageTurn / 1000), 1)
-        const t = easeInOutQuad(raw)
-        ag.rotation.x = Math.sin(raw * Math.PI) * 0.015
+        const raw = Math.min(animTime.current / (ANIM_TIMING.pageTurn / 1000), 1.04)
+        const t = Math.min(easeInOutQuad(Math.max(0, raw - 0.03) / 0.97), 1.02)
+        const tiltAmp = Math.sin(Math.min(raw, 1) * Math.PI) * 0.015
+        const bounce = Math.max(0, (raw - 1) * 0.25)
+        ag.rotation.x = tiltAmp + bounce * 0.002
 
         const turnMesh = turnedRef.current
-        if (turnMesh) turnMesh.position.x = direction === 'forward' ? halfCenter : -halfCenter
+        const turnSide = direction === 'forward' ? halfCenter : -halfCenter
+        if (turnMesh) turnMesh.position.x = turnSide
+
+        if (shadowMeshRef.current) {
+          shadowMeshRef.current.position.x = turnSide
+        }
 
         const geo = turnMesh?.geometry as BufferGeometry | undefined
         if (geo) {
@@ -337,17 +342,32 @@ export default function BookScene({
           if (turnPos && src) {
             const w = pageW
             const isFwd = direction === 'forward'
+            const fullAngle = t * Math.PI
+            const rollR = w * ROLL_RADIUS_FRACTION
+            const consumed = rollR * fullAngle
+            const hingeX = isFwd ? -w / 2 : w / 2
             for (let i = 0; i < turnPos.count; i++) {
               const i3 = i * 3
               const ox = src[i3]!
               const oy = src[i3 + 1]!
               const dx = isFwd ? ox + w / 2 : w / 2 - ox
-              const fullAngle = t * Math.PI
-              const bendWidth = w * BEND_FRACTION
-              const localAngle = dx < bendWidth ? fullAngle * smoothstep01(0, bendWidth, dx) : fullAngle
-              const x = isFwd ? -w / 2 + dx * Math.cos(localAngle) : w / 2 - dx * Math.cos(localAngle)
-              const z = dx * Math.sin(localAngle)
-              turnPos.setXYZ(i, x, oy, z)
+              let px: number, pz: number
+              if (dx < consumed) {
+                const ra = dx / rollR
+                const sx = rollR * Math.sin(ra)
+                const cz = rollR * (1 - Math.cos(ra))
+                px = isFwd ? hingeX + sx : hingeX - sx
+                pz = cz
+              } else {
+                const flatDx = dx - consumed
+                const endSx = rollR * Math.sin(fullAngle)
+                const endCz = rollR * (1 - Math.cos(fullAngle))
+                px = isFwd
+                  ? hingeX + endSx + flatDx * Math.cos(fullAngle)
+                  : hingeX - endSx - flatDx * Math.cos(fullAngle)
+                pz = endCz + flatDx * Math.sin(fullAngle)
+              }
+              turnPos.setXYZ(i, px, oy, pz)
             }
             turnPos.needsUpdate = true
             geo.computeVertexNormals()
@@ -361,7 +381,7 @@ export default function BookScene({
         }
 
         turnT.current = t
-        if (raw >= 1) {
+        if (raw >= 1.04) {
           if (shadowMatRef.current) {
             shadowMatRef.current.opacity = 0
             shadowMatRef.current.needsUpdate = true
@@ -428,7 +448,6 @@ export default function BookScene({
       <group ref={layoutGroupRef} visible={false}>
         <group ref={animGroupRef}>
           <BookModel3D
-            bookW={bookW}
             bookH={bookH}
             spineT={spineT}
             pageW={pageW}
@@ -437,6 +456,7 @@ export default function BookScene({
             leftPageTexture={leftPageTexture}
             rightPageTexture={rightPageTexture}
             state={state}
+            direction={direction}
           />
 
           <mesh
@@ -447,7 +467,7 @@ export default function BookScene({
             visible={state === 'turningPage'}
           />
 
-          <mesh position={[halfCenter, 0, 0.001]} visible={state === 'turningPage'}>
+          <mesh ref={shadowMeshRef} position={[halfCenter, 0, 0.001]} visible={state === 'turningPage'}>
             <planeGeometry args={[pageW, bookH]} />
             <meshStandardMaterial
               ref={shadowMatRef}

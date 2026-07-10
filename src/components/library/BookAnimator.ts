@@ -25,7 +25,7 @@ export const ANIM_TIMING = {
   extract: 900,
   stabilize: 400,
   close: 800,
-  pageTurn: 600,
+  pageTurn: 700,
 }
 
 export function transition(current: BookState, event: BookEvent): BookState {
@@ -34,10 +34,6 @@ export function transition(current: BookState, event: BookEvent): BookState {
     return current
   }
   return next
-}
-
-export function isAnimating(state: BookState): boolean {
-  return state !== 'idle' && state !== 'opened' && state !== 'finished'
 }
 
 export function isOpen(state: BookState): boolean {

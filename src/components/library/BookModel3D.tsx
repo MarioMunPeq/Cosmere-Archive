@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { BoxGeometry, PlaneGeometry, MeshStandardMaterial, DoubleSide } from 'three'
-import * as THREE from 'three'
-import type { BookState } from './BookAnimator'
+import type { Texture } from 'three'
+import type { BookState, Direction } from './BookAnimator'
 
 const PAGE_DEPTH_UNIT = 0.025
 const CURVE_DEPTH = 0.015
@@ -32,15 +32,15 @@ function createCurvedPageGeo(w: number, h: number, curve: number, reverse: boole
 }
 
 interface Props {
-  bookW: number
   bookH: number
   spineT: number
   pageW: number
   leftDepth: number
   rightDepth: number
-  leftPageTexture: THREE.Texture | null
-  rightPageTexture: THREE.Texture | null
+  leftPageTexture: Texture | null
+  rightPageTexture: Texture | null
   state: BookState
+  direction: Direction
 }
 
 export default function BookModel3D({
@@ -52,6 +52,7 @@ export default function BookModel3D({
   leftPageTexture,
   rightPageTexture,
   state,
+  direction,
 }: Props) {
   const leftD = leftDepth * PAGE_DEPTH_UNIT
   const rightD = rightDepth * PAGE_DEPTH_UNIT
@@ -119,7 +120,12 @@ export default function BookModel3D({
       )}
 
       {/* Left page surface */}
-      <mesh name="LeftPageSurface" position={[-halfCenter, 0, 0.003]} geometry={leftPageGeo}>
+      <mesh
+        name="LeftPageSurface"
+        position={[-halfCenter, 0, 0.003]}
+        geometry={leftPageGeo}
+        visible={state !== 'turningPage' || direction === 'forward'}
+      >
         <meshStandardMaterial
           map={leftPageTexture}
           color={leftPageTexture ? '#f5efe6' : '#ede4d8'}
@@ -166,7 +172,7 @@ export default function BookModel3D({
         name="RightPageSurface"
         position={[halfCenter, 0, 0.003]}
         geometry={rightPageGeo}
-        visible={state !== 'turningPage'}
+        visible={state !== 'turningPage' || direction === 'backward'}
       >
         <meshStandardMaterial
           map={rightPageTexture}
