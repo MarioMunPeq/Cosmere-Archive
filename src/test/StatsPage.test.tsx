@@ -12,10 +12,9 @@ function renderPage() {
 }
 
 describe('StatsPage', () => {
-  it('renders the hero title', () => {
+  it('renders the archive title', () => {
     renderPage()
-    const headings = screen.getAllByRole('heading', { name: /cosmere in numbers/i })
-    expect(headings.length).toBeGreaterThanOrEqual(1)
+    expect(screen.getByText('The Cosmere Archive')).toBeInTheDocument()
   })
 
   it('renders stat cards with counts', () => {
@@ -26,43 +25,38 @@ describe('StatsPage', () => {
     expect(screen.getAllByText('Sagas').length).toBeGreaterThanOrEqual(1)
   })
 
-  it('renders books by saga section', () => {
+  it('renders volumes by cycle section', () => {
     renderPage()
-    expect(screen.getByText('Books by Saga')).toBeInTheDocument()
+    expect(screen.getByText('VOLUMES BY CYCLE')).toBeInTheDocument()
   })
 
-  it('renders characters by planet section', () => {
+  it('renders population census section', () => {
     renderPage()
-    expect(screen.getByText('Characters by Planet')).toBeInTheDocument()
+    expect(screen.getByText('POPULATION CENSUS')).toBeInTheDocument()
   })
 
-  it('renders word count section', () => {
+  it('renders word count note', () => {
     renderPage()
-    expect(screen.getByRole('button', { name: 'Word Count' })).toBeInTheDocument()
+    expect(screen.getByText(/Total words recorded/i)).toBeInTheDocument()
   })
 
-  it('renders publication timeline section', () => {
+  it('renders publication chronology section', () => {
     renderPage()
-    expect(screen.getByRole('button', { name: /publication timeline/i })).toBeInTheDocument()
+    expect(screen.getByText('PUBLICATION CHRONOLOGY')).toBeInTheDocument()
   })
 
-  it('renders shards section', () => {
+  it('renders shardic distribution section', () => {
     renderPage()
-    expect(screen.getByRole('button', { name: 'Shards' })).toBeInTheDocument()
-  })
-
-  it('renders the heralds step button', () => {
-    renderPage()
-    expect(screen.getByRole('button', { name: 'The Heralds' })).toBeInTheDocument()
+    expect(screen.getByText('SHARDIC DISTRIBUTION')).toBeInTheDocument()
   })
 
   it('renders the heralds section', () => {
     renderPage()
-    expect(screen.getByText('The Heralds')).toBeInTheDocument()
+    expect(screen.getByText('THE HERALDS OF THE ALMIGHTY')).toBeInTheDocument()
   })
 
   it('has a back link to the map', () => {
     renderPage()
-    expect(screen.getByText('Back to the map')).toBeInTheDocument()
+    expect(screen.getByText(/Back to map/i)).toBeInTheDocument()
   })
 })

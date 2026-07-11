@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import CommandPalette from '@/components/ui/CommandPalette'
 import KeyboardShortcutsHelp from '@/components/ui/KeyboardShortcutsHelp'
 import Breadcrumbs from '@/components/ui/Breadcrumbs'
 import BackToTop from '@/components/ui/BackToTop'
 import TransitionLink from '@/components/ui/TransitionLink'
-import SideDrawer from '@/components/common/SideDrawer'
+import ParchmentMenu from '@/components/common/ParchmentMenu'
 
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut'
 import { useViewTransitionNavigate } from '@/hooks/useViewTransition'
@@ -29,6 +29,7 @@ export default function Layout() {
   const [cmdOpen, setCmdOpen] = useState(false)
   const [shortcutsOpen, setShortcutsOpen] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const navRef = useRef<HTMLElement | null>(null)
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [location.pathname])
@@ -77,50 +78,88 @@ export default function Layout() {
     <>
       {cmdOpen && <CommandPalette onClose={() => setCmdOpen(false)} />}
       {shortcutsOpen && <KeyboardShortcutsHelp onClose={() => setShortcutsOpen(false)} />}
-      <SideDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
       <div className="flex h-screen flex-col" style={{ backgroundColor: 'var(--bg-page)', color: 'var(--text-main)' }}>
         <a
           href="#main-content"
-          className="skip-link sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-purple-700 focus:px-3 focus:py-2 focus:text-sm focus:text-white"
+          className="skip-link sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-amber-800 focus:px-3 focus:py-2 focus:text-sm focus:text-amber-100"
         >
           Skip to content
         </a>
         <a
           href="#nav-bar"
-          className="skip-link sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-12 focus:z-50 focus:rounded focus:bg-purple-700 focus:px-3 focus:py-2 focus:text-sm focus:text-white"
+          className="skip-link sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-12 focus:z-50 focus:rounded focus:bg-amber-800 focus:px-3 focus:py-2 focus:text-sm focus:text-amber-100"
         >
           Skip to navigation
         </a>
 
         <nav
           id="nav-bar"
-          className="sticky top-0 z-10 shrink-0 border-b border-purple-900/50 backdrop-blur-sm"
-          style={{ backgroundColor: 'var(--bg-nav)' }}
+          ref={navRef}
+          className="sticky top-0 z-10 shrink-0"
+          style={{ backgroundColor: 'transparent' }}
         >
-          <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
-            <button
-              onClick={() => setDrawerOpen(true)}
-              className="flex h-8 w-8 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-gray-800 hover:text-gray-200"
-              aria-label="Open navigation menu"
+          <div className="pt-0">
+            {/* ── Book cover bar ── */}
+            <div
+              className="flex h-8 items-center gap-3 px-4 sm:px-5"
+              style={{
+                background: 'linear-gradient(180deg, #d4c4b2 0%, #c8b8a4 100%)',
+                boxShadow:
+                  '0 1px 3px rgba(0,0,0,0.10), 0 0 0 0.5px rgba(120,110,100,0.15), inset 0 0 0 0.5px rgba(255,255,255,0.3)',
+                borderRadius: '0 0 2px 2px',
+              }}
             >
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M2 4h14M2 9h14M2 14h14" strokeLinecap="round" />
-              </svg>
-            </button>
-            <TransitionLink
-              to="/"
-              className="shrink-0 text-sm font-bold tracking-wider text-purple-400 sm:text-base sm:tracking-wider lg:text-xl"
-            >
-              COSMERE ARCHIVE
-            </TransitionLink>
-            <TransitionLink
-              to="/about"
-              className="ml-auto hidden shrink-0 text-sm text-gray-500 transition-colors hover:text-gray-300 sm:inline"
-            >
-              About
-            </TransitionLink>
+              <button
+                onClick={() => setDrawerOpen((o) => !o)}
+                className="group flex h-6 w-6 items-center justify-center rounded-sm transition-colors hover:bg-[rgba(120,110,100,0.08)]"
+                aria-label={drawerOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              >
+                <div className="flex flex-col items-center gap-[3px]">
+                  <span
+                    className="block h-[2px] w-[2px] rounded-full transition-all duration-300"
+                    style={{ backgroundColor: '#8a7a6a' }}
+                  />
+                  <span
+                    className="block h-[2px] w-[2px] rounded-full transition-all duration-300"
+                    style={{ backgroundColor: '#8a7a6a' }}
+                  />
+                  <span
+                    className="block h-[2px] w-[2px] rounded-full transition-all duration-300"
+                    style={{ backgroundColor: '#8a7a6a' }}
+                  />
+                </div>
+              </button>
+
+              <TransitionLink
+                to="/"
+                className="font-serif text-sm tracking-[0.2em] transition-opacity hover:opacity-70 sm:text-base"
+                style={{ color: '#3a2a1a' }}
+              >
+                COSMERE ARCHIVE
+              </TransitionLink>
+
+              <TransitionLink
+                to="/about"
+                className="ml-auto hidden font-serif text-[10px] tracking-[0.06em] transition-opacity hover:opacity-70 sm:inline"
+                style={{ color: '#8a7a6a' }}
+              >
+                About
+              </TransitionLink>
+            </div>
           </div>
         </nav>
+
+        {/* ── Parchment menu (portal to body, above everything) ── */}
+        <ParchmentMenu open={drawerOpen} onClose={() => setDrawerOpen(false)} navRef={navRef} />
+
+        {/* ── Backdrop (renders above page, below nav) ── */}
+        <div
+          className={`fixed inset-0 transition-opacity duration-500 ${
+            drawerOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
+          }`}
+          style={{ backgroundColor: 'rgba(0,0,0,0.45)', zIndex: 5 }}
+          onClick={() => setDrawerOpen(false)}
+        />
 
         <main id="main-content" className="flex min-h-0 flex-1 flex-col">
           <Breadcrumbs />

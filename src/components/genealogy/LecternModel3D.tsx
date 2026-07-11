@@ -1,5 +1,5 @@
-const SURFACE_W = 0.72
-const SURFACE_D = 0.56
+const SURFACE_W = 0.9
+const SURFACE_D = 0.62
 
 export default function LecternModel3D() {
   return (

@@ -260,14 +260,37 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - `public/images/spines/`: directory for spine images (placeholder paths exist; actual images needed)
 - `src/test/StatsPage.test.tsx`: 11 tests for all sections + back link
 
+##### Done (this session: Single-page lectern, font/layout fixes, viewBox double-scale fix)
+
+- **ParchmentModel3D → single page**: Removed two-page spread. Single page at `PAGE_W=0.88`, `PAGE_H=0.52`, HTML container `960×650px`. `distanceFactor = 400 * PAGE_W / HTML_W`.
+- **Lectern surface enlarged**: `SURFACE_W 0.72→0.90`, `SURFACE_D 0.56→0.62`.
+- **Font sizes increased ~30-40%**: body 11→15, name 14→17, heading 30→36, annotation 12→15, labels 11→14, family title 22→26.
+- **First-name-only labels**: `firstName(name) = name.split(' ')[0]!` used in node labels, annotation header.
+- **Annotation panel → HTML float**: Moved from SVG to absolutely-positioned overlay (`left:340px`) so it no longer extends SVG height (which caused rescaling issues).
+- **Layout constants synced**: `NODE_D 56→68`, `SPOUSE_GAP 24→30`, `GEN_GAP 130→150`, `SIB_GAP 56→64` matching SVG `NODE_R=34`.
+- **Portrait fallback fixed**: Initial letter renders BEFORE the `<image>` in SVG document order (underneath). When `onError` hides the image, the letter shows through. Annotation panel uses same pattern with `z-index`.
+- **InteractiveGenealogyViewer viewBox removed**: The SVG had BOTH `viewBox` (auto-scales content to fit viewport) AND inner `<g>` transform (translate+scale). For wide trees like Kholin (1730px), this double-scaling crushed text to ~5px — invisible. Fix: removed `viewBox`, letting the `<g>` transform be the single scaling source. Text now renders at ~9px for Kholin, ~16px for Survivor.
+- All 220 tests pass, `tsc -b` clean, `pnpm lint` clean.
+
 ##### Done (this session: Family Trees camera / scale / atrium correction)
 
-- **Scene composition fixed**: Added dark floor plane for grounding, removed wood-pattern.png usage (plain MeshStandardMaterial colors only), rebuilt lectern with human-scale proportions (height ~1m, width 0.62m, slanted surface at 0.28 rad).
-- **Lectern redesign**: Inclined reading surface, front lip, central column with decorative ring, base with four feet. Dark walnut colors (#3a2212–#1a0e06), roughness 0.6-0.8.
-- **Floating manuscripts**: `ParchmentSheet.tsx` — 7 parchment sheets with procedural canvas title textures (family name, ornamental line, archive subtitle) floating in an arc above the lectern at y=1.2. Subtle vertical bob + rotation via `useFrame` sine wave. Clickable with pointer cursor.
-- **Camera approach animation**: Initial position (0, 1.7, 4) → final reading position (0, 1.15, 1.75) over 1.8s with easeOutCubic. Camera looks at (0, 0.7, 0). `camAnim` ref with `approaching` direction flag prevents return animation confusion.
-- **Two-phase interaction**: Initial "browsing" state shows floor + lectern + floating parchments. Clicking a parchment triggers approach animation and reveals the active two-page manuscript on the lectern surface. Active parchment renders the full GenealogyOverlay (archive index left, family tree right, ink-writing annotation).
-- **Active parchment positioning**: `group at position (0, 0.88, 0.04), rotation (0.28, 0, 0)` — matches lectern slanted surface angle.
-- **Files created**: `Floor.tsx`, `ParchmentSheet.tsx`.
-- **Files modified**: `LecternModel3D.tsx`, `ParchmentModel3D.tsx` (resized pages to 0.55×0.4), `GenealogyScene.tsx` (full rewrite), `GenealogyCanvas.tsx` (selectedFamily starts null), `index.ts` (added exports).
-- All 220 tests pass, `tsc -b` clean, `pnpm lint` clean, `pnpm build` clean (49 precached entries).
+- **Replaced Html overlay with CanvasTexture**: `ParchmentModel3D.tsx` now renders genealogy content via `<canvas>` → `CanvasTexture` on `PlaneGeometry` (rotation `[-PI/2, 0, 0]` to match XZ page surface). Click handling via UV raycasting → `findClickRegion()` that filters by page and region type. Three.js textures cleaned up on unmount.
+- **Fixed canvas aspect ratio matching 3D plane**: Canvas changed from 1024×1280 (0.8) to 1024×1317 (0.778) matching `PAGE_W=0.35 / PAGE_H=0.45`. Texture pixels are now square on the 3D surface.
+- **Character portrait images preloaded and rendered**: `ParchmentModel3D` preloads all character images via `getCharacterPortrait()` into an `imageCache` Map keyed by `charId`. `renderGenealogyTexture`'s `drawPortrait()` draws loaded images clipped to circular regions with gold borders. Falls back to initial letter on error/missing.
+- **Archive index left page**: Roman numerals, active family flourish (gold curve + dot separator), family name/description/member count, ink-color-coded entries (active = dark ink, inactive = muted).
+- **Genealogy tree right page**: Heading ornament, family name, italic description, computed tree layout with bezier parent→child connections, gold-ringed portrait nodes, deceased cross markers, selected-character highlight ring.
+- **Annotation panel**: Character portrait + name + deceased marker, wrapped description, relations line (progenitors/bonded), "Also in {Family}" switch buttons with stroke borders.
+- **Connection drawing**: Main stroke (opacity 0.7, width 2), spouse lines (0.4 opacity, 1.2 width). Nodes positioned by computed layout with dynamic sibling gaps.
+- **All 220 tests pass**, `tsc -b` clean, `pnpm lint` clean
+
+##### Done (this session: Interactive SVG Genealogy Viewer — replaces CanvasTexture)
+
+- **Complete rewrite from scratch**: Replaced the CanvasTexture approach (canvas -> PlaneGeometry -> UV raycasting) with a true interactive SVG viewer embedded inside the 3D parchment via drei <Html transform>. Genealogy is now a real SVG document the reader can zoom, pan, and inspect like a museum manuscript.
+- **Layout extracted**: computeGenealogyLayout() into src/utils/genealogy-layout.ts (positions, connections, bounding box) — reused from former canvas renderer without modification.
+- **InteractiveGenealogyViewer**: ref-based CSS transform: translate(x,y) scale(s) on <svg>, RAF smooth interpolation (~200ms), clamp bounds (min 30% visible), museum toolbar (fade-in/out with 300ms delay, brass gradient style), drag-vs-click detection (4px threshold), keyboard support (arrows, +/-, 0).
+- **GenealogySvgContent**: full SVG document — archive index (left column), family heading + tree (right), bezier connections, portrait nodes (gold circle + image + clipPath + label + deceased cross), annotation panel (portrait, wrapped description, relations, "Also in X" buttons). Click-vs-drag via module-level pointer tracker.
+- **ParchmentModel3D rewritten**: uses <Html transform> overlay (740x500px, scale 0.001) across both page surfaces. Physical box/plane meshes retained with solid parchment color. CanvasTexture import removed.
+- **Files created**: src/utils/genealogy-layout.ts, src/components/genealogy/InteractiveGenealogyViewer.tsx, src/components/genealogy/GenealogySvgContent.tsx.
+- **Files deleted**: src/utils/render-genealogy-texture.ts (dead code, no remaining imports).
+- **Files modified**: ParchmentModel3D.tsx (Html overlay), InteractiveGenealogyViewer.tsx (restructured tickRef to useEffect for eslint react-hooks/refs compliance, fixed TS spread args).
+- All 220 tests pass, tsc -b clean, pnpm lint clean.

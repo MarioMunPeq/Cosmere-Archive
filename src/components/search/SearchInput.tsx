@@ -27,9 +27,31 @@ export default function SearchInput({
   onClear,
 }: Props) {
   return (
-    <div className="flex items-center gap-2 rounded-lg border border-gray-700/60 bg-gray-900/60 px-3 py-1.5 text-sm text-gray-300 transition-all focus-within:border-purple-500/60 focus-within:bg-gray-900">
-      <IconSearch className="shrink-0 text-gray-500" />
-      <kbd className="hidden shrink-0 rounded border border-gray-700 px-1 text-xs text-gray-600 sm:inline">Ctrl+K</kbd>
+    <div
+      className="flex items-center gap-2 rounded-sm border px-3 py-1.5 text-sm transition-all"
+      style={{
+        borderColor: 'rgba(180,150,100,0.15)',
+        backgroundColor: 'rgba(245,239,230,0.35)',
+        color: '#5a4a3a',
+      }}
+      onFocus={(e) => {
+        e.currentTarget.style.borderColor = 'rgba(180,150,100,0.35)'
+        e.currentTarget.style.backgroundColor = 'rgba(245,239,230,0.5)'
+      }}
+      onBlur={(e) => {
+        e.currentTarget.style.borderColor = 'rgba(180,150,100,0.15)'
+        e.currentTarget.style.backgroundColor = 'rgba(245,239,230,0.35)'
+      }}
+    >
+      <span style={{ color: '#8a7a6a' }}>
+        <IconSearch className="shrink-0" />
+      </span>
+      <kbd
+        className="hidden shrink-0 rounded-sm border px-1 text-xs sm:inline"
+        style={{ borderColor: 'rgba(180,150,100,0.15)', color: '#8a7a6a' }}
+      >
+        Ctrl+K
+      </kbd>
       <label htmlFor="cosmere-search" className="sr-only">
         Search the Cosmere
       </label>
@@ -47,10 +69,17 @@ export default function SearchInput({
         aria-controls="search-results"
         aria-autocomplete="list"
         aria-activedescendant={highlightIdx >= 0 && resultCount > 0 ? `search-opt-${highlightIdx}` : undefined}
-        className="w-full bg-transparent outline-none placeholder:text-gray-600"
+        className="w-full bg-transparent outline-none"
+        style={{ color: '#5a4a3a' }}
+        onFocusCapture={(e) => {
+          ;(e.currentTarget as HTMLInputElement).style.color = '#2d1a0e'
+        }}
+        onBlurCapture={(e) => {
+          ;(e.currentTarget as HTMLInputElement).style.color = '#5a4a3a'
+        }}
       />
       {query && (
-        <button onClick={onClear} aria-label="Clear search" className="text-gray-600 hover:text-gray-400">
+        <button onClick={onClear} aria-label="Clear search" style={{ color: '#8a7a6a' }}>
           <CloseIcon size={16} />
         </button>
       )}

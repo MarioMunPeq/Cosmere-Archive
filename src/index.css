@@ -103,6 +103,81 @@
     will-change: transform, opacity;
   }
 
+  @keyframes parchment-unfold {
+    from {
+      clip-path: inset(0 0 100% 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  .animate-parchment-unfold {
+    animation: parchment-unfold 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    will-change: clip-path;
+  }
+
+  @keyframes manuscript-enter {
+    0% {
+      opacity: 0;
+      transform: translateY(28px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-manuscript-enter {
+    animation: manuscript-enter 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both;
+    will-change: transform, opacity;
+  }
+
+  @keyframes title-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-title-reveal {
+    animation: title-reveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) 1.5s both;
+    will-change: transform, opacity;
+  }
+
+  @keyframes chapter-enter {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-chapter-enter {
+    animation: chapter-enter 0.4s ease-out both;
+    will-change: transform, opacity;
+  }
+
+  @keyframes dust-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .animate-dust-fade-in {
+    animation: dust-fade-in 2s ease-out 0.3s forwards;
+  }
+
   @keyframes twinkle-slow {
     0%,
     100% {

@@ -52,7 +52,7 @@ function searchPaths(type: SearchResult['type']) {
   }
 }
 
-export function SearchIcon({ type, className = 'shrink-0 text-gray-500', size = 16 }: SearchIconProps) {
+export function SearchIcon({ type, className = 'shrink-0', size = 16 }: SearchIconProps) {
   return (
     <svg
       width={size}

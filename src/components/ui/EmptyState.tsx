@@ -5,7 +5,11 @@ interface Props {
 }
 
 const EmptyState = memo(function EmptyState({ message = 'No results found.' }: Props) {
-  return <p className="py-12 text-center text-sm text-gray-500">{message}</p>
+  return (
+    <p className="py-8 text-center text-sm" style={{ color: '#8a7a6a' }}>
+      {message}
+    </p>
+  )
 })
 
 export default EmptyState
