@@ -294,3 +294,11 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - **Files deleted**: src/utils/render-genealogy-texture.ts (dead code, no remaining imports).
 - **Files modified**: ParchmentModel3D.tsx (Html overlay), InteractiveGenealogyViewer.tsx (restructured tickRef to useEffect for eslint react-hooks/refs compliance, fixed TS spread args).
 - All 220 tests pass, tsc -b clean, pnpm lint clean.
+
+##### Done (this session: Diagram room navigation — boundary clamping, scattered docs)
+
+- **DiagramCanvas.tsx rewritten**: Added `clampView()` boundary clamping to prevent panning outside 0–5000 wall edges. Initial scale 0.5, stone-matching dark background. Momentum-based inertia on release. Overview button when zoomed out below 0.25. Wall always fills viewport (no empty void).
+- **DiagramScene.tsx rewritten**: Removed branch system entirely — no `BRANCHES`, `BranchNode`, `DiagramConnections`, `FLOATING_NOTES`. Replaced with flat `WALL_DOCS` array — 9 docs at absolute positions (400–3600 x, 800–4100 y), chaotic rotations (−18° to +22°), varying z-indexes. 3 chaotic SVG connector lines between related docs (catalogue↔connections, worlds↔connections, volumes↔chronology).
+- **DiagramConnections.tsx deleted**: Dead code, no remaining imports.
+- **ESLint fixes**: Changed `let`→`const` for 6 non-reassigned variables in `DiagramCanvas.tsx`.
+- All 219 tests pass, `tsc -b` clean, `pnpm lint` clean.

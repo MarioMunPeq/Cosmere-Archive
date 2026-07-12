@@ -225,7 +225,6 @@ export default function BookScene({
         side: DoubleSide,
         roughness: 0.85,
         metalness: 0,
-        transparent: true,
         opacity: 1,
       }),
     [turnedTex],

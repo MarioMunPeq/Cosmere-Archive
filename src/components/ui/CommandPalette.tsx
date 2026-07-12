@@ -43,7 +43,7 @@ const PAGE_COMMANDS: Command[] = [
     to: '/locations',
     icon: '🌍',
   },
-  { id: 'stats', label: 'Stats', description: 'Cosmere data dashboard', to: '/stats', icon: '📊' },
+  { id: 'stats', label: 'Taravangian Diagram', description: 'Cosmere data dashboard', to: '/stats', icon: '📊' },
   { id: 'about', label: 'About', description: 'About Cosmere Archive', to: '/about', icon: 'ℹ️' },
 ]
 

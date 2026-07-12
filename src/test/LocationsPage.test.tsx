@@ -12,33 +12,34 @@ function renderPage() {
 }
 
 describe('LocationsPage', () => {
-  it('renders the page title', () => {
+  it('renders the astronomical chart title', () => {
     renderPage()
-    expect(screen.getByRole('heading', { name: /locations/i })).toBeInTheDocument()
+    expect(screen.getByText('ASTRONOMICAL CHART')).toBeInTheDocument()
   })
 
   it('renders known planets', () => {
     renderPage()
-    expect(screen.getByText('Roshar')).toBeInTheDocument()
-    expect(screen.getByText('Scadrial')).toBeInTheDocument()
-    expect(screen.getByText('Sel')).toBeInTheDocument()
-    expect(screen.getByText('Nalthis')).toBeInTheDocument()
+    expect(screen.getByText(/roshar/i)).toBeInTheDocument()
+    expect(screen.getByText(/scadrial/i)).toBeInTheDocument()
+    expect(screen.getByText(/sel/i)).toBeInTheDocument()
+    expect(screen.getByText(/nalthis/i)).toBeInTheDocument()
   })
 
-  it('shows shard info on planet cards', () => {
+  it('shows mode toggle buttons', () => {
     renderPage()
-    expect(screen.getByText(/honor.*cultivation.*odium/i)).toBeInTheDocument()
-    expect(screen.getByText(/preservation.*ruin.*harmony/i)).toBeInTheDocument()
+    expect(screen.getByText('Celestial Bodies')).toBeInTheDocument()
+    expect(screen.getByText('Shardic Studies')).toBeInTheDocument()
   })
 
-  it('shows saga names for planets', () => {
+  it('shows shard reference on planet labels', () => {
     renderPage()
-    expect(screen.getAllByText(/sagas:/i).length).toBeGreaterThanOrEqual(1)
-    expect(screen.getAllByText(/Mistborn Era 1/).length).toBeGreaterThanOrEqual(1)
+    expect(screen.getByText(/honor/i)).toBeInTheDocument()
+    expect(screen.getByText(/preservation/i)).toBeInTheDocument()
   })
 
-  it('has a back link to the map', () => {
+  it('shows the subtitle', () => {
     renderPage()
-    expect(screen.getByText('Back to the map')).toBeInTheDocument()
+    expect(screen.getByText(/Cosmere Archive/i)).toBeInTheDocument()
+    expect(screen.getByText(/Celestial Cartography/i)).toBeInTheDocument()
   })
 })

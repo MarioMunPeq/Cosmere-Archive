@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { memo, type ReactNode } from 'react'
 
 interface WallDocumentProps {
   x: number
@@ -16,7 +16,23 @@ interface WallDocumentProps {
   taped?: boolean
 }
 
-export function WallDocument({
+function wdPropsEqual(prev: WallDocumentProps, next: WallDocumentProps) {
+  return (
+    prev.id === next.id &&
+    prev.x === next.x &&
+    prev.y === next.y &&
+    prev.w === next.w &&
+    prev.h === next.h &&
+    prev.rotation === next.rotation &&
+    prev.isFocused === next.isFocused &&
+    prev.pinAt === next.pinAt &&
+    prev.taped === next.taped &&
+    prev.className === next.className &&
+    prev.onClick === next.onClick
+  )
+}
+
+export const WallDocument = memo(function WallDocument({
   x,
   y,
   w,
@@ -28,7 +44,6 @@ export function WallDocument({
   isFocused = false,
   pinAt = 'top',
   className = '',
-  style,
   taped = false,
 }: WallDocumentProps) {
   const pinStyle: React.CSSProperties =
@@ -52,7 +67,6 @@ export function WallDocument({
         transition: 'filter 0.6s ease',
         filter: isFocused ? 'brightness(1.06)' : 'brightness(1)',
         zIndex: isFocused ? 100 : 1,
-        ...style,
       }}
     >
       {/* Multi-layer shadow for physical depth */}
@@ -220,4 +234,4 @@ export function WallDocument({
       <div className="relative z-10 p-3 sm:p-4 h-full w-full overflow-hidden">{children}</div>
     </div>
   )
-}
+}, wdPropsEqual)

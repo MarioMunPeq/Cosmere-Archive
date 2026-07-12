@@ -122,9 +122,9 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
           position: 'fixed',
           inset: 0,
           zIndex: 49,
-          background: `rgba(0,0,0,${state === 'finished' || state === 'idle' ? 0 : 0.2})`,
-          backdropFilter: bookOpen ? 'blur(1.5px)' : 'blur(0.5px)',
-          WebkitBackdropFilter: bookOpen ? 'blur(1.5px)' : 'blur(0.5px)',
+          background: state === 'finished' || state === 'idle' ? 'transparent' : '#0a0806',
+          backdropFilter: bookOpen ? 'blur(1.5px)' : 'none',
+          WebkitBackdropFilter: bookOpen ? 'blur(1.5px)' : 'none',
           transition: 'background 700ms ease, backdrop-filter 700ms ease',
           pointerEvents: 'none',
         }}

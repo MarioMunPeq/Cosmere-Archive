@@ -71,10 +71,7 @@ export default function BookModel3D({
     [],
   )
   const pageBlockMat = useMemo(() => new MeshStandardMaterial({ color: '#ede4d8', roughness: 0.9, metalness: 0 }), [])
-  const coverMat = useMemo(
-    () => new MeshStandardMaterial({ color: '#f5edd6', roughness: 0.5, metalness: 0.05, side: DoubleSide }),
-    [],
-  )
+  const coverMat = useMemo(() => new MeshStandardMaterial({ color: '#f5edd6', roughness: 0.5, metalness: 0.05 }), [])
 
   return (
     <group name="BookRoot">

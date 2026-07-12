@@ -1,77 +1,228 @@
+import { useState, useMemo, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import PageLayout from '@/components/ui/PageLayout'
-import PlanetsTabContent from '@/components/detail/PlanetsTabContent'
-import ShardsTabContent from '@/components/detail/ShardsTabContent'
+import { PLANETS, SHARD_COLORS } from '@/data/static'
+import { MAGIC_SYSTEMS } from '@/data/static/magic-systems'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
+import PageLayout from '@/components/ui/PageLayout'
+import { StarChartSystem, ManuscriptInfoPanel, ShardManuscriptPanel } from '@/components/star-chart'
 
-const BG_STARS = Array.from({ length: 20 }, (_, i) => ({
-  left: `${((i * 11.3 + 2.7) % 100).toFixed(1)}%`,
-  top: `${((i * 17.9 + 4.1) % 100).toFixed(1)}%`,
-  delay: `${((i * 0.5) % 4).toFixed(1)}s`,
-  size: i % 3 === 0 ? 'h-0.5 w-0.5' : 'h-px w-px',
-  opacity: 0.04 + ((i * 0.2) % 0.15),
-}))
+interface ShardInfo {
+  name: string
+  color: string
+  planets: string[]
+  magicSystems: string[]
+}
 
 export default function LocationsPage() {
   const [searchParams, setSearchParams] = useSearchParams()
-  const tab = searchParams.get('tab') === 'shards' ? 'shards' : 'planets'
+  const mode = searchParams.get('mode') === 'shards' ? 'shards' : 'planets'
+  const planetParam = searchParams.get('planet')
+  const [selectedPlanet, setSelectedPlanet] = useState<string | null>(planetParam)
+  const [selectedShard, setSelectedShard] = useState<string | null>(null)
 
   useSEOMeta({
-    title: tab === 'shards' ? 'Shards \u2014 Cosmere Archive' : 'Locations \u2014 Cosmere Archive',
+    title: mode === 'shards' ? 'Shardic Studies — Cosmere Archive' : 'Astronomical Chart — Cosmere Archive',
     description:
-      tab === 'shards'
-        ? 'Learn about the sixteen Shards of Adonalsium and their Vessels in the Cosmere'
-        : 'Discover the planets and locations of the Cosmere universe, from Roshar to Scadrial',
+      mode === 'shards'
+        ? 'Shardic Studies — an analysis of the sixteen Shards of Adonalsium'
+        : 'An astronomical chart of the Cosmere planetary systems — compiled by Khriss',
   })
 
-  const setTab = (t: 'planets' | 'shards') => {
-    setSearchParams(t === 'shards' ? { tab: 'shards' } : {}, { replace: true })
-  }
+  const setMode = useCallback(
+    (m: 'planets' | 'shards') => {
+      setSelectedPlanet(null)
+      setSelectedShard(null)
+      setSearchParams(m === 'shards' ? { mode: 'shards' } : {}, { replace: true })
+    },
+    [setSearchParams],
+  )
+
+  const handlePlanetClick = useCallback((id: string) => {
+    setSelectedPlanet((prev) => (prev === id ? null : id))
+  }, [])
+
+  const handleShardClick = useCallback((name: string) => {
+    setSelectedShard((prev) => (prev === name ? null : name))
+  }, [])
+
+  const handleConnectedClick = useCallback((id: string) => {
+    setSelectedPlanet(id)
+    setSelectedShard(null)
+  }, [])
+
+  const selectedPlanetData = selectedPlanet ? (PLANETS.find((p) => p.id === selectedPlanet) ?? null) : null
+
+  const shards = useMemo(() => {
+    const map = new Map<string, ShardInfo>()
+    for (const planet of PLANETS) {
+      if (!planet.shard) continue
+      const names = planet.shard
+        .replace(/\s*\(.*?\)\s*/g, '')
+        .split(/[&,]+/)
+        .map((s) => s.trim())
+        .filter(Boolean)
+      for (const sName of names) {
+        if (sName === 'Adonalsium' || sName === '') continue
+        if (!map.has(sName)) {
+          map.set(sName, { name: sName, color: SHARD_COLORS[sName] ?? '#6b7280', planets: [], magicSystems: [] })
+        }
+        const entry = map.get(sName)!
+        if (!entry.planets.includes(planet.name)) entry.planets.push(planet.name)
+      }
+    }
+    for (const ms of MAGIC_SYSTEMS) {
+      if (map.has(ms.shard) && !map.get(ms.shard)!.magicSystems.includes(ms.name)) {
+        map.get(ms.shard)!.magicSystems.push(ms.name)
+      }
+    }
+    return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name))
+  }, [])
+
+  const selectedShardData = selectedShard ? (shards.find((s) => s.name === selectedShard) ?? null) : null
 
   return (
     <PageLayout variant="none">
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
-        {BG_STARS.map((s, i) => (
-          <div
-            key={i}
-            className={`absolute rounded-full bg-white animate-twinkle-slow ${s.size}`}
-            style={{
-              left: s.left,
-              top: s.top,
-              animationDelay: s.delay,
-              opacity: s.opacity,
-            }}
-          />
-        ))}
+      {/* Parchment background layer */}
+      <div className="fixed inset-0 overflow-hidden">
+        <svg className="absolute inset-0 w-full h-full">
+          <defs>
+            <filter id="bg-paper">
+              <feTurbulence type="fractalNoise" baseFrequency="0.35" numOctaves="5" />
+              <feColorMatrix type="matrix" values="0 0 0 0 0.9  0 0 0 0 0.86  0 0 0 0 0.78  0 0 0 0.08 0" />
+            </filter>
+            <filter id="bg-edge-burn">
+              <feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="3" />
+              <feColorMatrix type="matrix" values="0 0 0 0 0.3  0 0 0 0 0.2  0 0 0 0 0.1  0 0 0 0.6 0" />
+            </filter>
+          </defs>
+          <rect x="0" y="0" width="100%" height="100%" fill="#ece0cc" />
+          <rect x="0" y="0" width="100%" height="100%" fill="url(#bg-paper)" opacity="0.7" />
+          {/* Darker edges (vignette) */}
+          <rect x="0" y="0" width="100%" height="100%" fill="none" stroke="rgba(60,40,30,0.2)" strokeWidth="40" />
+          {/* Age spots */}
+          <circle cx="8%" cy="12%" r="6%" fill="rgba(120,90,60,0.02)" />
+          <circle cx="85%" cy="80%" r="8%" fill="rgba(100,80,50,0.015)" />
+          <circle cx="75%" cy="15%" r="5%" fill="rgba(140,110,80,0.01)" />
+        </svg>
       </div>
 
-      <div className="relative z-10 flex min-h-0 flex-1 flex-col overflow-hidden">
-        <div className="shrink-0 border-b border-gray-700/40 px-4 sm:px-6 bg-gradient-to-r from-gray-950/80 via-gray-900/50 to-gray-950/80 backdrop-blur-sm">
-          <div className="flex gap-1">
+      {/* Content */}
+      <div className="relative z-10 flex min-h-0 flex-1 flex-col">
+        {/* Title area */}
+        <div className="shrink-0 px-6 pt-5 pb-1 text-center">
+          <div
+            className="text-lg tracking-[0.25em]"
+            style={{
+              fontFamily: "'Playfair Display', 'Georgia', serif",
+              color: 'rgba(42,26,10,0.2)',
+            }}
+          >
+            ASTRONOMICAL CHART
+          </div>
+          <div
+            className="text-[10px] italic"
+            style={{
+              fontFamily: "'Cormorant Garamond', 'Georgia', serif",
+              color: 'rgba(42,26,10,0.1)',
+            }}
+          >
+            Cosmere Archive — Celestial Cartography by Khriss
+          </div>
+
+          {/* Mode toggle */}
+          <div
+            className="mx-auto mt-2.5 flex gap-0 rounded-sm"
+            style={{
+              border: '1px solid rgba(42,26,10,0.06)',
+              background: 'rgba(42,26,10,0.02)',
+              width: 'fit-content',
+            }}
+          >
             <button
-              onClick={() => setTab('planets')}
-              className={`px-4 py-2.5 text-sm font-medium transition-all duration-300 ${
-                tab === 'planets'
-                  ? 'border-b-2 border-cyan-500 text-cyan-300'
-                  : 'text-gray-500 hover:text-gray-300 border-b-2 border-transparent'
-              }`}
+              onClick={() => setMode('planets')}
+              className="px-4 py-0.5 text-[10px] tracking-wider transition-all duration-400"
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                color: mode === 'planets' ? 'rgba(42,26,10,0.45)' : 'rgba(42,26,10,0.15)',
+                background: mode === 'planets' ? 'rgba(42,26,10,0.03)' : 'transparent',
+              }}
             >
-              Planets
+              Celestial Bodies
             </button>
             <button
-              onClick={() => setTab('shards')}
-              className={`px-4 py-2.5 text-sm font-medium transition-all duration-300 ${
-                tab === 'shards'
-                  ? 'border-b-2 border-cyan-500 text-cyan-300'
-                  : 'text-gray-500 hover:text-gray-300 border-b-2 border-transparent'
-              }`}
+              onClick={() => setMode('shards')}
+              className="px-4 py-0.5 text-[10px] tracking-wider transition-all duration-400"
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                color: mode === 'shards' ? 'rgba(42,26,10,0.45)' : 'rgba(42,26,10,0.15)',
+                background: mode === 'shards' ? 'rgba(42,26,10,0.03)' : 'transparent',
+              }}
             >
-              Shards
+              Shardic Studies
             </button>
           </div>
         </div>
-        {tab === 'planets' ? <PlanetsTabContent /> : <ShardsTabContent />}
+
+        {/* Chart area */}
+        <div className="flex-1 flex items-center justify-center min-h-0 px-3 pb-3">
+          {mode === 'planets' && (
+            <div className="w-full h-full max-w-[900px] max-h-[780px]">
+              <StarChartSystem planets={PLANETS} selectedPlanet={selectedPlanet} onPlanetClick={handlePlanetClick} />
+            </div>
+          )}
+
+          {mode === 'shards' && (
+            <div className="flex flex-wrap items-center justify-center gap-5 max-w-3xl">
+              {shards.map((shard) => (
+                <button
+                  key={shard.name}
+                  onClick={() => handleShardClick(shard.name)}
+                  className="group flex flex-col items-center outline-none transition-all duration-500"
+                  style={{ cursor: 'pointer' }}
+                >
+                  <div
+                    className="rounded-full transition-all duration-500 group-hover:scale-105"
+                    style={{
+                      width: 48,
+                      height: 48,
+                      background: `radial-gradient(circle at 35% 35%, ${shard.color}88, ${shard.color}33, ${shard.color}11)`,
+                      boxShadow: selectedShard === shard.name ? `0 0 20px ${shard.color}40` : 'none',
+                      transform: selectedShard === shard.name ? 'scale(1.06)' : 'scale(1)',
+                    }}
+                  />
+                  <span
+                    className="mt-1 text-[9px] tracking-wide font-serif transition-all duration-400"
+                    style={{
+                      fontFamily: "'Playfair Display', serif",
+                      color: selectedShard === shard.name ? 'rgba(42,26,10,0.5)' : 'rgba(42,26,10,0.18)',
+                    }}
+                  >
+                    {shard.name.toUpperCase()}
+                  </span>
+                  <span
+                    className="text-[7px] italic"
+                    style={{ fontFamily: "'Cormorant Garamond', serif", color: 'rgba(42,26,10,0.08)' }}
+                  >
+                    {shard.planets.length} world{shard.planets.length !== 1 ? 's' : ''}
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* Planet info manuscript */}
+      {selectedPlanetData && (
+        <ManuscriptInfoPanel
+          planet={selectedPlanetData}
+          onClose={() => setSelectedPlanet(null)}
+          onSelectPlanet={handleConnectedClick}
+        />
+      )}
+
+      {/* Shard info manuscript */}
+      {selectedShardData && <ShardManuscriptPanel shard={selectedShardData} onClose={() => setSelectedShard(null)} />}
     </PageLayout>
   )
 }

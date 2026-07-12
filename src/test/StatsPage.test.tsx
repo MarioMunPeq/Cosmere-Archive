@@ -12,16 +12,14 @@ function renderPage() {
 }
 
 describe('StatsPage', () => {
-  it('renders the archive title', () => {
+  it('renders the catalogue document', () => {
     renderPage()
-    expect(screen.getByText('The Cosmere Archive')).toBeInTheDocument()
+    expect(screen.getByText('CATALOGUE')).toBeInTheDocument()
   })
 
   it('renders stat cards with counts', () => {
     renderPage()
     expect(screen.getAllByText('Books').length).toBeGreaterThanOrEqual(1)
-    expect(screen.getAllByText('Characters').length).toBeGreaterThanOrEqual(1)
-    expect(screen.getAllByText('Planets').length).toBeGreaterThanOrEqual(1)
     expect(screen.getAllByText('Sagas').length).toBeGreaterThanOrEqual(1)
   })
 
@@ -30,33 +28,33 @@ describe('StatsPage', () => {
     expect(screen.getByText('VOLUMES BY CYCLE')).toBeInTheDocument()
   })
 
-  it('renders population census section', () => {
+  it('renders census section', () => {
     renderPage()
-    expect(screen.getByText('POPULATION CENSUS')).toBeInTheDocument()
+    expect(screen.getByText('CENSUS')).toBeInTheDocument()
   })
 
   it('renders word count note', () => {
     renderPage()
-    expect(screen.getByText(/Total words recorded/i)).toBeInTheDocument()
+    expect(screen.getByText(/total words/i)).toBeInTheDocument()
   })
 
-  it('renders publication chronology section', () => {
+  it('renders chronology section', () => {
     renderPage()
-    expect(screen.getByText('PUBLICATION CHRONOLOGY')).toBeInTheDocument()
+    expect(screen.getByText('CHRONOLOGY')).toBeInTheDocument()
   })
 
-  it('renders shardic distribution section', () => {
+  it('renders shards section', () => {
     renderPage()
-    expect(screen.getByText('SHARDIC DISTRIBUTION')).toBeInTheDocument()
+    expect(screen.getByText('SHARDS')).toBeInTheDocument()
   })
 
   it('renders the heralds section', () => {
     renderPage()
-    expect(screen.getByText('THE HERALDS OF THE ALMIGHTY')).toBeInTheDocument()
+    expect(screen.getByText('HERALDS')).toBeInTheDocument()
   })
 
-  it('has a back link to the map', () => {
+  it('shows the Diagram title', () => {
     renderPage()
-    expect(screen.getByText(/Back to map/i)).toBeInTheDocument()
+    expect(screen.getByText('THE DIAGRAM')).toBeInTheDocument()
   })
 })
