@@ -48,9 +48,9 @@ describe('StatsPage', () => {
     expect(screen.getByText('SHARDS')).toBeInTheDocument()
   })
 
-  it('renders the heralds section', () => {
+  it('renders the aharietiam section', () => {
     renderPage()
-    expect(screen.getByText('HERALDS')).toBeInTheDocument()
+    expect(screen.getByText('AHARIETIAM')).toBeInTheDocument()
   })
 
   it('shows the Diagram title', () => {

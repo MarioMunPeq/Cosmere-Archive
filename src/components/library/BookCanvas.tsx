@@ -121,20 +121,7 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
         style={{
           position: 'fixed',
           inset: 0,
-          zIndex: 49,
-          background: state === 'finished' || state === 'idle' ? 'transparent' : '#0a0806',
-          backdropFilter: bookOpen ? 'blur(1.5px)' : 'none',
-          WebkitBackdropFilter: bookOpen ? 'blur(1.5px)' : 'none',
-          transition: 'background 700ms ease, backdrop-filter 700ms ease',
-          pointerEvents: 'none',
-        }}
-      />
-
-      <div
-        style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: 50,
+          zIndex: 5,
           pointerEvents: 'none',
         }}
       >
@@ -164,7 +151,7 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
           style={{
             position: 'fixed',
             inset: 0,
-            zIndex: 55,
+            zIndex: 6,
             pointerEvents: 'none',
           }}
         >

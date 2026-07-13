@@ -41,7 +41,7 @@
 
 ### Goal
 
-Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all synopses and character descriptions to Coppermind quality, redesign Stats page with 10 cosmic-themed sections.
+Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all synopses and character descriptions to Coppermind quality, redesign Stats page with 10 cosmic-themed sections, redesign Heralds page as immersive Aharietiam experience.
 
 ### Constraints & Preferences
 
@@ -72,6 +72,10 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - Fixed `LocationsPage.test.tsx` `shows saga names for planets` test (`getByText` → `getAllByText`)
 - Fixed overflow bug on Locations/Shards tabs: removed extra flex wrappers, added `min-h-0` to `mx-auto` div, `h-full` to grid container, `shrink-0` to non-scrollable elements
 - All 251 tests pass, `tsc -b` clean, `pnpm lint` clean, ESLint clean (can commit)
+
+- Built Aharietiam v4 environment-only scene (10 components: Sky, Camera, Terrain, Altar, Debris, Atmosphere, Particles, Lighting, Scene) — pure CSS 3D perspective, no images, no blades, no UI
+- Added CircleOfBlades — 10 Honorblade objects in a perfect circle, each with 9 CSS layers (Shadow, GroundCrack, ContactShadow, StormlightGlow, BladeImage, Reflection, StormlightSweep, Particles, Hitbox), no `<img>` only, mathematical positioning, Taln placeholder with silhouette only
+- All 206 tests pass, `tsc -b` clean, `pnpm lint` clean, `pnpm build` clean (47 entries)
 
 ##### Done (this session: Highstorm V4 — canvas-based fluid storm)
 
@@ -118,7 +122,7 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - Image failure falls back to SVG cover (onError handler), not broken img tag
 - Cross-reference URL params follow MagicSystemsPage `system` param pattern: CharactersPage reads `character`, PlanetsTabContent reads `planet`
 - Stats page uses scroll-triggered section reveals (IntersectionObserver), pure SVG for all charts, `AnimatedCounter` for number animations, star field background matching rest of site
-- Sections order: Hero → Stat Cards → Books by Saga → Characters by Planet → Word Count → Publication Timeline → Shards Grid → Magic Categories → Event Density → Heralds
+- Sections order: Hero → Stat Cards → Books by Saga → Characters by Planet → Word Count → Publication Timeline → Shards Grid → Magic Categories → Event Density → Aharietiam
 - BookShelf uses spine images when available (`book.spine` field), falls back to CSS gradient + initials for missing images
 - Word count badge removed from spine for realism; shown as tooltip on hover
 - Wood texture from Texturize.app: free, seamless, dark walnut, no attribution required
@@ -154,8 +158,9 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 
 ### Next Steps
 
-1. **Phase 3A refinements**: Adjust curl radius, add page-turn direction support (left→right), fine-tune timing/easing
-2. **General polish**: Verify production build, check all book interactions work end-to-end
+1. **Honorblade interactions**: Add click/hover states, camera focus on selected blade
+2. **Information Monolith**: Add UI panel showing blade info on click
+3. **Visual refinements**: Add Stormlight particles per blade, blade shockwave effects
 
 #### Hybrid R3F book architecture (this round)
 
@@ -259,6 +264,15 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - `public/images/wood-texture.png`: dark walnut wood texture (seamless, 2048×2048, Texturize.app)
 - `public/images/spines/`: directory for spine images (placeholder paths exist; actual images needed)
 - `src/test/StatsPage.test.tsx`: 11 tests for all sections + back link
+- `src/types/aharietiam.ts`: HonorbladeData type (id, name, title, order, surges, quote, description, books, status, connections, assetPath, positionIndex, color)
+- `src/data/static/aharietiam.ts`: HONORBLADES array — 10 honorblades with full data (replaces old heralds.ts)
+- `src/components/aharietiam/`: scene components — Sky, Camera, Terrain, Altar, Debris, Atmosphere, Particles, Lighting, Scene, CircleOfBlades, Honorblade
+- `src/pages/AharietiamPage.tsx`: new page container with SEO metadata
+- `public/aharietiam/`: PNG honorblade assets (jezrien.png, nale.png, etc.)
+
+### Routing
+- `/aharietiam` — new immersive Aharietiam page (Alt+5)
+- `/heralds` — redirects to `/aharietiam`
 
 ##### Done (this session: Single-page lectern, font/layout fixes, viewBox double-scale fix)
 
@@ -302,3 +316,70 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - **DiagramConnections.tsx deleted**: Dead code, no remaining imports.
 - **ESLint fixes**: Changed `let`→`const` for 6 non-reassigned variables in `DiagramCanvas.tsx`.
 - All 219 tests pass, `tsc -b` clean, `pnpm lint` clean.
+
+##### Done (this session: Aharietiam immersive redesign)
+
+- **Complete replacement**: Deleted `HeraldsPage.tsx`, `HonorbladeSVG.tsx`, `heralds.ts`, `herald.ts`, `HeraldsPage.test.tsx`. Created new Aharietiam page: ceremonial stone circle with 9 Honorblade PNGs mathematically positioned on a circle pointing inward, Taln's slot (index 8) as an empty glowing placeholder.
+- **New architecture**: `AharietiamScene.tsx` orchestrates all subcomponents. `Ground.tsx` renders a dark stone floor with circular ceremonial area, crack lines, center glow. `HonorbladeImage.tsx` renders a PNG honorblade with rotation toward center, breathing animation, vibration, Stormlight sweep, hover brighten, click shockwave ring. `HonorbladePlaceholder.tsx` renders Taln's empty slot (dashed silhouette, stormlight outline). `StormlightParticles.tsx` renders 24 floating motes with drift animation. `InformationPanel.tsx` is a fixed right-side panel with document-typography (serif, hierarchy, no cards/boxes), showing name, title, order, surges, quote, description, books, connections.
+- **CSS keyframes**: Added `aharietiam-breathe`, `aharietiam-vibrate`, `aharietiam-stormlight`, `aharietiam-float`, `aharietiam-shockwave`, `aharietiam-fade-in`, `aharietiam-pulse-glow` to `index.css`.
+- **Route**: `/heralds` redirects to `/aharietiam`; all navigation (Layout keyboard shortcut, Breadcrumbs, ParchmentMenu, Manuscript, CommandPalette, useSearch, keyboard-shortcuts help) updated.
+- **Data replaced**: `HONORBLADES` from `@/data/static/aharietiam` replaces `HERALDS` from `heralds.ts`. Data-integrity tests updated to test `HONORBLADES`. StatsPage, DiagramScene, useSearch all import `HONORBLADES`.
+- **Refs of Heralds name**: Updated in `Breadcrumbs.tsx`, `Manuscript.tsx` (AHARIETIAM chapter with new description), `CommandPalette.tsx`, `static-data.ts`, `DiagramScene.tsx` (section label, link, annotation), `StatsPage.test.tsx`, `data-integrity.test.ts`.
+- **Files created**: `src/types/aharietiam.ts`, `src/data/static/aharietiam.ts`, `src/components/aharietiam/` (7 files: index, AharietiamScene, Ground, HonorbladeImage, HonorbladePlaceholder, StormlightParticles, InformationPanel), `src/pages/AharietiamPage.tsx`.
+- All 206 tests pass, `tsc -b` clean, `pnpm lint` clean, `pnpm build` clean (47 precached entries).
+
+##### Done (this session: Aharietiam v2 — cinematic 2.5D rewrite)
+
+- **Complete architecture rewrite**: Deleted all v1 files (Scene.tsx, Ground.tsx, HonorbladeImage, HonorbladePlaceholder, StormlightParticles, InformationPanel). Created v2 with 12 files: `SceneController`, `Camera`, `Ground`, `GroundRunes`, `SceneLighting`, `Stormlight`, `AmbientParticles`, `Honorblade`, `HonorbladePlaceholder`, `HoverEffects`, `InformationMonolith`, `Scene`.
+- **New tech stack**: Added `framer-motion@12.42.2`, `gsap@3.15.0`. CSS 3D transforms (`perspective`, `preserve-3d`, `translateZ`). No Three.js, no modals, no sidebars.
+- **SceneController.tsx**: Context provider with state machine (`idle`/`hovering`/`selected`), hovered/selected ID, monolith visibility. Framer Motion spring animations throughout.
+- **Camera.tsx**: Spring-animated `translateX/Y/Z` + `rotateX/Y` on scene container via `useMotionValue`/`useSpring`. Idle→hover (2-4% offset, 1.5° tilt, 60px zoom)→select (8% offset, 3° tilt, 180px zoom). Clears selection on container click.
+- **Ground.tsx**: 11 CSS layers — base stone, wear, cracks, ceremonial circle, outer/inner ring, shadow accumulation, vignette, noise texture, ambient fog.
+- **GroundRunes.tsx**: 10 glowing rune SVGs positioned around circle edge with `ground-rune-pulse` keyframe.
+- **SceneLighting.tsx**: 4 gradient overlays — key light (top-right), fill (bottom-left), center ambient, rim light.
+- **Stormlight.tsx**: CSS-masked animated gradient sweep (`stormlight-sweep` keyframe) with per-blade pseudo-random duration/delay (3-6s) derived from seed.
+- **AmbientParticles.tsx**: Canvas 2D with ~40 particles, `requestAnimationFrame` spawn/tick/draw loop, throttled on `document.hidden`.
+- **Honorblade.tsx**: Composed blade — drop shadow → highlight → Stormlight sweep → PNG image → hover ring → contact shadow → name label. `tabIndex`, `aria-label`, keyboard activation.
+- **HonorbladePlaceholder.tsx**: Taln's slot — ground-crack silhouette + cyan glow, no image. Same interaction pattern as Honorblade.
+- **HoverEffects.tsx**: Sets `--aharietiam-dim-level` CSS variable (0-0.6) as `rgba(0,0,0, ...)` on scene backdrop when blade hovered/selected.
+- **InformationMonolith.tsx**: Emerges from floor via `AnimatePresence` — spring opacity/y/rotateX/blur. Typographic hierarchy (serif only, no boxes): status→name→title→order→divider→quote→description→surges→books→connections→❧.
+- **CSS keyframes**: `stormlight-sweep`, `ground-rune-pulse`. `:root { --aharietiam-dim-level: 0 }` custom property.
+- All 206 tests pass, `tsc -b` clean, `pnpm lint` clean, `pnpm build` clean (48 entries, AharietiamPage 147 kB / 47 kB gzip).
+
+##### Done (this session: Aharietiam v4 — environment-only scene from scratch)
+
+- **Complete from-scratch rewrite** (4th iteration): deleted all previous v3 files. Built a pure environment scene with no blades, no UI, no interactions — just the landscape.
+- **10 components**: `Sky.tsx`, `Camera.tsx`, `Terrain.tsx`, `Altar.tsx`, `Debris.tsx`, `Atmosphere.tsx`, `Particles.tsx`, `Lighting.tsx`, `Scene.tsx`, `index.ts`.
+- **Sky**: 5 atmospheric layers with `translateZ` depth parallax — cosmic sky → huge mountains → mid mountains → near rocks → fog. Each layer has distinct blur (25px → 4px). Mountain silhouettes via `clip-path` polygons + `filter: blur()`.
+- **Camera**: `perspective: 2400px`, `rotateX(40deg) translateY(6vh)` for isometric/overlook view. Compensates for rotateX centering shift.
+- **Terrain**: extends `-100%` to `+100%`. 8 platform sub-layers (stone base, border ring, 3 inner rings, texture, wear, AO, edge shadow, light map). Extended terrain has base gradients, noise overlay, SVG cracks, 18 scattered rocks, dust highlights. `translateZ(2px)` for platform thickness.
+- **Altar**: 5 concentric engraved rings, 16 rune marks, 24 radial relief lines, 5 center fractures, center depression. TranslatesZ(3px) above platform.
+- **Debris**: 10 column fragments + 6 stone blocks around platform edge (40–46% from center), extremely low opacity (0.01–0.016), `translateZ(4px)`.
+- **Lighting**: no dark circle — ambient cool fill, directional warmth, subtle center bloom, extreme-edge vignette, top dark falloff. Mix-blend-modes throughout.
+- **Atmosphere**: bottom fog, distant haze, upper atmosphere glow.
+- **Particles**: Canvas 2D ~50 floating motes, upward drift, life-cycle respawn.
+- All CSS: gradients, `conic-gradient`, SVG inline noise, `mix-blend-mode`, `backdrop-filter`, `filter: blur()`, `clip-path`. No images used.
+- **Fixed 6 ESLint react-hooks/purity errors** (`Math.random` → `pRand()` deterministic function).
+- All 206 tests pass, `tsc -b` clean, `pnpm lint` clean, `pnpm build` clean (47 entries, AharietiamPage 11 kB / 3.1 kB gzip).
+
+##### Done (this session: CircleOfBlades — 10 Honorblade objects in perfect circle)
+
+- **New components**: `Honorblade.tsx` (multi-layer blade object), `CircleOfBlades.tsx` (positions all 10 blades).
+- **Not an `<img>` tag**: Each Honorblade is a composite object with 9 layers: GroundShadow, GroundCrack, ContactShadow, StormlightGlow, BladeImage (or TalnPlaceholder), BladeReflection, StormlightSweep, BladeParticles, Hitbox.
+- **Mathematical positioning**: Each blade positioned at `(x, y)` where `x = 50 + R * cos(θ)`, `y = 50 + R * sin(θ)`, `θ = (index / 10 * 2π) - π/2`. All blades rotated to face center via `rotate(facingAngle)` where `facingAngle = (θ + π) * 180/π`.
+- **Perfect circle**: All at exactly `RADIUS_PCT = 36%` from center, equal angular spacing, `positionIndex` sort order.
+- **Penetrates ground**: `mask-image: linear-gradient(to bottom, black 85%, transparent 100%)` hides bottom ~15px. Dust puff at insertion point.
+- **GroundCrack**: SVG paths with deterministic pseudo-random segments at each blade's base.
+- **ContactShadow**: Dark radial ellipse at base with blur.
+- **GroundShadow**: Cast shadow on ground, stretched, `rotateX(60deg)` for projection.
+- **StormlightGlow**: Radial gradient with `glow-pulse` animation per blade color.
+- **StormlightSweep**: Animated linear gradient sweep with per-blade duration/delay from `pRand()`.
+- **BladeReflection**: Subtle white gradient highlight on blade surface.
+- **BladeParticles**: 4 floating dust motes at blade base, animated via `blade-particle` keyframe.
+- **BladeImage**: Loads PNG from `public/aharietiam/{id}.png` via `import.meta.env.BASE_URL`. Falls back to `CSSBlade` SVG on error (all blades currently use CSS fallback since no PNGs exist).
+- **CSSBlade**: SVG blade shape with grip, crossguard, central ridge, edge highlight, per-blade color accent.
+- **TalnPlaceholder**: No PNG — only silhouette outline (faint stroke) + center crack glow.
+- **Hitbox**: Invisible interaction zone for future click/hover.
+- **New keyframe**: `blade-particle` in `index.css`.
+- Files modified: `Scene.tsx` (adds `<CircleOfBlades />` inside Camera), `index.ts` (adds exports), `index.css` (adds keyframe).
+- All 206 tests pass, `tsc -b` clean, `pnpm lint` clean, `pnpm build` clean (47 entries, AharietiamPage 23.8 kB / 5.7 kB gzip).

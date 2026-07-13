@@ -16,7 +16,7 @@ const DRAWER_LINKS: { to: string; label: string }[] = [
   { to: '/magic', label: 'Magic Systems' },
   { to: '/library', label: 'Library' },
   { to: '/stats', label: 'Taravangian Diagram' },
-  { to: '/heralds', label: 'Heralds' },
+  { to: '/aharietiam', label: 'Aharietiam' },
   { to: '/mind-map', label: 'Mind Map' },
 ]
 

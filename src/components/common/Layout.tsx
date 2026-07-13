@@ -15,7 +15,7 @@ const NAV_SHORTCUTS: [string, string][] = [
   ['2', '/characters?tab=relationships'],
   ['3', '/magic'],
   ['4', '/characters?tab=family'],
-  ['5', '/heralds'],
+  ['5', '/aharietiam'],
   ['6', '/locations'],
   ['7', '/books'],
   ['8', '/characters'],

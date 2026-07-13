@@ -41,6 +41,21 @@ function easeOutQuad(t: number): number {
 function easeInOutQuad(t: number): number {
   return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2
 }
+function easeInQuad(t: number): number {
+  return t * t
+}
+function easePageTurn(t: number): number {
+  if (t < 0.20) {
+    const phase = t / 0.20
+    return 0.20 * easeOutQuad(phase) * 0.65
+  }
+  if (t < 0.80) {
+    const phase = (t - 0.20) / 0.60
+    return 0.20 + 0.60 * easeInOutQuad(phase)
+  }
+  const phase = (t - 0.80) / 0.20
+  return 0.80 + 0.20 * easeInQuad(phase)
+}
 
 const CAM_VEC: [number, number, number] = [0, 0.15, 3.0]
 const HALF_PI = Math.PI / 2
@@ -90,6 +105,7 @@ export default function BookScene({
   const initRef = useRef<WorldTransform>({ x: 0, y: 0, scale: 1 })
   const layoutSetRef = useRef(false)
   const bookReadyRef = useRef(false)
+  const [groupVisible, setGroupVisible] = useState(false)
 
   const fittedScale = useMemo(() => {
     const fovRad = (camera.fov * Math.PI) / 360
@@ -98,11 +114,10 @@ export default function BookScene({
     const aspect = w / h
     const vh = 2 * Math.tan(fovRad) * camDist
     const vw = vh * aspect
-    const margin = 0.8
+    const margin = 0.85
     const maxW = vw * margin
     const maxH = vh * margin
-    const s = Math.min(maxW / bookW, maxH / bookH)
-    return Math.min(s, 1.2)
+    return Math.min(maxW / bookW, maxH / bookH)
   }, [bookW, bookH, camera, size, camDist])
 
   // Layout transform: set exactly once on the outer group (position + scale only)
@@ -120,8 +135,7 @@ export default function BookScene({
     if (lg && ag) {
       lg.position.set(t.x, t.y, 0)
       lg.scale.set(t.scale, t.scale, t.scale)
-      lg.visible = true
-      ag.rotation.set(0.08, HALF_PI, 0)
+      setGroupVisible(true)
       ag.position.set(0, 0, 0)
       ag.scale.set(1, 1, 1)
       layoutSetRef.current = true
@@ -146,8 +160,8 @@ export default function BookScene({
   }
 
   // ── Turned page mesh ──────────────────────────────────────
-  const TURN_SEG_W = 48
-  const TURN_SEG_H = 6
+  const TURN_SEG_W = 52
+  const TURN_SEG_H = 12
   const turnedRef = useRef<TurnMesh>(null)
   const turnedGeo = useMemo(() => {
     const geo = new BufferGeometry()
@@ -166,6 +180,8 @@ export default function BookScene({
     geo.userData.origPos = pos
     geo.setAttribute('position', new Float32BufferAttribute(pos, 3))
     geo.setIndex(base.index ? base.index.clone() : null)
+    const srcUv = base.attributes.uv
+    if (srcUv) geo.setAttribute('uv', srcUv.clone())
     base.dispose()
     return geo
   }, [pageW, bookH])
@@ -234,6 +250,10 @@ export default function BookScene({
   const shadowMeshRef = useRef<ShadowMesh>(null!)
   const turnT = useRef(0)
 
+  // Locked transform applied every frame during opened state
+  // Prevents any post-animation reset from teleporting the book
+  const openedTransformRef = useRef<{ pos: [number, number, number]; scale: [number, number, number]; rot: [number, number, number] } | null>(null)
+
   // ── Per-frame animation loop ───────────────────────────────
   useFrame((_, delta) => {
     if (prevState.current !== state) {
@@ -250,15 +270,13 @@ export default function BookScene({
       case 'extracting': {
         if (!bookReadyRef.current || !ag) break
         const raw = Math.min(animTime.current / (ANIM_TIMING.extract / 1000), 1)
-        const et = easeInOutQuad(raw)
+        const et = easeOutQuad(raw)
         const init = initRef.current
         const sScale = init.scale > 0.001 ? init.scale : 1
 
-        // Target local position: where the inner group must be so that
-        // total = outer(layout) × inner = reading center (0, -0.04, -0.25)
         const lx = toLocalX(0)
-        const ly = toLocalY(-0.04)
-        const lz = toLocalZ(-0.25)
+        const ly = toLocalY(0)
+        const lz = toLocalZ(0.5)
 
         ag.position.set(lx * et, ly * et, lz * et)
         const s = 1 + (fittedScale / sScale - 1) * et
@@ -277,6 +295,11 @@ export default function BookScene({
           ag.position.set(lx, ly, lz)
           ag.scale.set(fittedScale / sScale, fittedScale / sScale, fittedScale / sScale)
           ag.rotation.set(0, 0, 0)
+          openedTransformRef.current = {
+            pos: [lx, ly, lz],
+            scale: [fittedScale / sScale, fittedScale / sScale, fittedScale / sScale],
+            rot: [0, 0, 0],
+          }
           if (glow) {
             glow.scale.setScalar(0)
             glow.material.opacity = 0
@@ -287,48 +310,31 @@ export default function BookScene({
         break
       }
 
-      case 'stabilizing': {
-        if (!ag) break
-        const raw = Math.min(animTime.current / (ANIM_TIMING.stabilize / 1000), 1)
-        const st = easeOutQuad(raw)
-
-        const init = initRef.current
-        const sScale = init.scale > 0.001 ? init.scale : 1
-
-        const endX = toLocalX(0)
-        const endY = toLocalY(0)
-        const startY = toLocalY(-0.04)
-        const endZ = toLocalZ(0)
-        const startZ = toLocalZ(-0.25)
-
-        const overshoot = Math.sin(st * Math.PI * 1.5) * 0.003 * (1 - st)
-        ag.position.x = endX
-        ag.position.y = startY + (endY - startY) * st + overshoot / sScale
-        ag.position.z = startZ + (endZ - startZ) * st
-        ag.rotation.x = (overshoot / sScale) * 3
-
-        if (raw >= 1) {
-          ag.position.set(endX, endY, endZ)
-          ag.rotation.set(0, 0, 0)
-          dispatch('STABILIZE_DONE')
+      case 'opened': {
+        if (ag && openedTransformRef.current) {
+          const t = openedTransformRef.current
+          ag.position.set(t.pos[0], t.pos[1], t.pos[2])
+          ag.scale.set(t.scale[0], t.scale[1], t.scale[2])
+          ag.rotation.set(t.rot[0], t.rot[1], t.rot[2])
         }
         break
       }
 
-      case 'opened':
-        break
-
       case 'turningPage': {
         if (!ag) break
         const raw = Math.min(animTime.current / (ANIM_TIMING.pageTurn / 1000), 1.04)
-        const t = Math.min(easeInOutQuad(Math.max(0, raw - 0.03) / 0.97), 1.02)
+        const rawAdjusted = Math.max(0, Math.min(1, (raw - 0.02) / 0.96))
+        const t = easePageTurn(rawAdjusted) * 1.02
         const tiltAmp = Math.sin(Math.min(raw, 1) * Math.PI) * 0.015
         const bounce = Math.max(0, (raw - 1) * 0.25)
         ag.rotation.x = tiltAmp + bounce * 0.002
+        ag.rotation.z = Math.sin(Math.min(raw, 1) * Math.PI * 0.5) * 0.0012
 
         const turnMesh = turnedRef.current
         const turnSide = direction === 'forward' ? halfCenter : -halfCenter
-        if (turnMesh) turnMesh.position.x = turnSide
+        const settle = Math.max(0, (raw - 0.95) / 0.09)
+        const settleBounce = Math.sin(settle * Math.PI * 2) * 0.002 * (1 - settle)
+        if (turnMesh) turnMesh.position.x = turnSide + settleBounce
 
         if (shadowMeshRef.current) {
           shadowMeshRef.current.position.x = turnSide
@@ -341,30 +347,37 @@ export default function BookScene({
           if (turnPos && src) {
             const w = pageW
             const isFwd = direction === 'forward'
-            const fullAngle = t * Math.PI
-            const rollR = w * ROLL_RADIUS_FRACTION
-            const consumed = rollR * fullAngle
+            const h = bookH
+            const rollR_base = w * ROLL_RADIUS_FRACTION
+            const tighten = 1 - Math.min(t, 1) * 0.15
             const hingeX = isFwd ? -w / 2 : w / 2
             for (let i = 0; i < turnPos.count; i++) {
               const i3 = i * 3
               const ox = src[i3]!
               const oy = src[i3 + 1]!
               const dx = isFwd ? ox + w / 2 : w / 2 - ox
+              const yNorm = Math.abs(oy) / (h / 2)
+              const yFactor = 1 + Math.pow(yNorm, 1.5) * 0.4
+              const adjustedRollR = rollR_base * tighten * yFactor
+              const edgePhase = Math.pow(dx / w, 3) * 0.12
+              const effectiveT = Math.max(0, Math.min(1, t - edgePhase))
+              const effectiveFullAngle = effectiveT * Math.PI
+              const effectiveConsumed = adjustedRollR * effectiveFullAngle
               let px: number, pz: number
-              if (dx < consumed) {
-                const ra = dx / rollR
-                const sx = rollR * Math.sin(ra)
-                const cz = rollR * (1 - Math.cos(ra))
+              if (dx < effectiveConsumed) {
+                const ra = dx / adjustedRollR
+                const sx = adjustedRollR * Math.sin(ra)
+                const cz = adjustedRollR * (1 - Math.cos(ra))
                 px = isFwd ? hingeX + sx : hingeX - sx
                 pz = cz
               } else {
-                const flatDx = dx - consumed
-                const endSx = rollR * Math.sin(fullAngle)
-                const endCz = rollR * (1 - Math.cos(fullAngle))
+                const flatDx = dx - effectiveConsumed
+                const endSx = adjustedRollR * Math.sin(effectiveFullAngle)
+                const endCz = adjustedRollR * (1 - Math.cos(effectiveFullAngle))
                 px = isFwd
-                  ? hingeX + endSx + flatDx * Math.cos(fullAngle)
-                  : hingeX - endSx - flatDx * Math.cos(fullAngle)
-                pz = endCz + flatDx * Math.sin(fullAngle)
+                  ? hingeX + endSx + flatDx * Math.cos(effectiveFullAngle)
+                  : hingeX - endSx - flatDx * Math.cos(effectiveFullAngle)
+                pz = endCz + flatDx * Math.sin(effectiveFullAngle)
               }
               turnPos.setXYZ(i, px, oy, pz)
             }
@@ -375,7 +388,8 @@ export default function BookScene({
 
         const shadowMat = shadowMatRef.current
         if (shadowMat) {
-          shadowMat.opacity = raw * 0.12
+          const shadowRaw = Math.min(raw, 1)
+          shadowMat.opacity = Math.sin(shadowRaw * Math.PI) * 0.14
           shadowMat.needsUpdate = true
         }
 
@@ -386,6 +400,7 @@ export default function BookScene({
             shadowMatRef.current.needsUpdate = true
           }
           ag.rotation.x = 0
+          ag.rotation.z = 0
           dispatch('TURN_DONE')
         }
         break
@@ -396,10 +411,10 @@ export default function BookScene({
         const raw = Math.min(animTime.current / (ANIM_TIMING.close / 1000), 1)
         const et = easeInOutQuad(raw)
 
-        // Starting local position = stabilized book center (total = [0,0,0])
-        const startX = toLocalX(0)
-        const startY = toLocalY(0)
-        const startZ = toLocalZ(0)
+        const ot = openedTransformRef.current
+        const startX = ot ? ot.pos[0] : toLocalX(0)
+        const startY = ot ? ot.pos[1] : toLocalY(0)
+        const startZ = ot ? ot.pos[2] : toLocalZ(0.5)
 
         ag.position.set(startX * (1 - et), startY * (1 - et), startZ * (1 - et))
         const init = initRef.current
@@ -444,7 +459,7 @@ export default function BookScene({
       <directionalLight position={[2.5, 0.5, -2.5]} intensity={0.2} color="#ffe4cc" />
       <directionalLight position={[0, 3, 0]} intensity={0.15} color="#ffffff" />
 
-      <group ref={layoutGroupRef} visible={false}>
+      <group ref={layoutGroupRef} visible={groupVisible}>
         <group ref={animGroupRef}>
           <BookModel3D
             bookH={bookH}

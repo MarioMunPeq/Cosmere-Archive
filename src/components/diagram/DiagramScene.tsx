@@ -4,7 +4,7 @@ import { DiagramCanvas } from './DiagramCanvas'
 import { DiagramBackground } from './DiagramBackground'
 import { DiagramWritings } from './DiagramWritings'
 import { BOOKS, PLANETS, SHARD_COLORS, SAGA_NAME_COLORS } from '@/data/static'
-import { HERALDS } from '@/data/static/heralds'
+import { HONORBLADES } from '@/data/static/aharietiam'
 import type { ReactNode } from 'react'
 
 const SHARD_COUNT = Object.keys(SHARD_COLORS).length
@@ -366,7 +366,7 @@ function ShardMatrixSmall() {
 function HeraldsRowSmall() {
   return (
     <svg viewBox="0 0 360 60" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
-      {HERALDS.map((herald, i) => {
+      {HONORBLADES.map((herald, i) => {
         const cx = 18 + i * 38
         return (
           <g key={herald.id}>
@@ -971,7 +971,7 @@ function getContent(
       return (
         <div style={{ padding: p, height: h, display: 'flex', flexDirection: 'column', color: '#2a1a0a' }}>
           <div style={{ fontSize: 11, fontFamily: 'Playfair Display,serif', letterSpacing: '0.08em', opacity: 0.7 }}>
-            HERALDS
+            AHARIETIAM
           </div>
           <div
             style={{
@@ -989,7 +989,7 @@ function getContent(
           </div>
           <div style={{ fontSize: 5, textAlign: 'right', opacity: 0.2, marginTop: 2 }}>
             →{' '}
-            <Link to="/heralds" style={{ textDecoration: 'underline', textUnderlineOffset: 1, color: 'inherit' }}>
+            <Link to="/aharietiam" style={{ textDecoration: 'underline', textUnderlineOffset: 1, color: 'inherit' }}>
               Archive
             </Link>
           </div>
@@ -1010,7 +1010,7 @@ function getFocusAnnotation(id: string): string {
     shards: 'Matrix of Shardic influence across worlds. Sixteen Shards, many worlds.',
     connections: 'Fundamental forces and their relationships. The scholar continues to refine this model.',
     chronology: 'Publication history — from Elantris (2005) to the present. The timeline expands.',
-    heralds: 'The ten Heralds of the Almighty. Bearers of the Oathpact.',
+    heralds: 'The nine Honorblades of Aharietiam. Talenel\'s stands empty.',
   }
   return map[id] ?? 'Further investigation required.'
 }

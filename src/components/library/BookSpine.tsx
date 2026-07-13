@@ -363,7 +363,7 @@ export default function BookSpine({ book, onOpen, width, height, fontSize }: Pro
   const titleLayout = getTitleLayout(book.title, textMode)
 
   const { base, dark, light, highlight } = material.leather
-  const { foil, foilShine, headband, pageEdge } = material
+  const { foil, foilShine } = material
 
   const spineRadius = Math.round(width * 0.035)
   const borderRadius = `${spineRadius}px`
@@ -376,7 +376,7 @@ export default function BookSpine({ book, onOpen, width, height, fontSize }: Pro
     `${base} 25%,`,
     `${dark} 50%,`,
     `${base} 75%,`,
-    `${light}44 88%,`,
+    `${light} 88%,`,
     `${base} 100%`,
     `)`,
   ].join(' ')
@@ -423,15 +423,6 @@ export default function BookSpine({ book, onOpen, width, height, fontSize }: Pro
     `inset 0 -0.5px 0 rgba(0,0,0,0.05)`,
   ].join(', ')
 
-  const coverOverhang = Math.max(2, Math.round(width * 0.035))
-  const pageBlockPct = 0.035
-  const pageBlockH = Math.max(3, Math.round(actualHeight * pageBlockPct))
-  const headbandH = Math.max(2, Math.round(actualHeight * 0.004))
-  const foilBandH = Math.max(2, Math.round(actualHeight * 0.006))
-  const foilBandH2 = Math.max(1, Math.round(actualHeight * 0.003))
-
-  const topPad = Math.round(actualHeight * 0.06)
-  const botPad = Math.round(actualHeight * 0.06)
   const medallionPad = Math.round(actualHeight * 0.025)
   const authorBotPad = Math.round(actualHeight * 0.035)
   const innerFontSize = textMode === 'initialism' ? Math.max(fontSize + 3, 18) : fontSize
@@ -447,130 +438,6 @@ export default function BookSpine({ book, onOpen, width, height, fontSize }: Pro
   const frameKey =
     book.id === 'tress_of_the_emerald_sea' ? 'tress' : book.id === 'yumi_and_the_nightmare_painter' ? 'yumi' : book.saga
 
-  // ── Foil band with metallic shimmer ──
-  const foilBand = (w: number, rev = false) => {
-    const stops = rev
-      ? `transparent 18%, ${foil}44 25%, ${foilShine}77 30%, ${foil}55 40%, ${foilShine} 48%, ${foil}55 55%, ${foilShine}77 60%, ${foil}44 68%, transparent 75%`
-      : `transparent 18%, ${foil}55 25%, ${foilShine} 30%, ${foil}55 40%, ${foilShine}77 48%, ${foil}55 55%, ${foilShine}77 60%, ${foil}44 68%, transparent 75%`
-    return (
-      <div
-        className="mx-auto rounded-full"
-        style={{
-          width: `${w}%`,
-          height: foilBandH,
-          background: `linear-gradient(90deg, ${stops})`,
-          boxShadow: [
-            `inset 0 ${Math.round(foilBandH * 0.15)}px 0 rgba(255,255,255,0.08)`,
-            `inset 0 ${Math.round(-foilBandH * 0.1)}px 0 rgba(0,0,0,0.1)`,
-          ].join(', '),
-        }}
-      />
-    )
-  }
-
-  const foilBandThin = (w: number) => (
-    <div
-      className="mx-auto rounded-full"
-      style={{
-        width: `${w}%`,
-        height: foilBandH2,
-        background: `linear-gradient(90deg, transparent 20%, ${foil}55 35%, ${foilShine}44 50%, ${foil}55 65%, transparent 80%)`,
-      }}
-    />
-  )
-
-  // ── Separator line ──
-  const separatorLine = (
-    <div
-      className="pointer-events-none shrink-0"
-      style={{
-        width: '45%',
-        height: 1,
-        marginBottom: Math.round(actualHeight * 0.008),
-        background: `linear-gradient(90deg, transparent 15%, ${foil}44 30%, ${foilShine}66 50%, ${foil}44 70%, transparent 85%)`,
-      }}
-    />
-  )
-
-  // ── Decorative corner ornaments ──
-  const cornerOrnament = (position: 'top' | 'bottom') => {
-    const ornSize = Math.max(4, Math.round(actualHeight * 0.022))
-    const yPos =
-      position === 'top' ? Math.round(actualHeight * 0.045) : actualHeight - Math.round(actualHeight * 0.045) - ornSize
-    return (
-      <div
-        className="pointer-events-none absolute"
-        style={{
-          left: '50%',
-          top: yPos,
-          width: ornSize,
-          height: ornSize,
-          transform: 'translateX(-50%)',
-          opacity: 0.25,
-        }}
-      >
-        <svg viewBox="0 0 20 20" width={ornSize} height={ornSize}>
-          <circle cx="10" cy="10" r="8" fill="none" stroke={foil} strokeWidth="0.6" />
-          <circle cx="10" cy="10" r="3" fill={foil} opacity="0.5" />
-        </svg>
-      </div>
-    )
-  }
-
-  // ── Page block texture (paper edges) ──
-  const pageBlockStyle = (edge: 'top' | 'bottom'): React.CSSProperties => ({
-    position: 'absolute',
-    left: -coverOverhang,
-    right: -coverOverhang,
-    [edge]: 0,
-    height: pageBlockH,
-    background: [
-      `repeating-linear-gradient(0deg, ${pageEdge} 0px, ${pageEdge} 0.8px, ${pageEdge}99 0.8px, transparent 1.6px)`,
-      `linear-gradient(180deg, ${edge === 'top' ? 'rgba(0,0,0,0.04)' : 'rgba(0,0,0,0.06)'}, transparent 100%)`,
-      `linear-gradient(180deg, ${edge === 'top' ? `${pageEdge}` : 'transparent'} 0%, ${edge === 'top' ? 'transparent' : `${pageEdge}`} 100%)`,
-    ].join(', '),
-    pointerEvents: 'none' as const,
-    zIndex: 1,
-  })
-
-  // ── Headband ──
-  const headbandStyle = (edge: 'top' | 'bottom'): React.CSSProperties => ({
-    position: 'absolute',
-    left: -coverOverhang + 2,
-    right: -coverOverhang + 2,
-    [edge]: edge === 'top' ? pageBlockH : pageBlockH,
-    height: headbandH + 1,
-    background: [
-      `repeating-linear-gradient(90deg, ${headband[0]} 0px, ${headband[0]} 3px, ${headband[1]}44 3px, ${headband[1]}44 5px)`,
-      `linear-gradient(180deg, ${edge === 'top' ? `${headband[0]}55` : 'transparent'} 0%, ${edge === 'top' ? 'transparent' : `${headband[0]}55`} 100%)`,
-    ].join(', '),
-    boxShadow:
-      edge === 'top'
-        ? `inset 0 1px 0 ${headband[1]}33, inset 0 -0.5px 0 rgba(0,0,0,0.1)`
-        : `inset 0 -1px 0 ${headband[1]}33, inset 0 0.5px 0 rgba(0,0,0,0.1)`,
-    pointerEvents: 'none' as const,
-    zIndex: 2,
-  })
-
-  // ── Cover side edges (visible at left/right) ──
-  const coverSideEdge = (side: 'left' | 'right'): React.CSSProperties => ({
-    position: 'absolute',
-    top: -coverOverhang - 1,
-    bottom: -coverOverhang - 1,
-    [side]: side === 'left' ? -(coverOverhang + 1) : -(coverOverhang + 1),
-    width: coverOverhang + 1,
-    background:
-      side === 'left'
-        ? `linear-gradient(90deg, ${light}55 0%, ${base}88 100%)`
-        : `linear-gradient(90deg, ${base}88 0%, ${dark} 100%)`,
-    borderRadius:
-      side === 'left'
-        ? `${Math.round(coverOverhang * 0.3)}px 0 0 ${Math.round(coverOverhang * 0.3)}px`
-        : `0 ${Math.round(coverOverhang * 0.3)}px ${Math.round(coverOverhang * 0.3)}px 0`,
-    pointerEvents: 'none' as const,
-    zIndex: 0,
-  })
-
   return (
     <div className="group relative shrink-0" style={{ width }}>
       <div
@@ -578,45 +445,30 @@ export default function BookSpine({ book, onOpen, width, height, fontSize }: Pro
         style={{
           perspective: `${Math.round(width * 12)}px`,
           transform: `rotate(${imp.rotate}deg)`,
-          height: actualHeight + coverOverhang * 2 + 2,
+          height: actualHeight,
         }}
         onClick={(e) => {
           const rect = e.currentTarget.getBoundingClientRect()
           onOpen(book.id, rect)
         }}
       >
-        {/* Cover side edges — left and right */}
-        <div style={coverSideEdge('left')} />
-        <div style={coverSideEdge('right')} />
-
-        {/* Page block edges — visible paper */}
-        <div className="opacity-60" style={pageBlockStyle('top')} />
-        <div className="opacity-60" style={pageBlockStyle('bottom')} />
-
-        {/* Headbands */}
-        <div className="opacity-50" style={headbandStyle('top')} />
-        <div className="opacity-50" style={headbandStyle('bottom')} />
-
         {/* ── Spine body ── */}
         <div
           className="relative flex flex-col items-center overflow-hidden"
           style={{
-            position: 'absolute',
-            left: coverOverhang,
-            top: coverOverhang,
             width,
             height: actualHeight,
             borderRadius,
             background: bgLayers,
             border: `0.5px solid ${borderColor}`,
+            left: imp.shiftX,
+            top: imp.shiftY,
             boxShadow: [
               `0 ${Math.round(5 * shadowBoost)}px ${Math.round(10 * shadowBoost)}px rgba(0,0,0,${Math.min(0.45, 0.35 * shadowBoost).toFixed(2)})`,
               `0 ${Math.round(2 * shadowBoost)}px ${Math.round(4 * shadowBoost)}px rgba(0,0,0,0.2)`,
               `inset 0 0 0 0.5px rgba(255,255,255,${isLight ? 0.02 : 0.01})`,
               bevelShadow,
             ].join(', '),
-            marginLeft: imp.shiftX,
-            marginTop: imp.shiftY,
           }}
         >
           <CoverFrame saga={frameKey} width={width} height={actualHeight} foil={foil} />
@@ -668,18 +520,6 @@ export default function BookSpine({ book, onOpen, width, height, fontSize }: Pro
             }}
           />
 
-          {/* ── Decorative framework ── */}
-
-          {/* Top ornament */}
-          {cornerOrnament('top')}
-
-          {/* Top foil band — double line */}
-          <div className="w-full shrink-0" style={{ padding: `${topPad}px ${Math.round(actualHeight * 0.015)}px 0` }}>
-            {foilBand(78)}
-            <div style={{ height: 1.5 }} />
-            {foilBandThin(55)}
-          </div>
-
           {/* Medallion / emblem */}
           <div
             className="flex shrink-0 items-center justify-center"
@@ -687,9 +527,6 @@ export default function BookSpine({ book, onOpen, width, height, fontSize }: Pro
           >
             <BookEmblem emblem={book.emblem} foil={foil} foilShine={foilShine} bookHeight={actualHeight} />
           </div>
-
-          {/* Separator */}
-          {separatorLine}
 
           {/* ── Title ── */}
           <div
@@ -742,22 +579,6 @@ export default function BookSpine({ book, onOpen, width, height, fontSize }: Pro
             >
               Brandon Sanderson
             </span>
-          </div>
-
-          {/* Bottom separator */}
-          {separatorLine}
-
-          {/* Bottom ornament */}
-          {cornerOrnament('bottom')}
-
-          {/* Bottom foil band — double line */}
-          <div
-            className="flex w-full shrink-0 flex-col items-center"
-            style={{ padding: `0 ${Math.round(actualHeight * 0.015)}px ${botPad}px` }}
-          >
-            {foilBandThin(55)}
-            <div style={{ height: 1.5 }} />
-            {foilBand(78, true)}
           </div>
 
           {/* Edge wear — top */}

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { BOOKS, PLANETS, SAGAS, ALL_CHARACTERS } from '@/data/static'
 import { TIMELINE_EVENTS } from '@/data/static/timeline'
-import { HERALDS } from '@/data/static/heralds'
+import { HONORBLADES } from '@/data/static/aharietiam'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
 import { DiagramScene } from '@/components/diagram/DiagramScene'
 
@@ -36,7 +36,7 @@ function useStatsData() {
   const planetCount = PLANETS.length
   const sagaCount = SAGA_LIST.length
   const eventCount = TIMELINE_EVENTS.length
-  const heraldCount = HERALDS.length
+  const heraldCount = HONORBLADES.length
 
   const pubYears = useMemo(() => [...new Set(BOOKS.map((b) => b.year).filter((y): y is number => !!y))].sort(), [])
   const pubMin = pubYears[0] ?? 2005

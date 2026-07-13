@@ -35,7 +35,7 @@ const PAGE_COMMANDS: Command[] = [
     to: '/characters?tab=family',
     icon: '🌳',
   },
-  { id: 'heralds', label: 'Heralds', description: 'The 10 Heralds of the Almighty', to: '/heralds', icon: '👑' },
+  { id: 'aharietiam', label: 'Aharietiam', description: 'The ceremonial circle of Honorblades', to: '/aharietiam', icon: '⚔️' },
   {
     id: 'locations',
     label: 'Locations',

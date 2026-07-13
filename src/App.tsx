@@ -10,7 +10,7 @@ const MapPage = lazy(() => import('@/pages/MapPage'))
 const About = lazy(() => import('@/pages/About'))
 
 const MagicSystemsPage = lazy(() => import('@/pages/MagicSystemsPage'))
-const HeraldsPage = lazy(() => import('@/pages/HeraldsPage'))
+const AharietiamPage = lazy(() => import('@/pages/AharietiamPage'))
 const BookPage = lazy(() => import('@/pages/BookPage'))
 const StandaloneBooksPage = lazy(() => import('@/pages/StandaloneBooksPage'))
 const CharactersPage = lazy(() => import('@/pages/CharactersPage'))
@@ -61,11 +61,12 @@ export default function App() {
             }
           />
           <Route path="family-tree" element={<Navigate to="/characters?tab=family" replace />} />
+          <Route path="heralds" element={<Navigate to="/aharietiam" replace />} />
           <Route
-            path="heralds"
+            path="aharietiam"
             element={
               <RouteFallback>
-                <HeraldsPage />
+                <AharietiamPage />
               </RouteFallback>
             }
           />

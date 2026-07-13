@@ -41,10 +41,10 @@ const CHAPTERS: Chapter[] = [
   },
   {
     numeral: 'V',
-    title: 'HERALDS',
-    description: 'Historical documents of the Heralds.',
+    title: 'AHARIETIAM',
+    description: 'The ceremonial circle of abandoned Honorblades.',
     annotation: 'Fol. 33–38',
-    to: '/heralds',
+    to: '/aharietiam',
   },
   {
     numeral: 'VI',

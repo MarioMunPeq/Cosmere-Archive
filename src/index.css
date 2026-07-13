@@ -770,3 +770,18 @@ html {
 [data-theme='light'] ::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
 }
+
+/* ========== Aharietiam animations ========== */
+
+@keyframes stormlight-sweep {
+  0% { transform: translateY(-100%); }
+  50% { transform: translateY(100%); }
+  100% { transform: translateY(200%); }
+}
+
+@keyframes blade-particle {
+  0%, 100% { opacity: 0; transform: translate(0, 0); }
+  20% { opacity: 0.3; }
+  50% { opacity: 0.1; transform: translate(2px, -6px); }
+  80% { opacity: 0; transform: translate(-1px, -12px); }
+}

@@ -5,7 +5,7 @@ import { TIMELINE_EVENTS } from '@/data/static/timeline'
 import { CHARACTER_SPANS } from '@/data/static/timeline/character-lifespans'
 import { WORLDHOPPER_MOVEMENTS } from '@/data/static/timeline/worldhopper-journeys'
 import { MAGIC_SYSTEMS } from '@/data/static/magic-systems'
-import { HERALDS } from '@/data/static/heralds'
+import { HONORBLADES } from '@/data/static/aharietiam'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
 import { SEARCH_DEBOUNCE_MS, PLACEHOLDER_ROTATE_MS } from '@/constants'
 import type { SearchResult } from '@/types/search'
@@ -22,7 +22,7 @@ const CAT_LABELS: Record<string, string> = {
   book: 'Books',
   glossary: 'Glossary',
   magic: 'Magic Systems',
-  herald: 'Heralds',
+  herald: 'Aharietiam',
 }
 
 const PLACEHOLDERS = [
@@ -167,19 +167,19 @@ export function useSearch() {
       }
       addCategory('magic', magic)
 
-      const heralds: SearchResult[] = []
-      for (const h of HERALDS) {
-        if (heralds.length >= MAX_PER_CATEGORY) break
+      const aharietiam: SearchResult[] = []
+      for (const h of HONORBLADES) {
+        if (aharietiam.length >= MAX_PER_CATEGORY) break
         if (match(h.name) || match(h.title) || h.surges.some((s) => match(s))) {
-          heralds.push({
+          aharietiam.push({
             type: 'herald',
             label: h.name,
             sublabel: h.title,
-            action: () => navigate('/heralds'),
+            action: () => navigate('/aharietiam'),
           })
         }
       }
-      addCategory('herald', heralds)
+      addCategory('herald', aharietiam)
 
       setResults(hits)
       setOpen(hits.length > 0)

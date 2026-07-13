@@ -314,27 +314,11 @@ export default function CosmereLibrary() {
     ? (shelvesWithBooks.flatMap((s) => s.books).find((b) => b.id === activeBookId) ?? null)
     : null
 
-  const isDimmed = activeBookId !== null
-
   return (
     <>
       <div
         ref={containerRefObj}
         className="relative flex min-h-0 flex-1 flex-col gap-36 overflow-y-auto px-24 pb-20 pt-16"
-        style={{
-          ...(isDimmed
-            ? {
-                opacity: 0.28,
-                filter: 'blur(2px)',
-                transition: 'opacity 600ms ease, filter 600ms ease',
-                pointerEvents: 'none' as const,
-              }
-            : {
-                opacity: 1,
-                filter: 'blur(0px)',
-                transition: 'opacity 600ms ease, filter 600ms ease',
-              }),
-        }}
       >
         {shelvesWithBooks.map((shelf, si) => {
           const layout = shelfLayouts[si]!
