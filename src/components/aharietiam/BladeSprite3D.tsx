@@ -1,5 +1,5 @@
 'use client'
-import { memo, useRef, useState, useEffect } from 'react'
+import { memo, useRef, useState, useEffect, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
@@ -32,22 +32,27 @@ export default memo(function BladeSprite3D({
   const [texError, setTexError] = useState(false)
 
   useEffect(() => {
-    const loader = new THREE.TextureLoader()
     const url = `${BASE}${image}`
-    console.log(`[Blade3D] Loading ${id} from ${url}`)
+    const loader = new THREE.TextureLoader()
     loader.load(
       url,
       (tex) => {
-        console.log(`[Blade3D] OK ${id}: ${tex.image.width}x${tex.image.height}`)
-        setTexture(tex)
+        tex.colorSpace = THREE.SRGBColorSpace
+        tex.needsUpdate = true
+        setTexture(tex.clone())
       },
       undefined,
-      (err) => {
-        console.error(`[Blade3D] FAIL ${id}:`, err)
+      () => {
         setTexError(true)
       },
     )
   }, [id, image])
+
+  const quat = useMemo(() => {
+    const q = new THREE.Quaternion()
+    q.setFromAxisAngle(new THREE.Vector3(0, 0, 1), screenRotation)
+    return q
+  }, [screenRotation])
 
   const isDimmed = hovered === 'dimmed' && !selected
   const opacity = isDimmed ? 0.3 : 1
@@ -55,17 +60,11 @@ export default memo(function BladeSprite3D({
   useFrame(({ camera }) => {
     if (!meshRef.current) return
     const pos = meshRef.current.position
-    const m = new THREE.Matrix4().lookAt(
-      pos,
-      camera.position,
-      new THREE.Vector3(0, 1, 0),
-    )
+    const lookTarget = camera.position.clone()
+    const up = new THREE.Vector3(0, 1, 0)
+    const m = new THREE.Matrix4().lookAt(pos, lookTarget, up)
     meshRef.current.quaternion.setFromRotationMatrix(m)
-    const q = new THREE.Quaternion().setFromAxisAngle(
-      new THREE.Vector3(0, 0, 1),
-      screenRotation,
-    )
-    meshRef.current.quaternion.multiply(q)
+    meshRef.current.quaternion.multiply(quat)
   })
 
   return (
@@ -73,21 +72,14 @@ export default memo(function BladeSprite3D({
       ref={meshRef}
       position={position}
       onClick={() => {
-        console.log(`[Blade3D] Click ${id}`)
         if (!isTaln) onSelect?.(id)
       }}
       onPointerEnter={() => onHover?.(id)}
       onPointerLeave={() => onHover?.(null)}
     >
-      <planeGeometry args={[2, 8]} />
+      <planeGeometry args={[2.5, 6]} />
       {texError || !texture ? (
-        <meshBasicMaterial
-          color="red"
-          transparent
-          opacity={0.8}
-          side={THREE.DoubleSide}
-          depthWrite={false}
-        />
+        <meshBasicMaterial color="#ff6b35" transparent opacity={0.9} side={THREE.DoubleSide} depthWrite={false} />
       ) : (
         <meshBasicMaterial
           map={texture}
@@ -95,6 +87,7 @@ export default memo(function BladeSprite3D({
           alphaTest={0.05}
           side={THREE.DoubleSide}
           depthWrite={false}
+          toneMapped={false}
           opacity={opacity}
         />
       )}

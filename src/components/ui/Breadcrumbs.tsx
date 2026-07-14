@@ -12,6 +12,7 @@ const SEGMENT_NAMES: Record<string, string> = {
   stats: 'Taravangian Diagram',
   timeline: 'Timeline',
   locations: 'Locations',
+  shadesmar: 'Shadesmar',
 }
 
 type Crumb = { label: string; to: string }

@@ -74,9 +74,16 @@ const CHAPTERS: Chapter[] = [
     annotation: 'Fol. 61–66',
     to: '/mind-map',
   },
+  {
+    numeral: 'X',
+    title: 'SHADESMAR',
+    description: 'The cognitive realm — an endless ocean of glass beads.',
+    annotation: 'Fol. 67–72',
+    to: '/shadesmar',
+  },
 ]
 
-const COLS: Chapter[][] = [CHAPTERS.slice(0, 5), CHAPTERS.slice(5, 9)]
+const COLS: Chapter[][] = [CHAPTERS.slice(0, 5), CHAPTERS.slice(5)]
 
 export default function Manuscript() {
   const navigate = useViewTransitionNavigate()

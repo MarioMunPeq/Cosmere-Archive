@@ -21,6 +21,7 @@ const NAV_SHORTCUTS: [string, string][] = [
   ['8', '/characters'],
   ['9', '/locations?tab=shards'],
   ['0', '/stats'],
+  ['s', '/shadesmar'],
 ]
 
 export default function Layout() {

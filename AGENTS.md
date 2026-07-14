@@ -271,6 +271,7 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - `public/aharietiam/`: PNG honorblade assets (jezrien.png, nale.png, etc.)
 
 ### Routing
+
 - `/aharietiam` — new immersive Aharietiam page (Alt+5)
 - `/heralds` — redirects to `/aharietiam`
 
@@ -383,3 +384,16 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - **New keyframe**: `blade-particle` in `index.css`.
 - Files modified: `Scene.tsx` (adds `<CircleOfBlades />` inside Camera), `index.ts` (adds exports), `index.css` (adds keyframe).
 - All 206 tests pass, `tsc -b` clean, `pnpm lint` clean, `pnpm build` clean (47 entries, AharietiamPage 23.8 kB / 5.7 kB gzip).
+
+##### Done (this session: Shadesmar Phase 1 — R3F infinite bead ocean)
+
+- **New page**: `/shadesmar` route with full-screen R3F scene, `lazy()`-loaded, registered in App.tsx + all navigation (Layout Alt+S, Breadcrumbs, CommandPalette, ParchmentMenu, Manuscript chapter X, static-data shortcuts).
+- **Ocean.tsx**: `InstancedMesh` (800 max beads, `SphereGeometry` + `MeshPhysicalMaterial` dark glass). Per-bad breathing (sine-wave Y offset), glow lerp on cursor proximity.
+- **WorldGenerator hook**: `INITIAL_BEADS=60` at origin, `totalDist * 0.3` awakening rate, bead recycling beyond 7-unit radius. Deterministic `pRand()` seed for positions.
+- **CameraController.tsx**: Pointer-lock WASD, heavy accel/decel (`ACCEL=60`, `DRAG=0.92`, `MAX_SPEED=3.5`), eye-level y=0.16, mouse-look with clamped pitch. Uses `state.camera` in `useFrame` for ESLint immutability compliance.
+- **Cursor.tsx**: Hides default cursor, `PointLight` at mouse-ground intersection. `useNearbyBeads` hook finds nearest bead (0.4u radius), sets glow target + ripple propagation (1.2u radius).
+- **Atmosphere.tsx**: `ShaderMaterial` volumetric fog sphere (BackSide, transparent, height-based density gradient).
+- **ocean-globals.ts**: Flat `Float32Array`/`Uint8Array` arrays for zero-GC bead state. Shared across all components.
+- **Placeholder hooks**: `useEntityActivation`, `useKnowledgeGraph`, `useConnectionRenderer`, `useFocusTransition` — stubbed for future phases.
+- **Files created**: `src/components/shadesmar/{Ocean,CameraController,Cursor,Atmosphere,WorldGenerator,ShadesmarScene}.tsx`, `ocean-globals.ts`, `index.ts`, `hooks/{useNearbyBeads,useEntityActivation,useKnowledgeGraph,useConnectionRenderer,useFocusTransition,index}.ts`, `src/pages/ShadesmarPage.tsx`.
+- All 206 tests pass, `tsc -b` clean, `pnpm lint` clean.

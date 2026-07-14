@@ -35,7 +35,13 @@ const PAGE_COMMANDS: Command[] = [
     to: '/characters?tab=family',
     icon: '🌳',
   },
-  { id: 'aharietiam', label: 'Aharietiam', description: 'The ceremonial circle of Honorblades', to: '/aharietiam', icon: '⚔️' },
+  {
+    id: 'aharietiam',
+    label: 'Aharietiam',
+    description: 'The ceremonial circle of Honorblades',
+    to: '/aharietiam',
+    icon: '⚔️',
+  },
   {
     id: 'locations',
     label: 'Locations',
@@ -45,6 +51,13 @@ const PAGE_COMMANDS: Command[] = [
   },
   { id: 'stats', label: 'Taravangian Diagram', description: 'Cosmere data dashboard', to: '/stats', icon: '📊' },
   { id: 'about', label: 'About', description: 'About Cosmere Archive', to: '/about', icon: 'ℹ️' },
+  {
+    id: 'shadesmar',
+    label: 'Shadesmar',
+    description: 'Explore the cognitive realm',
+    to: '/shadesmar',
+    icon: '🌊',
+  },
 ]
 
 interface Props {

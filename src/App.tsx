@@ -20,6 +20,7 @@ const LibraryPage = lazy(() => import('@/pages/LibraryPage'))
 const StatsPage = lazy(() => import('@/pages/StatsPage'))
 const ComparePage = lazy(() => import('@/pages/ComparePage'))
 const MindMapPage = lazy(() => import('@/pages/MindMapPage'))
+const ShadesmarPage = lazy(() => import('@/pages/ShadesmarPage'))
 const NotFound = lazy(() => import('@/pages/NotFound'))
 
 export default function App() {
@@ -128,6 +129,14 @@ export default function App() {
             }
           />
           <Route path="glossary" element={<Navigate to="/magic" replace />} />
+          <Route
+            path="shadesmar"
+            element={
+              <RouteFallback>
+                <ShadesmarPage />
+              </RouteFallback>
+            }
+          />
           <Route
             path="compare"
             element={

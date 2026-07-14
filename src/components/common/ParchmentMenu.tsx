@@ -18,6 +18,7 @@ const DRAWER_LINKS: { to: string; label: string }[] = [
   { to: '/stats', label: 'Taravangian Diagram' },
   { to: '/aharietiam', label: 'Aharietiam' },
   { to: '/mind-map', label: 'Mind Map' },
+  { to: '/shadesmar', label: 'Shadesmar' },
 ]
 
 interface Props {

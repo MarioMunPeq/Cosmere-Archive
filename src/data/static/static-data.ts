@@ -18,6 +18,7 @@ export const SHORTCUTS: Shortcut[] = [
   { keys: 'Alt+8', label: 'Characters page' },
   { keys: 'Alt+9', label: 'Shards page' },
   { keys: 'Alt+0', label: 'Stats page' },
+  { keys: 'Alt+S', label: 'Shadesmar page' },
 ]
 
 import type { CharacterRelationship } from '@/types/relationships'
