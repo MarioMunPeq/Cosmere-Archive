@@ -34,18 +34,26 @@ export default memo(function BladeSprite3D({
   useEffect(() => {
     const url = `${BASE}${image}`
     const loader = new THREE.TextureLoader()
+    let disposed = false
     loader.load(
       url,
       (tex) => {
+        if (disposed) {
+          tex.dispose()
+          return
+        }
         tex.colorSpace = THREE.SRGBColorSpace
         tex.needsUpdate = true
         setTexture(tex.clone())
       },
       undefined,
       () => {
-        setTexError(true)
+        if (!disposed) setTexError(true)
       },
     )
+    return () => {
+      disposed = true
+    }
   }, [id, image])
 
   const quat = useMemo(() => {

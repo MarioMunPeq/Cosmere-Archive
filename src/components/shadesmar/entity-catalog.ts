@@ -5,14 +5,15 @@ import { MAGIC_SYSTEMS } from '@/data/static/magic-systems'
 import { HONORBLADES } from '@/data/static/aharietiam'
 import { SAGAS } from '@/data/static/sagas'
 import ALL_CHARACTERS from '@/data/generated/characters.json'
-import { ENTITY_VISUALS } from './types'
+import { ENTITY_VISUALS, CLUSTER_BY_ID } from './types'
 
 export interface SoulDef {
   id: string
   name: string
   description: string
   kind: EntityKind
-  planet: string | null
+  cluster: string
+  orbitLayer: number
   connections: string[]
 }
 
@@ -30,7 +31,6 @@ const IMPORTANT_CHAR_IDS = new Set([
   'sazed',
   'marsh',
   'spook',
-  'tenSoon',
   'wax',
   'wayne',
   'marasi',
@@ -53,48 +53,41 @@ const IMPORTANT_CHAR_IDS = new Set([
   'the_cinder_king',
   'fort',
   'nightblood',
-  'aux',
   'sylphrena',
   'pattern',
 ])
 
-const connSet = (arr: string[]): string[] => {
+const ORBIT_LAYER = {
+  PLANET: 0.0,
+  SHARD: 0.02,
+  HERALD: 0.03,
+  ADONALSIUM: 0.02,
+  BOOK: 0.05,
+  IMPORTANT_CHAR: 0.06,
+  CHAR: 0.08,
+  MAGIC: 0.08,
+  SPREN: 0.09,
+  HONORBLADE: 0.04,
+  LOCATION: 0.1,
+  ORGANIZATION: 0.11,
+  EVENT: 0.11,
+  ARTIFACT: 0.07,
+  CONCEPT: 0.1,
+  SAGA: 0.12,
+  FILLER: 0.13,
+}
+
+function connSet(arr: string[]): string[] {
   const s = new Set(arr.map((c) => `soul_${c}`))
   return [...s]
 }
 
-function buildCharacterCatalog(): SoulDef[] {
-  const out: SoulDef[] = []
-  for (const ch of ALL_CHARACTERS) {
-    if (!ch || !ch.id || !ch.name) continue
-    const kind: EntityKind = IMPORTANT_CHAR_IDS.has(ch.id) ? 'important_character' : 'character'
-    const planet = ch.planet ?? null
-    const connections: string[] = []
-    if (ch.requiredBooks) connections.push(...ch.requiredBooks)
-    out.push({
-      id: `soul_${ch.id}`,
-      name: ch.name,
-      description: ch.description ?? '',
-      kind,
-      planet,
-      connections: connSet(connections),
-    })
-  }
-  return out
+function clusterForPlanet(planetId: string): string {
+  if (CLUSTER_BY_ID.has(planetId)) return planetId
+  return 'cosmere'
 }
 
-function buildBookCatalog(): SoulDef[] {
-  return BOOKS.map((b) => ({
-    id: `soul_${b.id}`,
-    name: b.title,
-    description: b.description ?? '',
-    kind: 'book' as EntityKind,
-    planet: planetForSaga(b.saga),
-    connections: connSet(b.saga ? [b.saga] : []),
-  }))
-}
-
-function planetForSaga(saga: string): string | null {
+function sagaToCluster(saga: string): string {
   const map: Record<string, string> = {
     'mistborn-era-1': 'scadrial',
     'mistborn-era-2': 'scadrial',
@@ -105,32 +98,68 @@ function planetForSaga(saga: string): string | null {
     'secret-projects': 'cosmere',
     'arcanum-unbounded': 'cosmere',
   }
-  return map[saga] ?? null
+  return map[saga] ?? 'cosmere'
 }
 
-function buildMagicCatalog(): SoulDef[] {
+function characterCatalog(): SoulDef[] {
+  const out: SoulDef[] = []
+  for (const ch of ALL_CHARACTERS) {
+    if (!ch || !ch.id || !ch.name) continue
+    const kind: EntityKind = IMPORTANT_CHAR_IDS.has(ch.id) ? 'important_character' : 'character'
+    const planet = ch.planet ?? 'cosmere'
+    const cluster = clusterForPlanet(planet)
+    const connections: string[] = []
+    if (ch.requiredBooks) connections.push(...ch.requiredBooks)
+    out.push({
+      id: `soul_${ch.id}`,
+      name: ch.name,
+      description: ch.description ?? '',
+      kind,
+      cluster,
+      orbitLayer: kind === 'important_character' ? ORBIT_LAYER.IMPORTANT_CHAR : ORBIT_LAYER.CHAR,
+      connections: connSet(connections),
+    })
+  }
+  return out
+}
+
+function bookCatalog(): SoulDef[] {
+  return BOOKS.map((b) => ({
+    id: `soul_${b.id}`,
+    name: b.title,
+    description: b.description ?? '',
+    kind: 'book' as EntityKind,
+    cluster: sagaToCluster(b.saga),
+    orbitLayer: ORBIT_LAYER.BOOK,
+    connections: connSet(b.saga ? [b.saga] : []),
+  }))
+}
+
+function magicCatalog(): SoulDef[] {
   return MAGIC_SYSTEMS.map((m) => ({
     id: `soul_${m.id}`,
     name: m.name,
     description: m.description ?? '',
     kind: 'magic' as EntityKind,
-    planet: m.planetId ?? null,
+    cluster: m.planetId && CLUSTER_BY_ID.has(m.planetId) ? m.planetId : 'cosmere',
+    orbitLayer: ORBIT_LAYER.MAGIC,
     connections: connSet(m.bookIds ?? []),
   }))
 }
 
-function buildPlanetCatalog(): SoulDef[] {
+function planetCatalog(): SoulDef[] {
   return PLANETS.map((p) => ({
     id: `soul_planet_${p.id}`,
     name: p.name,
     description: p.description ?? '',
     kind: 'planet' as EntityKind,
-    planet: p.id,
+    cluster: p.id,
+    orbitLayer: ORBIT_LAYER.PLANET,
     connections: connSet(p.books ?? []),
   }))
 }
 
-function buildHonorbladeCatalog(): SoulDef[] {
+function honorbladeCatalog(): SoulDef[] {
   const out: SoulDef[] = []
   for (const h of HONORBLADES) {
     out.push({
@@ -138,7 +167,8 @@ function buildHonorbladeCatalog(): SoulDef[] {
       name: h.name,
       description: h.description ?? '',
       kind: 'herald' as EntityKind,
-      planet: 'roshar',
+      cluster: 'roshar',
+      orbitLayer: ORBIT_LAYER.HERALD,
       connections: connSet(h.connections ?? []),
     })
     out.push({
@@ -146,40 +176,28 @@ function buildHonorbladeCatalog(): SoulDef[] {
       name: `${h.name}'s Honorblade`,
       description: `The Honorblade of ${h.name}, ${h.title}.`,
       kind: 'honorblade' as EntityKind,
-      planet: 'roshar',
+      cluster: 'roshar',
+      orbitLayer: ORBIT_LAYER.HONORBLADE,
       connections: connSet(h.connections ?? []),
     })
   }
   return out
 }
 
-function buildSagaCatalog(): SoulDef[] {
+function sagaCatalog(): SoulDef[] {
   return SAGAS.map((s) => ({
     id: `soul_saga_${s.id}`,
     name: s.name,
     description: s.description ?? '',
     kind: 'saga' as EntityKind,
-    planet: planetForSaga(s.id),
+    cluster: sagaToCluster(s.id),
+    orbitLayer: ORBIT_LAYER.SAGA,
     connections: [],
   }))
 }
 
-function buildShardCatalog(): SoulDef[] {
-  const shards = new Map<string, string[]>()
-  for (const p of PLANETS) {
-    if (!p.shard) continue
-    const names = p.shard
-      .split(/[&,]/)
-      .map((s) => s.trim())
-      .filter(Boolean)
-    for (const n of names) {
-      if (!shards.has(n)) shards.set(n, [])
-      shards.get(n)!.push(`soul_planet_${p.id}`)
-    }
-  }
-  shards.set('Adonalsium', ['soul_planet_yolen'])
-
-  const knownShards: [string, string][] = [
+function shardCatalog(): SoulDef[] {
+  const shards: [string, string][] = [
     ['Honor', 'roshar'],
     ['Cultivation', 'roshar'],
     ['Odium', 'roshar'],
@@ -196,24 +214,26 @@ function buildShardCatalog(): SoulDef[] {
     ['Adonalsium', 'yolen'],
   ]
 
-  return knownShards.map(([name, planet]) => ({
+  return shards.map(([name, planet]) => ({
     id: `soul_shard_${name.toLowerCase()}`,
-    name: name,
+    name,
     description: `The Shard of ${name}.`,
-    kind: name === 'Adonalsium' ? ('adonalsium' as EntityKind) : ('shard' as EntityKind),
-    planet,
-    connections: connSet(shards.get(name) ?? []),
+    kind: (name === 'Adonalsium' ? 'adonalsium' : 'shard') as EntityKind,
+    cluster: planet,
+    orbitLayer: name === 'Adonalsium' ? ORBIT_LAYER.ADONALSIUM : ORBIT_LAYER.SHARD,
+    connections: [],
   }))
 }
 
-function buildLocationCatalog(): SoulDef[] {
-  const extraLocs: SoulDef[] = [
+function extraCatalog(): SoulDef[] {
+  return [
     {
       id: 'soul_cognitive_realm',
       name: 'Shadesmar',
-      description: 'The Cognitive Realm — an endless ocean of glass beads connecting all worlds.',
+      description: 'The Cognitive Realm — an endless ocean connecting all worlds.',
       kind: 'location',
-      planet: 'cosmere',
+      cluster: 'cosmere',
+      orbitLayer: ORBIT_LAYER.CONCEPT,
       connections: [],
     },
     {
@@ -221,7 +241,8 @@ function buildLocationCatalog(): SoulDef[] {
       name: 'The Spiritual Realm',
       description: 'The realm of Connection, Identity, and Investiture.',
       kind: 'location',
-      planet: 'cosmere',
+      cluster: 'cosmere',
+      orbitLayer: ORBIT_LAYER.CONCEPT,
       connections: [],
     },
     {
@@ -229,7 +250,8 @@ function buildLocationCatalog(): SoulDef[] {
       name: 'The Physical Realm',
       description: 'The realm of matter and energy.',
       kind: 'location',
-      planet: 'cosmere',
+      cluster: 'cosmere',
+      orbitLayer: ORBIT_LAYER.CONCEPT,
       connections: [],
     },
     {
@@ -237,15 +259,17 @@ function buildLocationCatalog(): SoulDef[] {
       name: 'The Beyond',
       description: 'What lies after death — unknown and unknowable.',
       kind: 'concept',
-      planet: 'cosmere',
+      cluster: 'cosmere',
+      orbitLayer: ORBIT_LAYER.CONCEPT,
       connections: [],
     },
     {
       id: 'soul_elantris_city',
       name: 'Elantris',
-      description: 'The fallen city of the Aonic people of Arelon, Sel.',
+      description: 'The fallen city of the Aonic people on Sel.',
       kind: 'location',
-      planet: 'sel',
+      cluster: 'sel',
+      orbitLayer: ORBIT_LAYER.LOCATION,
       connections: [],
     },
     {
@@ -253,7 +277,8 @@ function buildLocationCatalog(): SoulDef[] {
       name: 'Kholinar',
       description: 'The capital of Alethkar on Roshar.',
       kind: 'location',
-      planet: 'roshar',
+      cluster: 'roshar',
+      orbitLayer: ORBIT_LAYER.LOCATION,
       connections: [],
     },
     {
@@ -261,7 +286,8 @@ function buildLocationCatalog(): SoulDef[] {
       name: 'Urithiru',
       description: 'The ancient tower-city of the Knights Radiant.',
       kind: 'location',
-      planet: 'roshar',
+      cluster: 'roshar',
+      orbitLayer: ORBIT_LAYER.LOCATION,
       connections: [],
     },
     {
@@ -269,7 +295,8 @@ function buildLocationCatalog(): SoulDef[] {
       name: 'Luthadel',
       description: 'The capital of the Final Empire on Scadrial.',
       kind: 'location',
-      planet: 'scadrial',
+      cluster: 'scadrial',
+      orbitLayer: ORBIT_LAYER.LOCATION,
       connections: [],
     },
     {
@@ -277,15 +304,8 @@ function buildLocationCatalog(): SoulDef[] {
       name: 'Elendel',
       description: 'The great city of the Basin on Scadrial.',
       kind: 'location',
-      planet: 'scadrial',
-      connections: [],
-    },
-    {
-      id: 'soul_taldain_cities',
-      name: 'Dayside Cities',
-      description: 'The cities of the Dayside of Taldain.',
-      kind: 'location',
-      planet: 'taldain',
+      cluster: 'scadrial',
+      orbitLayer: ORBIT_LAYER.LOCATION,
       connections: [],
     },
     {
@@ -293,7 +313,8 @@ function buildLocationCatalog(): SoulDef[] {
       name: 'Hallandren',
       description: 'The jungle kingdom on Nalthis.',
       kind: 'location',
-      planet: 'nalthis',
+      cluster: 'nalthis',
+      orbitLayer: ORBIT_LAYER.LOCATION,
       connections: [],
     },
     {
@@ -301,15 +322,17 @@ function buildLocationCatalog(): SoulDef[] {
       name: 'The Forests of Threnody',
       description: 'The haunted woodlands of Threnody.',
       kind: 'location',
-      planet: 'threnody',
+      cluster: 'threnody',
+      orbitLayer: ORBIT_LAYER.LOCATION,
       connections: [],
     },
     {
-      id: 'soul_patji_island',
+      id: 'soul_patji',
       name: 'Patji',
       description: 'The island on First of the Sun, home of the Pantheon.',
       kind: 'location',
-      planet: 'first-of-the-sun',
+      cluster: 'first-of-the-sun',
+      orbitLayer: ORBIT_LAYER.LOCATION,
       connections: [],
     },
     {
@@ -317,7 +340,8 @@ function buildLocationCatalog(): SoulDef[] {
       name: 'Komashi',
       description: 'The planet Komashi, home of the Yoki-Hijo.',
       kind: 'location',
-      planet: 'komashi',
+      cluster: 'komashi',
+      orbitLayer: ORBIT_LAYER.LOCATION,
       connections: [],
     },
     {
@@ -325,15 +349,17 @@ function buildLocationCatalog(): SoulDef[] {
       name: 'The Lumar Isles',
       description: 'The spore-covered islands of Lumar.',
       kind: 'location',
-      planet: 'lumar',
+      cluster: 'lumar',
+      orbitLayer: ORBIT_LAYER.LOCATION,
       connections: [],
     },
     {
-      id: 'soul_canticle',
+      id: 'soul_canticle_planet',
       name: 'Canticle',
-      description: 'The planet Canticle, a runaway world.',
+      description: 'A runaway world, home to the Cinder King.',
       kind: 'location',
-      planet: 'canticle',
+      cluster: 'canticle',
+      orbitLayer: ORBIT_LAYER.LOCATION,
       connections: [],
     },
     {
@@ -341,7 +367,8 @@ function buildLocationCatalog(): SoulDef[] {
       name: 'Yolen',
       description: 'The original world of Adonalsium, now lost.',
       kind: 'location',
-      planet: 'yolen',
+      cluster: 'yolen',
+      orbitLayer: ORBIT_LAYER.LOCATION,
       connections: [],
     },
     {
@@ -349,7 +376,8 @@ function buildLocationCatalog(): SoulDef[] {
       name: 'Silverlight',
       description: 'A city in the Cognitive Realm inhabited by scholars and worldhoppers.',
       kind: 'location',
-      planet: 'cosmere',
+      cluster: 'cosmere',
+      orbitLayer: ORBIT_LAYER.LOCATION,
       connections: [],
     },
     {
@@ -357,39 +385,44 @@ function buildLocationCatalog(): SoulDef[] {
       name: 'The Oathgates',
       description: 'Transportation network connecting Rosharan cities via Shadesmar.',
       kind: 'artifact',
-      planet: 'roshar',
+      cluster: 'roshar',
+      orbitLayer: ORBIT_LAYER.ARTIFACT,
       connections: [],
     },
     {
       id: 'soul_perpendicularities',
-      name: 'The Perpendicularities',
+      name: 'Perpendicularities',
       description: 'Points where all three Realms converge.',
       kind: 'artifact',
-      planet: 'cosmere',
+      cluster: 'cosmere',
+      orbitLayer: ORBIT_LAYER.ARTIFACT,
       connections: [],
     },
     {
       id: 'soul_nightblood',
       name: 'Nightblood',
-      description: 'The sentient sword created by Vasher and Shashara.',
+      description: 'The sentient sword created by Vasher.',
       kind: 'artifact',
-      planet: 'nalthis',
+      cluster: 'nalthis',
+      orbitLayer: ORBIT_LAYER.ARTIFACT,
       connections: ['soul_vasher', 'soul_szeth'],
     },
     {
       id: 'soul_dawnshards',
       name: 'Dawnshards',
-      description: 'Primordial Commands from before the Shattering of Adonalsium.',
+      description: 'Primordial Commands from before the Shattering.',
       kind: 'adonalsium',
-      planet: 'cosmere',
+      cluster: 'cosmere',
+      orbitLayer: ORBIT_LAYER.ARTIFACT,
       connections: [],
     },
     {
       id: 'soul_shardblades',
       name: 'Shardblades',
-      description: 'Living weapons of the Knights Radiant — spren in blade form.',
+      description: 'Living weapons of the Knights Radiant.',
       kind: 'artifact',
-      planet: 'roshar',
+      cluster: 'roshar',
+      orbitLayer: ORBIT_LAYER.ARTIFACT,
       connections: [],
     },
     {
@@ -397,23 +430,131 @@ function buildLocationCatalog(): SoulDef[] {
       name: 'Shardplate',
       description: 'Living armor of the Knights Radiant.',
       kind: 'artifact',
-      planet: 'roshar',
+      cluster: 'roshar',
+      orbitLayer: ORBIT_LAYER.ARTIFACT,
+      connections: [],
+    },
+    {
+      id: 'soul_spren',
+      name: 'Spren',
+      description: 'Cognitive entities on Roshar — living ideas.',
+      kind: 'spren',
+      cluster: 'roshar',
+      orbitLayer: ORBIT_LAYER.SPREN,
+      connections: [],
+    },
+    {
+      id: 'soul_knights_radiant',
+      name: 'Knights Radiant',
+      description: 'Order of Invested warriors bonded to spren.',
+      kind: 'organization',
+      cluster: 'roshar',
+      orbitLayer: ORBIT_LAYER.ORGANIZATION,
+      connections: [],
+    },
+    {
+      id: 'soul_ghostbloods',
+      name: 'The Ghostbloods',
+      description: 'A secret organization spanning worlds.',
+      kind: 'organization',
+      cluster: 'roshar',
+      orbitLayer: ORBIT_LAYER.ORGANIZATION,
+      connections: [],
+    },
+    {
+      id: 'soul_kandra',
+      name: 'The Kandra',
+      description: 'Shapeshifting creatures of Scadrial.',
+      kind: 'organization',
+      cluster: 'scadrial',
+      orbitLayer: ORBIT_LAYER.ORGANIZATION,
+      connections: [],
+    },
+    {
+      id: 'soul_set',
+      name: 'The Set',
+      description: 'A technological organization on Scadrial.',
+      kind: 'organization',
+      cluster: 'scadrial',
+      orbitLayer: ORBIT_LAYER.ORGANIZATION,
+      connections: [],
+    },
+    {
+      id: 'soul_ironeyes',
+      name: 'Marsh',
+      description: 'Surviving Inquisitor, eyes of Ruin.',
+      kind: 'important_character',
+      cluster: 'scadrial',
+      orbitLayer: ORBIT_LAYER.IMPORTANT_CHAR,
+      connections: [],
+    },
+    {
+      id: 'soul_demoux',
+      name: 'Demoux',
+      description: 'General of the Armies of the Final Empire.',
+      kind: 'character',
+      cluster: 'scadrial',
+      orbitLayer: ORBIT_LAYER.CHAR,
+      connections: [],
+    },
+    {
+      id: 'soul_galladon',
+      name: 'Galladon',
+      description: 'A Dula from Sel, worldhopper.',
+      kind: 'character',
+      cluster: 'sel',
+      orbitLayer: ORBIT_LAYER.CHAR,
+      connections: [],
+    },
+    {
+      id: 'soul_nazh',
+      name: 'Nazh',
+      description: 'A worldhopper mapmaker.',
+      kind: 'character',
+      cluster: 'cosmere',
+      orbitLayer: ORBIT_LAYER.CHAR,
+      connections: [],
+    },
+    {
+      id: 'soul_shattering',
+      name: 'The Shattering',
+      description: 'The event that broke Adonalsium into sixteen Shards.',
+      kind: 'event',
+      cluster: 'yolen',
+      orbitLayer: ORBIT_LAYER.EVENT,
+      connections: [],
+    },
+    {
+      id: 'soul_recreance',
+      name: 'The Recreance',
+      description: 'The mass abandonment of the Knights Radiant.',
+      kind: 'event',
+      cluster: 'roshar',
+      orbitLayer: ORBIT_LAYER.EVENT,
+      connections: [],
+    },
+    {
+      id: 'soul_catacendre',
+      name: 'The Catacendre',
+      description: 'The final battle and remaking of Scadrial.',
+      kind: 'event',
+      cluster: 'scadrial',
+      orbitLayer: ORBIT_LAYER.EVENT,
       connections: [],
     },
   ]
-  return extraLocs
 }
 
 export function buildEntityCatalog(): SoulDef[] {
   const catalog: SoulDef[] = [
-    ...buildCharacterCatalog(),
-    ...buildBookCatalog(),
-    ...buildMagicCatalog(),
-    ...buildPlanetCatalog(),
-    ...buildHonorbladeCatalog(),
-    ...buildSagaCatalog(),
-    ...buildShardCatalog(),
-    ...buildLocationCatalog(),
+    ...planetCatalog(),
+    ...shardCatalog(),
+    ...honorbladeCatalog(),
+    ...bookCatalog(),
+    ...characterCatalog(),
+    ...magicCatalog(),
+    ...sagaCatalog(),
+    ...extraCatalog(),
   ]
 
   const seen = new Set<string>()
@@ -424,9 +565,8 @@ export function buildEntityCatalog(): SoulDef[] {
   })
 }
 
-export function getFillerCount(): number {
-  const real = buildEntityCatalog().length
-  return Math.max(0, 1500 - real)
+export function getEntityCatalogSize(): number {
+  return buildEntityCatalog().length
 }
 
 export function weightForKind(kind: EntityKind): number {

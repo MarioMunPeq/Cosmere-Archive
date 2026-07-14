@@ -78,6 +78,8 @@ function CharacterDetailModal({ character, onClose, onSelectCharacter, originRec
     return () => window.clearTimeout(t)
   }, [])
 
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
+
   const handleClose = useCallback(() => {
     if (phase === 'closing') return
     setPhase('closing')
@@ -92,8 +94,14 @@ function CharacterDetailModal({ character, onClose, onSelectCharacter, originRec
       cardRef.current.style.setProperty('--close-dy', `${oy - cy}px`)
     }
 
-    window.setTimeout(onClose, 550)
+    closeTimerRef.current = window.setTimeout(onClose, 550)
   }, [phase, onClose, originRect])
+
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current)
+    }
+  }, [])
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {

@@ -145,8 +145,10 @@ export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale =
     isAnimating.current = true
     const dur = 420
     const t0 = performance.now()
+    let cancelled = false
 
     function step() {
+      if (cancelled) return
       const elapsed = performance.now() - t0
       const raw = Math.min(elapsed / dur, 1)
       const t = easeOutCubic(raw)
@@ -169,6 +171,9 @@ export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale =
       }
     }
     raf.current = requestAnimationFrame(step)
+    return () => {
+      cancelled = true
+    }
   }, [focusAnchor, maxScale, getClamped, onFocusChange])
 
   const onDown = useCallback((e: React.PointerEvent) => {

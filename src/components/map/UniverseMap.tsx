@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from 'react'
+import { useMemo, useState, useCallback, useEffect, useRef } from 'react'
 import { PLANETS, ALL_CHARACTERS, PLANET_BY_ID, SHARD_COLORS, FALLBACK_COLOR } from '@/data/static'
 import { WORLDHOPPERS } from '@/data/static/timeline'
 import { useShardTheme, ShardThemeProvider } from '@/contexts/ShardThemeContext'
@@ -60,6 +60,7 @@ function MapInner({
 
   const [closingPlanetId, setClosingPlanetId] = useState<string | null>(null)
   const [hoveredPlanetId, setHoveredPlanetId] = useState<string | null>(null)
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
   const [activeShards, setActiveShards] = useState<string[]>([])
   const [tooltipScreenPos, setTooltipScreenPos] = useState({ left: 0, top: 0 })
   const [layers, setLayers] = useState<MapLayers>({
@@ -124,11 +125,18 @@ function MapInner({
   const handleClosePanel = useCallback(() => {
     if (!selectedPlanet) return
     setClosingPlanetId(selectedPlanet)
-    setTimeout(() => {
+    if (closeTimerRef.current) clearTimeout(closeTimerRef.current)
+    closeTimerRef.current = setTimeout(() => {
       onSelectPlanet(null)
       setClosingPlanetId(null)
     }, 300)
   }, [selectedPlanet, onSelectPlanet])
+
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current)
+    }
+  }, [])
 
   const handlePlanetClick = useCallback(
     (planetId: string) => {

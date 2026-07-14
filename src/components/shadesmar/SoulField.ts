@@ -1,6 +1,6 @@
 import type { Soul, DepthLayer } from './types'
-import { ENTITY_VISUALS, LAYER_CONFIG, PLANET_REGIONS, TOTAL_SOULS } from './types'
-import { buildEntityCatalog, getFillerCount } from './entity-catalog'
+import { ENTITY_VISUALS, CLUSTERS } from './types'
+import { buildEntityCatalog } from './entity-catalog'
 import type { SoulDef } from './entity-catalog'
 
 function seed(s: string): () => number {
@@ -16,11 +16,35 @@ function seed(s: string): () => number {
   }
 }
 
-function createSoulFromDef(def: SoulDef, x: number, y: number, layer: DepthLayer, _index: number): Soul {
+function lodForKind(kind: SoulDef['kind']): number {
+  switch (kind) {
+    case 'planet':
+    case 'shard':
+    case 'adonalsium':
+      return 0.15
+    case 'book':
+    case 'saga':
+    case 'filler':
+      return 0.35
+    case 'important_character':
+    case 'herald':
+    case 'magic':
+      return 0.65
+    default:
+      return 1.2
+  }
+}
+
+function createSoul(def: SoulDef, x: number, y: number, _index: number): Soul {
   const rng = seed(`soul:${def.id}`)
   const ev = ENTITY_VISUALS[def.kind]
   const radius = ev.sizeMin + rng() * (ev.sizeMax - ev.sizeMin)
-  const lc = LAYER_CONFIG[layer]
+  const mass = ev.mass
+
+  let layer: DepthLayer = 3
+  if (mass >= 3) layer = 0
+  else if (mass >= 1.5) layer = 1
+  else if (mass >= 0.5) layer = 2
 
   return {
     id: def.id,
@@ -32,160 +56,154 @@ function createSoulFromDef(def: SoulDef, x: number, y: number, layer: DepthLayer
     color: ev.color,
     glowColor: ev.glow,
     coreColor: ev.core,
-    mass: ev.mass,
-
-    vx: ((rng() - 0.5) * 0.2) / Math.max(1, ev.mass * 0.5),
-    vy: ((rng() - 0.5) * 0.2) / Math.max(1, ev.mass * 0.5),
+    mass,
+    vx: ((rng() - 0.5) * 0.00015) / Math.max(1, mass * 0.5),
+    vy: ((rng() - 0.5) * 0.00015) / Math.max(1, mass * 0.5),
     noisePhase: rng() * Math.PI * 2,
-    noiseAmp: (0.05 + rng() * 0.15) / Math.max(1, ev.mass * 0.4),
+    noiseAmp: (0.00003 + rng() * 0.0001) / Math.max(1, mass * 0.4),
     orbitAngle: rng() * Math.PI * 2,
-    orbitSpeed: (0.04 + rng() * 0.15) / Math.max(1, ev.mass * 0.3),
-    orbitRadius: (0.1 + rng() * 0.5) / Math.max(1, ev.mass * 0.3),
-
+    orbitSpeed: (0.03 + rng() * 0.1) / Math.max(1, mass * 0.3),
+    orbitRadius: (0.0001 + rng() * 0.0003) / Math.max(1, mass * 0.3),
     opacity: 0,
-    targetOpacity: lc.opacity * (0.7 + rng() * 0.3),
+    targetOpacity: 0.7 + rng() * 0.3,
     glow: 0,
     targetGlow: 0,
     scale: 1,
     targetScale: 1,
     breathePhase: rng() * Math.PI * 2,
-
     curious: false,
     curiousDx: 0,
     curiousDy: 0,
-
     entityId: def.id,
     name: def.name,
     description: def.description,
     connections: def.connections,
-    planet: def.planet,
+    planet: def.cluster,
+    lodReveal: lodForKind(def.kind),
+    parent: def.cluster,
   }
-}
-
-const STACK_RADII: Record<string, number> = {
-  character: 0.25,
-  important_character: 0.2,
-  herald: 0.1,
-  honorblade: 0.2,
-  book: 0.3,
-  magic: 0.25,
-  shard: 0.15,
-  planet: 0.05,
-  saga: 0.3,
-  spren: 0.35,
-  organization: 0.25,
-  event: 0.35,
-  location: 0.3,
-  artifact: 0.3,
-  adonalsium: 0.08,
-  concept: 0.3,
-  filler: 0.5,
-}
-
-function positionInRegion(
-  def: SoulDef,
-  region: { x: number; y: number; radius: number },
-  index: number,
-  rng: () => number,
-): [number, number] {
-  const stackR = STACK_RADII[def.kind] ?? 0.3
-  const dist = Math.sqrt(rng()) * region.radius * stackR
-  const angle = rng() * Math.PI * 2 + index * 0.01
-  const x = region.x + Math.cos(angle) * dist
-  const y = region.y + Math.sin(angle) * dist
-  return [x, y]
-}
-
-function positionEntity(def: SoulDef, _catalog: SoulDef[], idx: number, rngFn: () => number): [number, number] {
-  const planet = def.planet
-
-  if (planet && PLANET_REGIONS[planet]) {
-    const region = PLANET_REGIONS[planet]!
-    return positionInRegion(def, region, idx, rngFn)
-  }
-
-  const region = PLANET_REGIONS['cosmere']!
-  return positionInRegion(def, region, idx, rngFn)
-}
-
-function assignLayer(_rng: () => number, mass: number): DepthLayer {
-  if (mass >= 3) return 0
-  if (mass >= 1.5) return 1
-  if (mass >= 0.5) return 2
-  return 3
 }
 
 export function generateSoulField(): Soul[] {
   const catalog = buildEntityCatalog()
-  const rng = seed('cosmere_field')
   const souls: Soul[] = []
 
-  for (let i = 0; i < catalog.length; i++) {
-    const def = catalog[i]!
-    const [x, y] = positionEntity(def, catalog, i, rng)
-    const mass = ENTITY_VISUALS[def.kind]?.mass ?? 1
-    const layer = assignLayer(rng, mass)
-    const soul = createSoulFromDef(def, x, y, layer, i)
-    souls.push(soul)
-  }
+  for (const cluster of CLUSTERS) {
+    const cx = cluster.cx
+    const cy = cluster.cy
+    const cr = cluster.radius
 
-  const fillerCount = getFillerCount()
-  const fillerRng = seed('filler_field')
-  const planetKeys = Object.keys(PLANET_REGIONS)
+    const clusterDefs = catalog.filter((d) => d.cluster === cluster.id)
+    if (clusterDefs.length === 0 && cluster.id !== 'cosmere') continue
 
-  for (let i = 0; i < fillerCount; i++) {
-    const pk = planetKeys[Math.floor(fillerRng() * planetKeys.length)]!
-    const region = PLANET_REGIONS[pk]!
-    const dist = Math.sqrt(fillerRng()) * region.radius * 0.8
-    const angle = fillerRng() * Math.PI * 2
-    const x = region.x + Math.cos(angle) * dist
-    const y = region.y + Math.sin(angle) * dist
-    const layer: DepthLayer = fillerRng() < 0.3 ? 2 : 3
-    const ev = ENTITY_VISUALS['filler']
-    const lc = LAYER_CONFIG[layer]
+    const groups: Array<{ defs: SoulDef[]; layer: number }> = [
+      { defs: clusterDefs.filter((d) => d.kind === 'shard' || d.kind === 'adonalsium'), layer: 0.02 },
+      { defs: clusterDefs.filter((d) => d.kind === 'herald'), layer: 0.03 },
+      { defs: clusterDefs.filter((d) => d.kind === 'honorblade'), layer: 0.04 },
+      { defs: clusterDefs.filter((d) => d.kind === 'book'), layer: 0.05 },
+      { defs: clusterDefs.filter((d) => d.kind === 'important_character'), layer: 0.06 },
+      { defs: clusterDefs.filter((d) => d.kind === 'artifact'), layer: 0.07 },
+      { defs: clusterDefs.filter((d) => d.kind === 'magic'), layer: 0.08 },
+      { defs: clusterDefs.filter((d) => d.kind === 'character'), layer: 0.08 },
+      { defs: clusterDefs.filter((d) => d.kind === 'spren'), layer: 0.09 },
+      { defs: clusterDefs.filter((d) => d.kind === 'location'), layer: 0.1 },
+      { defs: clusterDefs.filter((d) => d.kind === 'concept' || d.kind === 'saga'), layer: 0.1 },
+      { defs: clusterDefs.filter((d) => d.kind === 'organization'), layer: 0.11 },
+      { defs: clusterDefs.filter((d) => d.kind === 'event'), layer: 0.11 },
+    ]
 
-    const soul: Soul = {
-      id: `filler_${i}`,
-      x,
-      y,
-      radius: ev.sizeMin + fillerRng() * (ev.sizeMax - ev.sizeMin),
-      kind: 'filler',
-      layer,
-      color: ev.color,
-      glowColor: ev.glow,
-      coreColor: ev.core,
-      mass: ev.mass,
+    const angleRng = seed(`cluster:${cluster.id}`)
+    const angleOffset = angleRng() * Math.PI * 2
 
-      vx: (fillerRng() - 0.5) * 0.4,
-      vy: (fillerRng() - 0.5) * 0.4,
-      noisePhase: fillerRng() * Math.PI * 2,
-      noiseAmp: 0.1 + fillerRng() * 0.25,
-      orbitAngle: fillerRng() * Math.PI * 2,
-      orbitSpeed: 0.08 + fillerRng() * 0.25,
-      orbitRadius: 0.2 + fillerRng() * 0.8,
+    let groupIdx = 0
+    for (const group of groups) {
+      const n = group.defs.length
+      if (n === 0) {
+        groupIdx++
+        continue
+      }
+      const gap = (Math.PI * 2) / n
+      const baseAngle = angleOffset + groupIdx * 0.3
 
-      opacity: 0,
-      targetOpacity: lc.opacity * (0.3 + fillerRng() * 0.3),
-      glow: 0,
-      targetGlow: 0,
-      scale: 1,
-      targetScale: 1,
-      breathePhase: fillerRng() * Math.PI * 2,
-
-      curious: false,
-      curiousDx: 0,
-      curiousDy: 0,
-
-      entityId: null,
-      name: null,
-      description: null,
-      connections: [],
-      planet: pk,
+      for (let i = 0; i < n; i++) {
+        const def = group.defs[i]!
+        const pRng = seed(`pos:${def.id}`)
+        const jitterA = (pRng() - 0.5) * gap * 0.5
+        const jitterD = (pRng() - 0.5) * 0.12
+        const angle = baseAngle + i * gap + jitterA
+        const dist = cr * (group.layer + jitterD)
+        let x = cx + Math.cos(angle) * dist
+        let y = cy + Math.sin(angle) * dist
+        x = Math.max(0.01, Math.min(0.99, x))
+        y = Math.max(0.01, Math.min(0.99, y))
+        souls.push(createSoul(def, x, y, souls.length))
+      }
+      groupIdx++
     }
-    souls.push(soul)
+
+    const planetDefs = clusterDefs.filter((d) => d.kind === 'planet')
+    for (const pDef of planetDefs) {
+      const soul = createSoul(pDef, cx, cy, souls.length)
+      souls.push(soul)
+    }
   }
 
-  return souls.slice(0, TOTAL_SOULS)
+  const fillerRng = seed('filler')
+  for (const cluster of CLUSTERS) {
+    const cx = cluster.cx
+    const cy = cluster.cy
+    const cr = cluster.radius * 0.7
+    const count = Math.floor(8 + fillerRng() * 12)
+
+    for (let i = 0; i < count; i++) {
+      const angle = fillerRng() * Math.PI * 2
+      const dist = fillerRng() * cr
+      let x = cx + Math.cos(angle) * dist
+      let y = cy + Math.sin(angle) * dist
+      x = Math.max(0.01, Math.min(0.99, x))
+      y = Math.max(0.01, Math.min(0.99, y))
+
+      const ev = ENTITY_VISUALS['filler']
+      souls.push({
+        id: `filler_${cluster.id}_${i}`,
+        x,
+        y,
+        radius: ev.sizeMin + fillerRng() * (ev.sizeMax - ev.sizeMin),
+        kind: 'filler',
+        layer: 3,
+        color: ev.color,
+        glowColor: ev.glow,
+        coreColor: ev.core,
+        mass: ev.mass,
+        vx: (fillerRng() - 0.5) * 0.0003,
+        vy: (fillerRng() - 0.5) * 0.0003,
+        noisePhase: fillerRng() * Math.PI * 2,
+        noiseAmp: 0.00008 + fillerRng() * 0.0002,
+        orbitAngle: fillerRng() * Math.PI * 2,
+        orbitSpeed: 0.06 + fillerRng() * 0.2,
+        orbitRadius: 0.0002 + fillerRng() * 0.0006,
+        opacity: 0,
+        targetOpacity: 0.3 + fillerRng() * 0.25,
+        glow: 0,
+        targetGlow: 0,
+        scale: 1,
+        targetScale: 1,
+        breathePhase: fillerRng() * Math.PI * 2,
+        curious: false,
+        curiousDx: 0,
+        curiousDy: 0,
+        entityId: null,
+        name: null,
+        description: null,
+        connections: [],
+        planet: cluster.id,
+        lodReveal: 0.35,
+        parent: cluster.id,
+      })
+    }
+  }
+
+  return souls
 }
 
 export class SpatialGrid {

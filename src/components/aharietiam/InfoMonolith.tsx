@@ -26,9 +26,17 @@ export default memo(function InfoMonolith({ blade, onClose }: Props) {
   const prevId = useRef<string | null>(null)
 
   useEffect(() => {
-    if (cardRef.current && backdropRef.current) {
-      gsap.set(cardRef.current, { y: 'calc(100% + 10vh)', opacity: 0, scale: 0.95 })
-      gsap.set(backdropRef.current, { opacity: 0, pointerEvents: 'none' })
+    const card = cardRef.current
+    const backdrop = backdropRef.current
+    const content = contentRef.current
+    if (card && backdrop) {
+      gsap.set(card, { y: 'calc(100% + 10vh)', opacity: 0, scale: 0.95 })
+      gsap.set(backdrop, { opacity: 0, pointerEvents: 'none' })
+    }
+    return () => {
+      if (card) gsap.killTweensOf(card)
+      if (backdrop) gsap.killTweensOf(backdrop)
+      if (content?.children) gsap.killTweensOf(content.children)
     }
   }, [])
 
@@ -64,14 +72,17 @@ export default memo(function InfoMonolith({ blade, onClose }: Props) {
       gsap.set(backdropRef.current, { pointerEvents: 'auto' })
 
       const tl = gsap.timeline()
-      tl.to(backdropRef.current, { opacity: 1, duration: 0.35 }, 0)
-        .to(cardRef.current, {
+      tl.to(backdropRef.current, { opacity: 1, duration: 0.35 }, 0).to(
+        cardRef.current,
+        {
           y: '0%',
           opacity: 1,
           scale: 1,
           duration: 0.65,
           ease: 'power3.out',
-        }, 0)
+        },
+        0,
+      )
 
       if (contentRef.current) {
         const kids = Array.from(contentRef.current.children) as HTMLElement[]
@@ -197,18 +208,12 @@ export default memo(function InfoMonolith({ blade, onClose }: Props) {
                       padding: '3px 12px',
                       borderRadius: 20,
                       fontSize: 'clamp(11px, 0.9vw, 14px)',
-                      background:
-                        info.status === 'standing'
-                          ? 'rgba(100,200,150,0.06)'
-                          : 'rgba(200,100,100,0.06)',
+                      background: info.status === 'standing' ? 'rgba(100,200,150,0.06)' : 'rgba(200,100,100,0.06)',
                       border:
                         info.status === 'standing'
                           ? '1px solid rgba(100,200,150,0.1)'
                           : '1px solid rgba(200,100,100,0.08)',
-                      color:
-                        info.status === 'standing'
-                          ? 'rgba(180,220,190,0.5)'
-                          : 'rgba(210,160,160,0.5)',
+                      color: info.status === 'standing' ? 'rgba(180,220,190,0.5)' : 'rgba(210,160,160,0.5)',
                       letterSpacing: '0.03em',
                     }}
                   >

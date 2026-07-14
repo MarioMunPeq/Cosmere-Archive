@@ -1,6 +1,6 @@
 import type { Soul } from './types'
 import type { SpatialGrid } from './SoulField'
-import { CURIOUS_RADIUS, CURIOUS_MAX_SHIFT, CURIOUS_FORCE, HOVER_RADIUS } from './types'
+import { CURIOUS_RADIUS_WORLD, HOVER_RADIUS_WORLD, CLICK_RADIUS_WORLD } from './types'
 
 export interface HoverInfo {
   soul: Soul
@@ -44,16 +44,16 @@ export class InteractionSystem {
       const dy = wy - s.y
       const dist = Math.sqrt(dx * dx + dy * dy)
 
-      const curiousRadius = CURIOUS_RADIUS * (0.5 + mass * 0.15)
+      const curiousRadius = CURIOUS_RADIUS_WORLD * (0.5 + mass * 0.15)
 
-      if (dist < curiousRadius && dist > 0.1) {
-        const strength = ((1 - dist / curiousRadius) * CURIOUS_FORCE) / Math.max(1, mass * 0.4)
+      if (dist < curiousRadius && dist > 0.0001) {
+        const strength = ((1 - dist / curiousRadius) * 0.012) / Math.max(1, mass * 0.4)
         const shift = strength * dt
 
         s.curiousDx += (dx / dist) * shift
         s.curiousDy += (dy / dist) * shift
 
-        const maxShift = CURIOUS_MAX_SHIFT / Math.max(1, mass * 0.3)
+        const maxShift = 0.02 / Math.max(1, mass * 0.3)
         const mag = Math.sqrt(s.curiousDx * s.curiousDx + s.curiousDy * s.curiousDy)
         if (mag > maxShift) {
           s.curiousDx = (s.curiousDx / mag) * maxShift
@@ -64,7 +64,7 @@ export class InteractionSystem {
       } else {
         s.curiousDx *= 0.95
         s.curiousDy *= 0.95
-        if (Math.abs(s.curiousDx) < 0.01 && Math.abs(s.curiousDy) < 0.01) {
+        if (Math.abs(s.curiousDx) < 0.00001 && Math.abs(s.curiousDy) < 0.00001) {
           s.curiousDx = 0
           s.curiousDy = 0
           s.curious = false
@@ -74,7 +74,7 @@ export class InteractionSystem {
   }
 
   updateHover(grid: SpatialGrid): void {
-    const nearest = grid.nearest(this.worldX, this.worldY, HOVER_RADIUS)
+    const nearest = grid.nearest(this.worldX, this.worldY, HOVER_RADIUS_WORLD)
     this.hoveredId = nearest?.id ?? null
     this.hoveredSoul = nearest ?? null
 
@@ -95,7 +95,7 @@ export class InteractionSystem {
       }
     }
 
-    const nearby = grid.query(this.worldX, this.worldY, HOVER_RADIUS * 4)
+    const nearby = grid.query(this.worldX, this.worldY, HOVER_RADIUS_WORLD * 4)
     for (const s of nearby) {
       if (s.id === this.hoveredId) {
         s.targetGlow = 1
@@ -104,10 +104,10 @@ export class InteractionSystem {
         const dx = s.x - this.worldX
         const dy = s.y - this.worldY
         const dist = Math.sqrt(dx * dx + dy * dy)
-        if (dist < HOVER_RADIUS * 2) {
+        if (dist < HOVER_RADIUS_WORLD * 2) {
           s.targetGlow = 0.35
           s.targetScale = 1.04
-        } else if (dist < HOVER_RADIUS * 4) {
+        } else if (dist < HOVER_RADIUS_WORLD * 4) {
           s.targetGlow = 0.12
           s.targetScale = 1.01
         } else {
@@ -122,7 +122,7 @@ export class InteractionSystem {
   }
 
   tryClick(_souls: Soul[], grid: SpatialGrid): Soul | null {
-    const clicked = grid.nearest(this.worldX, this.worldY, HOVER_RADIUS)
+    const clicked = grid.nearest(this.worldX, this.worldY, CLICK_RADIUS_WORLD)
     this.justClicked = clicked
     return clicked
   }

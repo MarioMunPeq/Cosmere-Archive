@@ -130,7 +130,10 @@ export default function CosmereMindMap3D() {
   useEffect(() => {
     const t = setTimeout(() => setShowHelp(false), 4000)
     helpTimerRef.current = t
-    return () => clearTimeout(t)
+    return () => {
+      clearTimeout(t)
+      if (helpTimerRef.current) clearTimeout(helpTimerRef.current)
+    }
   }, [])
 
   const showHelpTemporarily = useCallback(() => {

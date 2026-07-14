@@ -20,8 +20,7 @@ const LAYERS = 3
 
 function create(w: number, h: number, layer: number): Particle {
   const r = Math.random()
-  const type: Particle['type'] =
-    r < 0.4 ? 'dust' : r < 0.7 ? 'ash' : r < 0.9 ? 'mote' : 'sparkle'
+  const type: Particle['type'] = r < 0.4 ? 'dust' : r < 0.7 ? 'ash' : r < 0.9 ? 'mote' : 'sparkle'
   const depthFactor = 1 + layer * 0.4
   const speedScale = 1 - layer * 0.25
   return {
@@ -30,16 +29,10 @@ function create(w: number, h: number, layer: number): Particle {
     z: layer / LAYERS,
     vx: (Math.random() - 0.5) * 0.06 * depthFactor,
     vy: (-0.004 - Math.random() * 0.035) * speedScale,
-    size:
-      type === 'sparkle'
-        ? 0.5 + Math.random() * 1
-        : (0.3 + Math.random() * 0.5) * (1 + layer * 0.4),
+    size: type === 'sparkle' ? 0.5 + Math.random() * 1 : (0.3 + Math.random() * 0.5) * (1 + layer * 0.4),
     opacity: 0.02 + Math.random() * 0.05 * (1 - layer * 0.12),
     life: 0,
-    maxLife:
-      type === 'sparkle'
-        ? 60 + Math.random() * 140
-        : 250 + Math.random() * 500,
+    maxLife: type === 'sparkle' ? 60 + Math.random() * 140 : 250 + Math.random() * 500,
     type,
     hue: type === 'sparkle' ? 180 + Math.random() * 60 : 0,
   }
@@ -68,9 +61,10 @@ export default memo(function Particles() {
     }
     resize()
     window.addEventListener('resize', resize)
-    document.addEventListener('visibilitychange', () => {
+    const onVisibilityChange = () => {
       hidden = document.hidden
-    })
+    }
+    document.addEventListener('visibilitychange', onVisibilityChange)
 
     const onMove = (e: MouseEvent) => {
       mouseRef.current = { x: e.clientX, y: e.clientY }
@@ -130,25 +124,12 @@ export default memo(function Particles() {
           else if (p.y > h + 30) p.y = -30
 
           const lifeRatio = p.life / p.maxLife
-          const alpha =
-            p.opacity *
-            Math.min(lifeRatio * 4, 1) *
-            Math.max(1 - lifeRatio, 0)
+          const alpha = p.opacity * Math.min(lifeRatio * 4, 1) * Math.max(1 - lifeRatio, 0)
 
           /* sparkle glow halo */
           if (p.type === 'sparkle') {
-            const grad = ctx.createRadialGradient(
-              p.x,
-              p.y,
-              0,
-              p.x,
-              p.y,
-              p.size * 3.5,
-            )
-            grad.addColorStop(
-              0,
-              `hsla(${p.hue}, 60%, 85%, ${alpha * 1.2})`,
-            )
+            const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 3.5)
+            grad.addColorStop(0, `hsla(${p.hue}, 60%, 85%, ${alpha * 1.2})`)
             grad.addColorStop(1, `hsla(${p.hue}, 60%, 85%, 0)`)
             ctx.beginPath()
             ctx.arc(p.x, p.y, p.size * 3.5, 0, Math.PI * 2)
@@ -158,18 +139,8 @@ export default memo(function Particles() {
 
           /* mote glow */
           if (p.type === 'mote') {
-            const grad = ctx.createRadialGradient(
-              p.x,
-              p.y,
-              0,
-              p.x,
-              p.y,
-              p.size * 2,
-            )
-            grad.addColorStop(
-              0,
-              `rgba(180, 210, 240, ${alpha * 0.8})`,
-            )
+            const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 2)
+            grad.addColorStop(0, `rgba(180, 210, 240, ${alpha * 0.8})`)
             grad.addColorStop(1, `rgba(180, 210, 240, 0)`)
             ctx.beginPath()
             ctx.arc(p.x, p.y, p.size * 2, 0, Math.PI * 2)
@@ -201,14 +172,9 @@ export default memo(function Particles() {
       window.removeEventListener('resize', resize)
       window.removeEventListener('mousemove', onMove)
       window.removeEventListener('mouseleave', onLeave)
+      document.removeEventListener('visibilitychange', onVisibilityChange)
     }
   }, [])
 
-  return (
-    <canvas
-      ref={canvasRef}
-      className="pointer-events-none absolute inset-0"
-      style={{ zIndex: 30 }}
-    />
-  )
+  return <canvas ref={canvasRef} className="pointer-events-none absolute inset-0" style={{ zIndex: 30 }} />
 })

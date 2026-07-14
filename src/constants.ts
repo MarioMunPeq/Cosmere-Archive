@@ -11,7 +11,4 @@ export const FLY_DURATION_MS = 600
 export const SEARCH_DEBOUNCE_MS = 200
 export const PLACEHOLDER_ROTATE_MS = 4000
 
-export const INFINITE_SCROLL_MARGIN = '200px'
-export const DEFAULT_PAGE_SIZE = 24
-
 export const MAX_FORK_SAGAS = 5
