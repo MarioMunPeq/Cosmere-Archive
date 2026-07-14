@@ -73,6 +73,18 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - Fixed overflow bug on Locations/Shards tabs: removed extra flex wrappers, added `min-h-0` to `mx-auto` div, `h-full` to grid container, `shrink-0` to non-scrollable elements
 - All 251 tests pass, `tsc -b` clean, `pnpm lint` clean, ESLint clean (can commit)
 
+- **SHADESMAR REBOOT V2 — Ocean of Souls**: Complete from-scratch rewrite. No Three.js, no graph visualization, no nodes/edges. Pure Canvas2D ocean of 700 glowing souls.
+- **Architecture**: 8 files in `src/components/shadesmar/` — `types.ts`, `SoulField.ts`, `InteractionSystem.ts`, `SelectionSystem.ts`, `TextureCache.ts`, `Renderer.ts`, `Canvas.tsx`, `index.ts`. No subdirectories, no hooks/, no lib/.
+- **Soul system**: 8 types (neutral/character/herald/radiant/shard/world/magic/event) with distinct colors. Pre-rendered radial gradient textures cached in offscreen canvases. Cluster-based natural distribution (20 clusters, 30 souls each, 700 total). Spatial grid for fast proximity queries.
+- **Organic motion**: Noise-based drift + micro-orbit + damping. Each soul has unique phase, amp, orbit parameters. No linear movement — everything feels alive.
+- **View drift**: Camera floats slowly via sinusoidal drift + cursor edge-push. User never controls camera directly — only the souls and view drift naturally.
+- **Cursor curiosity**: Souls within 250px become curious and drift toward cursor with distance-weighted force. Not magnetic — organic.
+- **Hover**: Nearest soul within 30px glows brighter (1.3x scale), neighbors within 60px react at 0.4x strength. Smooth lerp transitions.
+- **Click selection**: Phase 1 (centering, 0.5s): view shifts to center soul, background dims 50%, other souls fade to 10% opacity, selected soul grows 2.5x, 24 spiral particles emerge. Phase 2 (revealing, 0.5s): connection lines (to 5 random nearby souls) animate in with flow particles, title fades in above, description below. Phase 3 (displaying): stable info view. Click again or Escape to deselect (reverse animation).
+- **Info overlay**: No cards, no panels, no glassmorphism. Title (22px serif) renders above soul, description (14px sans, wrapped 320px) below. Connection lines at 12% opacity with particle flow. Knowledge materializes into the world.
+- **Visual language**: Near-black ocean (#050508) with subtle blue radial gradient. 80 fog particles at 3-8% opacity for atmosphere. Vignette overlay. Souls are 3-9px radius with 3-layer radial gradients (core → color → glow → transparent).
+- **All 206 tests pass**, `tsc -b` clean, `pnpm lint` clean (0 errors, 1 warning — pre-existing in Honorblade.tsx)
+
 - Built Aharietiam v4 environment-only scene (10 components: Sky, Camera, Terrain, Altar, Debris, Atmosphere, Particles, Lighting, Scene) — pure CSS 3D perspective, no images, no blades, no UI
 - Added CircleOfBlades — 10 Honorblade objects in a perfect circle, each with 9 CSS layers (Shadow, GroundCrack, ContactShadow, StormlightGlow, BladeImage, Reflection, StormlightSweep, Particles, Hitbox), no `<img>` only, mathematical positioning, Taln placeholder with silhouette only
 - All 206 tests pass, `tsc -b` clean, `pnpm lint` clean, `pnpm build` clean (47 entries)
@@ -385,15 +397,20 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - Files modified: `Scene.tsx` (adds `<CircleOfBlades />` inside Camera), `index.ts` (adds exports), `index.css` (adds keyframe).
 - All 206 tests pass, `tsc -b` clean, `pnpm lint` clean, `pnpm build` clean (47 entries, AharietiamPage 23.8 kB / 5.7 kB gzip).
 
-##### Done (this session: Shadesmar Phase 1 — R3F infinite bead ocean)
+##### Done (this session: The Ocean of Minds — full bead rewrite from scratch)
 
-- **New page**: `/shadesmar` route with full-screen R3F scene, `lazy()`-loaded, registered in App.tsx + all navigation (Layout Alt+S, Breadcrumbs, CommandPalette, ParchmentMenu, Manuscript chapter X, static-data shortcuts).
-- **Ocean.tsx**: `InstancedMesh` (800 max beads, `SphereGeometry` + `MeshPhysicalMaterial` dark glass). Per-bad breathing (sine-wave Y offset), glow lerp on cursor proximity.
-- **WorldGenerator hook**: `INITIAL_BEADS=60` at origin, `totalDist * 0.3` awakening rate, bead recycling beyond 7-unit radius. Deterministic `pRand()` seed for positions.
-- **CameraController.tsx**: Pointer-lock WASD, heavy accel/decel (`ACCEL=60`, `DRAG=0.92`, `MAX_SPEED=3.5`), eye-level y=0.16, mouse-look with clamped pitch. Uses `state.camera` in `useFrame` for ESLint immutability compliance.
-- **Cursor.tsx**: Hides default cursor, `PointLight` at mouse-ground intersection. `useNearbyBeads` hook finds nearest bead (0.4u radius), sets glow target + ripple propagation (1.2u radius).
-- **Atmosphere.tsx**: `ShaderMaterial` volumetric fog sphere (BackSide, transparent, height-based density gradient).
-- **ocean-globals.ts**: Flat `Float32Array`/`Uint8Array` arrays for zero-GC bead state. Shared across all components.
-- **Placeholder hooks**: `useEntityActivation`, `useKnowledgeGraph`, `useConnectionRenderer`, `useFocusTransition` — stubbed for future phases.
-- **Files created**: `src/components/shadesmar/{Ocean,CameraController,Cursor,Atmosphere,WorldGenerator,ShadesmarScene}.tsx`, `ocean-globals.ts`, `index.ts`, `hooks/{useNearbyBeads,useEntityActivation,useKnowledgeGraph,useConnectionRenderer,useFocusTransition,index}.ts`, `src/pages/ShadesmarPage.tsx`.
+- **Complete from-scratch rewrite**: Deleted all Phase 1 files (Ocean, CameraController, Cursor, Atmosphere, WorldGenerator, ocean-globals, ShadesmarScene, all hooks). Replaced with 10 new components + audio architecture + entity system.
+- **Entity system** (`entities.ts`): Every bead is a persistent entity with `entityId`, `type`, `state` (`dormant`|`stirring`|`awake`), `discovered` flag, and fixed world position. `entityMap` preserves metadata across chunk load/unload, enabling future "bead as wiki node" continuity.
+- **WorldStreamer.tsx**: Chunk-based streaming (8-unit chunks, 4-chunk view radius). Deterministic noise placement (no `Math.random()` ever) — 2D simplex noise (`noise.ts`) drives density clustering: areas with high noise yield dense bead clusters, low noise yields sparse voids. Scale follows distribution (35% tiny 0.02–0.04, 25% small 0.04–0.07, 20% medium 0.07–0.11, 13% large 0.11–0.18, 7% gigantic 0.18–0.30). Height varies ±20cm via noise. 1200 max beads, ring buffer allocation.
+- **BeadField.tsx**: `InstancedMesh` with `ShaderMaterial` inlined (no separate file). Custom `aGlow` instance attribute for per-bead glow. `SphereGeometry(1, 12, 12)` with per-instance scale via `instanceMatrix`. Glow lerps from `beadGlow[]` into GPU attribute each frame.
+- **BeadMaterial (custom ShaderMaterial)** — obsidian glass: base color `#05050A`, fresnel rim (`pow(1-dot(N,V), 3)` × blue `#08141E`), moonlight specular (`pow(reflect ...), 12)` × `#8899cc` × 0.06), internal scattering (sin of N×frequencies + time for organic sub-surface sparkle). No hard specular, no transmission. Glow from `aGlow` attribute drives `#264D80` contribution.
+- **FloatingMotion.tsx**: 3-frequency per-bead breathing (freq ranges 0.15–0.40, 0.05–0.20, 0.4–1.0 Hz, amp ranges 5–15mm, 2–10mm, 1–5mm) with phase derived from entity hash. Wind: `sin(t×0.03 + windPhase)×1.5cm` on X, `cos(t×0.025 + windPhase×1.3)×1.2cm` on Z. Never synchronized — no two beads breathe alike.
+- **InteractionSystem.tsx**: Cursor ray projects to ground plane, finds nearest bead within 0.4u, sets `beadGlowTarget[nearest]=1.0`, propagates to neighbors within 1.2u with linear falloff. `PointLight` at cursor position traces the interaction point. `lastHovered` tracking decays previous target.
+- **CameraRig.tsx**: Pointer-lock WASD with inertia (`lerp` velocity, drag 0.90), max speed 3.2 u/s. Mouse sensitivity 0.0018. Camera roll proportional to lateral velocity (`euler.z += targetRoll`). Sinusoidal drift offset (±0.3cm on all axes, 0.15 Hz). Head bob on movement (±0.1cm, 2 Hz × speed). No FPS feel — camera floats.
+- **Lighting.tsx**: Cold moonlight (`directionalLight #8899cc`, intensity 0.06 from `(2,3,1)`), ambient (`#111122`, 0.015), hemisphere (`#223355`→`#050510`, 0.03).
+- **Atmosphere.tsx**: `ShaderMaterial` volumetric fog on BackSide sphere (radius 40). Height-based density gradient, compresses distant space to `0.005, 0.003, 0.02` color at 60% opacity.
+- **Audio architecture** (`audio/`): `AmbientManager` (layer registry + play/stop/volume), `FutureWhispers` (proximity state machine: silent→distant→near), `FutureSphereAudio` (event queue: awaken/connect/resonate/fade). No playback — architecture only.
+- **Noise utility** (`noise.ts`): Deterministic 2D simplex noise with seeded permutation table (no `Math.random()`). Used by WorldStreamer for density, height, scale, and per-bead parameter generation.
+- **Deleted old files**: Ocean.tsx, CameraController.tsx, Cursor.tsx, Atmosphere.tsx (old), WorldGenerator.tsx, ocean-globals.ts, ShadesmarScene.tsx, hooks/ (all 5 files), BeadMaterial.tsx (inlined).
+- **New files**: World.tsx, InfiniteOcean.tsx, BeadField.tsx, WorldStreamer.tsx, FloatingMotion.tsx, InteractionSystem.tsx, CameraRig.tsx, Lighting.tsx, Atmosphere.tsx, entities.ts, noise.ts, index.ts, audio/{AmbientManager,FutureWhispers,FutureSphereAudio,index}.ts.
 - All 206 tests pass, `tsc -b` clean, `pnpm lint` clean.
