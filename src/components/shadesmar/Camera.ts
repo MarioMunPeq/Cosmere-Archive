@@ -1,192 +1,160 @@
-import { MIN_ZOOM, MAX_ZOOM, CAMERA_INERTIA } from './types'
-
-export function easeInOutQuad(t: number): number {
-  return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
-}
+import {
+  MIN_ZOOM,
+  MAX_ZOOM,
+  CAMERA_INERTIA,
+  FOCUS_EXPANSION_AMPLITUDE,
+  FOCUS_FLY_DURATION,
+  FOCUS_EXIT_DURATION,
+  CLUSTER_BY_ID,
+} from './types'
+import type { Soul } from './types'
 
 export class CameraController {
   x = 0.5
   y = 0.5
   zoom = 0.5
 
-  targetX = 0.5
-  targetY = 0.5
-  targetZoom = 0.5
+  private vx = 0
+  private vy = 0
 
-  velocityX = 0
-  velocityY = 0
+  private dragFromX = 0
+  private dragFromY = 0
+  private dragStartX = 0
+  private dragStartY = 0
+  private dragStartZoom = 0
+  dragging = false
 
-  isDragging = false
-  dragStartX = 0
-  dragStartY = 0
-  lastDragX = 0
-  lastDragY = 0
+  private flyActive = false
+  private flyFromX = 0
+  private flyFromY = 0
+  private flyFromZoom = 0
+  private flyToX = 0
+  private flyToY = 0
+  private flyToZoom = 0
+  private flyDuration = 0
+  private flyTime = 0
 
-  flyActive = false
-  flyStartX = 0
-  flyStartY = 0
-  flyStartZoom = 0
-  flyTargetX = 0
-  flyTargetY = 0
-  flyTargetZoom = 0
-  flyDuration = 0
-  flyElapsed = 0
+  private storedX = 0.5
+  private storedY = 0.5
+  private storedZoom = 0.5
 
-  constructor() {
-    this.x = 0.5
-    this.y = 0.5
-    this.zoom = 0.5
-    this.targetX = 0.5
-    this.targetY = 0.5
-    this.targetZoom = 0.5
+  worldToScreen(wx: number, wy: number, w: number, h: number) {
+    const sx = (wx - this.x) * this.zoom * Math.min(w, h) + w / 2
+    const sy = (wy - this.y) * this.zoom * Math.min(w, h) + h / 2
+    return { x: sx, y: sy }
   }
 
-  update(dt: number, screenW: number, screenH: number): void {
-    const scale = Math.min(screenW, screenH)
-
-    if (this.flyActive) {
-      this.flyElapsed += dt
-      const t = Math.min(1, this.flyElapsed / this.flyDuration)
-      const e = easeInOutQuad(t)
-      this.x = this.flyStartX + (this.flyTargetX - this.flyStartX) * e
-      this.y = this.flyStartY + (this.flyTargetY - this.flyStartY) * e
-      this.zoom = this.flyStartZoom + (this.flyTargetZoom - this.flyStartZoom) * e
-      this.targetX = this.x
-      this.targetY = this.y
-      this.targetZoom = this.zoom
-      if (t >= 1) {
-        this.flyActive = false
-        this.x = this.flyTargetX
-        this.y = this.flyTargetY
-        this.zoom = this.flyTargetZoom
-        this.targetX = this.x
-        this.targetY = this.y
-        this.targetZoom = this.zoom
-        this.velocityX = 0
-        this.velocityY = 0
-      }
-      this.clampBounds(scale, screenW, screenH)
-      return
-    }
-
-    if (!this.isDragging) {
-      this.velocityX *= CAMERA_INERTIA
-      this.velocityY *= CAMERA_INERTIA
-      if (Math.abs(this.velocityX) < 0.00001) this.velocityX = 0
-      if (Math.abs(this.velocityY) < 0.00001) this.velocityY = 0
-      this.targetX += this.velocityX * dt * 0.5
-      this.targetY += this.velocityY * dt * 0.5
-    }
-
-    this.x += (this.targetX - this.x) * 0.08
-    this.y += (this.targetY - this.y) * 0.08
-    this.zoom += (this.targetZoom - this.zoom) * 0.08
-
-    this.clampBounds(scale, screenW, screenH)
+  screenToWorld(sx: number, sy: number, w: number, h: number) {
+    const scale = this.zoom * Math.min(w, h)
+    const wx = (sx - w / 2) / scale + this.x
+    const wy = (sy - h / 2) / scale + this.y
+    return { x: wx, y: wy }
   }
 
-  private clampBounds(scale: number, screenW: number, screenH: number): void {
-    const halfVisX = screenW / (2 * scale * this.zoom)
-    const halfVisY = screenH / (2 * scale * this.zoom)
-    const margin = 0.05
-    const minX = -margin + halfVisX
-    const maxX = 1 + margin - halfVisX
-    const minY = -margin + halfVisY
-    const maxY = 1 + margin - halfVisY
-
-    if (minX < maxX) {
-      this.x = Math.max(minX, Math.min(maxX, this.x))
-      this.targetX = Math.max(minX, Math.min(maxX, this.targetX))
-    } else {
-      this.x = 0.5
-      this.targetX = 0.5
-    }
-    if (minY < maxY) {
-      this.y = Math.max(minY, Math.min(maxY, this.y))
-      this.targetY = Math.max(minY, Math.min(maxY, this.targetY))
-    } else {
-      this.y = 0.5
-      this.targetY = 0.5
-    }
-  }
-
-  startDrag(sx: number, sy: number): void {
-    this.isDragging = true
+  startDrag(sx: number, sy: number) {
+    this.dragging = true
+    this.dragFromX = this.x
+    this.dragFromY = this.y
     this.dragStartX = sx
     this.dragStartY = sy
-    this.lastDragX = sx
-    this.lastDragY = sy
-    this.velocityX = 0
-    this.velocityY = 0
+    this.dragStartZoom = this.zoom
+    this.vx = 0
+    this.vy = 0
     this.flyActive = false
   }
 
-  drag(sx: number, sy: number, screenW: number, screenH: number): void {
-    if (!this.isDragging) return
-    const scale = Math.min(screenW, screenH)
-    const dx = (sx - this.lastDragX) / (scale * this.zoom)
-    const dy = (sy - this.lastDragY) / (scale * this.zoom)
-    this.targetX -= dx
-    this.targetY -= dy
-    this.velocityX = -dx
-    this.velocityY = -dy
-    this.lastDragX = sx
-    this.lastDragY = sy
+  moveDrag(sx: number, sy: number, w: number, h: number) {
+    if (!this.dragging) return
+    const scale = this.dragStartZoom * Math.min(w, h)
+    const dx = (this.dragStartX - sx) / scale
+    const dy = (this.dragStartY - sy) / scale
+    this.x = this.dragFromX + dx
+    this.y = this.dragFromY + dy
+    this.vx = dx
+    this.vy = dy
   }
 
-  endDrag(): void {
-    this.isDragging = false
+  endDrag() {
+    this.dragging = false
   }
 
-  wheel(delta: number, mouseX: number, mouseY: number, screenW: number, screenH: number): void {
-    const scale = Math.min(screenW, screenH)
-    const oldZoom = this.targetZoom
-    const newZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, oldZoom - delta * 0.001 * oldZoom))
-    if (newZoom === oldZoom) return
-
-    const worldX = (mouseX - screenW / 2) / (scale * oldZoom) + this.targetX
-    const worldY = (mouseY - screenH / 2) / (scale * oldZoom) + this.targetY
-    this.targetX = worldX - (mouseX - screenW / 2) / (scale * newZoom)
-    this.targetY = worldY - (mouseY - screenH / 2) / (scale * newZoom)
-    this.targetZoom = newZoom
-    this.flyActive = false
+  zoomAt(sx: number, sy: number, factor: number, w: number, h: number) {
+    const oldZoom = this.zoom
+    this.zoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, this.zoom * factor))
+    const actual = this.zoom / oldZoom
+    const world = this.screenToWorld(sx, sy, w, h)
+    this.x = world.x + (this.x - world.x) * (1 / actual)
+    this.y = world.y + (this.y - world.y) * (1 / actual)
   }
 
-  flyTo(worldX: number, worldY: number, targetZoom: number, duration: number): void {
-    this.flyActive = true
-    this.flyStartX = this.x
-    this.flyStartY = this.y
-    this.flyStartZoom = this.zoom
-    this.flyTargetX = worldX
-    this.flyTargetY = worldY
-    this.flyTargetZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, targetZoom))
+  tick(dt: number, _w: number, _h: number) {
+    if (this.flyActive) {
+      this.flyTime += dt
+      const t = Math.min(1, this.flyTime / this.flyDuration)
+      const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
+      this.x = this.flyFromX + (this.flyToX - this.flyFromX) * ease
+      this.y = this.flyFromY + (this.flyToY - this.flyFromY) * ease
+      this.zoom = this.flyFromZoom + (this.flyToZoom - this.flyFromZoom) * ease
+      if (t >= 1) this.flyActive = false
+    }
+
+    if (!this.dragging && !this.flyActive) {
+      this.x += this.vx
+      this.y += this.vy
+      this.vx *= CAMERA_INERTIA
+      this.vy *= CAMERA_INERTIA
+    }
+  }
+
+  private flyTo(x: number, y: number, zoom: number, duration: number) {
+    this.flyFromX = this.x
+    this.flyFromY = this.y
+    this.flyFromZoom = this.zoom
+    this.flyToX = x
+    this.flyToY = y
+    this.flyToZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoom))
     this.flyDuration = duration
-    this.flyElapsed = 0
-    this.velocityX = 0
-    this.velocityY = 0
+    this.flyTime = 0
+    this.flyActive = true
+    this.vx = 0
+    this.vy = 0
   }
 
-  worldToScreen(wx: number, wy: number, screenW: number, screenH: number): { x: number; y: number } {
-    const scale = Math.min(screenW, screenH)
-    return {
-      x: (wx - this.x) * scale * this.zoom + screenW / 2,
-      y: (wy - this.y) * scale * this.zoom + screenH / 2,
+  storeState() {
+    this.storedX = this.x
+    this.storedY = this.y
+    this.storedZoom = this.zoom
+  }
+
+  restoreState() {
+    this.flyTo(this.storedX, this.storedY, this.storedZoom, FOCUS_EXIT_DURATION)
+  }
+
+  flyToFit(souls: Soul[], clusterId: string, _screenW: number, _screenH: number) {
+    const cluster = CLUSTER_BY_ID.get(clusterId)
+    if (!cluster) return
+
+    let maxDist = 0
+    let count = 0
+    for (const s of souls) {
+      if (s.planet !== clusterId) continue
+      const dx = s.restX - cluster.cx
+      const dy = s.restY - cluster.cy
+      const dist = Math.sqrt(dx * dx + dy * dy)
+      if (dist > maxDist) maxDist = dist
+      count++
     }
+    if (count === 0 || maxDist < 0.001) return
+
+    const expandedRadius = maxDist * (1 + FOCUS_EXPANSION_AMPLITUDE)
+    const extent = expandedRadius * 2
+    const targetZoom = 0.8 / extent
+
+    this.storeState()
+    this.flyTo(cluster.cx, cluster.cy, targetZoom, FOCUS_FLY_DURATION)
   }
 
-  screenToWorld(sx: number, sy: number, screenW: number, screenH: number): { x: number; y: number } {
-    const scale = Math.min(screenW, screenH)
-    return {
-      x: (sx - screenW / 2) / (scale * this.zoom) + this.x,
-      y: (sy - screenH / 2) / (scale * this.zoom) + this.y,
-    }
-  }
-
-  getCurrentLod(): number {
-    return this.zoom
-  }
-
-  isFlying(): boolean {
+  isFlying() {
     return this.flyActive
   }
 }

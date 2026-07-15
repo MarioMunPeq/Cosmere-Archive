@@ -1,7 +1,9 @@
 import { useRef, useEffect, useCallback } from 'react'
 import { generateSoulField, SpatialGrid } from './SoulField'
 import { InteractionSystem } from './InteractionSystem'
+import { InteractionModel } from './InteractionModel'
 import { SelectionSystem } from './SelectionSystem'
+import { PhysicsSystem } from './PhysicsSystem'
 import { CameraController } from './Camera'
 import {
   drawBackground,
@@ -11,22 +13,24 @@ import {
   drawConnectionLines,
   drawClusterLabels,
 } from './Renderer'
-import { CLUSTERS, CLUSTER_HOVER_RADIUS_WORLD, LABEL_FADE_ZOOM, MIN_ZOOM } from './types'
+import { CLUSTERS, LABEL_FADE_ZOOM } from './types'
 import type { Soul } from './types'
 
 const CLICK_DRAG_THRESHOLD = 4
 const DBLCLICK_TIME = 400
-const FLY_DURATION = 0.8
 
 export function Canvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const soulsRef = useRef<Soul[]>([])
   const gridRef = useRef(new SpatialGrid(0.02))
+  const physicsRef = useRef(new PhysicsSystem())
   const interactionRef = useRef(new InteractionSystem())
+  const modelRef = useRef(new InteractionModel())
   const selectionRef = useRef(new SelectionSystem())
   const cameraRef = useRef(new CameraController())
+  const focusActiveRef = useRef(false)
 
-  const mouseRef = useRef({ x: 0, y: 0 })
+  const mouseRef = useRef({ x: -9999, y: -9999 })
   const rAFRef = useRef(0)
   const lastTimeRef = useRef(0)
   const sizeRef = useRef({ w: 0, h: 0 })
@@ -36,9 +40,7 @@ export function Canvas() {
     startX: number
     startY: number
     moved: boolean
-    lastX: number
-    lastY: number
-  }>({ active: false, startX: 0, startY: 0, moved: false, lastX: 0, lastY: 0 })
+  }>({ active: false, startX: 0, startY: 0, moved: false })
 
   const clickStateRef = useRef<{
     lastClickTime: number
@@ -47,6 +49,21 @@ export function Canvas() {
   }>({ lastClickTime: 0, lastClickX: 0, lastClickY: 0 })
 
   const clusterHoverRef = useRef<string | null>(null)
+
+  function setFocusMode(clusterId: string | null) {
+    const model = modelRef.current
+    const camera = cameraRef.current
+    if (clusterId) {
+      model.enterFocus(clusterId)
+      const { w, h } = sizeRef.current
+      if (w > 0 && h > 0) camera.flyToFit(soulsRef.current, clusterId, w, h)
+      focusActiveRef.current = true
+    } else {
+      model.exitFocus()
+      camera.restoreState()
+      focusActiveRef.current = false
+    }
+  }
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -69,6 +86,13 @@ export function Canvas() {
     resize()
     window.addEventListener('resize', resize)
 
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && focusActiveRef.current) {
+        setFocusMode(null)
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+
     function tick(time: number) {
       if (!running) return
       const dt = Math.min(0.05, (time - (lastTimeRef.current || time)) / 1000)
@@ -76,6 +100,8 @@ export function Canvas() {
 
       const souls = soulsRef.current
       const grid = gridRef.current
+      const physics = physicsRef.current
+      const model = modelRef.current
       const interaction = interactionRef.current
       const selection = selectionRef.current
       const camera = cameraRef.current
@@ -87,55 +113,50 @@ export function Canvas() {
         return
       }
 
-      camera.update(dt, w, h)
+      const mouse = mouseRef.current
+      const hasMouse = mouse.x >= 0
+      const worldMouse = hasMouse ? camera.screenToWorld(mouse.x, mouse.y, w, h) : { x: -9999, y: -9999 }
 
-      const worldMouse = camera.screenToWorld(mouseRef.current.x, mouseRef.current.y, w, h)
-      interaction.updateMouse(mouseRef.current.x, mouseRef.current.y, worldMouse.x, worldMouse.y)
+      interaction.updateMouse(mouse.x, mouse.y, worldMouse.x, worldMouse.y)
 
-      for (const s of souls) {
-        const noiseAngle = Math.sin(time * 0.0004 + s.noisePhase) * Math.PI
-        s.vx += Math.cos(noiseAngle) * s.noiseAmp * dt * 0.12
-        s.vy += Math.sin(noiseAngle) * s.noiseAmp * dt * 0.12
-        s.orbitAngle += s.orbitSpeed * dt * 0.6
-        s.vx += Math.cos(s.orbitAngle) * s.orbitRadius * 0.005
-        s.vy += Math.sin(s.orbitAngle) * s.orbitRadius * 0.005
-        s.vx *= 0.995
-        s.vy *= 0.995
-        s.x += s.vx * dt * 2.5
-        s.y += s.vy * dt * 2.5
-      }
+      model.updateFocusTransition(dt)
 
-      interaction.updateCuriosity(souls, dt)
+      model.applyClusterExpansion(souls)
+
+      const frozenSet = model.focusPlanet ? new Set([model.focusPlanet]) : new Set<string>()
+      physics.tick(dt, souls, worldMouse.x, worldMouse.y, grid, time, frozenSet)
+
       grid.rebuild(souls)
-      interaction.updateHover(grid)
+
+      if (hasMouse) {
+        model.updateHoveredCluster(worldMouse.x, worldMouse.y)
+        model.updateSmartHover(grid, worldMouse.x, worldMouse.y, souls)
+      } else {
+        model.hoveredId = null
+        model.hoveredSoul = null
+        model.hoveredCluster = null
+      }
+      model.updateHoverSoulDisplay(souls)
+      model.updateHoverLabelOpacity(dt)
+      model.updatePlanetDimming(souls)
+
       selection.tick(dt, souls)
 
-      let nearestCluster: string | null = null
-      let nearestDist = CLUSTER_HOVER_RADIUS_WORLD
-      for (const cluster of CLUSTERS) {
-        if (cluster.planetRadius === 0) continue
-        const dx = worldMouse.x - cluster.cx
-        const dy = worldMouse.y - cluster.cy
-        const dist = Math.sqrt(dx * dx + dy * dy)
-        if (dist < nearestDist) {
-          nearestDist = dist
-          nearestCluster = cluster.id
-        }
-      }
-      clusterHoverRef.current = nearestCluster
+      clusterHoverRef.current = model.hoveredCluster
 
+      camera.tick(dt, w, h)
+
+      // Render
       const dpr = window.devicePixelRatio || 1
       ctx.save()
       ctx.scale(dpr, dpr)
 
       drawBackground(ctx, w, h, selection.state.bgDim, time)
-      drawSouls(ctx, souls, camera, w, h, time, selection.state.soulId, interaction.hoveredId, interaction.rippleRadius)
+      drawSouls(ctx, souls, camera, w, h, time, dt, selection.state.soulId, model.hoveredId, 0)
       drawClusterLabels(ctx, camera, w, h, clusterHoverRef.current)
-
       drawConnectionLines(ctx, selection.state, souls, time)
 
       const selectedSoul = selection.getSelectedSoul(souls)
-
       if (
         selection.state.phase === 'displaying' ||
         selection.state.phase === 'revealing' ||
@@ -145,7 +166,7 @@ export function Canvas() {
       }
 
       if (!selectedSoul || selection.state.phase === 'idle') {
-        drawHoverLabel(ctx, interaction.hoveredSoul, interaction.hoverLabelOpacity)
+        drawHoverLabel(ctx, model.hoveredSoul, model.hoverLabelOpacity)
       }
 
       ctx.restore()
@@ -157,22 +178,23 @@ export function Canvas() {
     return () => {
       running = false
       window.removeEventListener('resize', resize)
+      window.removeEventListener('keydown', onKeyDown)
       cancelAnimationFrame(rAFRef.current)
     }
   }, [])
-
-  function flyToCluster(clusterId: string) {
-    const cluster = CLUSTERS.find((c) => c.id === clusterId)
-    if (!cluster) return
-    const targetZoom = Math.max(1.2, MIN_ZOOM * 4)
-    cameraRef.current.flyTo(cluster.cx, cluster.cy, targetZoom, FLY_DURATION)
-  }
 
   function handleClick(mx: number, my: number) {
     const { w, h } = sizeRef.current
     if (w === 0 || h === 0) return
     const camera = cameraRef.current
+    const selection = selectionRef.current
+    const model = modelRef.current
+    const souls = soulsRef.current
+    const grid = gridRef.current
 
+    const worldMouse = camera.screenToWorld(mx, my, w, h)
+
+    // Cluster label click — enter focus mode
     for (const cluster of CLUSTERS) {
       if (cluster.planetRadius === 0) continue
       if (camera.zoom < LABEL_FADE_ZOOM * 0.5) continue
@@ -181,15 +203,17 @@ export function Canvas() {
       const dy = my - labelY
       const dx = mx - labelScreen.x
       if (dy > -20 && dy < 4 && Math.abs(dx) < 50) {
-        flyToCluster(cluster.id)
+        if (model.focusPlanet === cluster.id) return
+        setFocusMode(cluster.id)
         return
       }
     }
 
-    const selection = selectionRef.current
-    const interaction = interactionRef.current
-    const souls = soulsRef.current
-    const grid = gridRef.current
+    // Empty space click while focused — exit focus
+    if (focusActiveRef.current) {
+      setFocusMode(null)
+      return
+    }
 
     if (selection.state.phase === 'displaying') {
       selection.deselect()
@@ -197,33 +221,10 @@ export function Canvas() {
     }
     if (selection.state.phase !== 'idle') return
 
-    const clicked = interaction.tryClick(souls, grid)
+    // Soul selection
+    const clicked = findNearestSoul(grid, worldMouse.x, worldMouse.y)
     if (clicked) {
       selection.select(clicked, souls)
-    }
-  }
-
-  function handleDoubleClick(mx: number, my: number) {
-    const { w, h } = sizeRef.current
-    if (w === 0 || h === 0) return
-    const camera = cameraRef.current
-    const worldMouse = camera.screenToWorld(mx, my, w, h)
-
-    let nearestCluster: string | null = null
-    let nearestDist = 0.06
-    for (const cluster of CLUSTERS) {
-      if (cluster.planetRadius === 0) continue
-      const dx = worldMouse.x - cluster.cx
-      const dy = worldMouse.y - cluster.cy
-      const dist = Math.sqrt(dx * dx + dy * dy)
-      if (dist < nearestDist) {
-        nearestDist = dist
-        nearestCluster = cluster.id
-      }
-    }
-
-    if (nearestCluster) {
-      flyToCluster(nearestCluster)
     }
   }
 
@@ -239,8 +240,6 @@ export function Canvas() {
       startX: mx,
       startY: my,
       moved: false,
-      lastX: mx,
-      lastY: my,
     }
     cameraRef.current.startDrag(mx, my)
   }, [])
@@ -261,10 +260,8 @@ export function Canvas() {
       }
       const { w, h } = sizeRef.current
       if (w > 0 && h > 0) {
-        cameraRef.current.drag(mx, my, w, h)
+        cameraRef.current.moveDrag(mx, my, w, h)
       }
-      ds.lastX = mx
-      ds.lastY = my
     }
   }, [])
 
@@ -287,19 +284,17 @@ export function Canvas() {
       cs.lastClickX = mx
       cs.lastClickY = my
 
-      if (isDblClick) {
-        handleDoubleClick(mx, my)
-      } else {
+      if (!isDblClick) {
         handleClick(mx, my)
       }
     }
 
-    dragStateRef.current = { active: false, startX: 0, startY: 0, moved: false, lastX: 0, lastY: 0 }
+    dragStateRef.current = { active: false, startX: 0, startY: 0, moved: false }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const onPointerLeave = useCallback(() => {
     mouseRef.current = { x: -9999, y: -9999 }
-    dragStateRef.current = { active: false, startX: 0, startY: 0, moved: false, lastX: 0, lastY: 0 }
+    dragStateRef.current = { active: false, startX: 0, startY: 0, moved: false }
   }, [])
 
   const onWheel = useCallback((e: React.WheelEvent) => {
@@ -310,7 +305,8 @@ export function Canvas() {
     const my = e.clientY - rect.top
     const { w, h } = sizeRef.current
     if (w > 0 && h > 0) {
-      cameraRef.current.wheel(e.deltaY, mx, my, w, h)
+      const factor = e.deltaY > 0 ? 0.92 : 1.08
+      cameraRef.current.zoomAt(mx, my, factor, w, h)
     }
   }, [])
 
@@ -327,4 +323,21 @@ export function Canvas() {
       onContextMenu={(e) => e.preventDefault()}
     />
   )
+}
+
+function findNearestSoul(grid: SpatialGrid, wx: number, wy: number): Soul | null {
+  const CLICK_RADIUS = 0.08
+  const candidates = grid.query(wx, wy, CLICK_RADIUS)
+  let best: Soul | null = null
+  let bestDist = CLICK_RADIUS
+  for (const s of candidates) {
+    const dx = s.x - wx
+    const dy = s.y - wy
+    const dist = Math.sqrt(dx * dx + dy * dy)
+    if (dist < bestDist) {
+      bestDist = dist
+      best = s
+    }
+  }
+  return best
 }

@@ -57,6 +57,8 @@ export class SelectionSystem {
 
     s.progress += dt
 
+    const selectedSoul = souls.find((x) => x.id === s.soulId)
+
     switch (s.phase) {
       case 'growing': {
         const t = Math.min(1, s.progress / 0.6)
@@ -64,18 +66,21 @@ export class SelectionSystem {
         s.bgDim = ease * 0.45
         s.otherDim = ease * 0.5
 
+        const selX = selectedSoul?.x ?? 0
+        const selY = selectedSoul?.y ?? 0
+
         for (const soul of souls) {
-          if (soul.id === s.soulId) {
-            soul.targetScale = 1 + ease * 1.5
-            soul.targetGlow = 1 + ease * 1.2
+          if (soul.id === s.soulId && selectedSoul) {
+            selectedSoul.targetScale = 1 + ease * 1.5
+            selectedSoul.targetGlow = 1 + ease * 1.2
           } else {
-            const dx = soul.x - (souls.find((x) => x.id === s.soulId)?.x ?? 0)
-            const dy = soul.y - (souls.find((x) => x.id === s.soulId)?.y ?? 0)
+            const dx = soul.x - selX
+            const dy = soul.y - selY
             const dist = Math.sqrt(dx * dx + dy * dy)
-            if (dist < 100 && dist > 0.1) {
-              const push = (ease * 20) / Math.max(1, dist)
-              soul.curiousDx += (dx / dist) * push
-              soul.curiousDy += (dy / dist) * push
+            if (dist < 0.05 && dist > 0.001) {
+              const push = (ease * 0.003) / Math.max(0.001, dist * 5)
+              soul.vx += (dx / dist) * push * dt * 60
+              soul.vy += (dy / dist) * push * dt * 60
             }
             soul.targetOpacity = 0.7 * (1 - s.otherDim)
           }

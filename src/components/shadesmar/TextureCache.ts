@@ -76,7 +76,7 @@ export function clearTextureCache(): void {
 }
 
 const PREWARM_RADII = [3, 5, 7, 9, 11, 14, 16, 18, 22, 26, 30, 35, 40]
-const PREWARM_KINDS = Object.keys(ENTITY_VISUALS) as EntityKind[]
+const PREWARM_KINDS: EntityKind[] = ['character', 'important_character', 'herald']
 
 export function prewarmTextures(): void {
   for (const k of PREWARM_KINDS) {

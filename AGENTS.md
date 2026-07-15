@@ -73,17 +73,15 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - Fixed overflow bug on Locations/Shards tabs: removed extra flex wrappers, added `min-h-0` to `mx-auto` div, `h-full` to grid container, `shrink-0` to non-scrollable elements
 - All 251 tests pass, `tsc -b` clean, `pnpm lint` clean, ESLint clean (can commit)
 
-- **SHADESMAR REBOOT V2 — Ocean of Souls**: Complete from-scratch rewrite. No Three.js, no graph visualization, no nodes/edges. Pure Canvas2D ocean of 700 glowing souls.
-- **Architecture**: 8 files in `src/components/shadesmar/` — `types.ts`, `SoulField.ts`, `InteractionSystem.ts`, `SelectionSystem.ts`, `TextureCache.ts`, `Renderer.ts`, `Canvas.tsx`, `index.ts`. No subdirectories, no hooks/, no lib/.
-- **Soul system**: 8 types (neutral/character/herald/radiant/shard/world/magic/event) with distinct colors. Pre-rendered radial gradient textures cached in offscreen canvases. Cluster-based natural distribution (20 clusters, 30 souls each, 700 total). Spatial grid for fast proximity queries.
-- **Organic motion**: Noise-based drift + micro-orbit + damping. Each soul has unique phase, amp, orbit parameters. No linear movement — everything feels alive.
-- **View drift**: Camera floats slowly via sinusoidal drift + cursor edge-push. User never controls camera directly — only the souls and view drift naturally.
-- **Cursor curiosity**: Souls within 250px become curious and drift toward cursor with distance-weighted force. Not magnetic — organic.
-- **Hover**: Nearest soul within 30px glows brighter (1.3x scale), neighbors within 60px react at 0.4x strength. Smooth lerp transitions.
-- **Click selection**: Phase 1 (centering, 0.5s): view shifts to center soul, background dims 50%, other souls fade to 10% opacity, selected soul grows 2.5x, 24 spiral particles emerge. Phase 2 (revealing, 0.5s): connection lines (to 5 random nearby souls) animate in with flow particles, title fades in above, description below. Phase 3 (displaying): stable info view. Click again or Escape to deselect (reverse animation).
-- **Info overlay**: No cards, no panels, no glassmorphism. Title (22px serif) renders above soul, description (14px sans, wrapped 320px) below. Connection lines at 12% opacity with particle flow. Knowledge materializes into the world.
-- **Visual language**: Near-black ocean (#050508) with subtle blue radial gradient. 80 fog particles at 3-8% opacity for atmosphere. Vignette overlay. Souls are 3-9px radius with 3-layer radial gradients (core → color → glow → transparent).
-- **All 206 tests pass**, `tsc -b` clean, `pnpm lint` clean (0 errors, 1 warning — pre-existing in Honorblade.tsx)
+- **SHADESMAR — Ocean of Souls (Canvas2D)**: Pure Canvas2D ocean of ~700 living constellation beads. No Three.js. 10 files in `src/components/shadesmar/`.
+- **Constellation philosophy**: Each planet is a recognizable constellation. The silhouette is sacred. Beads are anchored to permanent home positions with only tiny idle animation. Interaction adapts around the layout, not the opposite.
+- **Three interaction stages**: Stage 1 (Observation) — compact, elegant, almost still. Stage 2 (Focus) — cursor approaches, constellation smoothly expands 160-180% via uniform scaling around cluster center, preserving every relative position. Stage 3 (Inspection) — after 300ms over cluster, full expansion, physics nearly frozen, precise character selection.
+- **Soul system**: 8 entity types (neutral/character/herald/radiant/shard/world/magic/event) with distinct colors. 20 planet-based clusters, ~35 souls each. Spatial grid (0.02u cell) for fast queries. Bead sizes: character 8-12px, important 14-20px, herald 18-26px (~30% larger).
+- **PhysicsSystem**: Minimal — spring toward rest (`SPRING_K=6.0`), damping (`pow(0.94, dt*60)`), tiny noise (`NOISE_AMP=0.0003`). No cursor attraction. No repulsion. Frozen clusters skip all physics.
+- **InteractionModel**: Direct cluster expansion (critically damped spring, uniform scale `1 + amp × factor`), smart hover (best-candidate scoring within `SMART_HOVER_RADIUS=0.08`), planet focus dimming (non-active clusters reduced to 35% opacity), hovered bead freeze (vx/vy=0), neighbor glow/scale ripple.
+- **Camera**: Float drift + drag + wheel zoom + fly-to. Frame-rate independent lerp/inertia. Never auto-zooms during interaction.
+- **SelectionSystem**: 3-phase click animation (grow → reveal → display), connection lines, spiral particles, dimmed background. Push strength reduced 3×.
+- **Visual language**: Near-black ocean (#050508), 80 fog particles, vignette, 3-layer radial gradient souls (larger: 8-26px). Hover label with fade transition. Elegant slow glow/scale feedback — no game-like effects.
 
 - Built Aharietiam v4 environment-only scene (10 components: Sky, Camera, Terrain, Altar, Debris, Atmosphere, Particles, Lighting, Scene) — pure CSS 3D perspective, no images, no blades, no UI
 - Added CircleOfBlades — 10 Honorblade objects in a perfect circle, each with 9 CSS layers (Shadow, GroundCrack, ContactShadow, StormlightGlow, BladeImage, Reflection, StormlightSweep, Particles, Hitbox), no `<img>` only, mathematical positioning, Taln placeholder with silhouette only
@@ -413,4 +411,17 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - **Noise utility** (`noise.ts`): Deterministic 2D simplex noise with seeded permutation table (no `Math.random()`). Used by WorldStreamer for density, height, scale, and per-bead parameter generation.
 - **Deleted old files**: Ocean.tsx, CameraController.tsx, Cursor.tsx, Atmosphere.tsx (old), WorldGenerator.tsx, ocean-globals.ts, ShadesmarScene.tsx, hooks/ (all 5 files), BeadMaterial.tsx (inlined).
 - **New files**: World.tsx, InfiniteOcean.tsx, BeadField.tsx, WorldStreamer.tsx, FloatingMotion.tsx, InteractionSystem.tsx, CameraRig.tsx, Lighting.tsx, Atmosphere.tsx, entities.ts, noise.ts, index.ts, audio/{AmbientManager,FutureWhispers,FutureSphereAudio,index}.ts.
+- All 206 tests pass, `tsc -b` clean, `pnpm lint` clean.
+
+##### Done (this session: Constellation-based interaction rewrite — sacred layout, direct expansion, no particle physics)
+
+- **Complete philosophical rewrite**: Removed all particle-simulation concepts (radial expansion forces, separation push, physics scaling, cursor attraction, repulsion). Replaced with constellation-based model: beads are anchored to permanent home positions, clusters preserve their silhouette at all times.
+- **Direct position scaling for expansion**: `InteractionModel.applyClusterExpansion()` directly computes `s.x = cx + (restX - cx) × (1 + amp × factor)` for every soul in the active cluster. No velocity, no forces, no integration — just deterministic uniform scaling around the cluster center. Preserves every relative position perfectly.
+- **Three clear interaction stages**: Stage 1 (Observation) — compact layout, tiny ambient noise only. Stage 2 (Focus) — cursor enters `CLUSTER_EXPANSION_RADIUS=0.18`, cluster smoothly expands to 160% (`CLUSTER_EXPANSION_AMPLITUDE=0.6`). Stage 3 (Inspection) — after 300ms over cluster, expansion reaches 180% (`CLUSTER_INSPECTION_AMPLITUDE=0.8`), physics frozen for that cluster.
+- **Cluster-level freeze**: When expansion factor exceeds `CLUSTER_FREEZE_THRESHOLD=0.3`, the entire cluster's souls are added to `frozenClusters`. `PhysicsSystem` skips all physics (damping, spring, noise, integration) for souls in frozen clusters. Hovered bead also has vx/vy zeroed explicitly.
+- **Planet focus dimming**: `updatePlanetFocus()` reduces non-active cluster souls to 35% opacity when a cluster is active, enhancing attention on the current constellation. Restores to 70% when no cluster active.
+- **Physics reduced to minimum**: `SPRING_K=6.0`, `DAMPING_PER_FRAME=0.94`, `NOISE_AMP=0.0003`, `MAX_VELOCITY=0.00005`. No cursor force. No repulsion. Removed `REPULSION_STRENGTH`, `CURSOR_FORCE`, `EXPANSION_FORCE`, `SEPARATION_*`, `INSPECTION_PHYSICS_SCALE` constants.
+- **Larger beads + hitboxes**: ENTITY_VISUALS sizes increased ~30% (character 8-12px, important 14-20px, herald 18-26px). `CLICK_RADIUS_WORLD=0.08` (4.4× previous). `SMART_HOVER_RADIUS=0.08` (2.7× previous). Selection feels predictive, not pixel-perfect.
+- **Smart hover preserved**: Best-candidate scoring (distance 100×, size 15×, stability 20×, mass 5×) + flicker prevention within `HOVER_STABILITY_THRESHOLD=0.006`.
+- **Old fields removed**: `frozen` from Soul type, `justClicked` from InteractionSystem, all unused constants. InteractionSystem simplified to minimal mouse tracker.
 - All 206 tests pass, `tsc -b` clean, `pnpm lint` clean.

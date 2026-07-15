@@ -81,18 +81,22 @@ export function drawSouls(
   w: number,
   h: number,
   time: number,
+  dt: number,
   selectedId: string | null,
   hoveredId: string | null,
   rippleProgress: number,
 ): void {
   screenPos.clear()
-  const currentLod = camera.getCurrentLod()
+  const currentLod = camera.zoom * 2
   const margin = 100
+  const lerpFactor = 1 - Math.pow(1 - 0.04, dt * 60)
+  const glowLerp = 1 - Math.pow(1 - 0.08, dt * 60)
+  const scaleLerp = 1 - Math.pow(1 - 0.06, dt * 60)
 
   const visible: Soul[] = []
   for (const s of souls) {
     if (currentLod < s.lodReveal) continue
-    const sp = camera.worldToScreen(s.x + s.curiousDx, s.y + s.curiousDy, w, h)
+    const sp = camera.worldToScreen(s.x, s.y, w, h)
     if (sp.x < -margin || sp.x > w + margin || sp.y < -margin || sp.y > h + margin) continue
     screenPos.set(s.id, sp)
     visible.push(s)
@@ -105,50 +109,45 @@ export function drawSouls(
     const px = p.x
     const py = p.y
 
-    s.opacity += (s.targetOpacity - s.opacity) * 0.04
-    s.glow += (s.targetGlow - s.glow) * 0.08
-    s.scale += (s.targetScale - s.scale) * 0.06
+    s.opacity += (s.targetOpacity - s.opacity) * lerpFactor
+    s.glow += (s.targetGlow - s.glow) * glowLerp
+    s.scale += (s.targetScale - s.scale) * scaleLerp
 
     const breathe = 1 + Math.sin(time * 0.6 + s.breathePhase) * 0.025
-    const displayR = s.radius * s.scale * breathe * (s.mass >= 3 ? 0.75 : 1)
+    const displayR = s.radius * s.scale * breathe
     const alpha = s.opacity * (1 + s.glow * 0.2)
     if (alpha < 0.005) continue
 
     const tex = getSoulTexture(s.kind, Math.round(displayR))
 
-    ctx.save()
-    ctx.globalAlpha = Math.min(1, alpha)
-
     if (s.id === selectedId) {
+      ctx.globalAlpha = Math.min(1, alpha)
       ctx.drawImage(tex, px - displayR * 1.3, py - displayR * 1.3, displayR * 2.6, displayR * 2.6)
       if (s.glow > 0.5) {
         ctx.globalAlpha = 0.08 * s.glow
         ctx.drawImage(tex, px - displayR * 3, py - displayR * 3, displayR * 6, displayR * 6)
       }
     } else if (s.id === hoveredId) {
+      ctx.globalAlpha = Math.min(1, alpha)
       ctx.drawImage(tex, px - displayR * 1.15, py - displayR * 1.15, displayR * 2.3, displayR * 2.3)
       ctx.globalAlpha = 0.05
       ctx.drawImage(tex, px - displayR * 3, py - displayR * 3, displayR * 6, displayR * 6)
     } else {
+      ctx.globalAlpha = Math.min(1, alpha)
       ctx.drawImage(tex, px - displayR, py - displayR, displayR * 2, displayR * 2)
     }
-
-    ctx.restore()
   }
 
   if (rippleProgress > 0 && rippleProgress < 1 && hoveredId) {
     const p = screenPos.get(hoveredId)
     if (p) {
-      const rp = rippleProgress
-      const r = 15 + rp * 50
-      ctx.save()
-      ctx.globalAlpha = (1 - rp) * 0.1
-      ctx.strokeStyle = `rgba(200, 215, 235, ${1 - rp})`
+      const r = 15 + rippleProgress * 50
+      ctx.globalAlpha = (1 - rippleProgress) * 0.1
+      ctx.strokeStyle = `rgba(200, 215, 235, ${1 - rippleProgress})`
       ctx.lineWidth = 1
       ctx.beginPath()
       ctx.arc(p.x, p.y, r, 0, Math.PI * 2)
       ctx.stroke()
-      ctx.restore()
     }
   }
 }
@@ -162,14 +161,12 @@ export function drawHoverLabel(ctx: CanvasRenderingContext2D, soul: Soul | null,
   const p = screenPos.get(soul.id)
   if (!p) return
 
-  ctx.save()
   ctx.globalAlpha = opacity * 0.85
   ctx.font = '400 11px "Inter", "system-ui", sans-serif'
   ctx.textAlign = 'center'
   ctx.textBaseline = 'bottom'
   ctx.fillStyle = 'rgba(200, 210, 225, 1)'
   ctx.fillText(soul.name, p.x, p.y - soul.radius * soul.scale - 8)
-  ctx.restore()
 }
 
 export function drawClusterLabels(
@@ -197,17 +194,14 @@ export function drawClusterLabels(
       const grad = ctx.createRadialGradient(sp.x, sp.y, 0, sp.x, sp.y, glowR)
       grad.addColorStop(0, `rgba(${cluster.color}, ${glowA})`)
       grad.addColorStop(1, `rgba(${cluster.color}, 0)`)
-      ctx.save()
       ctx.fillStyle = grad
       ctx.beginPath()
       ctx.arc(sp.x, sp.y, glowR, 0, Math.PI * 2)
       ctx.fill()
-      ctx.restore()
     }
 
     const labelY = sp.y - cluster.planetRadius * Math.min(w, h) * camera.zoom - 6
 
-    ctx.save()
     ctx.globalAlpha = a
     ctx.font = '400 13px "EB Garamond", "Georgia", serif'
     ctx.textAlign = 'center'
@@ -216,7 +210,6 @@ export function drawClusterLabels(
     ctx.shadowColor = `rgba(${cluster.color}, ${a * 0.3})`
     ctx.shadowBlur = isHovered ? 8 : 4
     ctx.fillText(cluster.name, sp.x, labelY)
-    ctx.restore()
   }
 }
 
@@ -240,7 +233,6 @@ export function drawSelectionInfo(ctx: CanvasRenderingContext2D, state: Selectio
   if (state.phase === 'revealing' || state.phase === 'displaying') {
     const titleAlpha = Math.max(0, Math.min(1, (state.progress - 0.15) * 3))
     if (titleAlpha > 0) {
-      ctx.save()
       ctx.globalAlpha = titleAlpha
 
       const topY = py - soul.radius * soul.scale - 16
@@ -274,8 +266,6 @@ export function drawSelectionInfo(ctx: CanvasRenderingContext2D, state: Selectio
           ctx.fillText(lines[i]!, px, startY + i * lineH)
         }
       }
-
-      ctx.restore()
     }
   }
 }
@@ -299,7 +289,6 @@ export function drawConnectionLines(
     const bPos = screenPos.get(to.id)
     if (!bPos) continue
 
-    ctx.save()
     ctx.globalAlpha = c.progress * 0.1
     ctx.strokeStyle = `rgba(${c.color}, 1)`
     ctx.lineWidth = 1
@@ -317,7 +306,5 @@ export function drawConnectionLines(
       ctx.fillStyle = `rgba(${c.color}, ${c.progress * 0.3})`
       ctx.fill()
     }
-
-    ctx.restore()
   }
 }
