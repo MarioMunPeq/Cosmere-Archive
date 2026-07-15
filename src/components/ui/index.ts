@@ -6,7 +6,7 @@ export { default as CloseButton } from './CloseButton'
 export { default as CompareCharacterPanel } from './CompareCharacterPanel'
 export { default as ColorDot } from './ColorDot'
 export { default as CommandPalette } from './CommandPalette'
-export { default as DetailPanel } from './DetailPanel'
+
 export { default as EmptyState } from './EmptyState'
 export { default as ErrorFallback } from './ErrorFallback'
 export { default as InfoSection } from './InfoSection'

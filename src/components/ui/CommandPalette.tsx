@@ -19,7 +19,7 @@ const PAGE_COMMANDS: Command[] = [
   { id: 'books', label: 'Books', description: 'All Cosmere books', to: '/books', icon: '📚' },
   { id: 'characters', label: 'Characters', description: 'Notable Cosmere characters', to: '/characters', icon: '👤' },
   { id: 'shards', label: 'Shards', description: 'Shards of Adonalsium', to: '/locations?tab=shards', icon: '💎' },
-  { id: 'timeline', label: 'Timeline', description: 'Cosmere timeline of events', to: '/timeline', icon: '📅' },
+  { id: 'chronology', label: 'Chronology', description: 'Cosmere chronological record', to: '/chronology', icon: '📜' },
   { id: 'magic', label: 'Magic Systems', description: 'Magic across the Cosmere', to: '/magic', icon: '✨' },
   {
     id: 'relationships',

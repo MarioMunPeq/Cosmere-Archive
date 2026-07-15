@@ -10,6 +10,7 @@ export interface TimelineEvent {
   characters?: string[]
   worldhoppers?: string[]
   importance: number
+  archivistNote?: string
 }
 
 export const TIMELINE_EVENTS: TimelineEvent[] = [
@@ -78,6 +79,8 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     planets: [],
     worldhoppers: ['hoid'],
     importance: 5,
+    archivistNote:
+      'The exact identity of the sixteenth Vessel remains a subject of intense debate among Silverlight scholars. Some records suggest a name that has been deliberately erased from every known account.',
   },
   {
     id: 'shattering-aftermath',
@@ -227,12 +230,14 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     id: 'first-desolation',
     title: 'First Desolation',
     description:
-      'The first Desolation on Roshar. The Voidbringers, led by Odium, attack humanity. The Heralds and the Knights Radiant are created to fight them.',
-    year: -4500,
-    type: 'historical',
+      'The first of many Desolations begins, where the Voidbringers attack Roshar. The Heralds and the Knights Radiant form the first defenses. The Oathpact is established.',
+    year: -5000,
+    type: 'cataclysm',
     saga: 'stormlight',
     planets: ['roshar'],
     importance: 5,
+    archivistNote:
+      'Rosharan records of the early Desolations are fragmentary at best. The exact chronology has been reconstructed from singer songs, spren memories, and the few surviving Dawnchant texts.',
   },
   {
     id: 'oathpact-created',
@@ -266,6 +271,8 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     saga: 'stormlight',
     planets: ['roshar'],
     importance: 5,
+    archivistNote:
+      'The Heralds\u2019 abandonment of the Oathpact remains one of the most debated events in Cosmere history. Scadrian and Selish accounts of this period differ markedly from Rosharan sources, and several Silverlight researchers have proposed that the event was not a betrayal but a calculated sacrifice.',
   },
   {
     id: 'taln-suffers',
@@ -293,17 +300,6 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     saga: 'elantris',
     planets: ['sel'],
     importance: 5,
-  },
-  {
-    id: 'silver-kingdom-fall',
-    title: 'Fall of the Silver Kingdoms',
-    description:
-      'After millennia of Desolations and the abandonment of the Oathpact, the Silver Kingdoms of Roshar gradually dissolve into smaller nations. The Heralds go into hiding or are worshipped as mythical figures. The Radiant orders become the dominant military force.',
-    year: -2000,
-    type: 'historical',
-    saga: 'stormlight',
-    planets: ['roshar'],
-    importance: 4,
   },
   {
     id: 'urithiru-abandoned',
@@ -410,8 +406,10 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     type: 'historical',
     saga: 'mistborn-era-1',
     planets: ['scadrial'],
-    characters: ['rashek'],
+    characters: ['rashek', 'alendi', 'kwaan'],
     importance: 5,
+    archivistNote:
+      'Dates before the Lord Ruler\u2019s calendar reforms should be considered approximate. Scadrian chronology becomes reliable only after the establishment of the Final Empire.',
   },
   {
     id: 'final-empire-creation',
@@ -555,14 +553,14 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     id: 'kelsier-death',
     title: 'Death of Kelsier',
     description:
-      'Kelsier sacrifices himself to inspire the skaa rebellion. He dies in the battle against the Lord Ruler, but his spirit persists in the Scadrian Cognitive Realm, trapped and furious.',
-    year: 1024,
+      'Kelsier is killed by the Lord Ruler during the initial rebellion. His death becomes the catalyst that unites the underground and eventually brings down the Final Empire.',
+    year: 1022,
     type: 'death',
     saga: 'mistborn-era-1',
     planets: ['scadrial'],
-    characters: ['kelsier'],
-    worldhoppers: ['kelsier'],
     importance: 5,
+    archivistNote:
+      "The circumstances of Kelsier's survival beyond death remain deliberately obscure. The Sovereign's later appearances suggest his cognitive shadow persisted, though the mechanism differs significantly from known Rosharan or Nalthian models.",
   },
   {
     id: 'well-of-ascension',
@@ -601,20 +599,11 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     type: 'cataclysm',
     saga: 'mistborn-era-1',
     planets: ['scadrial'],
-    characters: ['sazed', 'spook', 'tenSoon', 'marsh'],
+    characters: ['sazed', 'spook', 'tenSoon', 'marsh', 'elend', 'vin', 'kelsier', 'hoid'],
+    worldhoppers: ['hoid'],
     importance: 5,
-  },
-  {
-    id: 'elendel-founded',
-    title: 'Founding of Elendel',
-    description:
-      'Spook (now known as the Lord Mistborn) founds the city of Elendel in the Basin, named in honor of Elend Venture. It becomes the cultural and political center of the new Scadrial.',
-    year: 1027,
-    type: 'historical',
-    saga: 'mistborn-era-1',
-    planets: ['scadrial'],
-    characters: ['spook', 'sazed'],
-    importance: 4,
+    archivistNote:
+      'The Catacendre represents the only known instance of a single person assuming two Shards simultaneously and successfully merging them. Whether Harmony\u2019s dual nature is a strength or a limitation remains a central question in Cosmere theology.',
   },
   {
     id: 'kelsier-survives',
@@ -949,19 +938,6 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     importance: 5,
   },
   {
-    id: 'the-lost-metal',
-    title: 'The Lost Metal',
-    description:
-      'Wax and Wayne face the threat of Autonomy (Bavadin), who attempts to invade Scadrial. Wayne sacrifices himself to save Elendel. Scadrial officially opens to the Cosmere. Wax and Steris have children.',
-    year: 1328,
-    type: 'book',
-    saga: 'mistborn-era-2',
-    planets: ['scadrial'],
-    characters: ['wax', 'wayne', 'marasi', 'steris', 'kelsier', 'harmony'],
-    worldhoppers: ['kelsier'],
-    importance: 5,
-  },
-  {
     id: 'wayne-death',
     title: 'Death of Wayne',
     description:
@@ -1148,6 +1124,8 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     characters: ['kaladin', 'shallan', 'dalinar', 'adalinar', 'hoid', 'navani', 'szeth', 'nightblood', 'vasher'],
     worldhoppers: ['hoid', 'vasher', 'kelsier'],
     importance: 5,
+    archivistNote:
+      'The Everstorm represents a fundamental change to Rosharan investiture. Unlike the highstorms that preceded it, which were part of Honor\u2019s original design, the Everstorm was created by Odium. Its long-term effects on Roshar\u2019s ecology and investiture systems are still being studied.',
   },
   {
     id: 'rhythm-of-war',
@@ -1210,6 +1188,8 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     characters: ['taravangian', 'dalinar', 'hoid'],
     worldhoppers: ['hoid'],
     importance: 5,
+    archivistNote:
+      'This represents the first known instance of a Shard changing Vessels not through death or voluntary transfer, but through deliberate manipulation. The implications for our understanding of Shardic bonds are profound.',
   },
   {
     id: 'hoid-loses-breaths',

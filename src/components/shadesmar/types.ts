@@ -117,16 +117,11 @@ export const CLUSTERS: ClusterDef[] = [
 
 export const CLUSTER_BY_ID = new Map<string, ClusterDef>(CLUSTERS.map((c) => [c.id, c]))
 
-export const CURSOR_RADIUS_WORLD = 0.06
-export const HOVER_RADIUS_WORLD = 0.018
-export const CLICK_RADIUS_WORLD = 0.08
 export const FOG_PARTICLES = 100
-export const BG_DIM_FACTOR = 0.35
 export const OTHER_DIM_FACTOR = 0.4
 
 export const MIN_ZOOM = 0.3
 export const MAX_ZOOM = 5.0
-export const CAMERA_DRAG_DAMPING = 0.92
 export const CAMERA_INERTIA = 0.97
 
 export const LABEL_FADE_ZOOM = 0.25

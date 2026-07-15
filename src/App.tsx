@@ -15,7 +15,7 @@ const BookPage = lazy(() => import('@/pages/BookPage'))
 const StandaloneBooksPage = lazy(() => import('@/pages/StandaloneBooksPage'))
 const CharactersPage = lazy(() => import('@/pages/CharactersPage'))
 const LocationsPage = lazy(() => import('@/pages/LocationsPage'))
-const StandaloneTimelinePage = lazy(() => import('@/pages/StandaloneTimelinePage'))
+const StandaloneChronologyPage = lazy(() => import('@/pages/StandaloneChronologyPage'))
 const LibraryPage = lazy(() => import('@/pages/LibraryPage'))
 const StatsPage = lazy(() => import('@/pages/StatsPage'))
 const ComparePage = lazy(() => import('@/pages/ComparePage'))
@@ -105,13 +105,14 @@ export default function App() {
             }
           />
           <Route
-            path="timeline"
+            path="chronology"
             element={
               <RouteFallback>
-                <StandaloneTimelinePage />
+                <StandaloneChronologyPage />
               </RouteFallback>
             }
           />
+          <Route path="timeline" element={<Navigate to="/chronology" replace />} />
           <Route
             path="library"
             element={

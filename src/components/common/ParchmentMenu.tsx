@@ -10,7 +10,7 @@ const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'] as c
 const DRAWER_LINKS: { to: string; label: string }[] = [
   { to: '/map', label: 'Interactive Map' },
   { to: '/characters', label: 'Characters' },
-  { to: '/timeline', label: 'Timeline' },
+  { to: '/chronology', label: 'Chronology' },
   { to: '/books', label: 'Books' },
   { to: '/locations', label: 'Locations' },
   { to: '/magic', label: 'Magic Systems' },

@@ -116,47 +116,6 @@ export function IconSearch({ className, size = 16 }: IconProps) {
   )
 }
 
-export function IconCheck({ className, size = 16 }: IconProps) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      className={className}
-    >
-      <path d="M4 8l3 3 5-6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
-export function SkipBackIcon({ className, size = 12 }: IconProps) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 12 12" fill="currentColor" className={className}>
-      <path d="M1 1v10M10 1l-6 5 6 5V1z" />
-    </svg>
-  )
-}
-
-export function SkipForwardIcon({ className, size = 12 }: IconProps) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 12 12" fill="currentColor" className={className}>
-      <path d="M11 1v10M2 1l6 5-6 5V1z" />
-    </svg>
-  )
-}
-
-export function PauseIcon({ className, size = 12 }: IconProps) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 12 12" fill="currentColor" className={className}>
-      <rect x="2" y="1" width="3" height="10" rx="0.5" />
-      <rect x="7" y="1" width="3" height="10" rx="0.5" />
-    </svg>
-  )
-}
-
 export function PlayIcon({ className, size = 10 }: IconProps) {
   return (
     <svg width={size} height={size} viewBox="0 0 12 12" fill="currentColor" className={className}>

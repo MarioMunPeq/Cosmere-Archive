@@ -961,8 +961,8 @@ function getContent(
           </div>
           <div style={{ fontSize: 5, textAlign: 'right', opacity: 0.2, marginTop: 3 }}>
             →{' '}
-            <Link to="/timeline" style={{ textDecoration: 'underline', textUnderlineOffset: 1, color: 'inherit' }}>
-              Full Timeline
+            <Link to="/chronology" style={{ textDecoration: 'underline', textUnderlineOffset: 1, color: 'inherit' }}>
+              Full Chronology
             </Link>
           </div>
         </div>
@@ -1010,7 +1010,7 @@ function getFocusAnnotation(id: string): string {
     shards: 'Matrix of Shardic influence across worlds. Sixteen Shards, many worlds.',
     connections: 'Fundamental forces and their relationships. The scholar continues to refine this model.',
     chronology: 'Publication history — from Elantris (2005) to the present. The timeline expands.',
-    heralds: 'The nine Honorblades of Aharietiam. Talenel\'s stands empty.',
+    heralds: "The nine Honorblades of Aharietiam. Talenel's stands empty.",
   }
   return map[id] ?? 'Further investigation required.'
 }

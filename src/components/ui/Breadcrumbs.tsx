@@ -10,7 +10,7 @@ const SEGMENT_NAMES: Record<string, string> = {
   aharietiam: 'Aharietiam',
   books: 'Books',
   stats: 'Taravangian Diagram',
-  timeline: 'Timeline',
+  chronology: 'Chronology',
   locations: 'Locations',
   shadesmar: 'Shadesmar',
 }

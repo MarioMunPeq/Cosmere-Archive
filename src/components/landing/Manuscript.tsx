@@ -55,10 +55,10 @@ const CHAPTERS: Chapter[] = [
   },
   {
     numeral: 'VII',
-    title: 'TIMELINE',
-    description: 'Chronological archive of important events.',
+    title: 'CHRONOLOGY',
+    description: 'Historical record of events across the ages.',
     annotation: 'Fol. 47–54',
-    to: '/timeline',
+    to: '/chronology',
   },
   {
     numeral: 'VIII',

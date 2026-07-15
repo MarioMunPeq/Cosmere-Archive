@@ -1,25 +1,25 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import StandaloneTimelinePage from '@/pages/StandaloneTimelinePage'
+import StandaloneChronologyPage from '@/pages/StandaloneChronologyPage'
 
 function renderPage() {
   return render(
     <MemoryRouter>
-      <StandaloneTimelinePage />
+      <StandaloneChronologyPage />
     </MemoryRouter>,
   )
 }
 
-describe('StandaloneTimelinePage', () => {
+describe('StandaloneChronologyPage', () => {
   it('renders the page title', () => {
     renderPage()
-    expect(screen.getByRole('heading', { name: /cosmere timeline/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /cosmere chronology/i })).toBeInTheDocument()
   })
 
   it('renders the description', () => {
     renderPage()
-    expect(screen.getByText(/key events across the cosmere/i)).toBeInTheDocument()
+    expect(screen.getByText(/anonymous archivist of silverlight/i)).toBeInTheDocument()
   })
 
   it('has a back link to the map', () => {
@@ -27,7 +27,7 @@ describe('StandaloneTimelinePage', () => {
     expect(screen.getByText('Back to the map')).toBeInTheDocument()
   })
 
-  it('renders saga fork buttons', () => {
+  it('renders saga index tabs', () => {
     renderPage()
     expect(screen.getByText('Mistborn Era 1')).toBeInTheDocument()
     expect(screen.getByText('The Stormlight Archive')).toBeInTheDocument()
