@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import Layout from '@/components/common/Layout'
 import ErrorBoundary from '@/components/common/ErrorBoundary'
 import RouteFallback from '@/components/ui/RouteFallback'
-import { MapPageSkeleton, BooksPageSkeleton, CharactersPageSkeleton } from '@/components/ui/Skeleton'
+import { MapPageSkeleton, BooksPageSkeleton } from '@/components/ui/Skeleton'
 
 const LandingPage = lazy(() => import('@/pages/LandingPage'))
 const MapPage = lazy(() => import('@/pages/MapPage'))
@@ -13,7 +13,7 @@ const MagicSystemsPage = lazy(() => import('@/pages/MagicSystemsPage'))
 const AharietiamPage = lazy(() => import('@/pages/AharietiamPage'))
 const BookPage = lazy(() => import('@/pages/BookPage'))
 const StandaloneBooksPage = lazy(() => import('@/pages/StandaloneBooksPage'))
-const CharactersPage = lazy(() => import('@/pages/CharactersPage'))
+const BiographicalArchivesPage = lazy(() => import('@/pages/BiographicalArchivesPage'))
 const LocationsPage = lazy(() => import('@/pages/LocationsPage'))
 const StandaloneChronologyPage = lazy(() => import('@/pages/StandaloneChronologyPage'))
 const LibraryPage = lazy(() => import('@/pages/LibraryPage'))
@@ -61,7 +61,7 @@ export default function App() {
               </RouteFallback>
             }
           />
-          <Route path="family-tree" element={<Navigate to="/characters?tab=family" replace />} />
+          <Route path="family-tree" element={<Navigate to="/characters?tab=bloodlines" replace />} />
           <Route path="heralds" element={<Navigate to="/aharietiam" replace />} />
           <Route
             path="aharietiam"
@@ -90,8 +90,8 @@ export default function App() {
           <Route
             path="characters"
             element={
-              <RouteFallback fallback={<CharactersPageSkeleton />}>
-                <CharactersPage />
+              <RouteFallback>
+                <BiographicalArchivesPage />
               </RouteFallback>
             }
           />

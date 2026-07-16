@@ -154,7 +154,7 @@ export default function BookPage() {
                 {characters.map((c) => (
                   <TransitionLink
                     key={c.id}
-                    to={`/characters?tab=characters&character=${c.id}`}
+                    to={`/characters?character=${c.id}`}
                     className="rounded-xl border border-gray-800/60 bg-gray-900/60 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20"
                   >
                     <div className="font-medium text-gray-200 text-sm">{c.name}</div>

@@ -34,8 +34,8 @@ const CHAPTERS: Chapter[] = [
   },
   {
     numeral: 'IV',
-    title: 'PEOPLE',
-    description: 'Characters, families and historical figures.',
+    title: 'CHARACTER RECORDS',
+    description: 'Individual archived records of every known person throughout the Cosmere.',
     annotation: 'Fol. 25–32',
     to: '/characters',
   },
@@ -62,10 +62,10 @@ const CHAPTERS: Chapter[] = [
   },
   {
     numeral: 'VIII',
-    title: 'RELATIONSHIPS',
-    description: 'Genealogical and connection records.',
+    title: 'CONNECTIONS',
+    description: 'Political, personal and historical links between archived individuals.',
     annotation: 'Fol. 55–60',
-    to: '/characters?tab=relationships',
+    to: '/characters?tab=connections',
   },
   {
     numeral: 'IX',

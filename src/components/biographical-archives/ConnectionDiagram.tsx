@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { ALL_CHARACTERS } from '@/data/static'
 import { CHARACTER_RELATIONSHIPS } from '@/data/static/static-data'
 import { RELATIONSHIP_LABELS } from '@/types/relationships'
-import PortraitMedallion from './PortraitMedallion'
+import CharacterPortrait from './CharacterPortrait'
 import type { Character } from '@/types/character'
 
 interface Props {
@@ -65,7 +65,7 @@ export default function ConnectionDiagram({ selectedId, onNavigateCharacter }: P
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center gap-3 mb-4">
-        <PortraitMedallion name={selectedChar.name} size={48} />
+        <CharacterPortrait name={selectedChar.name} size={48} />
         <div>
           <h3
             className="font-serif text-[clamp(14px,1.4vw,20px)] font-bold tracking-[0.04em]"
@@ -117,7 +117,7 @@ export default function ConnectionDiagram({ selectedId, onNavigateCharacter }: P
                     className="flex items-center justify-center w-full h-full cursor-pointer"
                     onClick={() => onNavigateCharacter(rel.character.id)}
                   >
-                    <PortraitMedallion name={rel.character.name} size={54} />
+                    <CharacterPortrait name={rel.character.name} size={54} />
                   </div>
                 </foreignObject>
                 <text
@@ -137,7 +137,7 @@ export default function ConnectionDiagram({ selectedId, onNavigateCharacter }: P
 
           <foreignObject x={CENTER_X - 28} y={CENTER_Y - 28} width={56} height={56}>
             <div className="flex items-center justify-center w-full h-full">
-              <PortraitMedallion name={selectedChar.name} size={52} />
+              <CharacterPortrait name={selectedChar.name} size={52} />
             </div>
           </foreignObject>
         </svg>

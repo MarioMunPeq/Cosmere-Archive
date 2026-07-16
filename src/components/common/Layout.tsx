@@ -12,9 +12,9 @@ import { useViewTransitionNavigate } from '@/hooks/useViewTransition'
 
 const NAV_SHORTCUTS: [string, string][] = [
   ['1', '/about'],
-  ['2', '/characters?tab=relationships'],
+  ['2', '/characters?tab=connections'],
   ['3', '/magic'],
-  ['4', '/characters?tab=family'],
+  ['4', '/characters?tab=bloodlines'],
   ['5', '/aharietiam'],
   ['6', '/locations'],
   ['7', '/books'],

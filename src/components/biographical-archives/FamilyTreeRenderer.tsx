@@ -3,7 +3,7 @@ import { FAMILY_TREES } from '@/data/static/family-data'
 import { ALL_CHARACTERS } from '@/data/static'
 import { CHARACTER_SPANS } from '@/data/static/timeline'
 import { computeGenealogyLayout } from '@/utils/genealogy-layout'
-import PortraitMedallion from './PortraitMedallion'
+import CharacterPortrait from './CharacterPortrait'
 import type { Character } from '@/types/character'
 
 interface Props {
@@ -93,7 +93,7 @@ export default function FamilyTreeRenderer({ activeFamilyId, selectedMemberId, o
               >
                 <foreignObject x={pos.x - 36} y={pos.y - 36} width={72} height={72}>
                   <div className="flex items-center justify-center w-full h-full">
-                    <PortraitMedallion name={char?.name ?? member.name} isDeceased={isDeceased} size={68} />
+                    <CharacterPortrait name={char?.name ?? member.name} isDeceased={isDeceased} size={68} />
                   </div>
                 </foreignObject>
 

@@ -42,11 +42,14 @@ const CHAPTERS: {
 
 export default function BiographicalContents({ onSelectChapter }: Props) {
   return (
-    <div>
-      <h2 className="font-serif text-xs uppercase tracking-[0.15em] mb-5" style={{ color: 'rgba(80,60,40,0.35)' }}>
+    <div className="max-w-[400px]">
+      <h2
+        className="font-serif text-[14px] uppercase tracking-[0.18em] mb-8 font-bold"
+        style={{ color: 'rgba(60,45,30,0.45)' }}
+      >
         Contents
       </h2>
-      <div className="space-y-[3px]">
+      <div className="space-y-[6px]">
         {CHAPTERS.map((ch) => (
           <span
             key={ch.id}
@@ -59,27 +62,35 @@ export default function BiographicalContents({ onSelectChapter }: Props) {
                 onSelectChapter(ch.id)
               }
             }}
-            className="flex items-baseline gap-2 cursor-pointer group"
+            className="flex items-baseline gap-3 cursor-pointer group"
           >
-            <span className="font-serif text-[11px] min-w-[22px] text-right" style={{ color: 'rgba(80,60,40,0.25)' }}>
+            <span
+              className="font-serif text-[12px] font-medium min-w-[24px] text-right"
+              style={{ color: 'rgba(80,60,40,0.25)' }}
+            >
               {ch.numeral}.
             </span>
             <span
-              className="font-serif text-sm tracking-[0.02em] transition-opacity group-hover:opacity-60"
+              className="font-serif text-[18px] tracking-[0.02em] transition-opacity group-hover:opacity-60"
               style={{ color: '#2d1a0e' }}
             >
               {ch.title}
             </span>
             <span className="flex-1 min-w-[12px]" style={{ borderBottom: '1px dotted rgba(80,60,40,0.08)' }} />
-            <span className="font-serif text-[10px]" style={{ color: 'rgba(80,60,40,0.2)' }}>
+            <span className="font-serif text-[11px]" style={{ color: 'rgba(80,60,40,0.22)' }}>
               {ch.folio}
             </span>
           </span>
         ))}
       </div>
-      <p className="font-serif text-[9px] italic mt-6" style={{ color: 'rgba(80,60,40,0.15)' }}>
-        Volume compiled from records preserved within the Silverlight Archives.
-      </p>
+      <div className="mt-6 pt-4 space-y-2" style={{ borderTop: '1px solid rgba(80,60,40,0.04)' }}>
+        <p className="font-serif text-[11px] leading-relaxed" style={{ color: 'rgba(80,60,40,0.2)' }}>
+          Volume compiled from records preserved within the Silverlight Archives.
+        </p>
+        <p className="font-serif text-[10px] italic" style={{ color: 'rgba(80,60,40,0.12)' }}>
+          Fol. 25–32 · Biographical Series · Approved for reference
+        </p>
+      </div>
     </div>
   )
 }
