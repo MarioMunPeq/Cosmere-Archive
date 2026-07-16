@@ -1,188 +1,649 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import EmptyState from '@/components/ui/EmptyState'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
-import { PLANETS, BOOKS, ALL_CHARACTERS, getPlanetById } from '@/data/static'
-import type { Character } from '@/types'
+import { useViewTransitionNavigate } from '@/hooks/useViewTransition'
+import { getPlanetById, BOOKS, ALL_CHARACTERS } from '@/data/static'
 import { MAGIC_SYSTEMS, type MagicSystem } from '@/data/static/magic-systems'
-import MagicSystemDetail from '@/components/magic/MagicSystemDetail'
-import MagicSystemCard from '@/components/magic/MagicSystemCard'
-import CharacterDetailModal from '@/components/detail/CharacterDetailModal'
-import PageLayout from '@/components/ui/PageLayout'
+import type { Planet } from '@/types/planet'
+import ArchivalViewer from '@/components/ars-arcanum/ArchivalViewer'
+import ArchivalIndex from '@/components/ars-arcanum/ArchivalIndex'
+import AllomanticTable from '@/components/magic/AllomanticTable'
 
-function planetById(id: string) {
-  return getPlanetById(id)
+type Mode = 'toc' | 'chapter' | 'index'
+
+const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI'] as const
+const CHAPTER_ORDER = [
+  'yolen',
+  'roshar',
+  'scadrial',
+  'sel',
+  'nalthis',
+  'taldain',
+  'threnody',
+  'first-of-the-sun',
+  'komashi',
+  'lumar',
+  'canticle',
+]
+
+function getChapters(): { planet: Planet; systems: MagicSystem[] }[] {
+  const map = new Map<string, MagicSystem[]>()
+  for (const s of MAGIC_SYSTEMS) {
+    const existing = map.get(s.planetId) ?? []
+    existing.push(s)
+    map.set(s.planetId, existing)
+  }
+  return CHAPTER_ORDER.map((id) => {
+    const planet = getPlanetById(id)
+    const systems = map.get(id)
+    return planet && systems ? { planet, systems } : null
+  }).filter((x): x is { planet: Planet; systems: MagicSystem[] } => x !== null && x.planet !== undefined)
+}
+
+function getRelatedSystems(
+  system: MagicSystem,
+  allSystems: MagicSystem[],
+): { samePlanet: MagicSystem[]; sameShard: MagicSystem[]; sameClassification: MagicSystem[] } {
+  const samePlanet = allSystems.filter((s) => s.planetId === system.planetId && s.id !== system.id)
+  const sameShard = allSystems.filter(
+    (s) => s.shard === system.shard && s.planetId !== system.planetId && s.id !== system.id,
+  )
+  const sameClassification = system.classification
+    ? allSystems.filter(
+        (s) => s.classification === system.classification && s.planetId !== system.planetId && s.id !== system.id,
+      )
+    : []
+  return { samePlanet, sameShard, sameClassification }
 }
 
 export default function MagicSystemsPage() {
   const [searchParams] = useSearchParams()
+  const navigate = useViewTransitionNavigate()
+  const [mode, setMode] = useState<Mode>(() => (searchParams.get('system') ? 'chapter' : 'toc'))
+  const [currentChapter, setCurrentChapter] = useState<string | null>(() => {
+    const param = searchParams.get('system')
+    if (param) {
+      const sys = MAGIC_SYSTEMS.find((ms) => ms.id === param)
+      return sys?.planetId ?? null
+    }
+    return null
+  })
+  const [scrollToSection, setScrollToSection] = useState<string | null>(searchParams.get('system'))
 
   useSEOMeta({
-    title: 'Magic Systems — Cosmere Archive',
-    description: 'Explore all magic systems in the Cosmere — Allomancy, Surgebinding, AonDor, and more',
+    title: 'Ars Arcanum — Cosmere Archive',
+    description: 'Collected observations concerning the manifestations of Investiture throughout the known Cosmere.',
   })
 
-  const [planetFilter, setPlanetFilter] = useState<string>(() => {
-    const param = searchParams.get('system')
-    const found = MAGIC_SYSTEMS.find((ms) => ms.id === param)
-    return found?.planetId ?? ''
-  })
-  const [selectedSystem, setSelectedSystem] = useState<MagicSystem | null>(() => {
-    const param = searchParams.get('system')
-    return MAGIC_SYSTEMS.find((ms) => ms.id === param) ?? null
-  })
-  const [magicSearch, setMagicSearch] = useState('')
-  const [magicCharDetail, setMagicCharDetail] = useState<Character | null>(null)
+  const chapters = useMemo(() => getChapters(), [])
 
-  const magicFiltered = useMemo(() => {
-    if (!planetFilter) return MAGIC_SYSTEMS
-    return MAGIC_SYSTEMS.filter((s) => s.planetId === planetFilter)
-  }, [planetFilter])
+  const chapterData = useMemo(() => {
+    if (!currentChapter) return null
+    return chapters.find((c) => c.planet.id === currentChapter) ?? null
+  }, [currentChapter, chapters])
 
-  const magicTextFiltered = useMemo(() => {
-    if (!magicSearch.trim()) return magicFiltered
-    const q = magicSearch.toLowerCase().trim()
-    return magicFiltered.filter(
-      (s) =>
-        s.name.toLowerCase().includes(q) ||
-        s.shard.toLowerCase().includes(q) ||
-        s.description.toLowerCase().includes(q),
-    )
-  }, [magicFiltered, magicSearch])
+  const currentSystems = chapterData?.systems ?? []
+  const chapterIndex = currentChapter ? CHAPTER_ORDER.indexOf(currentChapter) : -1
 
-  const groupedByPlanet = useMemo(() => {
-    const groups = new Map<string, MagicSystem[]>()
-    for (const system of magicTextFiltered) {
-      const existing = groups.get(system.planetId) ?? []
-      existing.push(system)
-      groups.set(system.planetId, existing)
+  const chaptersForToc = useMemo(
+    () => chapters.map(({ planet, systems }, idx) => ({ planet, count: systems.length, roman: ROMAN[idx] ?? '' })),
+    [chapters],
+  )
+
+  const openChapter = useCallback((planetId: string, sectionId?: string) => {
+    setCurrentChapter(planetId)
+    setMode('chapter')
+    setScrollToSection(sectionId ?? null)
+  }, [])
+
+  const openIndex = useCallback(() => {
+    setMode('index')
+  }, [])
+
+  const backToToc = useCallback(() => {
+    setCurrentChapter(null)
+    setMode('toc')
+    setScrollToSection(null)
+  }, [])
+
+  const navigateToSystem = useCallback(
+    (system: MagicSystem) => {
+      if (system.planetId === currentChapter) {
+        document.getElementById(`section-${system.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      } else {
+        openChapter(system.planetId, system.id)
+      }
+    },
+    [currentChapter, openChapter],
+  )
+
+  const handleSystemClick = useCallback(
+    (system: MagicSystem) => {
+      openChapter(system.planetId)
+    },
+    [openChapter],
+  )
+
+  useEffect(() => {
+    if (scrollToSection) {
+      const id = scrollToSection
+      requestAnimationFrame(() => {
+        setScrollToSection(null)
+        document.getElementById(`section-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      })
     }
-    return Array.from(groups.entries()).sort((a, b) => a[0].localeCompare(b[0]))
-  }, [magicTextFiltered])
+  }, [scrollToSection])
 
-  const selectedDetail = useMemo(() => {
-    if (!selectedSystem) return null
-    const planet = planetById(selectedSystem.planetId)
-    const chars = ALL_CHARACTERS.filter((c) => c.planet === selectedSystem.planetId)
-    const books = selectedSystem.bookIds
+  const renderSection = (system: MagicSystem, sectionIndex: number) => {
+    const related = getRelatedSystems(system, currentSystems)
+    const planet = chapterData?.planet
+    const chars = ALL_CHARACTERS.filter((c) => c.planet === system.planetId)
+    const books = system.bookIds
       .map((bid) => BOOKS.find((b) => b.id === bid))
       .filter((b): b is (typeof BOOKS)[number] => !!b)
-    return { system: selectedSystem, planet, characters: chars, books }
-  }, [selectedSystem])
+
+    const allRelated = getRelatedSystems(system, MAGIC_SYSTEMS)
+    const shardRefs = allRelated.sameShard.slice(0, 3)
+    const classRefs = allRelated.sameClassification.slice(0, 3)
+
+    return (
+      <section key={system.id} id={`section-${system.id}`} className="mb-8">
+        <div className="h-px w-full mb-4" style={{ background: 'rgba(80,60,40,0.06)' }} />
+
+        <h2
+          className="font-serif text-[clamp(16px,1.6vw,22px)] font-bold tracking-[0.04em] leading-tight"
+          style={{ color: '#2d1a0e' }}
+        >
+          {sectionIndex + 1}. {system.name}
+        </h2>
+
+        <p
+          className="font-serif text-[clamp(10px,0.85vw,13px)] leading-[1.9] mt-3 mb-4"
+          style={{ color: 'rgba(40,30,20,0.75)' }}
+        >
+          {system.description}
+        </p>
+
+        {system.academicNote && (
+          <p
+            className="font-serif text-[10px] italic leading-relaxed mb-4 pl-3"
+            style={{ color: 'rgba(80,60,40,0.45)' }}
+          >
+            {system.academicNote}
+            <span
+              className="block mt-1 text-[8px] not-italic uppercase tracking-[0.08em]"
+              style={{ color: 'rgba(80,60,40,0.2)' }}
+            >
+              — Silverlight Scholarly Record
+            </span>
+          </p>
+        )}
+
+        {system.id === 'allomancy' && (
+          <div className="mb-4 pl-3">
+            <AllomanticTable />
+          </div>
+        )}
+
+        <div className="mb-3">
+          <p
+            className="font-serif text-[8px] uppercase tracking-[0.15em] mb-1.5"
+            style={{ color: 'rgba(80,60,40,0.2)' }}
+          >
+            Research Record
+          </p>
+          <div className="space-y-[1px]">
+            <RecordField label="Origin">{planet?.name ?? system.planetId}</RecordField>
+            <RecordField label="Shard">{system.shard}</RecordField>
+            {system.classification && <RecordField label="Classification">{system.classification}</RecordField>}
+            {system.status && <RecordField label="Status">{system.status}</RecordField>}
+            {books.length > 0 && (
+              <RecordField label="Appears in">
+                {books.map((b, i) => (
+                  <span key={b.id}>
+                    {i > 0 && <span style={{ color: 'rgba(80,60,40,0.2)' }}>; </span>}
+                    <span>{b.title}</span>
+                  </span>
+                ))}
+              </RecordField>
+            )}
+          </div>
+        </div>
+
+        {(related.samePlanet.length > 0 || shardRefs.length > 0 || classRefs.length > 0) && (
+          <div>
+            <p
+              className="font-serif text-[8px] uppercase tracking-[0.15em] mb-1"
+              style={{ color: 'rgba(80,60,40,0.2)' }}
+            >
+              See also
+            </p>
+            <div className="space-y-[1px]">
+              {related.samePlanet.map((s) => {
+                const secNum = currentSystems.indexOf(s)
+                return (
+                  <span
+                    key={s.id}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => navigateToSystem(s)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        navigateToSystem(s)
+                      }
+                    }}
+                    className="block font-serif text-[11px] italic cursor-pointer transition-opacity hover:opacity-60"
+                    style={{ color: 'rgba(60,40,25,0.45)' }}
+                  >
+                    → Sec. {secNum + 1}: {s.name}
+                  </span>
+                )
+              })}
+              {shardRefs.map((s) => {
+                const chIdx = CHAPTER_ORDER.indexOf(s.planetId)
+                const chRoman = chIdx >= 0 ? (ROMAN[chIdx] ?? '') : ''
+                return (
+                  <span
+                    key={s.id}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => navigateToSystem(s)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        navigateToSystem(s)
+                      }
+                    }}
+                    className="block font-serif text-[11px] italic cursor-pointer transition-opacity hover:opacity-60"
+                    style={{ color: 'rgba(60,40,25,0.3)' }}
+                  >
+                    → {s.name} · Ch. {chRoman} ({s.shard})
+                  </span>
+                )
+              })}
+              {classRefs.map((s) => {
+                const chIdx = CHAPTER_ORDER.indexOf(s.planetId)
+                const chRoman = chIdx >= 0 ? (ROMAN[chIdx] ?? '') : ''
+                return (
+                  <span
+                    key={s.id}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => navigateToSystem(s)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        navigateToSystem(s)
+                      }
+                    }}
+                    className="block font-serif text-[11px] italic cursor-pointer transition-opacity hover:opacity-60"
+                    style={{ color: 'rgba(60,40,25,0.3)' }}
+                  >
+                    → {s.name} · Ch. {chRoman} ({system.classification})
+                  </span>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {chars.length > 0 && (
+          <div className="mt-3">
+            <p
+              className="font-serif text-[8px] uppercase tracking-[0.15em] mb-1"
+              style={{ color: 'rgba(80,60,40,0.2)' }}
+            >
+              Known Practitioners
+            </p>
+            <p className="font-serif text-[11px]" style={{ color: 'rgba(60,40,25,0.55)' }}>
+              {chars
+                .map((c) => (
+                  <span
+                    key={c.id}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => navigate(`/characters?character=${c.id}`)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        navigate(`/characters?character=${c.id}`)
+                      }
+                    }}
+                    className="cursor-pointer transition-opacity hover:opacity-60"
+                    style={{
+                      textDecoration: 'underline',
+                      textDecorationColor: 'rgba(80,60,40,0.15)',
+                      textUnderlineOffset: '2px',
+                    }}
+                  >
+                    {c.name}
+                  </span>
+                ))
+                .reduce((acc, el, i, arr) => {
+                  if (i < arr.length - 1) {
+                    return [
+                      ...acc,
+                      el,
+                      <span key={`sep-${i}`} style={{ color: 'rgba(80,60,40,0.15)' }}>
+                        ,{' '}
+                      </span>,
+                    ]
+                  }
+                  return [...acc, el]
+                }, [] as React.ReactNode[])}
+            </p>
+          </div>
+        )}
+      </section>
+    )
+  }
+
+  const renderLeft = () => {
+    switch (mode) {
+      case 'toc':
+        return (
+          <div>
+            <h2
+              className="font-serif text-xs uppercase tracking-[0.15em] mb-5"
+              style={{ color: 'rgba(80,60,40,0.35)' }}
+            >
+              Contents
+            </h2>
+            <div className="space-y-[3px]">
+              {chaptersForToc.map(({ planet, count, roman }) => (
+                <span
+                  key={planet.id}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => openChapter(planet.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      openChapter(planet.id)
+                    }
+                  }}
+                  className="flex items-baseline gap-2 cursor-pointer group"
+                >
+                  <span
+                    className="font-serif text-[11px] min-w-[22px] text-right"
+                    style={{ color: 'rgba(80,60,40,0.25)' }}
+                  >
+                    {roman}.
+                  </span>
+                  <span
+                    className="font-serif text-sm tracking-[0.02em] transition-colors duration-150 group-hover:opacity-60"
+                    style={{ color: '#2d1a0e' }}
+                  >
+                    {planet.name}
+                  </span>
+                  <span className="flex-1 min-w-[12px]" style={{ borderBottom: '1px dotted rgba(80,60,40,0.08)' }} />
+                  <span className="font-serif text-[10px]" style={{ color: 'rgba(80,60,40,0.2)' }}>
+                    {count} manifestation{count !== 1 ? 's' : ''}
+                  </span>
+                </span>
+              ))}
+            </div>
+            <div className="mt-8">
+              <span
+                role="button"
+                tabIndex={0}
+                onClick={openIndex}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    openIndex()
+                  }
+                }}
+                className="font-serif text-[10px] uppercase tracking-[0.1em] cursor-pointer transition-opacity hover:opacity-60"
+                style={{ color: 'rgba(80,60,40,0.3)' }}
+              >
+                Archival Index →
+              </span>
+            </div>
+          </div>
+        )
+
+      case 'chapter':
+        return chapterData ? (
+          <div>
+            <span className="font-serif text-[9px] uppercase tracking-[0.12em]" style={{ color: 'rgba(80,60,40,0.2)' }}>
+              Chapter {chapterIndex >= 0 ? ROMAN[chapterIndex] : ''}
+            </span>
+            <h1
+              className="font-serif text-[clamp(18px,2vw,28px)] font-bold tracking-[0.06em] leading-tight mt-2 mb-1"
+              style={{ color: '#2d1a0e' }}
+            >
+              {chapterData.planet.name}
+            </h1>
+            <div className="space-y-0.5 mt-3 mb-5">
+              <p className="font-serif text-[10px]" style={{ color: 'rgba(80,60,40,0.3)' }}>
+                <span style={{ color: 'rgba(80,60,40,0.15)' }}>
+                  Shard{chapterData.planet.shard && chapterData.planet.shard.includes('&') ? 's' : ''}:
+                </span>{' '}
+                {chapterData.planet.shard ?? 'Unknown'}
+              </p>
+              <p className="font-serif text-[10px]" style={{ color: 'rgba(80,60,40,0.3)' }}>
+                <span style={{ color: 'rgba(80,60,40,0.15)' }}>Investiture:</span> {currentSystems.length} documented
+                manifestation{currentSystems.length !== 1 ? 's' : ''}
+              </p>
+            </div>
+
+            <div className="space-y-[1px]">
+              {currentSystems.map((system, idx) => (
+                <span
+                  key={system.id}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => {
+                    document
+                      .getElementById(`section-${system.id}`)
+                      ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      document
+                        .getElementById(`section-${system.id}`)
+                        ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                    }
+                  }}
+                  className="flex items-baseline gap-2 py-[3px] cursor-pointer group"
+                >
+                  <span
+                    className="font-serif text-[10px] min-w-[18px] text-right"
+                    style={{ color: 'rgba(80,60,40,0.15)' }}
+                  >
+                    {idx + 1}.
+                  </span>
+                  <span
+                    className="font-serif text-sm tracking-[0.02em] transition-opacity group-hover:opacity-60"
+                    style={{ color: '#2d1a0e' }}
+                  >
+                    {system.name}
+                  </span>
+                  {system.status && (
+                    <span
+                      className="ml-auto font-serif text-[8px] uppercase tracking-[0.06em]"
+                      style={{ color: 'rgba(80,60,40,0.15)' }}
+                    >
+                      {system.status === 'Documented'
+                        ? 'Doc.'
+                        : system.status === 'Partially Documented'
+                          ? 'Part.'
+                          : system.status === 'Poorly Understood'
+                            ? 'Unc.'
+                            : system.status}
+                    </span>
+                  )}
+                </span>
+              ))}
+            </div>
+
+            <div className="mt-6">
+              <span
+                role="button"
+                tabIndex={0}
+                onClick={backToToc}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    backToToc()
+                  }
+                }}
+                className="font-serif text-[10px] uppercase tracking-[0.1em] cursor-pointer transition-opacity hover:opacity-60"
+                style={{ color: 'rgba(80,60,40,0.3)' }}
+              >
+                ← Contents
+              </span>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <p className="font-serif text-[11px] italic" style={{ color: 'rgba(80,60,40,0.35)' }}>
+              Select a chapter from the contents.
+            </p>
+          </div>
+        )
+
+      case 'index':
+        return <ArchivalIndex systems={MAGIC_SYSTEMS} onSelectSystem={handleSystemClick} />
+    }
+  }
+
+  const renderRight = () => {
+    switch (mode) {
+      case 'toc':
+        return (
+          <div className="flex flex-col items-center justify-center text-center h-full">
+            <div className="mb-3 h-px w-12" style={{ background: 'rgba(80,60,40,0.12)' }} />
+            <h1
+              className="font-serif text-[clamp(24px,3vw,42px)] font-bold tracking-[0.15em] leading-tight"
+              style={{ color: '#2d1a0e' }}
+            >
+              ARS
+              <br />
+              ARCANUM
+            </h1>
+            <div className="mt-4 h-px w-10" style={{ background: 'rgba(80,60,40,0.1)' }} />
+            <p
+              className="mt-5 font-serif text-[clamp(10px,1vw,14px)] italic leading-relaxed max-w-[360px]"
+              style={{ color: 'rgba(80,60,40,0.55)' }}
+            >
+              Collected observations concerning the manifestations of Investiture throughout the known Cosmere
+            </p>
+            <div className="mt-8 space-y-1">
+              <p className="font-serif text-[clamp(9px,0.8vw,11px)]" style={{ color: 'rgba(80,60,40,0.35)' }}>
+                Compiled from the research of Khrissalla
+              </p>
+              <p className="font-serif text-[clamp(8px,0.7vw,10px)] italic" style={{ color: 'rgba(80,60,40,0.25)' }}>
+                Preserved within the Cosmere Archive
+              </p>
+            </div>
+            <div className="mt-10 h-px w-12" style={{ background: 'rgba(80,60,40,0.12)' }} />
+            <p
+              className="mt-4 font-serif text-[clamp(7px,0.6vw,8px)] uppercase tracking-[0.12em]"
+              style={{ color: 'rgba(80,60,40,0.15)' }}
+            >
+              — Silverlight Edition —
+            </p>
+          </div>
+        )
+
+      case 'chapter':
+        return chapterData ? (
+          <div>{currentSystems.map((system, idx) => renderSection(system, idx))}</div>
+        ) : (
+          <div className="flex flex-col items-center justify-center text-center h-full">
+            <p
+              className="font-serif text-[clamp(10px,0.9vw,13px)] italic leading-relaxed max-w-[360px]"
+              style={{ color: 'rgba(80,60,40,0.4)' }}
+            >
+              Select a chapter from the contents.
+            </p>
+          </div>
+        )
+
+      case 'index':
+        return (
+          <div>
+            <h2
+              className="font-serif text-xs uppercase tracking-[0.15em] mb-5"
+              style={{ color: 'rgba(80,60,40,0.35)' }}
+            >
+              By World
+            </h2>
+            <div className="space-y-4">
+              {chapters.map(({ planet, systems }) => {
+                const idx = CHAPTER_ORDER.indexOf(planet.id)
+                return (
+                  <div key={planet.id}>
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => openChapter(planet.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          openChapter(planet.id)
+                        }
+                      }}
+                      className="font-serif text-[12px] font-medium cursor-pointer transition-opacity hover:opacity-60"
+                      style={{ color: '#2d1a0e' }}
+                    >
+                      {idx >= 0 ? (ROMAN[idx] ?? '') : ''}. {planet.name}
+                    </span>
+                    {systems.map((s) => (
+                      <span
+                        key={s.id}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => navigateToSystem(s)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault()
+                            navigateToSystem(s)
+                          }
+                        }}
+                        className="block font-serif text-[11px] pl-4 py-[1px] cursor-pointer transition-opacity hover:opacity-60"
+                        style={{ color: 'rgba(60,40,25,0.45)' }}
+                      >
+                        {s.name}
+                      </span>
+                    ))}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )
+    }
+  }
 
   return (
-    <PageLayout variant="none">
-      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-        <div className="shrink-0 border-b border-gray-800/60 px-4 py-4 sm:px-6">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <h1 className="text-xl font-bold text-gray-100 sm:text-2xl">Magic Systems</h1>
-              <p className="mt-0.5 text-xs text-gray-500">The investiture-based magic systems of the Cosmere</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <input
-                type="search"
-                placeholder="Search systems..."
-                value={magicSearch}
-                onChange={(e) => {
-                  setMagicSearch(e.target.value)
-                  setSelectedSystem(null)
-                }}
-                className="w-44 rounded-lg border border-gray-700/60 bg-gray-800/50 px-3 py-1.5 text-xs text-gray-300 placeholder-gray-600 outline-none transition-colors focus:border-purple-500/50 sm:w-48"
-              />
-              <select
-                value={planetFilter}
-                onChange={(e) => {
-                  setPlanetFilter(e.target.value)
-                  setSelectedSystem(null)
-                }}
-                className="rounded-lg border border-gray-700 bg-gray-900 px-3 py-1.5 text-xs text-gray-300 outline-none transition-colors focus:border-purple-500/60"
-              >
-                <option value="">All Planets</option>
-                {PLANETS.filter((p) => MAGIC_SYSTEMS.some((s) => s.planetId === p.id)).map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div className="relative flex min-h-0 flex-1 overflow-hidden">
-          <div className="flex-1 overflow-y-auto p-4 sm:p-6">
-            <div className="mx-auto max-w-6xl">
-              {groupedByPlanet.length === 0 ? (
-                <EmptyState message="No magic systems match your search." />
-              ) : (
-                groupedByPlanet.map(([planetId, systems]) => {
-                  const planet = planetById(planetId)
-                  if (!planet) return null
-                  return (
-                    <div key={planetId} className="mb-8">
-                      <div className="mb-3 flex items-center gap-2">
-                        <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: planet.color }} />
-                        <h2 className="text-sm font-semibold text-gray-200">{planet.name}</h2>
-                        <span className="text-xs text-gray-600">{systems.length}</span>
-                      </div>
-                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {systems.map((s) => {
-                          const chars = ALL_CHARACTERS.filter((c) => c.planet === s.planetId)
-                          const books = s.bookIds
-                            .map((bid) => BOOKS.find((b) => b.id === bid))
-                            .filter((b): b is (typeof BOOKS)[number] => !!b)
-                          return (
-                            <button key={s.id} onClick={() => setSelectedSystem(s)} className="text-left">
-                              <MagicSystemCard
-                                system={s}
-                                planet={planet}
-                                characters={chars}
-                                booksCount={books.length}
-                              />
-                            </button>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  )
-                })
-              )}
-            </div>
-          </div>
-
-          {selectedSystem && selectedDetail && (
-            <div className="w-96 shrink-0 overflow-y-auto border-l border-gray-800/60 bg-gray-950/95 backdrop-blur-xl">
-              <div className="sticky top-0 flex items-center justify-between border-b border-gray-800/60 bg-gray-950/90 px-5 py-3 backdrop-blur-sm">
-                <span className="text-xs font-medium text-gray-500">Detail</span>
-                <button
-                  onClick={() => setSelectedSystem(null)}
-                  className="text-gray-600 transition-colors hover:text-gray-300"
-                  aria-label="Close detail"
-                >
-                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M18 6 6 18" />
-                    <path d="m6 6 12 12" />
-                  </svg>
-                </button>
-              </div>
-              <div className="p-5">
-                <MagicSystemDetail
-                  system={selectedDetail.system}
-                  planet={selectedDetail.planet}
-                  characters={selectedDetail.characters}
-                  books={selectedDetail.books}
-                  onSelectCharacter={(id) => {
-                    const found = ALL_CHARACTERS.find((c) => c.id === id)
-                    if (found) setMagicCharDetail(found)
-                  }}
-                />
-              </div>
-            </div>
-          )}
-        </div>
+    <div
+      className="flex min-h-0 flex-1 flex-col overflow-hidden"
+      style={{ background: 'radial-gradient(ellipse at 50% 50%, #1a1008 0%, #0f0a06 100%)' }}
+    >
+      <div className="relative flex flex-1 min-h-0">
+        <ArchivalViewer left={renderLeft()} right={renderRight()} />
       </div>
+    </div>
+  )
+}
 
-      {magicCharDetail && <CharacterDetailModal character={magicCharDetail} onClose={() => setMagicCharDetail(null)} />}
-    </PageLayout>
+function RecordField({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex gap-3">
+      <span
+        className="font-serif text-[9px] uppercase tracking-[0.1em] shrink-0 text-right"
+        style={{ color: 'rgba(80,60,40,0.2)', minWidth: '80px' }}
+      >
+        {label}
+      </span>
+      <span className="font-serif text-[clamp(10px,0.8vw,12px)]" style={{ color: 'rgba(60,40,25,0.65)' }}>
+        {children}
+      </span>
+    </div>
   )
 }

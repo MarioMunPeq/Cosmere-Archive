@@ -6,7 +6,7 @@ const SEGMENT_NAMES: Record<string, string> = {
   about: 'About',
   relationships: 'Relationships',
   characters: 'Characters',
-  magic: 'Magic Systems',
+  magic: 'Ars Arcanum',
   aharietiam: 'Aharietiam',
   books: 'Books',
   stats: 'Taravangian Diagram',

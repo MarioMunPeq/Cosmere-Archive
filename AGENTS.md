@@ -103,6 +103,19 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - **Files modified**: `PlanetRenderer.tsx` (replaced SVG highstorm imports), `index.css` (removed all `hs-*` CSS keyframes/classes), `AGENTS.md`
 - All 265 tests pass, `tsc -b` clean, `pnpm lint` clean
 
+##### Done (this session: Ars Arcanum — pure manuscript purge)
+
+- **Complete from‑scratch rewrite**: Deleted `AcademicRecord.tsx`, `CrossReferences.tsx`, `ClothRibbons.tsx`, `Marginalia.tsx`. Rewrote `MagicSystemsPage.tsx` with simplified state machine (`toc` | `chapter` | `index` — no `record` mode).
+- **No floating UI**: Search bar, ClothRibbons, bottom folio, cross‑reference labels — all removed. Every element lives inside the `ArchivalViewer` paper columns.
+- **No buttons**: TOC entries, chapter mini‑index, system cross‑references, index entries — all `<span role="button">` with `cursor:pointer` and subtle hover opacity. No `bg`, no `border`, no `rounded`, no `padding` that suggests a UI widget.
+- **Inline chapter content**: Each planet chapter flows vertically on the right page — section heading, description, academic note, `Research Record` block (bibliography‑style aligned fields), `See also` links (inline italic text, same‑planet scrolls, cross‑planet opens chapter), `Known Practitioners` with underline links, AllomanticTable for allomancy.
+- **AllomanticTable.tsx** rewritten: warm paper palette, group dividers, expandable metal rows (△/▽ toggle), no dark backgrounds/cards/buttons.
+- **ArchivalViewer.tsx** simplified: no `leftLabel`/`rightLabel` props, pure container.
+- **ArchivalIndex.tsx** simplified: alphabetical‑only listing (left page), no `mode`/`byWorld` props, no buttons.
+- **State machine**: `'toc'` (TOC left + title right) → `'chapter'` (mini‑index left + flowing sections right) → `'index'` (alphabetical index left + world‑grouped right).
+- **Scroll‑to‑section**: `useEffect` + `requestAnimationFrame` scoots to a specific magic system section on chapter open (used by cross‑planet `See also` links and `?system=` URL param).
+- All 200 tests pass, `tsc -b` clean, `pnpm lint` clean.
+
 ##### Done (this session: Second-pass dead code audit)
 
 - **Three parallel audits** (CSS, types/interfaces, imports/dead-code) across the entire codebase

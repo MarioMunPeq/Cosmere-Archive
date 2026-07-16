@@ -21,7 +21,7 @@ const CAT_LABELS: Record<string, string> = {
   event: 'Events',
   book: 'Books',
   glossary: 'Glossary',
-  magic: 'Magic Systems',
+  magic: 'Ars Arcanum',
   herald: 'Aharietiam',
 }
 

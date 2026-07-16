@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { ALLOMANTIC_METALS, type AllomanticMetal } from '@/data/static/magic-systems'
-import ColorDot from '@/components/ui/ColorDot'
 
 const GROUP_ORDER: AllomanticMetal['group'][] = ['physical', 'mental', 'temporal', 'enhancement']
 const GROUP_LABELS: Record<AllomanticMetal['group'], string> = {
@@ -10,97 +9,109 @@ const GROUP_LABELS: Record<AllomanticMetal['group'], string> = {
   enhancement: 'Enhancement',
 }
 const GROUP_COLORS: Record<AllomanticMetal['group'], string> = {
-  physical: '#f97316',
-  mental: '#10b981',
-  temporal: '#8b5cf6',
-  enhancement: '#06b6d4',
+  physical: '#c47a3a',
+  mental: '#3a8c6f',
+  temporal: '#6a5a9a',
+  enhancement: '#3a7a9a',
 }
 
-function MetalCard({
-  metal,
-  selected,
-  onSelect,
-}: {
-  metal: AllomanticMetal
-  selected: boolean
-  onSelect: (m: AllomanticMetal | null) => void
-}) {
-  return (
-    <button
-      onClick={() => onSelect(selected ? null : metal)}
-      className={`rounded-lg border p-3 text-left transition-all ${
-        selected
-          ? 'border-purple-500 bg-purple-900/20 shadow-lg shadow-purple-900/20'
-          : 'border-gray-800 bg-gray-900/50 hover:border-gray-600'
-      }`}
-    >
-      <div className="flex items-center gap-2">
-        <span className="h-3 w-3 rounded-full shrink-0" style={{ backgroundColor: metal.color }} />
-        <span className="text-sm font-semibold text-gray-200">{metal.name}</span>
-        <span className="text-xxs text-gray-500">/ {metal.alloy}</span>
-      </div>
-      <p className="mt-1.5 text-xs text-gray-400">{metal.allomanticPower}</p>
-    </button>
-  )
-}
-
-const ALLOMANTIC_ATTRS: { key: keyof AllomanticMetal; label: string }[] = [
+const METAL_ATTRS: { key: keyof AllomanticMetal; label: string }[] = [
   { key: 'allomanticPower', label: 'Allomantic' },
   { key: 'feruchemicalPower', label: 'Feruchemical' },
   { key: 'hemalurgicProperty', label: 'Hemalurgic' },
 ]
 
+interface ExpandedState {
+  [metalId: string]: boolean
+}
+
 export default function AllomanticTable() {
-  const [selectedMetal, setSelectedMetal] = useState<AllomanticMetal | null>(null)
+  const [expanded, setExpanded] = useState<ExpandedState>({})
+
+  const toggleExpanded = (id: string) => {
+    setExpanded((prev) => ({ ...prev, [id]: !prev[id] }))
+  }
 
   return (
     <div>
-      <p className="mb-3 text-xs text-gray-500">Each metal has Allomantic, Feruchemical, and Hemalurgic properties</p>
+      <p className="font-serif text-[10px] italic mb-4" style={{ color: 'rgba(80,60,40,0.35)' }}>
+        Each of the sixteen metals manifests three distinct properties — Allomantic, Feruchemical, and Hemalurgic.
+      </p>
 
       <div className="space-y-4">
         {GROUP_ORDER.map((group) => {
           const metals = ALLOMANTIC_METALS.filter((m) => m.group === group)
+          const color = GROUP_COLORS[group]
           return (
             <div key={group}>
-              <div className="mb-2 flex items-center gap-2">
-                <ColorDot color={GROUP_COLORS[group]} />
-                <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="h-px flex-1" style={{ background: `rgba(80,60,40,0.08)` }} />
+                <span className="font-serif text-[9px] uppercase tracking-[0.15em]" style={{ color: `${color}99` }}>
                   {GROUP_LABELS[group]}
                 </span>
+                <span className="h-px flex-1" style={{ background: `rgba(80,60,40,0.08)` }} />
               </div>
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                {metals.map((metal) => (
-                  <MetalCard
-                    key={metal.id}
-                    metal={metal}
-                    selected={selectedMetal?.id === metal.id}
-                    onSelect={setSelectedMetal}
-                  />
-                ))}
-              </div>
+              {metals.map((metal) => {
+                const isOpen = expanded[metal.id] ?? false
+                return (
+                  <div key={metal.id}>
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => toggleExpanded(metal.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          toggleExpanded(metal.id)
+                        }
+                      }}
+                      className="group flex items-baseline gap-2 py-[3px] cursor-pointer"
+                      style={{ color: 'rgba(60,40,25,0.6)' }}
+                    >
+                      <span
+                        className="h-2 w-2 rounded-full shrink-0 inline-block"
+                        style={{ backgroundColor: metal.color }}
+                      />
+                      <span className="font-serif text-[13px] font-medium" style={{ color: '#2d1a0e' }}>
+                        {metal.name}
+                      </span>
+                      <span className="font-serif text-[10px]" style={{ color: 'rgba(80,60,40,0.25)' }}>
+                        / {metal.alloy}
+                      </span>
+                      <span
+                        className="ml-auto font-serif text-[9px] transition-opacity"
+                        style={{ color: 'rgba(80,60,40,0.15)' }}
+                      >
+                        {isOpen ? '△' : '▽'}
+                      </span>
+                    </span>
+                    {isOpen && (
+                      <div className="ml-5 mb-1 pb-1 border-l pl-3" style={{ borderColor: 'rgba(80,60,40,0.08)' }}>
+                        {METAL_ATTRS.map(({ key, label }) => (
+                          <p
+                            key={key}
+                            className="font-serif text-[11px] leading-relaxed"
+                            style={{ color: 'rgba(60,40,25,0.6)' }}
+                          >
+                            <span
+                              className="text-[9px] uppercase tracking-[0.08em]"
+                              style={{ color: 'rgba(80,60,40,0.25)' }}
+                            >
+                              {label}
+                            </span>
+                            {' — '}
+                            {metal[key]}
+                          </p>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           )
         })}
       </div>
-
-      {selectedMetal && (
-        <div className="mt-4 rounded-lg border border-gray-800 bg-gray-900/50 p-4">
-          <div className="flex items-center gap-3">
-            <span className="h-4 w-4 rounded-full" style={{ backgroundColor: selectedMetal.color }} />
-            <h4 className="text-sm font-bold text-gray-200">
-              {selectedMetal.name} / {selectedMetal.alloy}
-            </h4>
-          </div>
-          <div className="mt-3 space-y-2">
-            {ALLOMANTIC_ATTRS.map(({ key, label }) => (
-              <div key={key}>
-                <span className="text-xxs font-semibold uppercase tracking-wider text-gray-500">{label}</span>
-                <p className="mt-0.5 text-sm text-gray-300">{selectedMetal[key]}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   )
 }

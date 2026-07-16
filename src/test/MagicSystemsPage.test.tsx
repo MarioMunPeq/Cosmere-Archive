@@ -1,10 +1,10 @@
-import { describe, it, expect } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { render, screen, waitFor, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import MagicSystemsPage from '@/pages/MagicSystemsPage'
 
-function renderMagicTab() {
+function renderPage() {
   return render(
     <MemoryRouter initialEntries={['/magic']}>
       <MagicSystemsPage />
@@ -12,91 +12,88 @@ function renderMagicTab() {
   )
 }
 
-describe('MagicSystemsPage', () => {
-  it('renders heading', () => {
-    renderMagicTab()
-    expect(screen.getByRole('heading', { name: 'Magic Systems' })).toBeInTheDocument()
+describe('Ars Arcanum (manuscript)', () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ shouldAdvanceTime: true })
   })
 
-  it('renders planet filter dropdown', () => {
-    renderMagicTab()
-    expect(screen.getByRole('combobox')).toBeInTheDocument()
-    expect(screen.getByText('All Planets')).toBeInTheDocument()
+  afterEach(() => {
+    vi.useRealTimers()
   })
 
-  it('has a search input', () => {
-    renderMagicTab()
-    expect(screen.getByPlaceholderText('Search systems...')).toBeInTheDocument()
+  it('renders the title page heading', () => {
+    renderPage()
+    const heading = screen.getByRole('heading', { level: 1 })
+    expect(heading.textContent).toMatch(/ARS/)
+    expect(heading.textContent).toMatch(/ARCANUM/)
   })
 
-  it('shows planet groupings by default', () => {
-    renderMagicTab()
-    expect(screen.getAllByText('Scadrial').length).toBeGreaterThanOrEqual(1)
-    expect(screen.getAllByText('Roshar').length).toBeGreaterThanOrEqual(1)
+  it('renders the scholarly subtitle', () => {
+    renderPage()
+    expect(screen.getByText(/Collected observations/)).toBeInTheDocument()
   })
 
-  it('shows magic system names under planets', () => {
-    renderMagicTab()
-    expect(screen.getAllByText('Allomancy').length).toBeGreaterThanOrEqual(1)
+  it('renders the table of contents with planet names', () => {
+    renderPage()
+    const tocNames = screen.getAllByText('Roshar')
+    expect(tocNames.length).toBeGreaterThanOrEqual(1)
   })
 
-  it('shows system shard info in cards', () => {
-    renderMagicTab()
-    expect(screen.getAllByText('Honor').length).toBeGreaterThanOrEqual(1)
+  it('shows an Archival Index link in the TOC', () => {
+    renderPage()
+    expect(screen.getByText('Archival Index →')).toBeInTheDocument()
   })
 
-  it('filters by planet when dropdown changes', async () => {
-    renderMagicTab()
-    const select = screen.getByRole('combobox')
-    await userEvent.selectOptions(select, 'scadrial')
-    expect(screen.getAllByText('Allomancy').length).toBeGreaterThanOrEqual(1)
-    expect(screen.queryByText('Surgebinding')).not.toBeInTheDocument()
-  })
-
-  it('opens detail panel when a system is clicked', async () => {
-    renderMagicTab()
-    await userEvent.click(screen.getAllByText('Allomancy')[0]!)
-    expect(await screen.findByText(/Appears in/)).toBeInTheDocument()
-  })
-
-  it('shows detail content in the panel', async () => {
-    renderMagicTab()
-    await userEvent.click(screen.getByText('AonDor'))
-    expect(await screen.findByText(/Appears in/i)).toBeInTheDocument()
-  })
-
-  it('shows AllomanticTable for allomancy when expanded', async () => {
-    renderMagicTab()
-    await userEvent.click(screen.getAllByText('Allomancy')[0]!)
-    await userEvent.click(await screen.findByText('The Sixteen Metals'))
-    expect(await screen.findByText('Steel')).toBeInTheDocument()
-    expect(await screen.findByText('Iron')).toBeInTheDocument()
-  })
-
-  it('shows known users in detail panel', async () => {
-    renderMagicTab()
-    await userEvent.click(screen.getByText('AonDor'))
-    expect(await screen.findByText(/Known users/i)).toBeInTheDocument()
-  })
-
-  it('does not show detail panel by default', () => {
-    renderMagicTab()
-    expect(screen.queryByText('Appears in')).not.toBeInTheDocument()
-  })
-
-  it('filters systems by search input', async () => {
-    renderMagicTab()
-    const search = screen.getByPlaceholderText('Search systems...')
-    await userEvent.type(search, 'AonDor')
-    await waitFor(() => {
-      expect(screen.queryByText('Allomancy')).not.toBeInTheDocument()
+  it('navigates to a chapter when a TOC entry is clicked', async () => {
+    renderPage()
+    const rosharEntry = screen.getByText('Roshar')
+    await userEvent.click(rosharEntry)
+    act(() => {
+      vi.advanceTimersByTime(350)
     })
-    expect(screen.getByText('AonDor')).toBeInTheDocument()
+
+    await waitFor(() => {
+      const chapterLabels = screen.getAllByText((content) => content.includes('Chapter'))
+      expect(chapterLabels.length).toBeGreaterThanOrEqual(1)
+    })
   })
 
-  it('has a close button on the detail panel', async () => {
-    renderMagicTab()
-    await userEvent.click(screen.getByText('AonDor'))
-    expect(await screen.findByLabelText('Close detail')).toBeInTheDocument()
+  it('shows a Contents link when inside a chapter', async () => {
+    renderPage()
+    const rosharEntry = screen.getByText('Roshar')
+    await userEvent.click(rosharEntry)
+    act(() => {
+      vi.advanceTimersByTime(350)
+    })
+
+    await waitFor(() => {
+      expect(screen.getByText(/Contents/)).toBeInTheDocument()
+    })
+  })
+
+  it('displays manifestation sections when a chapter is opened', async () => {
+    renderPage()
+    const rosharEntry = screen.getByText('Roshar')
+    await userEvent.click(rosharEntry)
+    act(() => {
+      vi.advanceTimersByTime(350)
+    })
+
+    await waitFor(() => {
+      expect(screen.getByText('1. Surgebinding')).toBeInTheDocument()
+    })
+  })
+
+  it('shows Research Record metadata for manifestations', async () => {
+    renderPage()
+    const rosharEntry = screen.getByText('Roshar')
+    await userEvent.click(rosharEntry)
+    act(() => {
+      vi.advanceTimersByTime(350)
+    })
+
+    await waitFor(() => {
+      expect(screen.getAllByText('Research Record').length).toBeGreaterThanOrEqual(1)
+    })
   })
 })

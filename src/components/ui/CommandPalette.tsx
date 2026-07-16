@@ -20,7 +20,13 @@ const PAGE_COMMANDS: Command[] = [
   { id: 'characters', label: 'Characters', description: 'Notable Cosmere characters', to: '/characters', icon: '👤' },
   { id: 'shards', label: 'Shards', description: 'Shards of Adonalsium', to: '/locations?tab=shards', icon: '💎' },
   { id: 'chronology', label: 'Chronology', description: 'Cosmere chronological record', to: '/chronology', icon: '📜' },
-  { id: 'magic', label: 'Magic Systems', description: 'Magic across the Cosmere', to: '/magic', icon: '✨' },
+  {
+    id: 'magic',
+    label: 'Ars Arcanum',
+    description: 'Investiture manifestations across the known worlds',
+    to: '/magic',
+    icon: '✨',
+  },
   {
     id: 'relationships',
     label: 'Relationships',

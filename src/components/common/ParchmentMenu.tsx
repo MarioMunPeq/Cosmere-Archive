@@ -13,7 +13,7 @@ const DRAWER_LINKS: { to: string; label: string }[] = [
   { to: '/chronology', label: 'Chronology' },
   { to: '/books', label: 'Books' },
   { to: '/locations', label: 'Locations' },
-  { to: '/magic', label: 'Magic Systems' },
+  { to: '/magic', label: 'Ars Arcanum' },
   { to: '/library', label: 'Library' },
   { to: '/stats', label: 'Taravangian Diagram' },
   { to: '/aharietiam', label: 'Aharietiam' },

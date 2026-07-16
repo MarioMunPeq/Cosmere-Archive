@@ -19,6 +19,9 @@ export interface MagicSystem {
   category: string
   bookIds: string[]
   allomanticMetals?: AllomanticMetal[]
+  classification?: string
+  status?: string
+  academicNote?: string
 }
 
 export const ALLOMANTIC_METALS: AllomanticMetal[] = [
@@ -194,6 +197,9 @@ export const MAGIC_SYSTEMS: MagicSystem[] = [
     shard: 'Adonalsium',
     color: '#a78bfa',
     category: 'primordial',
+    classification: 'Primordial',
+    status: 'Theoretical',
+    academicNote: 'No reliable documentation exists for the period before the Shattering.',
     bookIds: [],
   },
   {
@@ -205,6 +211,8 @@ export const MAGIC_SYSTEMS: MagicSystem[] = [
     shard: 'Honor',
     color: '#06b6d4',
     category: 'surgebinding',
+    classification: 'Bonded Investiture',
+    status: 'Documented',
     bookIds: ['the_way_of_kings', 'words_of_radiance', 'oathbringer', 'dawnshard', 'rhythm_of_war', 'wind_and_truth'],
   },
   {
@@ -216,6 +224,10 @@ export const MAGIC_SYSTEMS: MagicSystem[] = [
     shard: 'Cultivation',
     color: '#22c55e',
     category: 'old_magic',
+    classification: 'Environmental',
+    status: 'Poorly Understood',
+    academicNote:
+      'The Nightwatcher\u2019s exact nature and limitations remain a subject of debate among Silverlight scholars.',
     bookIds: ['oathbringer', 'rhythm_of_war', 'wind_and_truth'],
   },
   {
@@ -227,6 +239,10 @@ export const MAGIC_SYSTEMS: MagicSystem[] = [
     shard: 'Odium',
     color: '#ef4444',
     category: 'voidbinding',
+    classification: 'Environmental',
+    status: 'Partially Documented',
+    academicNote:
+      'Voidbinding appears to mirror Surgebinding in structure, but the underlying principles differ fundamentally.',
     bookIds: ['words_of_radiance', 'oathbringer', 'rhythm_of_war', 'wind_and_truth'],
   },
   {
@@ -238,6 +254,8 @@ export const MAGIC_SYSTEMS: MagicSystem[] = [
     shard: 'Preservation',
     color: '#ef4444',
     category: 'metallic_art',
+    classification: 'Metallic Art',
+    status: 'Documented',
     bookIds: [
       'the_final_empire',
       'the_well_of_ascension',
@@ -258,6 +276,8 @@ export const MAGIC_SYSTEMS: MagicSystem[] = [
     shard: 'Ruin',
     color: '#f97316',
     category: 'metallic_art',
+    classification: 'Metallic Art',
+    status: 'Documented',
     bookIds: [
       'the_final_empire',
       'the_well_of_ascension',
@@ -277,6 +297,10 @@ export const MAGIC_SYSTEMS: MagicSystem[] = [
     shard: 'Ruin',
     color: '#dc2626',
     category: 'metallic_art',
+    classification: 'Metallic Art',
+    status: 'Partially Documented',
+    academicNote:
+      'Hemalurgic research remains severely restricted by Silverlight protocol due to its ethical implications.',
     bookIds: ['the_final_empire', 'the_hero_of_ages', 'the_alloy_of_law', 'the_lost_metal'],
   },
   {
@@ -288,6 +312,8 @@ export const MAGIC_SYSTEMS: MagicSystem[] = [
     shard: 'Devotion',
     color: '#14b8a6',
     category: 'selish',
+    classification: 'Symbolic Manipulation',
+    status: 'Documented',
     bookIds: ['elantris'],
   },
   {
@@ -299,6 +325,8 @@ export const MAGIC_SYSTEMS: MagicSystem[] = [
     shard: 'Dominion',
     color: '#991b1b',
     category: 'selish',
+    classification: 'Symbolic Manipulation',
+    status: 'Partially Documented',
     bookIds: ['elantris'],
   },
   {
@@ -310,6 +338,8 @@ export const MAGIC_SYSTEMS: MagicSystem[] = [
     shard: 'Devotion',
     color: '#0d9488',
     category: 'selish',
+    classification: 'Symbolic Manipulation',
+    status: 'Documented',
     bookIds: ['arcanum_unbounded'],
   },
   {
@@ -320,6 +350,10 @@ export const MAGIC_SYSTEMS: MagicSystem[] = [
     shard: 'Dominion',
     color: '#a3e635',
     category: 'selish',
+    classification: 'Symbolic Manipulation',
+    status: 'Poorly Understood',
+    academicNote:
+      'The relationship between ChayShan\u2019s physical movements and its investiture effects has yet to be fully mapped.',
     bookIds: ['elantris'],
   },
   {
@@ -331,6 +365,8 @@ export const MAGIC_SYSTEMS: MagicSystem[] = [
     shard: 'Endowment',
     color: '#d946ef',
     category: 'biochromatic',
+    classification: 'BioChromatic',
+    status: 'Documented',
     bookIds: ['warbreaker'],
   },
   {
@@ -342,6 +378,8 @@ export const MAGIC_SYSTEMS: MagicSystem[] = [
     shard: 'Autonomy',
     color: '#eab308',
     category: 'sand_mastery',
+    classification: 'Kinetic Investiture',
+    status: 'Documented',
     bookIds: ['white_sand_vol_1', 'white_sand_vol_2', 'white_sand_vol_3'],
   },
   {
@@ -353,6 +391,8 @@ export const MAGIC_SYSTEMS: MagicSystem[] = [
     shard: 'Autonomy',
     color: '#a16207',
     category: 'sand_mastery',
+    classification: 'Kinetic Investiture',
+    status: 'Partially Documented',
     bookIds: ['white_sand_vol_1', 'white_sand_vol_2', 'white_sand_vol_3'],
   },
   {
@@ -364,6 +404,8 @@ export const MAGIC_SYSTEMS: MagicSystem[] = [
     shard: 'Ambition',
     color: '#8b5cf6',
     category: 'cognitive',
+    classification: 'Cognitive Manifestation',
+    status: 'Partially Documented',
     bookIds: ['arcanum_unbounded'],
   },
   {
@@ -375,6 +417,8 @@ export const MAGIC_SYSTEMS: MagicSystem[] = [
     shard: 'Autonomy',
     color: '#22c55e',
     category: 'bonding',
+    classification: 'Bonded Investiture',
+    status: 'Partially Documented',
     bookIds: ['arcanum_unbounded', 'the_sunlit_man'],
   },
   {
@@ -386,6 +430,8 @@ export const MAGIC_SYSTEMS: MagicSystem[] = [
     shard: 'Virtuosity',
     color: '#0ea5e9',
     category: 'yoki_hijo',
+    classification: 'Cognitive Manifestation',
+    status: 'Partially Documented',
     bookIds: ['yumi_and_the_nightmare_painter'],
   },
   {
@@ -397,6 +443,8 @@ export const MAGIC_SYSTEMS: MagicSystem[] = [
     shard: 'Virtuosity',
     color: '#0284c7',
     category: 'nightmare',
+    classification: 'Cognitive Manifestation',
+    status: 'Partially Documented',
     bookIds: ['yumi_and_the_nightmare_painter'],
   },
   {
@@ -408,6 +456,10 @@ export const MAGIC_SYSTEMS: MagicSystem[] = [
     shard: 'Mercy',
     color: '#f472b6',
     category: 'spore',
+    classification: 'Environmental',
+    status: 'Partially Documented',
+    academicNote:
+      'Spore interaction with water suggests a Connection-based mechanism, but the precise Investiture pathways remain unidentified.',
     bookIds: ['tress_of_the_emerald_sea'],
   },
   {
@@ -419,6 +471,10 @@ export const MAGIC_SYSTEMS: MagicSystem[] = [
     shard: 'Ambition',
     color: '#f97316',
     category: 'bonding',
+    classification: 'Bonded Investiture',
+    status: 'Poorly Understood',
+    academicNote:
+      'The bond appears to draw upon the planet\u2019s own Investiture rather than an external Shardic source.',
     bookIds: ['the_sunlit_man'],
   },
 ]

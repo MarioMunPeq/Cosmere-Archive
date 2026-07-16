@@ -10,7 +10,7 @@ export const SHORTCUTS: Shortcut[] = [
   { keys: '?', label: 'Toggle this help' },
   { keys: 'Alt+1', label: 'About page' },
   { keys: 'Alt+2', label: 'Relationships page' },
-  { keys: 'Alt+3', label: 'Magic Systems page' },
+  { keys: 'Alt+3', label: 'Ars Arcanum page' },
   { keys: 'Alt+4', label: 'Family Tree page' },
   { keys: 'Alt+5', label: 'Aharietiam page' },
   { keys: 'Alt+6', label: 'Locations page' },

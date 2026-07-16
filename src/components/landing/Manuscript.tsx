@@ -48,8 +48,8 @@ const CHAPTERS: Chapter[] = [
   },
   {
     numeral: 'VI',
-    title: 'MAGIC SYSTEMS',
-    description: 'Studies of Investiture and related phenomena.',
+    title: 'ARS ARCANUM',
+    description: 'Collected observations on the manifestations of Investiture.',
     annotation: 'Fol. 39–46',
     to: '/magic',
   },
