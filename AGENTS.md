@@ -54,6 +54,7 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 
 #### Done
 
+- **BIOGRAPHICAL ARCHIVES — Complete manuscript merge**: Characters, Family Trees, and Relationships merged into a single `/characters` route with 3-chapter manuscript (Character Records, Bloodlines, Connections). All content rendered inside ArchivalViewer paper columns using warm paper/ink palette. No tabs, no modals, no sidebars, no force graphs, no 3D scenes. `CharactersPage.tsx`, `detail/` (5 files), `genealogy/` (13 files) deleted. `BloodlinesChapter.tsx`/`ConnectionsChapter.tsx` refactored into `FamilyTreeRenderer.tsx`/`ConnectionDiagram.tsx` for clean left/right column split within ArchivalViewer. All 200 tests pass, `tsc -b` clean, `pnpm lint` clean.
 - Deleted `GlossaryPage.tsx` and `src/types/glossary.ts` / `src/data/static/glossary.ts`; route `/glossary` redirects to `/magic`
 - Fixed `MagicSystemsPage` groupedByPlanet memo dependency and "Appears in" test regex
 - Updated all references after glossary removal (App.tsx, Layout.tsx, SideDrawer.tsx, Breadcrumbs.tsx, CommandPalette.tsx, LandingPage.tsx, Skeleton.tsx, components/ui/index.ts, useSearch.ts, CharacterDetailModal.tsx, static-data.ts, MagicSystemsPage test)
