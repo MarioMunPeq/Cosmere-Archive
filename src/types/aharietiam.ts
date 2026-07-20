@@ -4,6 +4,10 @@ export interface HonorbladeData {
   title: string
   order: string
   surges: [string, string]
+  attributes: string[]
+  essence: string
+  soulcasting: string
+  honorbladeGrants: string
   quote: string
   description: string
   books: string[]

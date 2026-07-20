@@ -41,7 +41,7 @@
 
 ### Goal
 
-Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all synopses and character descriptions to Coppermind quality, redesign Stats page with 10 cosmic-themed sections, redesign Heralds page as immersive Aharietiam experience.
+Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all synopses and character descriptions to Coppermind quality, redesign Stats page with 10 cosmic-themed sections, redesign Heralds page as immersive Aharietiam experience with full Herald Inspection Mode (carved stone manuscript left panel, right-side serif quote, Herald symbol projection, enhanced blade presentation, Taln special treatment).
 
 ### Constraints & Preferences
 
@@ -182,9 +182,10 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 
 ### Next Steps
 
-1. **Aharietiam visual refinements**: Add per-blade Stormlight particles, blade glow pulse, ground-level mist
-2. **Atlas cross-references**: Add clickable planet cross-reference links that navigate to book/magic/character pages
-3. **Field notes expansion**: Add Nazh marginalia annotations (scribbled corrections, "Nazh says" interjections)
+1. **Atlas cross-references**: Add clickable planet cross-reference links that navigate to book/magic/character pages
+2. **Field notes expansion**: Add Nazh marginalia annotations (scribbled corrections, "Nazh says" interjections)
+3. **Replace placeholder `.webp` assets**: Add distinct Honorblade art for all 10 Heralds when available
+4. **Audio integration**: Implement actual audio using `SoundEvents` hooks (`onFocusSword`, `onLeaveSword`, `onHoverSword`, `onReturnOverview`)
 
 #### Hybrid R3F book architecture (this round)
 
@@ -455,3 +456,17 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - **Files written**: `CameraRig.tsx`, `SceneLights.tsx`, `Ground3D.tsx`, `BladeSprite3D.tsx`, `BladeRing3D.tsx`, `TalnSpot.tsx`, `SceneCanvas.tsx`, `Scene.tsx`, `index.ts` (exports + `CameraTarget` type).
 
 - All 200 tests pass, `tsc -b` clean, `pnpm lint` clean, `pnpm build` clean (44 entries, AharietiamPage 89 kB / 33.6 kB gzip).
+
+##### Done (this session: Herald Inspection Mode — carved stone manuscript, right-side quote, symbol projection, Taln reverence)
+
+- **Complete inspection experience**: When a blade is clicked, camera flies toward it → blade brightens (emissiveIntensity 0.45, envMapIntensity 1.2, metalness 0.75) → background darkens (focus dimmer at zIndex:4, 0.8s fade) → particles slow to 30% opacity → inspection interface reveals one element at a time via GSAP timeline
+- **InfoMonolith rewritten**: Replaced translucent glass panel with floating carved stone slab (`clip-path` irregular polygon, dark worn stone `rgba(22,17,13,0.92)`, bronze trims `rgba(170,140,100,0.15)`, stone noise overlay at 6% opacity, double box-shadow for depth). 5 data-section divs reveal in sequence: t=0.2 panel fade, t=0.5 name/title, t=0.8 attributes+order+surges, t=1.1 essence+soulcasting+honorblade, t=1.4 description, t=1.7 books. AttributeLine / InfoChip helper components for archival typography.
+- **Right-side quote**: Absolute-positioned serif quote at `right: clamp(32px, 5vw, 64px)`, centered vertically, `font-size: clamp(20px, 1.8vw, 28px)`, `color: rgba(200,185,165,0.35)`, animated via `quoteReveal` CSS keyframe (1.2s ease, 1.0s delay).
+- **HeraldSymbol.tsx**: Procedural Vorin-inspired glyph per Herald (seeded spokes + concentric arcs + radial dots on a Canvas texture), rendered as `AdditiveBlending` plane behind blade at 3.5× scale, `opacity: 0.06 + sin(t*0.15)*0.02` breathing in focus mode.
+- **Blade3D enhanced**: Stormlight particles (24-point drift system via useFrame), glow plane opacity 0.15×breathe (up from 0.08), metalness 0.75 / emissiveIntensity 0.45 / envMapIntensity 1.2 in focus.
+- **Taln special message**: Two-sentence staggered fade ("His blade was never abandoned." at 1s, "The bearer never broke." at 4s), centered serif, `opacity` CSS transition, no panel, no data, no stats.
+- **Return button**: Museum-style "Return" button (top-right, bronze border, uppercase serif, hover effect) + ESC/click-outside/onPointerMissed all clean the inspection state with 300ms exit delay.
+- **HonorbladeData type enriched**: 4 new fields — `attributes: string[]`, `essence: string`, `soulcasting: string`, `honorbladeGrants: string` — populated in `aharietiam.ts` for all 10 Heralds with Coppermind-accurate data.
+- **Files created**: `HeraldSymbol.tsx`
+- **Files modified**: `InfoMonolith.tsx` (complete rewrite), `Blade3D.tsx` (focus particles/params), `Scene.tsx` (inspectPhase state machine, quote, return button, TalnMessage), `aharietiam.ts` (enriched data), `aharietiam.ts` type, `index.ts` (export HeraldSymbol), `index.css` (quoteReveal keyframe)
+- All 200 tests pass, `tsc -b` clean, `pnpm lint` clean.

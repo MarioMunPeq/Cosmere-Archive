@@ -68,8 +68,9 @@ export default memo(function Blade3D({
 }: Props) {
   const meshRef = useRef<THREE.Mesh>(null)
   const glowRef = useRef<THREE.Mesh>(null)
+  const stormlightRef = useRef<THREE.Points>(null)
 
-  /* Hover dust particles — thin geometry ring at blade base */
+  /* Hover/focus dust particles */
   const dustGeo = useMemo(() => {
     const positions: number[] = []
     for (let i = 0; i < 16; i++) {
@@ -82,17 +83,54 @@ export default memo(function Blade3D({
     return g
   }, [])
 
+  /* Focus Stormlight particles — tiny floating motes around blade */
+  const stormlightGeo = useMemo(() => {
+    const positions: number[] = []
+    const offsets: number[] = []
+    for (let i = 0; i < 24; i++) {
+      const angle = Math.random() * Math.PI * 2
+      const radius = 0.15 + Math.random() * 0.4
+      const height = (Math.random() - 0.5) * 1.8
+      positions.push(Math.cos(angle) * radius, height + 1.2, Math.sin(angle) * radius)
+      offsets.push(Math.random() * 100)
+    }
+    const g = new THREE.BufferGeometry()
+    g.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
+    g.setAttribute('offset', new THREE.Float32BufferAttribute(offsets, 1))
+    return g
+  }, [])
+
   useFrame((_, delta) => {
     if (!meshRef.current) return
     const t = performance.now() / 1000
 
     if (focused) {
-      /* Gentle sway + breathing glow */
+      /* Gentle sway */
       meshRef.current.rotation.z = Math.sin(t * 0.4) * 0.002
-      const breathe = 0.85 + Math.sin(t * 0.6) * 0.15
+
+      /* Breathing glow */
       if (glowRef.current) {
+        const breathe = 0.85 + Math.sin(t * 0.6) * 0.15
         const m = glowRef.current.material as THREE.MeshBasicMaterial
-        m.opacity = 0.08 * breathe
+        m.opacity = 0.15 * breathe
+      }
+
+      /* Stormlight particles drift */
+      if (stormlightRef.current) {
+        const posAcc = stormlightRef.current.geometry.attributes.position
+        const offAcc = stormlightRef.current.geometry.attributes.offset
+        if (posAcc && offAcc) {
+          const arr = posAcc.array as Float32Array
+          const offArr = offAcc.array as Float32Array
+          for (let i = 0; i < arr.length / 3; i++) {
+            const yIdx = i * 3 + 1
+            const o = offArr[i]!
+            arr[yIdx] = arr[yIdx]! + Math.sin(t * 0.5 + o) * 0.0002
+            const xIdx = i * 3
+            arr[xIdx] = arr[xIdx]! + Math.cos(t * 0.3 + o * 1.3) * 0.0001
+          }
+          posAcc.needsUpdate = true
+        }
       }
     } else if (hovered) {
       meshRef.current.rotation.z = Math.sin(t * 1.2) * 0.001
@@ -104,7 +142,7 @@ export default memo(function Blade3D({
   return (
     <group position={position} rotation={[0, rotationY, 0]}>
       {/* Glow plane — subtle bloom behind blade */}
-      <mesh ref={glowRef} position={[0, 0.8, -0.08]} scale={[1.6, 1.8, 1]}>
+      <mesh ref={glowRef} position={[0, 0.8, -0.12]} scale={[1.8, 2.0, 1]}>
         <planeGeometry args={[0.6, 3.0]} />
         <meshBasicMaterial
           color={color}
@@ -115,6 +153,21 @@ export default memo(function Blade3D({
           blending={THREE.AdditiveBlending}
         />
       </mesh>
+
+      {/* Stormlight particles — only in focus mode */}
+      {focused && (
+        <points ref={stormlightRef} geometry={stormlightGeo}>
+          <pointsMaterial
+            color={color}
+            size={0.015}
+            transparent
+            opacity={0.35}
+            blending={THREE.AdditiveBlending}
+            depthWrite={false}
+            sizeAttenuation
+          />
+        </points>
+      )}
 
       {/* Main blade */}
       <mesh
@@ -129,23 +182,23 @@ export default memo(function Blade3D({
         <meshStandardMaterial
           color={color}
           roughness={hovered || focused ? 0.2 : 0.35}
-          metalness={focused ? 0.65 : selected ? 0.55 : hovered ? 0.5 : 0.45}
+          metalness={focused ? 0.75 : selected ? 0.55 : hovered ? 0.5 : 0.45}
           transparent={opacity < 1}
           opacity={opacity}
           emissive={focused ? color : selected ? '#554433' : hovered ? '#332211' : '#000000'}
-          emissiveIntensity={focused ? 0.3 : selected ? 0.12 : hovered ? 0.05 : 0}
-          envMapIntensity={focused ? 0.8 : hovered ? 0.5 : 0.2}
+          emissiveIntensity={focused ? 0.45 : selected ? 0.12 : hovered ? 0.05 : 0}
+          envMapIntensity={focused ? 1.2 : hovered ? 0.5 : 0.2}
         />
       </mesh>
 
-      {/* Hover dust particles */}
+      {/* Hover/focus dust particles at base */}
       {(hovered || focused) && (
         <points geometry={dustGeo} position={[0, -0.05, 0]}>
           <pointsMaterial
             color={color}
             size={0.02}
             transparent
-            opacity={0.4}
+            opacity={focused ? 0.6 : 0.4}
             blending={THREE.AdditiveBlending}
             depthWrite={false}
             sizeAttenuation

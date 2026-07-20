@@ -4,9 +4,14 @@ export const HONORBLADES: HonorbladeData[] = [
   {
     id: 'jezrien',
     name: 'Jezrien',
-    title: 'Herald of Kings',
+    title: 'King of Heralds',
     order: 'Windrunners',
     surges: ['Adhesion', 'Gravitation'],
+    attributes: ['Leading', 'Protecting'],
+    essence: 'Zephyr',
+    soulcasting: 'Air',
+    honorbladeGrants:
+      'Adhesion and Gravitation — the power to bind objects together and to alter the direction of gravity itself.',
     quote: '"I have given you the sky. The rest you must earn."',
     description:
       'The patron of the Windrunners and the king of the Heralds. His Honorblade was stolen by Szeth, who used it to murder Gavilar Kholin. Jezrien was later killed by Moash with a dagger infused with anti-light — the first true death of a Herald in millennia.',
@@ -23,6 +28,11 @@ export const HONORBLADES: HonorbladeData[] = [
     title: 'Herald of Justice',
     order: 'Skybreakers',
     surges: ['Gravitation', 'Division'],
+    attributes: ['Just', 'Confident'],
+    essence: 'Sinew',
+    soulcasting: 'Blood',
+    honorbladeGrants:
+      'Gravitation and Division — the power to control gravity and to destroy the bonds between objects.',
     quote: '"The law is not a suggestion. It is the foundation upon which civilization rests."',
     description:
       'The patron of the Skybreakers and the only Herald to actively lead his order. For millennia he hunted surgebinders, believing it would prevent another Desolation. His rigid adherence to law masked a deep fear of the return of the Voidbringers.',
@@ -39,6 +49,10 @@ export const HONORBLADES: HonorbladeData[] = [
     title: 'Herald of Flames',
     order: 'Dustbringers',
     surges: ['Division', 'Abrasion'],
+    attributes: ['Brave', 'Obedient'],
+    essence: 'Spark',
+    soulcasting: 'Fire',
+    honorbladeGrants: 'Division and Abrasion — the power to break bonds and to alter the friction of surfaces.',
     quote: '"Destruction is not the opposite of creation — it is the prelude."',
     description:
       'The patron of the Dustbringers. One of the more mysterious Heralds, theorized to have been the mother of a notable Cosmere figure. Her current whereabouts remain unknown, and her role in the Oathpact is shrouded in speculation.',
@@ -55,6 +69,11 @@ export const HONORBLADES: HonorbladeData[] = [
     title: 'Herald of Healers',
     order: 'Edgedancers',
     surges: ['Abrasion', 'Progression'],
+    attributes: ['Loving', 'Healing'],
+    essence: 'Vine',
+    soulcasting: 'Grass',
+    honorbladeGrants:
+      'Abrasion and Progression — the power to alter friction and to accelerate the healing of living things.',
     quote: '"The deepest wounds are those the eye cannot see."',
     description:
       'The patron of the Edgedancers. Associated with healing, growth, and the restorative arts. Known for her compassion during the ages of the Heralds, Vedel has not been seen in modern times on Roshar.',
@@ -71,6 +90,10 @@ export const HONORBLADES: HonorbladeData[] = [
     title: 'Herald of the Learned',
     order: 'Truthwatchers',
     surges: ['Progression', 'Illumination'],
+    attributes: ['Learned', 'Giving'],
+    essence: 'Marble',
+    soulcasting: 'Stone',
+    honorbladeGrants: 'Progression and Illumination — the power to heal and to create illusions of light and sound.',
     quote: '"To know is to bear a burden. Ignorance is the lighter path, but not the truer one."',
     description:
       'The patron of the Truthwatchers. A seeker of knowledge and truth, she hid herself away for millennia in the depths of the Palanaeum, guarding secrets that predate the Oathpact itself.',
@@ -87,6 +110,11 @@ export const HONORBLADES: HonorbladeData[] = [
     title: 'Herald of Beauty',
     order: 'Lightweavers',
     surges: ['Illumination', 'Transformation'],
+    attributes: ['Creative', 'Honest'],
+    essence: 'Lucent',
+    soulcasting: 'Crystal',
+    honorbladeGrants:
+      'Illumination and Transformation — the power to create illusions and to transform one substance into another.',
     quote: '"Erase me from your memory. Burn my image. I am not worthy of worship."',
     description:
       'The patron of the Lightweavers. Daughter of Jezrien, Shalash wandered Roshar destroying artwork and sculptures that depicted her, driven by an intense self-loathing. She believed the Heralds were unworthy of the reverence humanity gave them.',
@@ -103,6 +131,10 @@ export const HONORBLADES: HonorbladeData[] = [
     title: 'Herald of Wisdom',
     order: 'Elsecallers',
     surges: ['Transformation', 'Transportation'],
+    attributes: ['Wise', 'Careful'],
+    essence: 'Talus',
+    soulcasting: 'Clay',
+    honorbladeGrants: 'Transformation and Transportation — the power to alter matter and to move between realms.',
     quote: '"Wisdom is knowing what questions to ask — not knowing the answers."',
     description:
       'The patron of the Elsecallers. Associated with wisdom, counsel, and guidance. Battar served as an advisor to the Heralds and the Radiants of old. Her current status and location are unknown.',
@@ -119,6 +151,11 @@ export const HONORBLADES: HonorbladeData[] = [
     title: 'Herald of the Willshapers',
     order: 'Willshapers',
     surges: ['Transportation', 'Cohesion'],
+    attributes: ['Resolute', 'Builder'],
+    essence: 'Tallow',
+    soulcasting: 'Wax',
+    honorbladeGrants:
+      'Transportation and Cohesion — the power to move between realms and to alter the molecular bonds of matter.',
     quote: '"I have walked through worlds and watched them burn. I am tired."',
     description:
       'The patron of the Willshapers. One of the few Heralds seen interacting in modern Roshar, Kalak was known to have met with Jasnah Kholin. He carries the weariness of millennia and seeks escape from the burden of immortality.',
@@ -135,6 +172,11 @@ export const HONORBLADES: HonorbladeData[] = [
     title: 'Herald of War',
     order: 'Stonewards',
     surges: ['Cohesion', 'Tension'],
+    attributes: ['Dependable', 'Resourceful'],
+    essence: 'Loam',
+    soulcasting: 'Soil',
+    honorbladeGrants:
+      'Cohesion and Tension — the power to alter the strength of molecular bonds and to change the stiffness of objects.',
     quote: '"I did not break. They could not make me break."',
     description:
       'The patron of the Stonewards. Endured over four thousand years of torture on Braize without breaking the Oathpact. When he finally arrived on Roshar at the start of The Way of Kings, he believed he had returned to warn humanity — but the Desolation had already begun. The only Herald to hold true.',
@@ -151,6 +193,11 @@ export const HONORBLADES: HonorbladeData[] = [
     title: 'Herald of the Bondsmiths',
     order: 'Bondsmiths',
     surges: ['Tension', 'Adhesion'],
+    attributes: ['Pious', 'Guiding'],
+    essence: 'Foam',
+    soulcasting: 'Water',
+    honorbladeGrants:
+      'Tension and Adhesion — the power to alter the stiffness of objects and to bind things together at a fundamental level.',
     quote: '"I was the first. I will be the last. And in between, I have become something terrible."',
     description:
       'The first and oldest of the Heralds, founder of the Oathpact and patron of the Bondsmiths. In his madness, Ishar became capable of manipulating Connection itself — stealing investiture and forging unnatural bonds. He is considered the most dangerous of all the Heralds.',

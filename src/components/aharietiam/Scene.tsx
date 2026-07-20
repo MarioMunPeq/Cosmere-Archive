@@ -1,5 +1,5 @@
 'use client'
-import { memo, useState, useCallback, useRef } from 'react'
+import { memo, useState, useCallback, useRef, useEffect } from 'react'
 import SceneCanvas from './SceneCanvas'
 import Platform3D from './Platform3D'
 import BladeRing from './BladeRing'
@@ -7,12 +7,14 @@ import SceneLights from './SceneLights'
 import Atmosphere from './Atmosphere'
 import Particles from './Particles'
 import InfoMonolith from './InfoMonolith'
+import HeraldSymbol from './HeraldSymbol'
 import ControlsLegend from './ControlsLegend'
 import DebugAharietiam from './DebugAharietiam'
 import { HONORBLADES } from '@/data/static/aharietiam'
 import CameraRig from './CameraRig'
 import type { FocusTarget } from './CameraRig'
 import type { SoundEvents } from './CameraRig'
+import type { HonorbladeData } from '@/types/aharietiam'
 
 /** Procedural circle placement — single source of truth */
 const RING_RADIUS = 6.5
@@ -30,7 +32,6 @@ function getBladePos(id: string): [number, number, number] {
   return idx >= 0 ? circlePosition(idx) : [0, 0, 0]
 }
 
-/* Sound event hooks — prepared for future audio integration */
 const SOUND_EVENTS: SoundEvents = {
   onFocusSword: () => {},
   onLeaveSword: () => {},
@@ -43,10 +44,11 @@ export default memo(function Scene() {
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [focusedId, setFocusedId] = useState<string | null>(null)
   const [debug, setDebug] = useState(false)
+  const [inspectPhase, setInspectPhase] = useState<'idle' | 'entering' | 'inspecting' | 'exiting'>('idle')
 
   const [focusTarget, setFocusTarget] = useState<FocusTarget | null>(null)
+  const inspectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  /* Sound event: hover */
   const prevHoveredRef = useRef<string | null>(null)
   const handleHover = useCallback((id: string | null) => {
     setHoveredId(id)
@@ -61,25 +63,43 @@ export default memo(function Scene() {
     const pos = getBladePos(id)
     setSelectedId(id)
     setFocusTarget({ id, position: pos, slow: id === 'talenel' })
+    setInspectPhase('entering')
   }, [])
 
   const handleFlySettled = useCallback(() => {
     setFocusedId(selectedId)
+    setInspectPhase('inspecting')
   }, [selectedId])
 
   const handleClose = useCallback(() => {
     if (focusedId && focusedId !== 'talenel') {
       SOUND_EVENTS.onLeaveSword?.()
     }
-    setFocusedId(null)
-    setSelectedId(null)
-    setFocusTarget(null)
+    setInspectPhase('exiting')
+    /* Delay clearing state to allow exit animation */
+    setTimeout(() => {
+      setFocusedId(null)
+      setSelectedId(null)
+      setFocusTarget(null)
+      setInspectPhase('idle')
+    }, 300)
   }, [focusedId])
 
-  const selectedBlade = selectedId ? (HONORBLADES.find((h) => h.id === selectedId) ?? null) : null
+  /* Cleanup timer on unmount */
+  useEffect(() => {
+    const timer = inspectTimerRef.current
+    return () => {
+      if (timer) clearTimeout(timer)
+    }
+  }, [])
 
-  const isFocusMode = focusedId !== null
+  const selectedBlade: HonorbladeData | null = selectedId
+    ? (HONORBLADES.find((h) => h.id === selectedId) ?? null)
+    : null
+
+  const isFocusMode = !!(focusedId !== null)
   const isTalnFocus = focusedId === 'talenel'
+  const showInspectUI = !!(inspectPhase === 'inspecting' && focusedId && focusedId === selectedId)
 
   return (
     <div className="relative w-screen h-screen overflow-hidden" style={{ background: '#030205' }}>
@@ -103,60 +123,82 @@ export default memo(function Scene() {
             onHover={handleHover}
             onSelect={handleSelect}
           />
+
+          {/* Herald symbol projection behind focused blade */}
+          {selectedBlade && (
+            <HeraldSymbol
+              id={selectedBlade.id}
+              color={selectedBlade.color}
+              bladePosition={getBladePos(selectedBlade.id)}
+              focused={showInspectUI}
+            />
+          )}
         </SceneCanvas>
       </div>
 
-      {/* Particles overlay — ambient + occasional streaks */}
+      {/* Particles overlay — slows down in focus mode */}
       <div
         className="fixed inset-0 pointer-events-none"
         style={{
           zIndex: 3,
-          opacity: isFocusMode ? 0.35 : 1,
-          transition: 'opacity 1.2s ease',
+          opacity: isFocusMode ? 0.3 : 1,
+          transition: 'opacity 1.5s ease',
         }}
       >
         <Particles />
       </div>
 
-      {/* Focus dimmer — darkens scene when focusing a blade */}
-      {isFocusMode && (
+      {/* Focus dimmer — darkens scene */}
+      <div
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          zIndex: 4,
+          background: 'rgba(0,0,0,0.3)',
+          opacity: isFocusMode ? 1 : 0,
+          transition: 'opacity 0.8s ease',
+          pointerEvents: isFocusMode ? 'auto' : 'none',
+        }}
+      />
+
+      {/* Left side — carved stone manuscript */}
+      {showInspectUI && !isTalnFocus && selectedBlade && <InfoMonolith blade={selectedBlade} onClose={handleClose} />}
+
+      {/* Right side — large serif quote */}
+      {showInspectUI && !isTalnFocus && selectedBlade && (
         <div
-          className="fixed inset-0 pointer-events-none"
+          className="fixed pointer-events-none select-none"
           style={{
-            zIndex: 4,
-            background: 'rgba(0,0,0,0.3)',
-            animation: 'fadeIn 0.8s ease forwards',
+            zIndex: 44,
+            right: 'clamp(32px, 5vw, 64px)',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            maxWidth: 'clamp(240px, 22vw, 340px)',
+            textAlign: 'right',
+            fontFamily: "'Times New Roman', 'Georgia', serif",
+            opacity: 0,
+            animation: 'quoteReveal 1.2s ease 1.0s forwards',
           }}
-        />
+        >
+          <div
+            style={{
+              fontSize: 'clamp(20px, 1.8vw, 28px)',
+              lineHeight: 1.4,
+              color: 'rgba(200, 185, 165, 0.35)',
+              fontStyle: 'italic',
+              letterSpacing: '0.02em',
+            }}
+          >
+            &ldquo;{selectedBlade.quote}&rdquo;
+          </div>
+        </div>
       )}
 
-      {/* Info panel — left side, emerges after camera settles */}
-      {focusedId && focusedId === selectedId && !isTalnFocus && (
-        <InfoMonolith
-          blade={
-            selectedBlade
-              ? {
-                  id: selectedBlade.id,
-                  name: selectedBlade.name,
-                  title: selectedBlade.title,
-                  order: selectedBlade.order,
-                  surges: selectedBlade.surges,
-                  description: selectedBlade.description,
-                  books: selectedBlade.books,
-                  connections: selectedBlade.connections,
-                  status: selectedBlade.status,
-                }
-              : null
-          }
-          onClose={handleClose}
-        />
-      )}
+      {/* Taln special message */}
+      {isTalnFocus && <TalnMessage />}
 
-      {/* Taln's message — slow fade, no panel */}
-      {focusedId && isTalnFocus && <TalnMessage />}
-
-      {/* Controls legend — bottom left */}
+      {/* Controls legend */}
       <ControlsLegend />
+      {isFocusMode && <ReturnButton onClose={handleClose} />}
 
       {/* Debug toggle */}
       <div className="fixed bottom-4 right-4" style={{ zIndex: 50 }}>
@@ -179,25 +221,92 @@ export default memo(function Scene() {
   )
 })
 
-/* Taln's special message — centered, fading in silently */
-function TalnMessage() {
+/* Return button — top-right during focus */
+function ReturnButton({ onClose }: { onClose: () => void }) {
   return (
-    <div className="fixed inset-0 flex items-center justify-center pointer-events-none" style={{ zIndex: 45 }}>
+    <button
+      onClick={onClose}
+      className="fixed cursor-pointer pointer-events-auto select-none z-50"
+      style={{
+        top: 'clamp(16px, 2.5vw, 28px)',
+        right: 'clamp(16px, 2.5vw, 28px)',
+        background: 'rgba(170,140,100,0.06)',
+        border: '1px solid rgba(170,140,100,0.12)',
+        color: 'rgba(200,185,165,0.4)',
+        padding: '6px 16px',
+        borderRadius: 4,
+        fontFamily: "'Times New Roman', serif",
+        fontSize: 'clamp(11px, 0.7vw, 13px)',
+        letterSpacing: '0.06em',
+        textTransform: 'uppercase',
+        transition: 'all 0.3s ease',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.background = 'rgba(170,140,100,0.12)'
+        e.currentTarget.style.color = 'rgba(200,185,165,0.6)'
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background = 'rgba(170,140,100,0.06)'
+        e.currentTarget.style.color = 'rgba(200,185,165,0.4)'
+      }}
+    >
+      Return
+    </button>
+  )
+}
+
+/* Taln — two sentences, silent reverence */
+function TalnMessage() {
+  const [showFirst, setShowFirst] = useState(false)
+  const [showSecond, setShowSecond] = useState(false)
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setShowFirst(true), 1000)
+    const t2 = setTimeout(() => setShowSecond(true), 4000)
+    return () => {
+      clearTimeout(t1)
+      clearTimeout(t2)
+    }
+  }, [])
+
+  return (
+    <div
+      className="fixed inset-0 flex items-center justify-center pointer-events-none select-none"
+      style={{ zIndex: 45 }}
+    >
       <div
-        className="animate-fade-in-up"
         style={{
           fontFamily: "'Times New Roman', serif",
-          fontSize: 'clamp(18px, 2vw, 28px)',
-          color: 'rgba(200, 185, 165, 0.6)',
-          fontStyle: 'italic',
           textAlign: 'center',
-          maxWidth: 360,
+          maxWidth: 400,
           lineHeight: 1.6,
           letterSpacing: '0.04em',
-          textShadow: '0 0 40px rgba(0,0,0,0.8)',
+          textShadow: '0 0 60px rgba(0,0,0,0.9)',
         }}
       >
-        His blade was never abandoned.
+        <div
+          style={{
+            fontSize: 'clamp(18px, 2vw, 26px)',
+            color: 'rgba(200, 185, 165, 0.5)',
+            fontStyle: 'italic',
+            opacity: showFirst ? 1 : 0,
+            transition: 'opacity 1.5s ease',
+            marginBottom: 16,
+          }}
+        >
+          His blade was never abandoned.
+        </div>
+        <div
+          style={{
+            fontSize: 'clamp(16px, 1.8vw, 24px)',
+            color: 'rgba(200, 185, 165, 0.35)',
+            fontStyle: 'italic',
+            opacity: showSecond ? 1 : 0,
+            transition: 'opacity 1.5s ease',
+          }}
+        >
+          The bearer never broke.
+        </div>
       </div>
     </div>
   )
