@@ -86,7 +86,7 @@ export default function DocumentOverlay({ event, x, y, onClose, toViewport }: Pr
                     <button
                       onClick={(e) => {
                         e.stopPropagation()
-                        navigate(`/map?focus=planet&id=${pid}`)
+                        navigate(`/celestial-charts?focus=planet&id=${pid}`)
                       }}
                       className="text-gray-400 transition-colors hover:text-cyan-400"
                     >

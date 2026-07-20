@@ -182,9 +182,9 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 
 ### Next Steps
 
-1. **Honorblade interactions**: Add click/hover states, camera focus on selected blade
-2. **Information Monolith**: Add UI panel showing blade info on click
-3. **Visual refinements**: Add Stormlight particles per blade, blade shockwave effects
+1. **Aharietiam visual refinements**: Add per-blade Stormlight particles, blade glow pulse, ground-level mist
+2. **Atlas cross-references**: Add clickable planet cross-reference links that navigate to book/magic/character pages
+3. **Field notes expansion**: Add Nazh marginalia annotations (scribbled corrections, "Nazh says" interjections)
 
 #### Hybrid R3F book architecture (this round)
 
@@ -439,3 +439,19 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - **Smart hover preserved**: Best-candidate scoring (distance 100×, size 15×, stability 20×, mass 5×) + flicker prevention within `HOVER_STABILITY_THRESHOLD=0.006`.
 - **Old fields removed**: `frozen` from Soul type, `justClicked` from InteractionSystem, all unused constants. InteractionSystem simplified to minimal mouse tracker.
 - All 206 tests pass, `tsc -b` clean, `pnpm lint` clean.
+
+##### Done (this session: Aharietiam v5 — R3F cinematic museum scene + Khriss Atlas field notes)
+
+- **Complete from-scratch rewrite** of Aharietiam (5th iteration): replaced all CSS 3D perspective layers with a true React Three Fiber scene. New architecture: `Scene.tsx` orchestrator → `SceneCanvas.tsx` (R3F Canvas with ACESFilmic tone mapping, FOV 48, shadows) → `CameraRig.tsx` (cinematic camera with 0.33Hz breathing animation, 1–2° mouse rotation, configurable walk-to-target), `SceneLights.tsx` (late afternoon sun `#e8c89a` 1.4 intensity + 2048 shadow map + cool sky fill + rim + hemisphere bounce), `Ground3D.tsx` (stone platform r=9 with procedural canvas texture: noise, cracks, erosion, moss, crem deposits, edge wear, 2048×2048), `BladeSprite3D.tsx` (billboard `MeshStandardMaterial` with `transparent: true`, `alphaTest: 0.02`, `DoubleSide`, `metalness: 0.2`, `roughness: 0.3`, hover emissive glow, click select), `BladeRing3D.tsx` (10 blades at r=6.5, `positionIndex` sort order, per-blade random rotation offset), `TalnSpot.tsx` (darker stone imprint with compressed dust outline, dashed ellipse), `InfoMonolith.tsx` (GSAP animated slide-up panel), `Atmosphere.tsx` (CSS sky + mountain silhouettes), `Particles.tsx` (Canvas 2D 280 particles).
+
+- **Camera walk-to-blade**: clicking a blade sets `walkTarget` → `CameraRig` lerps camera 4 units radially behind the blade at 0.7u height, looking at blade chest (y=1.5). Click background (`onPointerMissed`) resets camera + closes InfoMonolith. Toggle selection toggles.
+
+- **Blade assets**: PNG honorblade images at `public/images/aharietam/{id}.webp`. Fallback to translucent grey mesh on error.
+
+- **Khriss Atlas field notes redesigned**: 75 total notes across 11 planets, authentic Khriss voice, random selection 1–3 per visit, progressive reveal at 1.8s/4.6s/7.4s, edition system (~2 notes/planet with crossed-out + correction), safe-zone positioning inside `PlanetRightPage`, `note-fade-in` CSS keyframe.
+
+- **Old deleted files**: `Platform.tsx`, `Lighting.tsx` (merged into `Ground3D.tsx`/`SceneLights.tsx`).
+
+- **Files written**: `CameraRig.tsx`, `SceneLights.tsx`, `Ground3D.tsx`, `BladeSprite3D.tsx`, `BladeRing3D.tsx`, `TalnSpot.tsx`, `SceneCanvas.tsx`, `Scene.tsx`, `index.ts` (exports + `CameraTarget` type).
+
+- All 200 tests pass, `tsc -b` clean, `pnpm lint` clean, `pnpm build` clean (44 entries, AharietiamPage 89 kB / 33.6 kB gzip).

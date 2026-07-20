@@ -16,10 +16,10 @@ const NAV_SHORTCUTS: [string, string][] = [
   ['3', '/magic'],
   ['4', '/characters?tab=bloodlines'],
   ['5', '/aharietiam'],
-  ['6', '/locations'],
+  ['6', '/celestial-charts'],
   ['7', '/books'],
   ['8', '/characters'],
-  ['9', '/locations?tab=shards'],
+  ['9', '/celestial-charts?tab=shards'],
   ['0', '/stats'],
   ['s', '/shadesmar'],
 ]

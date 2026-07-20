@@ -15,10 +15,16 @@ interface Command {
 }
 
 const PAGE_COMMANDS: Command[] = [
-  { id: 'home', label: 'Map', description: 'Interactive Cosmere map', to: '/', icon: '🗺' },
+  {
+    id: 'home',
+    label: 'Celestial Charts',
+    description: 'Celestial charts of planets and systems',
+    to: '/celestial-charts',
+    icon: '🗺',
+  },
   { id: 'books', label: 'Books', description: 'All Cosmere books', to: '/books', icon: '📚' },
   { id: 'characters', label: 'Characters', description: 'Notable Cosmere characters', to: '/characters', icon: '👤' },
-  { id: 'shards', label: 'Shards', description: 'Shards of Adonalsium', to: '/locations?tab=shards', icon: '💎' },
+
   { id: 'chronology', label: 'Chronology', description: 'Cosmere chronological record', to: '/chronology', icon: '📜' },
   {
     id: 'magic',
@@ -50,10 +56,10 @@ const PAGE_COMMANDS: Command[] = [
   },
   {
     id: 'locations',
-    label: 'Locations',
-    description: 'Planets and celestial bodies in the Cosmere',
-    to: '/locations',
-    icon: '🌍',
+    label: 'Shards',
+    description: 'Shards of Adonalsium — sixteen pieces of divinity',
+    to: '/celestial-charts?tab=shards',
+    icon: '💎',
   },
   { id: 'stats', label: 'Taravangian Diagram', description: 'Cosmere data dashboard', to: '/stats', icon: '📊' },
   { id: 'about', label: 'About', description: 'About Cosmere Archive', to: '/about', icon: 'ℹ️' },
@@ -89,7 +95,7 @@ export default function CommandPalette({ onClose }: Props) {
       id: `char-${c.id}`,
       label: c.name,
       description: c.description.slice(0, 60),
-      to: `/map?focus=character&id=${c.id}&planet=${c.planet.toLowerCase()}`,
+      to: `/celestial-charts?focus=character&id=${c.id}&planet=${c.planet.toLowerCase()}`,
       icon: '👤',
     }))
     return [...PAGE_COMMANDS, ...bookCommands, ...characterCommands]

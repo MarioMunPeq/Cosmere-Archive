@@ -20,10 +20,10 @@ const CHAPTERS: Chapter[] = [
   },
   {
     numeral: 'II',
-    title: 'WORLD MAP',
-    description: 'Cartographic records of planets, systems and civilizations.',
+    title: 'CELESTIAL CHARTS',
+    description: 'Cartographic and astronomical records of planetary systems throughout the known Cosmere.',
     annotation: 'Fol. 9–16',
-    to: '/locations',
+    to: '/celestial-charts',
   },
   {
     numeral: 'III',

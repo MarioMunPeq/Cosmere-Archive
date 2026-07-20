@@ -91,7 +91,7 @@ export function useSearch() {
             type: 'planet',
             label: p.name,
             sublabel: p.shard || '',
-            action: () => navigate('/map?focus=planet&id=' + p.id),
+            action: () => navigate('/celestial-charts?focus=planet&id=' + p.id),
           })
         }
       }
@@ -105,7 +105,8 @@ export function useSearch() {
             type: 'character',
             label: c.name,
             sublabel: c.planet + ' — ' + c.titles[0],
-            action: () => navigate('/map?focus=character&id=' + c.id + '&planet=' + c.planet.toLowerCase()),
+            action: () =>
+              navigate('/celestial-charts?focus=character&id=' + c.id + '&planet=' + c.planet.toLowerCase()),
           })
         }
       }
@@ -119,7 +120,7 @@ export function useSearch() {
             type: 'worldhopper',
             label: wh.name,
             sublabel: wh.movements.length + ' movements',
-            action: () => navigate('/map?focus=worldhopper&id=' + wh.id),
+            action: () => navigate('/celestial-charts?focus=worldhopper&id=' + wh.id),
           })
         }
       }
@@ -133,7 +134,7 @@ export function useSearch() {
             type: 'event',
             label: e.title,
             sublabel: e.saga + ' — ' + e.year,
-            action: () => navigate('/map?focus=event&id=' + e.id),
+            action: () => navigate('/celestial-charts?focus=event&id=' + e.id),
           })
         }
       }
@@ -147,7 +148,7 @@ export function useSearch() {
             type: 'book',
             label: b.title,
             sublabel: b.saga,
-            action: () => navigate('/map?focus=book&id=' + b.id),
+            action: () => navigate('/celestial-charts?focus=book&id=' + b.id),
           })
         }
       }

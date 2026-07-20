@@ -13,10 +13,10 @@ export const SHORTCUTS: Shortcut[] = [
   { keys: 'Alt+3', label: 'Ars Arcanum page' },
   { keys: 'Alt+4', label: 'Bloodlines page' },
   { keys: 'Alt+5', label: 'Aharietiam page' },
-  { keys: 'Alt+6', label: 'Locations page' },
+  { keys: 'Alt+6', label: 'Celestial Charts page' },
   { keys: 'Alt+7', label: 'Books page' },
   { keys: 'Alt+8', label: 'Characters page' },
-  { keys: 'Alt+9', label: 'Shards page' },
+  { keys: 'Alt+9', label: 'Shards tab' },
   { keys: 'Alt+0', label: 'Stats page' },
   { keys: 'Alt+S', label: 'Shadesmar page' },
 ]

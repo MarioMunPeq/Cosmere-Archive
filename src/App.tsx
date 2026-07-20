@@ -3,10 +3,10 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import Layout from '@/components/common/Layout'
 import ErrorBoundary from '@/components/common/ErrorBoundary'
 import RouteFallback from '@/components/ui/RouteFallback'
-import { MapPageSkeleton, BooksPageSkeleton } from '@/components/ui/Skeleton'
+import { BooksPageSkeleton } from '@/components/ui/Skeleton'
 
 const LandingPage = lazy(() => import('@/pages/LandingPage'))
-const MapPage = lazy(() => import('@/pages/MapPage'))
+const KhrissAtlas = lazy(() => import('@/pages/KhrissAtlas'))
 const About = lazy(() => import('@/pages/About'))
 
 const MagicSystemsPage = lazy(() => import('@/pages/MagicSystemsPage'))
@@ -14,7 +14,7 @@ const AharietiamPage = lazy(() => import('@/pages/AharietiamPage'))
 const BookPage = lazy(() => import('@/pages/BookPage'))
 const StandaloneBooksPage = lazy(() => import('@/pages/StandaloneBooksPage'))
 const BiographicalArchivesPage = lazy(() => import('@/pages/BiographicalArchivesPage'))
-const LocationsPage = lazy(() => import('@/pages/LocationsPage'))
+
 const StandaloneChronologyPage = lazy(() => import('@/pages/StandaloneChronologyPage'))
 const LibraryPage = lazy(() => import('@/pages/LibraryPage'))
 const StatsPage = lazy(() => import('@/pages/StatsPage'))
@@ -36,11 +36,13 @@ export default function App() {
               </RouteFallback>
             }
           />
+          <Route path="map" element={<Navigate to="/celestial-charts" replace />} />
+          <Route path="locations" element={<Navigate to="/celestial-charts" replace />} />
           <Route
-            path="map"
+            path="celestial-charts"
             element={
-              <RouteFallback fallback={<MapPageSkeleton />}>
-                <MapPage />
+              <RouteFallback>
+                <KhrissAtlas />
               </RouteFallback>
             }
           />
@@ -95,7 +97,7 @@ export default function App() {
               </RouteFallback>
             }
           />
-          <Route path="shards" element={<Navigate to="/locations?tab=shards" replace />} />
+          <Route path="shards" element={<Navigate to="/celestial-charts" replace />} />
           <Route
             path="stats"
             element={
@@ -121,14 +123,7 @@ export default function App() {
               </RouteFallback>
             }
           />
-          <Route
-            path="locations"
-            element={
-              <RouteFallback>
-                <LocationsPage />
-              </RouteFallback>
-            }
-          />
+
           <Route path="glossary" element={<Navigate to="/magic" replace />} />
           <Route
             path="shadesmar"

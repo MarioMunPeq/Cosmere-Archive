@@ -11,7 +11,7 @@ const SEGMENT_NAMES: Record<string, string> = {
   books: 'Books',
   stats: 'Taravangian Diagram',
   chronology: 'Chronology',
-  locations: 'Locations',
+  'celestial-charts': 'Celestial Charts',
   shadesmar: 'Shadesmar',
 }
 

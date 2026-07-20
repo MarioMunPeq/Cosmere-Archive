@@ -8,7 +8,7 @@ function SkeletonBar({ className = '' }: SkeletonBarProps) {
   return <div className={`animate-pulse ${className}`} style={{ backgroundColor: inkColor, borderRadius: '1px' }} />
 }
 
-export function MapPageSkeleton() {
+export function CelestialChartsSkeleton() {
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-4 p-4">
       <div className="flex items-center gap-4">

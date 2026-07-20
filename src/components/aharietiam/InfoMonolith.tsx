@@ -19,77 +19,77 @@ interface Props {
   onClose: () => void
 }
 
+/*
+ * Ceremonial information panel — left side, dark translucent stone.
+ * Sections animate in on a timeline:
+ *   0.0 camera arrives
+ *   0.3 sword glow increases
+ *   0.6 panel frame fades in
+ *   0.8 title appears
+ *   1.0 statistics appear
+ *   1.3 description fades
+ *   1.6 quote fades
+ *   2.0 done
+ */
 export default memo(function InfoMonolith({ blade, onClose }: Props) {
-  const cardRef = useRef<HTMLDivElement>(null)
+  const frameRef = useRef<HTMLDivElement>(null)
   const backdropRef = useRef<HTMLDivElement>(null)
-  const contentRef = useRef<HTMLDivElement>(null)
   const prevId = useRef<string | null>(null)
 
   useEffect(() => {
-    const card = cardRef.current
+    const frame = frameRef.current
     const backdrop = backdropRef.current
-    const content = contentRef.current
-    if (card && backdrop) {
-      gsap.set(card, { y: 'calc(100% + 10vh)', opacity: 0, scale: 0.95 })
+    const sections = frame?.querySelectorAll('[data-section]')
+    if (frame && backdrop) {
+      gsap.set(frame, { opacity: 0, x: -60 })
       gsap.set(backdrop, { opacity: 0, pointerEvents: 'none' })
     }
+    if (sections) sections.forEach((el) => gsap.set(el, { opacity: 0, y: 12 }))
     return () => {
-      if (card) gsap.killTweensOf(card)
+      if (frame) gsap.killTweensOf(frame)
       if (backdrop) gsap.killTweensOf(backdrop)
-      if (content?.children) gsap.killTweensOf(content.children)
+      if (sections) sections.forEach((el) => gsap.killTweensOf(el))
     }
   }, [])
 
   useEffect(() => {
+    const frame = frameRef.current
+    const backdrop = backdropRef.current
     if (!blade) {
-      /* close */
-      if (prevId.current && cardRef.current && backdropRef.current) {
-        gsap.to(cardRef.current, {
-          y: 'calc(100% + 10vh)',
-          opacity: 0,
-          scale: 0.92,
-          duration: 0.55,
-          ease: 'power3.in',
-        })
-        gsap.to(backdropRef.current, {
-          opacity: 0,
-          duration: 0.45,
-          pointerEvents: 'none',
-        })
+      if (prevId.current && frame && backdrop) {
+        gsap.to(frame, { opacity: 0, x: -40, duration: 0.4, ease: 'power2.in' })
+        gsap.to(backdrop, { opacity: 0, duration: 0.35, pointerEvents: 'none' })
       }
       prevId.current = null
       return
     }
 
     if (prevId.current !== blade.id) {
-      /* reset content */
-      if (contentRef.current) {
-        const kids = Array.from(contentRef.current.children) as HTMLElement[]
-        kids.forEach((el) => gsap.set(el, { opacity: 0, y: 16 }))
-      }
+      const sections = frame?.querySelectorAll('[data-section]')
 
-      gsap.set(cardRef.current, { y: 'calc(100% + 10vh)', opacity: 0, scale: 0.95 })
-      gsap.set(backdropRef.current, { pointerEvents: 'auto' })
+      /* Reset all sections hidden */
+      if (sections) sections.forEach((el) => gsap.set(el, { opacity: 0, y: 12 }))
+
+      if (frame) gsap.set(frame, { opacity: 0, x: -60 })
+      if (backdrop) gsap.set(backdrop, { opacity: 0, pointerEvents: 'auto' })
 
       const tl = gsap.timeline()
-      tl.to(backdropRef.current, { opacity: 1, duration: 0.35 }, 0).to(
-        cardRef.current,
-        {
-          y: '0%',
-          opacity: 1,
-          scale: 1,
-          duration: 0.65,
-          ease: 'power3.out',
-        },
-        0,
-      )
 
-      if (contentRef.current) {
-        const kids = Array.from(contentRef.current.children) as HTMLElement[]
-        if (kids[0]) tl.to(kids[0], { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }, 0.5)
-        if (kids[1]) tl.to(kids[1], { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 0.7)
-        if (kids[2]) tl.to(kids[2], { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 0.85)
-        if (kids[3]) tl.to(kids[3], { opacity: 1, y: 0, duration: 0.25, ease: 'power2.out' }, 1.0)
+      /* 0.0 Backdrop fade */
+      tl.to(backdrop, { opacity: 1, duration: 0.3 }, 0)
+
+      /* 0.6 Panel frame slides in */
+      tl.to(frame, { opacity: 1, x: 0, duration: 0.5, ease: 'power2.out' }, 0.5)
+
+      if (sections) {
+        /* 0.8 Title section */
+        if (sections[0]) tl.to(sections[0], { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }, 0.7)
+        /* 1.0 Stats section (order, surges, status) */
+        if (sections[1]) tl.to(sections[1], { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 0.9)
+        /* 1.3 Description */
+        if (sections[2]) tl.to(sections[2], { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 1.15)
+        /* 1.6 Books + connections + quote */
+        if (sections[3]) tl.to(sections[3], { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 1.45)
       }
 
       prevId.current = blade.id
@@ -100,57 +100,71 @@ export default memo(function InfoMonolith({ blade, onClose }: Props) {
 
   return (
     <>
+      {/* Backdrop — darkens the scene */}
       <div
         ref={backdropRef}
         className="fixed inset-0"
         style={{
           zIndex: 40,
           opacity: 0,
-          background: 'rgba(0,0,0,0.5)',
+          background: 'rgba(0,0,0,0.45)',
           pointerEvents: 'none',
         }}
         onClick={onClose}
       />
+
+      {/* Panel — left-aligned, dark translucent stone */}
       <div
-        ref={cardRef}
-        data-card
+        ref={frameRef}
         className="fixed"
         style={{
           zIndex: 45,
-          left: '50%',
+          left: 'clamp(24px, 4vw, 48px)',
           top: '50%',
-          width: 'clamp(360px, 42vw, 560px)',
-          maxHeight: 'clamp(400px, 70vh, 700px)',
-          transform: 'translate(-50%, -50%)',
-          borderRadius: 16,
-          background: 'rgba(20, 16, 12, 0.65)',
-          backdropFilter: 'blur(24px) saturate(0.8)',
-          WebkitBackdropFilter: 'blur(24px) saturate(0.8)',
-          border: '1px solid rgba(255, 235, 210, 0.08)',
+          transform: 'translateY(-50%)',
+          width: 'clamp(300px, 28vw, 420px)',
+          maxHeight: 'clamp(400px, 75vh, 720px)',
+          borderRadius: 12,
+          background: 'rgba(16, 12, 10, 0.75)',
+          backdropFilter: 'blur(28px) saturate(0.7)',
+          WebkitBackdropFilter: 'blur(28px) saturate(0.7)',
+          border: '1px solid rgba(255, 235, 210, 0.06)',
           boxShadow: `
-            0 24px 80px rgba(0,0,0,0.6),
-            inset 0 1px 0 rgba(255,235,210,0.06),
-            0 0 40px rgba(100,150,255,0.03)
+            0 20px 60px rgba(0,0,0,0.5),
+            inset 0 1px 0 rgba(255,235,210,0.04),
+            0 0 30px rgba(100,150,255,0.02)
           `,
           overflow: 'hidden',
+          pointerEvents: 'auto',
         }}
       >
         <div
-          ref={contentRef}
           className="overflow-y-auto"
           style={{
-            padding: 'clamp(24px, 3vw, 40px)',
-            maxHeight: 'clamp(400px, 70vh, 700px)',
+            padding: 'clamp(20px, 2.5vw, 32px)',
+            maxHeight: 'clamp(400px, 75vh, 720px)',
             color: '#d4c8b8',
+            fontFamily: "'Times New Roman', 'Georgia', serif",
           }}
         >
           {info && (
             <>
-              <div>
+              {/* Section 0: Title */}
+              <div data-section style={{ opacity: 0, y: 12 }}>
+                <div
+                  style={{
+                    fontSize: 'clamp(9px, 0.6vw, 11px)',
+                    color: 'rgba(200,185,165,0.3)',
+                    letterSpacing: '0.15em',
+                    textTransform: 'uppercase',
+                    marginBottom: 6,
+                  }}
+                >
+                  Herald
+                </div>
                 <h2
                   style={{
-                    fontFamily: "'Times New Roman', serif",
-                    fontSize: 'clamp(22px, 2.5vw, 34px)',
+                    fontSize: 'clamp(20px, 2vw, 28px)',
                     fontWeight: 400,
                     color: '#e8ddd0',
                     margin: 0,
@@ -161,102 +175,66 @@ export default memo(function InfoMonolith({ blade, onClose }: Props) {
                 </h2>
                 <p
                   style={{
-                    fontFamily: "'Times New Roman', serif",
-                    fontSize: 'clamp(13px, 1.1vw, 17px)',
-                    color: 'rgba(200, 185, 165, 0.65)',
+                    fontSize: 'clamp(12px, 0.9vw, 15px)',
+                    color: 'rgba(200,185,165,0.55)',
                     fontStyle: 'italic',
-                    margin: '4px 0 0 0',
+                    margin: '2px 0 0 0',
                   }}
                 >
                   {info.title}
                 </p>
               </div>
 
-              <div style={{ marginTop: 'clamp(12px, 1.5vw, 20px)' }}>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                  <span
-                    style={{
-                      padding: '3px 12px',
-                      borderRadius: 20,
-                      fontSize: 'clamp(11px, 0.9vw, 14px)',
-                      background: 'rgba(255,235,210,0.06)',
-                      border: '1px solid rgba(255,235,210,0.08)',
-                      color: 'rgba(200,185,165,0.7)',
-                      letterSpacing: '0.03em',
-                    }}
-                  >
-                    {info.order}
-                  </span>
+              {/* Section 1: Attributes */}
+              <div data-section style={{ opacity: 0, y: 12, marginTop: 'clamp(14px, 1.4vw, 20px)' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                  <Pill>{info.order}</Pill>
                   {info.surges.map((s) => (
-                    <span
-                      key={s}
-                      style={{
-                        padding: '3px 12px',
-                        borderRadius: 20,
-                        fontSize: 'clamp(11px, 0.9vw, 14px)',
-                        background: 'rgba(100,150,255,0.05)',
-                        border: '1px solid rgba(100,150,255,0.08)',
-                        color: 'rgba(180,200,230,0.6)',
-                        letterSpacing: '0.03em',
-                      }}
-                    >
+                    <Pill key={s} accent>
                       {s}
-                    </span>
+                    </Pill>
                   ))}
-                  <span
-                    style={{
-                      padding: '3px 12px',
-                      borderRadius: 20,
-                      fontSize: 'clamp(11px, 0.9vw, 14px)',
-                      background: info.status === 'standing' ? 'rgba(100,200,150,0.06)' : 'rgba(200,100,100,0.06)',
-                      border:
-                        info.status === 'standing'
-                          ? '1px solid rgba(100,200,150,0.1)'
-                          : '1px solid rgba(200,100,100,0.08)',
-                      color: info.status === 'standing' ? 'rgba(180,220,190,0.5)' : 'rgba(210,160,160,0.5)',
-                      letterSpacing: '0.03em',
-                    }}
-                  >
-                    {info.status}
-                  </span>
+                  <Pill status={info.status}>{info.status}</Pill>
                 </div>
               </div>
 
-              <p
-                style={{
-                  marginTop: 'clamp(14px, 1.6vw, 22px)',
-                  fontSize: 'clamp(13px, 1vw, 16px)',
-                  lineHeight: 1.65,
-                  color: 'rgba(200, 185, 165, 0.7)',
-                  fontFamily: "'Georgia', serif",
-                }}
-              >
-                {info.description}
-              </p>
+              {/* Section 2: Description */}
+              <div data-section style={{ opacity: 0, y: 12, marginTop: 'clamp(14px, 1.4vw, 20px)' }}>
+                <p
+                  style={{
+                    fontSize: 'clamp(12px, 0.85vw, 14px)',
+                    lineHeight: 1.65,
+                    color: 'rgba(200,185,165,0.65)',
+                    margin: 0,
+                  }}
+                >
+                  {info.description}
+                </p>
+              </div>
 
-              <div style={{ marginTop: 'clamp(12px, 1.4vw, 20px)' }}>
+              {/* Section 3: Books, connections, quote */}
+              <div data-section style={{ opacity: 0, y: 12, marginTop: 'clamp(14px, 1.4vw, 20px)' }}>
                 <div
                   style={{
-                    fontSize: 'clamp(11px, 0.85vw, 13px)',
-                    color: 'rgba(200,185,165,0.35)',
-                    marginBottom: 4,
-                    letterSpacing: '0.04em',
+                    fontSize: 'clamp(10px, 0.65vw, 12px)',
+                    color: 'rgba(200,185,165,0.3)',
+                    letterSpacing: '0.06em',
                     textTransform: 'uppercase',
+                    marginBottom: 4,
                   }}
                 >
                   Appears in
                 </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 12 }}>
                   {info.books.map((b) => (
                     <span
                       key={b}
                       style={{
-                        padding: '2px 10px',
-                        borderRadius: 12,
-                        fontSize: 'clamp(10px, 0.8vw, 12px)',
+                        padding: '2px 8px',
+                        fontSize: 'clamp(10px, 0.65vw, 11px)',
                         background: 'rgba(255,235,210,0.03)',
-                        border: '1px solid rgba(255,235,210,0.05)',
-                        color: 'rgba(200,185,165,0.35)',
+                        borderRadius: 10,
+                        color: 'rgba(200,185,165,0.3)',
                       }}
                     >
                       {b.replace(/_/g, ' ')}
@@ -265,35 +243,51 @@ export default memo(function InfoMonolith({ blade, onClose }: Props) {
                 </div>
 
                 {info.connections.length > 0 && (
-                  <div style={{ marginTop: 12 }}>
+                  <>
                     <div
                       style={{
-                        fontSize: 'clamp(11px, 0.85vw, 13px)',
-                        color: 'rgba(200,185,165,0.35)',
-                        marginBottom: 4,
-                        letterSpacing: '0.04em',
+                        fontSize: 'clamp(10px, 0.65vw, 12px)',
+                        color: 'rgba(200,185,165,0.3)',
+                        letterSpacing: '0.06em',
                         textTransform: 'uppercase',
+                        marginBottom: 4,
                       }}
                     >
                       Connections
                     </div>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 12 }}>
                       {info.connections.map((c) => (
                         <span
                           key={c}
                           style={{
-                            padding: '2px 10px',
-                            borderRadius: 12,
-                            fontSize: 'clamp(10px, 0.8vw, 12px)',
+                            padding: '2px 8px',
+                            fontSize: 'clamp(10px, 0.65vw, 11px)',
                             background: 'rgba(100,150,200,0.04)',
-                            border: '1px solid rgba(100,150,200,0.06)',
-                            color: 'rgba(180,200,220,0.35)',
+                            borderRadius: 10,
+                            color: 'rgba(180,200,220,0.3)',
                           }}
                         >
                           {c}
                         </span>
                       ))}
                     </div>
+                  </>
+                )}
+
+                {/* Quote — elegant block */}
+                {info.id && (
+                  <div
+                    style={{
+                      marginTop: 8,
+                      padding: 'clamp(10px, 1vw, 14px)',
+                      borderLeft: '2px solid rgba(200,185,165,0.08)',
+                      fontStyle: 'italic',
+                      fontSize: 'clamp(11px, 0.75vw, 13px)',
+                      color: 'rgba(200,185,165,0.4)',
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    &ldquo;{getHeraldQuote(info.id)}&rdquo;
                   </div>
                 )}
               </div>
@@ -304,3 +298,58 @@ export default memo(function InfoMonolith({ blade, onClose }: Props) {
     </>
   )
 })
+
+/* Reusable pill component */
+function Pill({ children, accent, status }: { children: string; accent?: boolean; status?: string }) {
+  let bg = 'rgba(255,235,210,0.04)'
+  let border = 'rgba(255,235,210,0.06)'
+  let color = 'rgba(200,185,165,0.5)'
+  if (accent) {
+    bg = 'rgba(100,150,255,0.04)'
+    border = 'rgba(100,150,255,0.06)'
+    color = 'rgba(180,200,230,0.45)'
+  }
+  if (status === 'standing') {
+    bg = 'rgba(100,200,150,0.05)'
+    border = 'rgba(100,200,150,0.08)'
+    color = 'rgba(180,220,190,0.4)'
+  }
+  if (status === 'fallen') {
+    bg = 'rgba(200,100,100,0.04)'
+    border = 'rgba(200,100,100,0.06)'
+    color = 'rgba(210,160,160,0.4)'
+  }
+
+  return (
+    <span
+      style={{
+        padding: '2px 10px',
+        borderRadius: 12,
+        fontSize: 'clamp(10px, 0.7vw, 12px)',
+        background: bg,
+        border: `1px solid ${border}`,
+        color,
+        letterSpacing: '0.03em',
+      }}
+    >
+      {children}
+    </span>
+  )
+}
+
+const QUOTES: Record<string, string> = {
+  jezrien: 'I have given you the sky. The rest you must earn.',
+  nale: 'The law is not a suggestion. It is the foundation upon which civilization rests.',
+  chanarach: 'Destruction is not the opposite of creation — it is the prelude.',
+  vedel: 'The deepest wounds are those the eye cannot see.',
+  pailiah: 'To know is to bear a burden. Ignorance is the lighter path, but not the truer one.',
+  shalash: 'Erase me from your memory. Burn my image. I am not worthy of worship.',
+  battar: 'Wisdom is knowing what questions to ask — not knowing the answers.',
+  kalak: 'I have walked through worlds and watched them burn. I am tired.',
+  talenel: 'I did not break. They could not make me break.',
+  ishar: 'I was the first. I will be the last. And in between, I have become something terrible.',
+}
+
+function getHeraldQuote(id: string): string {
+  return QUOTES[id] ?? 'The words are lost to time.'
+}

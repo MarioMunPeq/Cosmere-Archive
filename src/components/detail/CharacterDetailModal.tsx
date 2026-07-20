@@ -229,7 +229,7 @@ function CharacterDetailModal({ character, onClose, onSelectCharacter, originRec
               <button
                 onClick={() => {
                   onClose()
-                  navigate(`/map?focus=planet&id=${character.planet}`)
+                  navigate(`/celestial-charts?focus=planet&id=${character.planet}`)
                 }}
                 className="mt-1.5 flex w-full items-center gap-2 rounded-lg border border-gray-800/60 bg-gray-950/50 px-3.5 py-2 text-sm text-gray-300 transition-colors hover:border-cyan-800/60 hover:text-cyan-400"
               >

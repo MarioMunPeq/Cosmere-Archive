@@ -11,30 +11,41 @@ interface Particle {
   opacity: number
   life: number
   maxLife: number
-  type: 'dust' | 'ash' | 'mote' | 'sparkle'
+  type: 'dust' | 'ash' | 'mote' | 'sparkle' | 'streak'
   hue: number
 }
 
-const COUNT = 280
+const COUNT = 250
 const LAYERS = 3
 
 function create(w: number, h: number, layer: number): Particle {
   const r = Math.random()
-  const type: Particle['type'] = r < 0.4 ? 'dust' : r < 0.7 ? 'ash' : r < 0.9 ? 'mote' : 'sparkle'
+  const type: Particle['type'] =
+    r < 0.35 ? 'dust' : r < 0.6 ? 'ash' : r < 0.82 ? 'mote' : r < 0.97 ? 'sparkle' : 'streak'
   const depthFactor = 1 + layer * 0.4
   const speedScale = 1 - layer * 0.25
   return {
     x: Math.random() * w,
     y: Math.random() * h,
     z: layer / LAYERS,
-    vx: (Math.random() - 0.5) * 0.06 * depthFactor,
-    vy: (-0.004 - Math.random() * 0.035) * speedScale,
-    size: type === 'sparkle' ? 0.5 + Math.random() * 1 : (0.3 + Math.random() * 0.5) * (1 + layer * 0.4),
-    opacity: 0.02 + Math.random() * 0.05 * (1 - layer * 0.12),
+    vx: (Math.random() - 0.5) * 0.05 * depthFactor,
+    vy: (-0.003 - Math.random() * 0.03) * speedScale,
+    size:
+      type === 'sparkle'
+        ? 0.5 + Math.random() * 1.2
+        : type === 'streak'
+          ? 1.5 + Math.random() * 2
+          : (0.3 + Math.random() * 0.5) * (1 + layer * 0.4),
+    opacity: type === 'streak' ? 0.08 + Math.random() * 0.12 : 0.02 + Math.random() * 0.05 * (1 - layer * 0.12),
     life: 0,
-    maxLife: type === 'sparkle' ? 60 + Math.random() * 140 : 250 + Math.random() * 500,
+    maxLife:
+      type === 'sparkle'
+        ? 60 + Math.random() * 140
+        : type === 'streak'
+          ? 120 + Math.random() * 200
+          : 250 + Math.random() * 500,
     type,
-    hue: type === 'sparkle' ? 180 + Math.random() * 60 : 0,
+    hue: type === 'sparkle' ? 180 + Math.random() * 60 : type === 'streak' ? 190 + Math.random() * 30 : 0,
   }
 }
 
@@ -52,6 +63,7 @@ export default memo(function Particles() {
     let w = 0
     let h = 0
     let hidden = false
+    let streakTimer = 0
 
     const resize = () => {
       w = window.innerWidth
@@ -88,6 +100,26 @@ export default memo(function Particles() {
         const mx = mouseRef.current.x
         const my = mouseRef.current.y
 
+        /* Occasionally spawn a strong glowing streak */
+        streakTimer++
+        if (streakTimer > 400 + Math.random() * 300) {
+          streakTimer = 0
+          const side = Math.random() > 0.5 ? 0 : w
+          particles.push({
+            x: side,
+            y: Math.random() * h * 0.5,
+            z: 0.1,
+            vx: (side === 0 ? 1 : -1) * (0.3 + Math.random() * 0.5),
+            vy: (Math.random() - 0.5) * 0.05,
+            size: 2 + Math.random() * 3,
+            opacity: 0.2,
+            life: 0,
+            maxLife: 80 + Math.random() * 120,
+            type: 'streak',
+            hue: 200 + Math.random() * 40,
+          })
+        }
+
         for (let i = 0; i < particles.length; i++) {
           const p = particles[i]!
           p.life++
@@ -98,13 +130,13 @@ export default memo(function Particles() {
             continue
           }
 
-          /* mouse repulsion */
+          /* Mouse repulsion */
           if (mx >= 0 && my >= 0) {
             const dx = mx - p.x
             const dy = my - p.y
             const dist = Math.sqrt(dx * dx + dy * dy)
-            if (dist < 180 && dist > 0) {
-              const f = (1 - dist / 180) * 0.008 * (1 - p.z * 0.5)
+            if (dist < 150 && dist > 0) {
+              const f = (1 - dist / 150) * 0.006 * (1 - p.z * 0.5)
               p.vx -= (dx / dist) * f
               p.vy -= (dy / dist) * f
             }
@@ -114,19 +146,36 @@ export default memo(function Particles() {
           p.vy *= 0.996
           p.x += p.vx
           p.y += p.vy
+          p.x += 0.006 * (1 + p.z * 1.5)
 
-          /* wind drift — rightward, stronger in back layers */
-          p.x += 0.008 * (1 + p.z * 1.5)
-
-          if (p.x < -30) p.x = w + 30
-          else if (p.x > w + 30) p.x = -30
-          if (p.y < -30) p.y = h + 30
-          else if (p.y > h + 30) p.y = -30
+          if (p.x < -40) p.x = w + 40
+          else if (p.x > w + 40) p.x = -40
+          if (p.y < -40) p.y = h + 40
+          else if (p.y > h + 40) p.y = -40
 
           const lifeRatio = p.life / p.maxLife
           const alpha = p.opacity * Math.min(lifeRatio * 4, 1) * Math.max(1 - lifeRatio, 0)
 
-          /* sparkle glow halo */
+          /* Streak — bright elongated glow */
+          if (p.type === 'streak') {
+            const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 6)
+            grad.addColorStop(0, `hsla(${p.hue}, 80%, 90%, ${alpha * 1.5})`)
+            grad.addColorStop(0.3, `hsla(${p.hue}, 60%, 70%, ${alpha * 0.8})`)
+            grad.addColorStop(1, `hsla(${p.hue}, 60%, 70%, 0)`)
+            ctx.beginPath()
+            ctx.arc(p.x, p.y, p.size * 6, 0, Math.PI * 2)
+            ctx.fillStyle = grad
+            ctx.fill()
+
+            /* Core bright point */
+            ctx.beginPath()
+            ctx.arc(p.x, p.y, p.size * 0.4, 0, Math.PI * 2)
+            ctx.fillStyle = `rgba(220, 230, 255, ${alpha * 2})`
+            ctx.fill()
+            continue
+          }
+
+          /* Sparkle glow halo */
           if (p.type === 'sparkle') {
             const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 3.5)
             grad.addColorStop(0, `hsla(${p.hue}, 60%, 85%, ${alpha * 1.2})`)
@@ -137,7 +186,7 @@ export default memo(function Particles() {
             ctx.fill()
           }
 
-          /* mote glow */
+          /* Mote glow */
           if (p.type === 'mote') {
             const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 2)
             grad.addColorStop(0, `rgba(180, 210, 240, ${alpha * 0.8})`)
@@ -148,18 +197,13 @@ export default memo(function Particles() {
             ctx.fill()
           }
 
-          /* core dot */
+          /* Core dot */
           ctx.beginPath()
           ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
-          if (p.type === 'mote') {
-            ctx.fillStyle = `rgba(180, 210, 255, ${alpha * 0.25})`
-          } else if (p.type === 'sparkle') {
-            ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.5})`
-          } else if (p.type === 'ash') {
-            ctx.fillStyle = `rgba(140, 130, 120, ${alpha * 0.12})`
-          } else {
-            ctx.fillStyle = `rgba(190, 180, 165, ${alpha * 0.08})`
-          }
+          if (p.type === 'mote') ctx.fillStyle = `rgba(180, 210, 255, ${alpha * 0.25})`
+          else if (p.type === 'sparkle') ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.5})`
+          else if (p.type === 'ash') ctx.fillStyle = `rgba(140, 130, 120, ${alpha * 0.12})`
+          else ctx.fillStyle = `rgba(190, 180, 165, ${alpha * 0.08})`
           ctx.fill()
         }
       }

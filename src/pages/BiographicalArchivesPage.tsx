@@ -484,7 +484,7 @@ export default function BiographicalArchivesPage() {
               key={char.id}
               character={char}
               magicSystems={MAGIC_SYSTEMS}
-              onNavigatePlanet={(planetId) => navigate(`/map?focus=planet&id=${planetId}`)}
+              onNavigatePlanet={(planetId) => navigate(`/celestial-charts?focus=planet&id=${planetId}`)}
               onNavigateMagic={(systemId) => navigate(`/magic?system=${systemId}`)}
               onNavigateBook={(bookId) => navigate(`/books/${bookId}`)}
               onNavigateChapter={(ch) => handleSelectChapter(ch)}

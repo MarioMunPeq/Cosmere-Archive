@@ -461,7 +461,7 @@ export default function CharactersPage() {
                                     <button
                                       onClick={(e) => {
                                         e.stopPropagation()
-                                        navigate(`/map?focus=planet&id=${c.planet}`)
+                                        navigate(`/celestial-charts?focus=planet&id=${c.planet}`)
                                       }}
                                       className="mt-0.5 flex items-center gap-1.5 text-xs text-gray-500 transition-colors hover:text-cyan-400"
                                     >

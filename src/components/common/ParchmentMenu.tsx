@@ -8,11 +8,10 @@ import ThemeToggle from '@/components/ui/ThemeToggle'
 const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'] as const
 
 const DRAWER_LINKS: { to: string; label: string }[] = [
-  { to: '/map', label: 'Interactive Map' },
+  { to: '/celestial-charts', label: 'Celestial Charts' },
   { to: '/characters', label: 'Characters' },
   { to: '/chronology', label: 'Chronology' },
   { to: '/books', label: 'Books' },
-  { to: '/locations', label: 'Locations' },
   { to: '/magic', label: 'Ars Arcanum' },
   { to: '/library', label: 'Library' },
   { to: '/stats', label: 'Taravangian Diagram' },
