@@ -54,6 +54,7 @@ export default memo(function BladeRing({ hoveredId, selectedId, focusedId, onHov
         return (
           <Blade3D
             key={b.id}
+            id={b.id}
             position={b.pos}
             rotationY={b.rotY}
             color={b.color}

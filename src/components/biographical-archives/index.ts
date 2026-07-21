@@ -1,5 +1,4 @@
 export { default as CharacterPortrait } from './CharacterPortrait'
 export { default as CharacterRecord } from './CharacterRecord'
-export { default as FamilyTreeRenderer } from './FamilyTreeRenderer'
 export { default as ConnectionDiagram } from './ConnectionDiagram'
 export { default as BiographicalContents } from './BiographicalContents'

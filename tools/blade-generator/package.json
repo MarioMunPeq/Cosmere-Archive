@@ -1,0 +1,20 @@
+{
+  "name": "blade-generator",
+  "version": "1.0.0",
+  "description": "Offline Honorblade 3D asset generator — converts PNG/WebP silhouettes into optimized GLB meshes",
+  "type": "module",
+  "scripts": {
+    "generate:blades": "tsx src/index.ts",
+    "blades": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "sharp": "^0.34.0",
+    "three": "^0.185.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}

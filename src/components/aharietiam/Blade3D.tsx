@@ -1,9 +1,11 @@
 'use client'
-import { memo, useMemo, useRef } from 'react'
+import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import * as THREE from 'three'
 
-function createBladeGeometry(): THREE.BufferGeometry {
+/* Fallback geometry if GLB fails to load — simple blade shape */
+function createFallbackGeometry(): THREE.BufferGeometry {
   const s = new THREE.Shape()
   s.moveTo(0, 2.6)
   s.lineTo(0.22, 1.6)
@@ -39,9 +41,10 @@ function createBladeGeometry(): THREE.BufferGeometry {
   return geo
 }
 
-const BLADE_GEO = createBladeGeometry()
+const FALLBACK_GEO = createFallbackGeometry()
 
 interface Props {
+  id: string
   position: [number, number, number]
   rotationY: number
   color: string
@@ -55,6 +58,7 @@ interface Props {
 }
 
 export default memo(function Blade3D({
+  id,
   position,
   rotationY,
   color,
@@ -69,6 +73,32 @@ export default memo(function Blade3D({
   const meshRef = useRef<THREE.Mesh>(null)
   const glowRef = useRef<THREE.Mesh>(null)
   const stormlightRef = useRef<THREE.Points>(null)
+  const [glbGeometry, setGlbGeometry] = useState<THREE.BufferGeometry | null>(null)
+
+  /* Load GLB geometry via effect (offline generated assets) */
+  useEffect(() => {
+    let disposed = false
+    const loader = new GLTFLoader()
+    loader.load(
+      `models/aharietam/${id}.glb`,
+      (gltf) => {
+        if (disposed) return
+        const mesh = gltf.scene.children[0] as THREE.Mesh
+        if (mesh?.geometry) {
+          setGlbGeometry(mesh.geometry.clone())
+        }
+      },
+      undefined,
+      () => {
+        /* Load failed — fallback geometry will be used */
+      },
+    )
+    return () => {
+      disposed = true
+    }
+  }, [id])
+
+  const geometry = glbGeometry ?? FALLBACK_GEO
 
   /* Hover/focus dust particles */
   const dustGeo = useMemo(() => {
@@ -83,7 +113,7 @@ export default memo(function Blade3D({
     return g
   }, [])
 
-  /* Focus Stormlight particles — tiny floating motes around blade */
+  /* Focus Stormlight particles */
   const stormlightGeo = useMemo(() => {
     const positions: number[] = []
     const offsets: number[] = []
@@ -105,17 +135,14 @@ export default memo(function Blade3D({
     const t = performance.now() / 1000
 
     if (focused) {
-      /* Gentle sway */
       meshRef.current.rotation.z = Math.sin(t * 0.4) * 0.002
 
-      /* Breathing glow */
       if (glowRef.current) {
         const breathe = 0.85 + Math.sin(t * 0.6) * 0.15
         const m = glowRef.current.material as THREE.MeshBasicMaterial
         m.opacity = 0.15 * breathe
       }
 
-      /* Stormlight particles drift */
       if (stormlightRef.current) {
         const posAcc = stormlightRef.current.geometry.attributes.position
         const offAcc = stormlightRef.current.geometry.attributes.offset
@@ -141,7 +168,7 @@ export default memo(function Blade3D({
 
   return (
     <group position={position} rotation={[0, rotationY, 0]}>
-      {/* Glow plane — subtle bloom behind blade */}
+      {/* Glow plane */}
       <mesh ref={glowRef} position={[0, 0.8, -0.12]} scale={[1.8, 2.0, 1]}>
         <planeGeometry args={[0.6, 3.0]} />
         <meshBasicMaterial
@@ -154,7 +181,7 @@ export default memo(function Blade3D({
         />
       </mesh>
 
-      {/* Stormlight particles — only in focus mode */}
+      {/* Stormlight particles */}
       {focused && (
         <points ref={stormlightRef} geometry={stormlightGeo}>
           <pointsMaterial
@@ -169,10 +196,10 @@ export default memo(function Blade3D({
         </points>
       )}
 
-      {/* Main blade */}
+      {/* Main blade from GLB or fallback geometry */}
       <mesh
         ref={meshRef}
-        geometry={BLADE_GEO}
+        geometry={geometry}
         onClick={onClick}
         onPointerEnter={onPointerEnter}
         onPointerLeave={onPointerLeave}
@@ -191,7 +218,7 @@ export default memo(function Blade3D({
         />
       </mesh>
 
-      {/* Hover/focus dust particles at base */}
+      {/* Dust particles */}
       {(hovered || focused) && (
         <points geometry={dustGeo} position={[0, -0.05, 0]}>
           <pointsMaterial

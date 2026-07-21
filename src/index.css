@@ -6,15 +6,6 @@
   font-size: 10px;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
 @keyframes quoteReveal {
   from {
     opacity: 0;
@@ -169,35 +160,6 @@
     will-change: transform, opacity;
   }
 
-  @keyframes chapter-enter {
-    from {
-      opacity: 0;
-      transform: translateY(6px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .animate-chapter-enter {
-    animation: chapter-enter 0.4s ease-out both;
-    will-change: transform, opacity;
-  }
-
-  @keyframes dust-fade-in {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  .animate-dust-fade-in {
-    animation: dust-fade-in 2s ease-out 0.3s forwards;
-  }
-
   @keyframes twinkle-slow {
     0%,
     100% {
@@ -212,36 +174,6 @@
 
   .animate-twinkle-slow {
     animation: twinkle-slow 4s ease-in-out infinite;
-  }
-
-  @keyframes glow-pulse {
-    0%,
-    100% {
-      box-shadow: 0 0 4px var(--glow-color, transparent);
-    }
-    50% {
-      box-shadow:
-        0 0 12px var(--glow-color, transparent),
-        0 0 24px var(--glow-color, transparent);
-    }
-  }
-
-  .animate-glow-pulse {
-    animation: glow-pulse 3s ease-in-out infinite;
-  }
-
-  @keyframes float {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-6px);
-    }
-  }
-
-  .animate-float {
-    animation: float 4s ease-in-out infinite;
   }
 
   @keyframes breathe {
@@ -503,34 +435,6 @@ input,
   pointer-events: none;
 }
 
-/* Directional slide-in animations */
-@keyframes slide-in-right {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-.animate-slide-in-right {
-  animation: slide-in-right 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-@keyframes slide-in-left {
-  from {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-.animate-slide-in-left {
-  animation: slide-in-left 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
 /* View Transitions API */
 @keyframes vt-fade-out {
   to {
@@ -569,37 +473,6 @@ input,
 /* Full-page dark background (prevents white flash when scrolling past 100vh) */
 html {
   background-color: var(--bg-page);
-}
-
-/* Era band pulse */
-@keyframes era-glow {
-  0%,
-  100% {
-    opacity: var(--era-opacity, 0.08);
-  }
-  50% {
-    opacity: calc(var(--era-opacity, 0.08) * 1.8);
-  }
-}
-
-.animate-era-glow {
-  animation: era-glow 6s ease-in-out infinite;
-}
-
-/* Staggered fade-in for timeline dots */
-@keyframes dot-enter {
-  from {
-    opacity: 0;
-    transform: translateY(-6px) scale(0.6);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.animate-dot-enter {
-  animation: dot-enter 0.4s ease-out both;
 }
 
 /* Print stylesheet */
@@ -763,42 +636,6 @@ html {
   }
 }
 
-@keyframes book-settle {
-  0% {
-    transform: translateY(0);
-  }
-  35% {
-    transform: translateY(-3.5px);
-  }
-  65% {
-    transform: translateY(1.5px);
-  }
-  100% {
-    transform: translateY(0);
-  }
-}
-.book-settle {
-  animation: book-settle 0.35s ease-in-out;
-}
-
-@keyframes page-turn {
-  0% {
-    transform: perspective(800px) rotateY(-4deg) scaleX(0.97);
-    opacity: 0.7;
-  }
-  40% {
-    transform: perspective(800px) rotateY(0deg) scaleX(1.01);
-    opacity: 1;
-  }
-  100% {
-    transform: perspective(800px) rotateY(0deg) scaleX(1);
-    opacity: 1;
-  }
-}
-.page-turn {
-  animation: page-turn 600ms ease-out;
-}
-
 @keyframes dust-drift-1 {
   0% {
     transform: translate(0px, 0px);
@@ -871,22 +708,6 @@ html {
   }
 }
 
-@keyframes dust-float {
-  0%,
-  100% {
-    transform: translate(0, 0);
-  }
-  25% {
-    transform: translate(2px, -3px);
-  }
-  50% {
-    transform: translate(-1px, -4px);
-  }
-  75% {
-    transform: translate(3px, -1px);
-  }
-}
-
 /* Astronomical chart planet interactivity */
 .star-chart-planet {
   transition: opacity 0.4s ease;
@@ -911,20 +732,6 @@ html {
 
 [data-theme='light'] ::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
-}
-
-/* ========== Aharietiam animations ========== */
-
-@keyframes stormlight-sweep {
-  0% {
-    transform: translateY(-100%);
-  }
-  50% {
-    transform: translateY(100%);
-  }
-  100% {
-    transform: translateY(200%);
-  }
 }
 
 /* ===== Silverlight Atlas — celestial chart animations ===== */
@@ -1001,155 +808,6 @@ html {
 .animate-line-draw-center {
   animation: line-draw-center 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
   transform-origin: center;
-}
-
-@keyframes book-settle {
-  0% {
-    transform: translateY(-4px);
-    opacity: 0.92;
-  }
-  60% {
-    transform: translateY(1px);
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.animate-book-settle {
-  animation: book-settle 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-/* Gold shimmer for embossed text */
-@keyframes gold-shimmer {
-  0%,
-  100% {
-    text-shadow:
-      0 0 1px rgba(180, 150, 80, 0.15),
-      0 1px 2px rgba(60, 45, 30, 0.08);
-  }
-  50% {
-    text-shadow:
-      0 0 3px rgba(180, 150, 80, 0.25),
-      0 0 6px rgba(180, 150, 80, 0.1),
-      0 1px 3px rgba(60, 45, 30, 0.1);
-  }
-}
-
-/* Paper flex on hover — subtle physical feedback */
-@keyframes paper-flex {
-  0% {
-    transform: perspective(600px) rotateX(0deg) scale(1);
-  }
-  100% {
-    transform: perspective(600px) rotateX(-1.2deg) scale(1.01);
-  }
-}
-
-@keyframes stamp-press {
-  0% {
-    transform: scale(0) rotate(-10deg);
-    opacity: 0;
-  }
-  40% {
-    transform: scale(1.15) rotate(2deg);
-    opacity: 0.8;
-  }
-  70% {
-    transform: scale(0.95) rotate(-1deg);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1) rotate(0deg);
-    opacity: 1;
-  }
-}
-
-.animate-stamp-press {
-  animation: stamp-press 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-}
-
-@keyframes ink-draw {
-  from {
-    stroke-dashoffset: var(--ink-length, 1000);
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-.animate-ink-draw {
-  animation: ink-draw 2s ease-out forwards;
-}
-
-@keyframes page-fold {
-  0% {
-    transform: perspective(1200px) rotateY(0deg);
-    transform-origin: left center;
-  }
-  50% {
-    transform: perspective(1200px) rotateY(-15deg);
-    transform-origin: left center;
-  }
-  100% {
-    transform: perspective(1200px) rotateY(0deg);
-    transform-origin: left center;
-  }
-}
-
-.animate-page-fold {
-  animation: page-fold 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-@keyframes ribbon-wave {
-  0%,
-  100% {
-    transform: translateY(-2px) rotate(0deg);
-  }
-  25% {
-    transform: translateY(0) rotate(1deg);
-  }
-  75% {
-    transform: translateY(-3px) rotate(-0.5deg);
-  }
-}
-
-.animate-ribbon-wave {
-  animation: ribbon-wave 4s ease-in-out infinite;
-}
-
-@keyframes title-glow {
-  0%,
-  100% {
-    text-shadow:
-      0 0 1px rgba(140, 120, 80, 0.2),
-      0 1px 2px rgba(60, 45, 30, 0.1);
-  }
-  50% {
-    text-shadow:
-      0 0 3px rgba(140, 120, 80, 0.3),
-      0 1px 4px rgba(60, 45, 30, 0.15);
-  }
-}
-
-@keyframes blade-particle {
-  0%,
-  100% {
-    opacity: 0;
-    transform: translate(0, 0);
-  }
-  20% {
-    opacity: 0.3;
-  }
-  50% {
-    opacity: 0.1;
-    transform: translate(2px, -6px);
-  }
-  80% {
-    opacity: 0;
-    transform: translate(-1px, -12px);
-  }
 }
 
 @keyframes atlas-turn-lift-next {

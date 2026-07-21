@@ -8,6 +8,7 @@ interface Props {
   leftHeader?: string
   rightHeader?: string
   paperStain?: boolean
+  rightNoScroll?: boolean
 }
 
 const EMBOSSED_LINES = Array.from({ length: 10 }, (_, i) => (
@@ -33,6 +34,7 @@ export default function ArchivalViewer({
   leftHeader,
   rightHeader,
   paperStain = true,
+  rightNoScroll = false,
 }: Props) {
   return (
     <div
@@ -188,7 +190,9 @@ export default function ArchivalViewer({
                 </span>
               </div>
             )}
-            <div className="flex-1 overflow-y-auto px-14 pb-20 pt-4 animate-page-enter manuscript-scrollbar">
+            <div
+              className={`flex-1 ${rightNoScroll ? 'overflow-hidden' : 'overflow-y-auto'} px-14 pb-20 pt-4 animate-page-enter ${rightNoScroll ? '' : 'manuscript-scrollbar'}`}
+            >
               {right}
             </div>
             {rightFolio && (

@@ -9,13 +9,11 @@ import { FAMILY_TREES } from '@/data/static/family-data'
 import ArchivalViewer from '@/components/ars-arcanum/ArchivalViewer'
 import BiographicalContents from '@/components/biographical-archives/BiographicalContents'
 import CharacterRecord from '@/components/biographical-archives/CharacterRecord'
-import FamilyTreeRenderer from '@/components/biographical-archives/FamilyTreeRenderer'
+import { GenealogyManuscript, HouseArchiveEntry } from '@/components/genealogy-archive'
 import ConnectionDiagram from '@/components/biographical-archives/ConnectionDiagram'
 import type { Character } from '@/types/character'
 
 type Chapter = 'contents' | 'records' | 'bloodlines' | 'connections'
-
-const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'] as const
 
 function getCharactersForText(q: string): Character[] {
   const lq = q.toLowerCase()
@@ -57,7 +55,6 @@ export default function BiographicalArchivesPage() {
   })
 
   const [activeFamilyId, setActiveFamilyId] = useState<string>(FAMILY_TREES[0]?.id ?? '')
-  const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null)
   const [connectionSelectedId, setConnectionSelectedId] = useState<string>('hoid')
 
   useSEOMeta({
@@ -79,10 +76,11 @@ export default function BiographicalArchivesPage() {
     [groupedCharacters],
   )
 
-  const familiesWithCounts = useMemo(
-    () => FAMILY_TREES.map((f, idx) => ({ ...f, roman: ROMAN[idx] ?? '', memberCount: f.members.length })),
-    [],
-  )
+  const charMap = useMemo(() => {
+    const m = new Map<string, Character>()
+    for (const c of ALL_CHARACTERS) m.set(c.id, c)
+    return m
+  }, [])
 
   const connectionSortedChars = useMemo(() => {
     const map = new Map<string, number>()
@@ -246,67 +244,23 @@ export default function BiographicalArchivesPage() {
             >
               ← Contents
             </span>
-            <span className="float-right font-serif text-[9px] italic" style={{ color: 'rgba(80,60,40,0.12)' }}>
-              Fol. 25–27
-            </span>
           </div>
         </div>
       )
     }
 
     if (chapter === 'bloodlines') {
+      const fam = FAMILY_TREES.find((f) => f.id === activeFamilyId) ?? FAMILY_TREES[0]
+      if (!fam) return null
       return (
         <div className="flex flex-col h-full">
-          <h2
-            className="font-serif text-[14px] uppercase tracking-[0.18em] mb-6 font-bold"
-            style={{ color: 'rgba(60,45,30,0.45)' }}
-          >
-            Archives of Bloodlines
-          </h2>
-          <div className="flex-1 space-y-[1px] overflow-y-auto manuscript-scrollbar">
-            {familiesWithCounts.map((f) => {
-              const isActive = f.id === activeFamilyId
-              return (
-                <div
-                  key={f.id}
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => {
-                    setActiveFamilyId(f.id)
-                    setSelectedMemberId(null)
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault()
-                      setActiveFamilyId(f.id)
-                      setSelectedMemberId(null)
-                    }
-                  }}
-                  className="flex items-baseline gap-2 py-[3px] cursor-pointer group"
-                >
-                  <span
-                    className="font-serif text-[11px] font-medium min-w-[22px] text-right"
-                    style={{ color: isActive ? 'rgba(180,160,90,0.55)' : 'rgba(80,60,40,0.18)' }}
-                  >
-                    {f.roman}.
-                  </span>
-                  <span
-                    className="font-serif text-[16px] tracking-[0.02em] transition-colors group-hover:opacity-60"
-                    style={{ color: isActive ? '#2d1a0e' : 'rgba(45,26,14,0.55)' }}
-                  >
-                    {f.name}
-                  </span>
-                  <span className="flex-1 min-w-[8px]" style={{ borderBottom: '1px dotted rgba(80,60,40,0.04)' }} />
-                  <span
-                    className="font-serif text-[10px]"
-                    style={{ color: isActive ? 'rgba(80,60,40,0.25)' : 'rgba(80,60,40,0.12)' }}
-                  >
-                    {f.memberCount}
-                  </span>
-                </div>
-              )
-            })}
-          </div>
+          <HouseArchiveEntry
+            family={fam}
+            families={FAMILY_TREES}
+            characters={ALL_CHARACTERS}
+            charMap={charMap}
+            onSwitchFamily={(id) => setActiveFamilyId(id)}
+          />
           <div className="mt-4 pt-3" style={{ borderTop: '1px solid rgba(80,60,40,0.04)' }}>
             <span
               role="button"
@@ -322,9 +276,6 @@ export default function BiographicalArchivesPage() {
               style={{ color: 'rgba(80,60,40,0.25)' }}
             >
               ← Contents
-            </span>
-            <span className="float-right font-serif text-[9px] italic" style={{ color: 'rgba(80,60,40,0.12)' }}>
-              Fol. 28–30
             </span>
           </div>
         </div>
@@ -410,9 +361,6 @@ export default function BiographicalArchivesPage() {
             >
               ← Contents
             </span>
-            <span className="float-right font-serif text-[9px] italic" style={{ color: 'rgba(80,60,40,0.12)' }}>
-              Fol. 31–32
-            </span>
           </div>
         </div>
       )
@@ -496,14 +444,17 @@ export default function BiographicalArchivesPage() {
 
     if (chapter === 'bloodlines') {
       return (
-        <FamilyTreeRenderer
-          activeFamilyId={activeFamilyId}
-          selectedMemberId={selectedMemberId}
-          onSelectMember={(memberId, charId) => {
-            setSelectedMemberId(memberId)
-            if (charId) openCharacter(charId)
-          }}
-        />
+        <div className="h-full w-full">
+          <GenealogyManuscript
+            families={FAMILY_TREES}
+            characters={ALL_CHARACTERS}
+            focusFamilyId={activeFamilyId}
+            charMap={charMap}
+            onSelectMember={(_memberId, charId) => {
+              if (charId) openCharacter(charId)
+            }}
+          />
+        </div>
       )
     }
 
@@ -536,6 +487,7 @@ export default function BiographicalArchivesPage() {
           rightFolio={rightFolio}
           leftHeader={leftHeader}
           rightHeader={rightHeader}
+          rightNoScroll={chapter === 'bloodlines'}
         />
       </div>
     </div>

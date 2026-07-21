@@ -10,7 +10,8 @@ import ColorDot from '@/components/ui/ColorDot'
 import EmptyState from '@/components/ui/EmptyState'
 import CharacterDetailModal from '@/components/detail/CharacterDetailModal'
 import RelationshipsTabContent from '@/components/detail/RelationshipsTabContent'
-import { GenealogyCanvas } from '@/components/genealogy'
+import { GenealogyManuscript } from '@/components/genealogy-archive'
+import { FAMILY_TREES } from '@/data/static/family-data'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
 import { useSpoilerMode } from '@/hooks/useSpoilerMode'
 
@@ -489,7 +490,17 @@ export default function CharactersPage() {
       ) : tab === 'relationships' ? (
         <RelationshipsTabContent />
       ) : (
-        <GenealogyCanvas />
+        <GenealogyManuscript
+          families={FAMILY_TREES}
+          characters={ALL_CHARACTERS}
+          charMap={new Map(ALL_CHARACTERS.map((c) => [c.id, c]))}
+          onSelectMember={(_memberId, charId) => {
+            if (charId) {
+              const char = ALL_CHARACTERS.find((c) => c.id === charId)
+              if (char) setDetailChar(char)
+            }
+          }}
+        />
       )}
 
       {detailChar && (
