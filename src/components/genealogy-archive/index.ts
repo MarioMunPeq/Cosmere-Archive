@@ -1,2 +1,6 @@
 export { GenealogyManuscript } from './GenealogyManuscript'
 export { HouseArchiveEntry } from './HouseArchiveEntry'
+export { PortraitGallery } from './PortraitGallery'
+export { PortraitMedallion } from './PortraitMedallion'
+export { PortraitLabel } from './PortraitLabel'
+export { CharacterInfoPanel } from './CharacterInfoPanel'

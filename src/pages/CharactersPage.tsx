@@ -490,17 +490,7 @@ export default function CharactersPage() {
       ) : tab === 'relationships' ? (
         <RelationshipsTabContent />
       ) : (
-        <GenealogyManuscript
-          families={FAMILY_TREES}
-          characters={ALL_CHARACTERS}
-          charMap={new Map(ALL_CHARACTERS.map((c) => [c.id, c]))}
-          onSelectMember={(_memberId, charId) => {
-            if (charId) {
-              const char = ALL_CHARACTERS.find((c) => c.id === charId)
-              if (char) setDetailChar(char)
-            }
-          }}
-        />
+        <GenealogyManuscript families={FAMILY_TREES} charMap={new Map(ALL_CHARACTERS.map((c) => [c.id, c]))} />
       )}
 
       {detailChar && (

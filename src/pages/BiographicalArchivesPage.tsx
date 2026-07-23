@@ -257,7 +257,6 @@ export default function BiographicalArchivesPage() {
           <HouseArchiveEntry
             family={fam}
             families={FAMILY_TREES}
-            characters={ALL_CHARACTERS}
             charMap={charMap}
             onSwitchFamily={(id) => setActiveFamilyId(id)}
           />
@@ -445,15 +444,7 @@ export default function BiographicalArchivesPage() {
     if (chapter === 'bloodlines') {
       return (
         <div className="h-full w-full">
-          <GenealogyManuscript
-            families={FAMILY_TREES}
-            characters={ALL_CHARACTERS}
-            focusFamilyId={activeFamilyId}
-            charMap={charMap}
-            onSelectMember={(_memberId, charId) => {
-              if (charId) openCharacter(charId)
-            }}
-          />
+          <GenealogyManuscript families={FAMILY_TREES} focusFamilyId={activeFamilyId} charMap={charMap} />
         </div>
       )
     }

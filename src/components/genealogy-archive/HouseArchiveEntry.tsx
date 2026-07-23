@@ -1,237 +1,175 @@
 import { useMemo } from 'react'
 import type { FamilyDefinition } from '@/types/family'
 import type { Character } from '@/types/character'
+import { bookIdToTitle } from '@/utils/book-title'
 
 interface Props {
   family: FamilyDefinition
   families: FamilyDefinition[]
-  characters: Character[]
   charMap: Map<string, Character>
   onSwitchFamily: (id: string) => void
 }
 
-function familyProse(
-  family: FamilyDefinition,
-  chars: Map<string, Character>,
-): {
-  kingdom: string
-  era: string
-  notableCount: number
-  books: string[]
-  houseWords: string
-} {
-  const members = family.members
-  const notable: string[] = []
-  const bookSet = new Set<string>()
-  let kingdom = ''
-
-  for (const m of members) {
-    if (!m.characterId) continue
-    const c = chars.get(m.characterId)
-    if (c) {
-      if (c.description) {
-        const match = c.description.match(/(?:king|queen|ruler|lord|lady|prince|princess|highprince|highprincess)/i)
-        if (match && !notable.includes(c.name)) notable.push(c.name)
-      }
-      for (const b of c.requiredBooks) bookSet.add(b)
-    }
-  }
-
-  const kingdomMatch = family.description.match(/(?:of|from) ([A-Z][a-z]+(?:\s[A-Z][a-z]+)*)/)
-  if (kingdomMatch) kingdom = kingdomMatch[1]!
-
-  return {
-    kingdom,
-    era: 'Era unknown',
-    notableCount: notable.length,
-    books: [...bookSet].slice(0, 4),
-    houseWords: kingdom ? `the ${kingdom}` : 'distant lands',
-  }
-}
+const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII']
 
 export function HouseArchiveEntry({ family, families, charMap, onSwitchFamily }: Props) {
-  const prose = useMemo(() => familyProse(family, charMap), [family, charMap])
-  const initial = family.name.charAt(0).toUpperCase()
   const color = family.color ?? '#b8964a'
-  const memberCount = family.members.length
-  const livingCount = family.members.filter((m) => !m.isDeceased).length
+  const initial = family.name.charAt(0)
+  const displayName = family.name.slice(1)
 
-  const importantFigures = useMemo(() => {
-    return family.members
-      .filter((m) => m.characterId && charMap.has(m.characterId))
-      .slice(0, 5)
-      .map((m) => ({
-        id: m.id,
-        name: charMap.get(m.characterId!)?.name ?? m.name,
-        isDeceased: m.isDeceased ?? false,
-      }))
+  const meta = useMemo(() => {
+    const bookSet = new Set<string>()
+    let planet = ''
+    let region = ''
+    let count = 0
+    let living = 0
+    const placeholderIds = new Set(['kholin_house', 'survivor_circle', 'sel_crowns', 'lord_harms'])
+
+    for (const m of family.members) {
+      if (placeholderIds.has(m.id)) continue
+      count++
+      if (!m.isDeceased) living++
+      if (!planet && m.characterId) {
+        const c = charMap.get(m.characterId)
+        if (c) {
+          planet = c.planet
+          const regionMatch = c.description.match(/(?:of|from|in) ([A-Z][a-z]+(?:\s[A-Z][a-z]+)*)/)
+          if (regionMatch) region = regionMatch[1]!
+        }
+        if (!planet) {
+          const regionMatch2 = family.description.match(/(?:of|from|in) ([A-Z][a-z]+(?:\s[A-Z][a-z]+)*)/)
+          if (regionMatch2) region = regionMatch2[1]!
+        }
+      }
+      if (m.characterId) {
+        const c = charMap.get(m.characterId)
+        if (c) for (const b of c.requiredBooks) bookSet.add(b)
+      }
+    }
+    return { planet, region, count, living, books: [...bookSet] }
   }, [family, charMap])
 
   return (
-    <div style={{ fontFamily: 'serif', color: '#3a2a1a', lineHeight: 1.7 }}>
-      {/* Illuminated initial */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 16, alignItems: 'flex-start' }}>
-        <span
-          style={{
-            fontSize: 48,
-            fontWeight: 700,
-            lineHeight: 0.85,
-            fontFamily: 'serif',
-            color,
-            opacity: 0.7,
-            float: 'left',
-            marginRight: 6,
-            marginTop: 2,
-          }}
-        >
-          {initial}
-        </span>
-        <div style={{ flex: 1 }}>
-          <h2
+    <div style={{ fontFamily: 'serif', color: '#3a2a1a', height: '100%', display: 'flex', flexDirection: 'column' }}>
+      {/* ═══ TOP HALF — Bloodline Presentation ═══ */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '0 4px' }}>
+        {/* Decorative initial + house title */}
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 6, marginBottom: 16 }}>
+          <span
             style={{
-              fontSize: 18,
+              fontSize: 'clamp(56px, 7vw, 80px)',
               fontWeight: 700,
-              color: '#2d1a0e',
-              letterSpacing: '0.02em',
-              margin: 0,
-              lineHeight: 1.1,
+              lineHeight: 0.78,
+              color,
+              opacity: 0.35,
+              userSelect: 'none',
+              flexShrink: 0,
             }}
           >
-            {family.name}
-          </h2>
-          {family.description && (
-            <p
+            {initial}
+          </span>
+          <div style={{ paddingTop: 4 }}>
+            <h2
               style={{
-                fontSize: 10.5,
-                color: '#6a5a4a',
-                fontStyle: 'italic',
-                margin: '4px 0 0 0',
-                lineHeight: 1.4,
+                fontSize: 'clamp(28px, 3.8vw, 42px)',
+                fontWeight: 700,
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                color: '#2d1a0e',
+                margin: 0,
+                lineHeight: 1.05,
               }}
             >
-              {family.description}
-            </p>
+              {displayName}
+            </h2>
+          </div>
+        </div>
+
+        {/* Short description */}
+        {family.description && (
+          <p
+            style={{
+              fontSize: 'clamp(12.5px, 1.1vw, 15px)',
+              color: '#5a4a3a',
+              lineHeight: 1.8,
+              margin: '0 0 16px',
+              maxWidth: '90%',
+              textIndent: 16,
+            }}
+          >
+            {family.description}
+          </p>
+        )}
+
+        {/* Compact metadata row */}
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'baseline',
+            gap: '3px 6px',
+            fontSize: 'clamp(11px, 0.9vw, 13px)',
+            color: '#8a7a5a',
+            lineHeight: 1.6,
+          }}
+        >
+          {meta.region && <span>{meta.region}</span>}
+          {meta.region && meta.planet && <span style={{ opacity: 0.3 }}>·</span>}
+          {meta.planet && <span>{meta.planet}</span>}
+          {meta.planet && <span style={{ opacity: 0.3 }}>·</span>}
+          <span>
+            {meta.count} {meta.count === 1 ? 'member' : 'members'}
+          </span>
+          <span style={{ opacity: 0.3 }}>·</span>
+          <span>{meta.living} alive</span>
+          {meta.books.length > 0 && (
+            <>
+              <span style={{ opacity: 0.3, marginLeft: 4 }}>·</span>
+              <span style={{ fontStyle: 'italic', marginLeft: 4 }}>
+                Appears in:{' '}
+                {meta.books.map((b, i) => (
+                  <span key={b}>
+                    {i > 0 && i < meta.books.length - 1 ? ', ' : i > 0 ? ' & ' : ''}
+                    {bookIdToTitle(b)}
+                  </span>
+                ))}
+              </span>
+            </>
           )}
         </div>
       </div>
 
-      {/* Decorative divider */}
+      {/* ═══ DIVIDER ═══ */}
       <div
         style={{
-          width: '100%',
           height: 1,
-          background: `linear-gradient(90deg, ${color}40, transparent)`,
-          marginBottom: 16,
+          flexShrink: 0,
+          background: `linear-gradient(90deg, ${color}25, ${color}10 50%, transparent)`,
+          margin: '0 0 20px',
         }}
       />
 
-      {/* Flowing prose — the archive entry */}
-      <div style={{ fontSize: 11.5, color: '#4a3a2a', lineHeight: 1.75 }}>
-        <p style={{ margin: '0 0 10px 0', textIndent: 12 }}>
-          The house of <strong style={{ fontWeight: 600 }}>{family.name}</strong> is recorded in the Silverlight
-          Archives as a lineage of {memberCount} souls, of whom {livingCount} yet draw breath in the mortal realm.
-          {prose.kingdom && (
-            <>
-              {' '}
-              Their dominion is known as <em>{prose.kingdom}</em>.
-            </>
-          )}{' '}
-          Their bloodline spans the Cosmere, their name etched in the annals of history.
-        </p>
-
-        {prose.books.length > 0 && (
-          <p style={{ margin: '0 0 10px 0', textIndent: 12 }}>
-            References to this house appear in the volumes of{' '}
-            {prose.books.map((b, i) => (
-              <span key={b}>
-                {i > 0 && i < prose.books.length - 1 ? ', ' : i > 0 ? ' and ' : ''}
-                <em>{b}</em>
-              </span>
-            ))}
-            , preserved within the archival collections of Silverlight.
-          </p>
-        )}
-
-        {importantFigures.length > 0 && (
-          <>
-            <p style={{ margin: '0 0 8px 0', textIndent: 12 }}>Among its number are counted:</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 3, paddingLeft: 20, marginBottom: 12 }}>
-              {importantFigures.map((f) => (
-                <div
-                  key={f.id}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 6,
-                    opacity: f.isDeceased ? 0.55 : 0.85,
-                  }}
-                >
-                  <span
-                    style={{
-                      display: 'inline-flex',
-                      width: 18,
-                      height: 18,
-                      borderRadius: '50%',
-                      border: `0.5px solid ${color}50`,
-                      background: '#ede4d2',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
-                    }}
-                  >
-                    <span style={{ fontSize: 8, fontWeight: 600, color: '#3a2a1a' }}>{f.name.charAt(0)}</span>
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 11,
-                      color: '#3a2a1a',
-                      textDecoration: f.isDeceased ? 'line-through' : 'none',
-                      fontStyle: f.isDeceased ? 'italic' : 'normal',
-                    }}
-                  >
-                    {f.name}
-                    {f.isDeceased && <span style={{ color: '#8a7a5a', marginLeft: 3 }}>†</span>}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </>
-        )}
-
-        <p style={{ margin: '12px 0 0 0', fontSize: 10, color: '#6a5a4a', fontStyle: 'italic', textIndent: 12 }}>
-          This record is preserved within the genealogical archives of the Silverlight Athenaeum. The reader is directed
-          to the opposite page, where the bloodline is rendered in full illustration.
-        </p>
-      </div>
-
-      {/* Decorative divider */}
-      <div
-        style={{
-          width: 48,
-          height: 1,
-          background: `linear-gradient(90deg, ${color}40, transparent)`,
-          margin: '16px 0',
-        }}
-      />
-
-      {/* Other houses — like a marginal cross-reference */}
-      <div>
+      {/* ═══ BOTTOM HALF — Bloodlines Index ═══ */}
+      <div style={{ flexShrink: 0, paddingBottom: 8 }}>
         <p
           style={{
-            fontSize: 9,
+            fontSize: 'clamp(9px, 0.72vw, 10.5px)',
             textTransform: 'uppercase',
-            letterSpacing: '0.15em',
-            color: '#8a7a5a',
-            margin: '0 0 6px 0',
-            fontWeight: 500,
+            letterSpacing: '0.18em',
+            color: '#b8a080',
+            margin: '0 0 14px',
+            fontWeight: 600,
           }}
         >
-          Other houses recorded
+          Bloodlines Index
         </p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {families
-            .filter((f) => f.id !== family.id)
-            .map((f) => (
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+          {families.map((f, idx) => {
+            const isActive = f.id === family.id
+            const fColor = f.color ?? '#b8964a'
+
+            return (
               <span
                 key={f.id}
                 role="button"
@@ -244,39 +182,99 @@ export function HouseArchiveEntry({ family, families, charMap, onSwitchFamily }:
                   }
                 }}
                 style={{
-                  fontSize: 10,
-                  color: '#8a7a5a',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 10,
+                  padding: '8px 0',
                   cursor: 'pointer',
-                  transition: 'color 0.2s',
-                  fontStyle: 'italic',
-                  padding: '1px 0',
-                  display: 'inline-block',
-                  width: 'fit-content',
+                  transition: 'all 0.2s ease',
+                  borderBottom: '1px solid rgba(80,60,40,0.04)',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.color = '#3a2a1a'
+                  if (!isActive) {
+                    e.currentTarget.style.background = 'rgba(184,150,74,0.03)'
+                  }
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.color = '#8a7a5a'
+                  e.currentTarget.style.background = 'transparent'
                 }}
               >
-                {f.name} →
-              </span>
-            ))}
-        </div>
-      </div>
+                {/* Left indicator */}
+                {isActive && (
+                  <span
+                    style={{
+                      width: 3,
+                      height: 'clamp(16px, 1.8vw, 22px)',
+                      borderRadius: 2,
+                      flexShrink: 0,
+                      background: fColor,
+                      boxShadow: `0 0 8px ${fColor}40`,
+                    }}
+                  />
+                )}
 
-      {/* Subtle archive footer */}
-      <div
-        style={{
-          marginTop: 20,
-          fontSize: 7,
-          color: 'rgba(58,42,26,0.1)',
-          fontStyle: 'italic',
-          letterSpacing: '0.05em',
-        }}
-      >
-        — Silverlight Archives —
+                {/* Roman numeral */}
+                <span
+                  style={{
+                    fontSize: isActive ? 'clamp(16px, 1.4vw, 20px)' : 'clamp(13px, 1.1vw, 16px)',
+                    fontWeight: 700,
+                    color: isActive ? fColor : '#b8a080',
+                    width: 28,
+                    textAlign: 'right',
+                    flexShrink: 0,
+                    transition: 'all 0.2s ease',
+                    textShadow: isActive ? `0 0 12px ${fColor}30` : 'none',
+                  }}
+                >
+                  {ROMAN[idx]}
+                </span>
+
+                {/* Dot */}
+                <span
+                  style={{
+                    width: 3,
+                    height: 3,
+                    borderRadius: '50%',
+                    flexShrink: 0,
+                    background: isActive ? fColor : '#b8a080',
+                    opacity: isActive ? 0.7 : 0.25,
+                    transition: 'all 0.2s ease',
+                  }}
+                />
+
+                {/* Family name */}
+                <span
+                  style={{
+                    fontSize: isActive ? 'clamp(15px, 1.3vw, 18px)' : 'clamp(13px, 1.1vw, 15px)',
+                    fontWeight: isActive ? 700 : 400,
+                    color: isActive ? '#2d1a0e' : '#8a7a5a',
+                    flex: 1,
+                    minWidth: 0,
+                    transition: 'all 0.2s ease',
+                    textShadow: isActive ? `0 0 20px ${fColor}15` : 'none',
+                  }}
+                >
+                  {f.name}
+                </span>
+
+                {/* Member count */}
+                <span
+                  style={{
+                    fontSize: 'clamp(10px, 0.82vw, 12px)',
+                    color: isActive ? '#8a7a5a' : '#c8b8a0',
+                    flexShrink: 0,
+                  }}
+                >
+                  {
+                    f.members.filter(
+                      (m) => !['kholin_house', 'survivor_circle', 'sel_crowns', 'lord_harms'].includes(m.id),
+                    ).length
+                  }
+                </span>
+              </span>
+            )
+          })}
+        </div>
       </div>
     </div>
   )

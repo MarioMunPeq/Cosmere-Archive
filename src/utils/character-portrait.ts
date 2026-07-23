@@ -3,7 +3,9 @@ const BASE = `${import.meta.env.BASE_URL}characters/`
 const EXTENSIONS = ['webp', 'png', 'jpg', 'jpeg'] as const
 
 function normalizeName(name: string): string {
-  const firstWord = name.split(' ')[0] ?? name
+  if (!name) return ''
+  const stripped = name.replace(/^(?:King|Queen|Lord|Lady|Prince|Princess|Highprince|Highprincess|Sir|Dame)\s+/i, '')
+  const firstWord = stripped.split(' ')[0] ?? stripped
   const clean = firstWord.replace(/['']/g, '').replace(/[^a-zA-Z0-9]/g, '')
   return clean.charAt(0).toUpperCase() + clean.slice(1).toLowerCase()
 }

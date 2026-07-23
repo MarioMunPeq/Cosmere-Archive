@@ -92,7 +92,7 @@ export default function ArchivalViewer({
           />
 
           {/* Left page */}
-          <div className="flex-[1.12] flex flex-col h-full overflow-hidden relative">
+          <div className="flex-1 flex flex-col h-full overflow-hidden relative">
             {/* Gutter shadow */}
             <div
               className="absolute right-0 top-0 bottom-0 w-[14px] z-[3] pointer-events-none"
@@ -171,7 +171,7 @@ export default function ArchivalViewer({
           </div>
 
           {/* Right page */}
-          <div className="flex-[0.88] flex flex-col h-full overflow-hidden relative">
+          <div className="flex-1 flex flex-col h-full overflow-hidden relative">
             {/* Gutter shadow */}
             <div
               className="absolute left-0 top-0 bottom-0 w-[14px] z-[3] pointer-events-none"
