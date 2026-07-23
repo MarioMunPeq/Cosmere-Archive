@@ -1,5 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
-import ErrorFallback from '@/components/ui/ErrorFallback'
+import ArchiveError from '@/components/error/ArchiveError'
 
 interface Props {
   children: ReactNode
@@ -22,18 +22,14 @@ export default class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.error('[ErrorBoundary]', error, info.componentStack)
+    console.error('[ArchiveError]', error, info.componentStack)
   }
 
   render() {
     if (this.state.hasError) {
-      return (
-        <ErrorFallback
-          error={this.state.error}
-          onRetry={() => this.setState({ hasError: false, error: null })}
-          fallback={this.props.fallback}
-        />
-      )
+      if (this.props.fallback) return this.props.fallback
+
+      return <ArchiveError error={this.state.error} onRetry={() => this.setState({ hasError: false, error: null })} />
     }
 
     return this.props.children

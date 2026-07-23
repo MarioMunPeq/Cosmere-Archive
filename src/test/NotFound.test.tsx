@@ -12,25 +12,28 @@ function renderPage() {
 }
 
 describe('NotFound', () => {
-  it('renders 404 heading', () => {
+  it('renders the document not found title', () => {
     renderPage()
-    expect(screen.getByText('404')).toBeInTheDocument()
+    expect(screen.getByText('DOCUMENT NOT FOUND')).toBeInTheDocument()
   })
 
-  it('shows descriptive message', () => {
+  it('shows the archive-style description', () => {
     renderPage()
-    expect(screen.getByText('This page does not exist in the Cosmere.')).toBeInTheDocument()
+    expect(screen.getByText(/No known record exists under this designation/)).toBeInTheDocument()
   })
 
-  it('has a link back to the map', () => {
+  it('has a Restore Record button', () => {
     renderPage()
-    const link = screen.getByText('Back to the map')
-    expect(link).toBeInTheDocument()
-    expect(link.closest('a')).toHaveAttribute('href', '/')
+    expect(screen.getByText('Restore Record')).toBeInTheDocument()
   })
 
-  it('has a Go back button', () => {
+  it('has a Return to Archive button', () => {
     renderPage()
-    expect(screen.getByText('Go back')).toBeInTheDocument()
+    expect(screen.getByText('Return to Archive')).toBeInTheDocument()
+  })
+
+  it('has an Open Index link', () => {
+    renderPage()
+    expect(screen.getByText('Open Index')).toBeInTheDocument()
   })
 })

@@ -8,7 +8,6 @@ export { default as ColorDot } from './ColorDot'
 export { default as CommandPalette } from './CommandPalette'
 
 export { default as EmptyState } from './EmptyState'
-export { default as ErrorFallback } from './ErrorFallback'
 export { default as InfoSection } from './InfoSection'
 export { default as FloatingTogglePanel } from './FloatingTogglePanel'
 export { default as KeyboardShortcutsHelp } from './KeyboardShortcutsHelp'

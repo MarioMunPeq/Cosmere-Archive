@@ -26,7 +26,7 @@ describe('BookPage', () => {
 
   it('shows 404 for unknown book id', async () => {
     renderAt('/books/nonexistent')
-    expect(await screen.findByText('404')).toBeInTheDocument()
+    expect(await screen.findByText('DOCUMENT NOT FOUND')).toBeInTheDocument()
   })
 
   it('provides previous/next navigation within the saga', async () => {
