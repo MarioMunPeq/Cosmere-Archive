@@ -52,9 +52,8 @@ interface Props {
   hovered?: boolean
   selected?: boolean
   focused?: boolean
-  onClick?: () => void
-  onPointerEnter?: () => void
-  onPointerLeave?: () => void
+  onSelect?: (id: string) => void
+  onHover?: (id: string | null) => void
 }
 
 export default memo(function Blade3D({
@@ -66,9 +65,8 @@ export default memo(function Blade3D({
   hovered = false,
   selected = false,
   focused = false,
-  onClick,
-  onPointerEnter,
-  onPointerLeave,
+  onSelect,
+  onHover,
 }: Props) {
   const meshRef = useRef<THREE.Mesh>(null)
   const glowRef = useRef<THREE.Mesh>(null)
@@ -200,9 +198,9 @@ export default memo(function Blade3D({
       <mesh
         ref={meshRef}
         geometry={geometry}
-        onClick={onClick}
-        onPointerEnter={onPointerEnter}
-        onPointerLeave={onPointerLeave}
+        onClick={() => onSelect?.(id)}
+        onPointerEnter={() => onHover?.(id)}
+        onPointerLeave={() => onHover?.(null)}
         castShadow
         receiveShadow
       >

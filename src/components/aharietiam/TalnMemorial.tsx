@@ -8,18 +8,11 @@ interface Props {
   hovered?: boolean
   selected?: boolean
   focused?: boolean
-  onClick?: () => void
-  onPointerEnter?: () => void
-  onPointerLeave?: () => void
+  onSelect?: (id: string) => void
+  onHover?: (id: string | null) => void
 }
 
-export default memo(function TalnMemorial({
-  position,
-  hovered = false,
-  onClick,
-  onPointerEnter,
-  onPointerLeave,
-}: Props) {
+export default memo(function TalnMemorial({ position, hovered = false, onSelect, onHover }: Props) {
   /* --- Canvas textures for the memorial ground --- */
   const { groundTex, glowTex } = useMemo(() => {
     const gc = document.createElement('canvas')
@@ -156,9 +149,9 @@ export default memo(function TalnMemorial({
       <mesh
         rotation={[-Math.PI / 2, 0, 0]}
         position={[0, 0.005, 0]}
-        onClick={onClick}
-        onPointerEnter={onPointerEnter}
-        onPointerLeave={onPointerLeave}
+        onClick={() => onSelect?.('talenel')}
+        onPointerEnter={() => onHover?.('talenel')}
+        onPointerLeave={() => onHover?.(null)}
       >
         <planeGeometry args={[1.6, 1.6]} />
         <meshStandardMaterial map={groundTex} transparent roughness={0.95} metalness={0} depthWrite={false} />

@@ -15,6 +15,8 @@ import { FAMILY_TREES } from '@/data/static/family-data'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
 import { useSpoilerMode } from '@/hooks/useSpoilerMode'
 
+const ALL_CHARACTERS_MAP = new Map(ALL_CHARACTERS.map((c) => [c.id, c]))
+
 function getSagaColor(saga: Saga): string {
   return TAILWIND_TO_HEX[saga.color] ?? '#6b7280'
 }
@@ -213,30 +215,34 @@ export default function CharactersPage() {
         </div>
       )}
 
-      <div className="flex gap-1 border-b border-gray-700 px-4 sm:px-6">
+      <div className="flex gap-1 border-b px-4 sm:px-6" style={{ borderColor: 'rgba(80,60,40,0.15)' }}>
         <button
           onClick={() => setTab('characters')}
-          className={`px-4 py-2 text-sm font-medium transition-colors ${
-            tab === 'characters' ? 'border-b-2 border-purple-500 text-purple-400' : 'text-gray-500 hover:text-gray-300'
-          }`}
+          className="px-4 py-2 font-serif text-sm transition-colors"
+          style={{
+            borderBottom: tab === 'characters' ? '2px solid #8a7050' : '2px solid transparent',
+            color: tab === 'characters' ? '#3a2a1a' : '#8a7050',
+          }}
         >
           Characters
         </button>
         <button
           onClick={() => setTab('family')}
-          className={`px-4 py-2 text-sm font-medium transition-colors ${
-            tab === 'family' ? 'border-b-2 border-purple-500 text-purple-400' : 'text-gray-500 hover:text-gray-300'
-          }`}
+          className="px-4 py-2 font-serif text-sm transition-colors"
+          style={{
+            borderBottom: tab === 'family' ? '2px solid #8a7050' : '2px solid transparent',
+            color: tab === 'family' ? '#3a2a1a' : '#8a7050',
+          }}
         >
           Family Trees
         </button>
         <button
           onClick={() => setTab('relationships')}
-          className={`px-4 py-2 text-sm font-medium transition-colors ${
-            tab === 'relationships'
-              ? 'border-b-2 border-purple-500 text-purple-400'
-              : 'text-gray-500 hover:text-gray-300'
-          }`}
+          className="px-4 py-2 font-serif text-sm transition-colors"
+          style={{
+            borderBottom: tab === 'relationships' ? '2px solid #8a7050' : '2px solid transparent',
+            color: tab === 'relationships' ? '#3a2a1a' : '#8a7050',
+          }}
         >
           Relationships
         </button>
@@ -244,9 +250,14 @@ export default function CharactersPage() {
 
       {tab === 'characters' ? (
         <div className="flex flex-1 overflow-hidden">
-          <aside className="hidden w-52 shrink-0 overflow-y-auto border-r border-gray-800/50 lg:block">
+          <aside
+            className="hidden w-52 shrink-0 overflow-y-auto border-r lg:block"
+            style={{ borderColor: 'rgba(80,60,40,0.2)' }}
+          >
             <div className="sticky top-0 p-4">
-              <h3 className="text-xxs font-semibold uppercase tracking-widest text-gray-600">Sagas</h3>
+              <h3 className="text-xxs font-semibold uppercase tracking-widest" style={{ color: '#a09070' }}>
+                Sagas
+              </h3>
               <nav className="mt-3 space-y-0.5">
                 {grouped.map(({ saga, characters }) => {
                   const isActive = activeSection === saga.id
@@ -254,11 +265,11 @@ export default function CharactersPage() {
                     <button
                       key={saga.id}
                       onClick={() => scrollToSection(saga.id)}
-                      className={`flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-xs transition-all duration-200 ${
-                        isActive
-                          ? 'bg-gray-800/60 text-gray-200'
-                          : 'text-gray-500 hover:bg-gray-800/30 hover:text-gray-400'
-                      }`}
+                      className="flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-xs transition-all duration-200 hover:opacity-80"
+                      style={{
+                        background: isActive ? 'rgba(80,60,40,0.08)' : undefined,
+                        color: isActive ? '#3a2a1a' : '#8a7050',
+                      }}
                     >
                       <span
                         className={`shrink-0 rounded-full transition-all duration-200 ${
@@ -267,12 +278,14 @@ export default function CharactersPage() {
                         style={{ backgroundColor: getSagaColor(saga) }}
                       />
                       <span className="truncate text-left">{saga.name}</span>
-                      <span className="ml-auto text-xxs text-gray-600">{characters.length}</span>
+                      <span className="ml-auto text-xxs" style={{ color: '#a09070' }}>
+                        {characters.length}
+                      </span>
                     </button>
                   )
                 })}
               </nav>
-              <div className="mt-4 h-px bg-gradient-to-r from-gray-800/60 to-transparent" />
+              <div className="mt-4 h-px bg-gradient-to-r from-[rgba(80,60,40,0.25)] to-transparent" />
             </div>
           </aside>
 
@@ -280,8 +293,12 @@ export default function CharactersPage() {
             <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
               <BackToMapButton className="mb-6" />
 
-              <h1 className="text-3xl font-bold text-gray-100">Characters</h1>
-              <p className="mt-1 text-sm text-gray-500">All notable Cosmere characters</p>
+              <h1 className="text-3xl font-bold" style={{ color: '#e8dcc8' }}>
+                Characters
+              </h1>
+              <p className="mt-1 text-sm" style={{ color: '#8a7050' }}>
+                All notable Cosmere characters
+              </p>
 
               <div className="mt-6 flex flex-wrap gap-2">
                 <input
@@ -290,13 +307,15 @@ export default function CharactersPage() {
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search characters..."
                   aria-label="Search characters"
-                  className="w-full rounded-xl border border-gray-800/60 bg-gray-900/70 px-3.5 py-2 text-sm text-gray-200 placeholder-gray-600 shadow-inner backdrop-blur-sm focus:border-purple-500 focus:outline-none sm:w-64"
+                  className="w-full rounded-xl border px-3.5 py-2 text-sm shadow-inner backdrop-blur-sm focus:border-purple-500 focus:outline-none sm:w-64 placeholder-[#a09070]"
+                  style={{ borderColor: 'rgba(80,60,40,0.2)', background: 'rgba(80,60,40,0.08)', color: '#3a2a1a' }}
                 />
                 <select
                   value={planetFilter ?? ''}
                   onChange={(e) => setPlanetFilter(e.target.value || null)}
                   aria-label="Filter by planet"
-                  className="rounded-xl border border-gray-800/60 bg-gray-900/70 px-3.5 py-2 text-sm text-gray-300 shadow-inner backdrop-blur-sm focus:border-purple-500 focus:outline-none"
+                  className="rounded-xl border px-3.5 py-2 text-sm shadow-inner backdrop-blur-sm focus:border-purple-500 focus:outline-none"
+                  style={{ borderColor: 'rgba(80,60,40,0.2)', background: 'rgba(80,60,40,0.08)', color: '#5a4a3a' }}
                 >
                   <option value="">All planets</option>
                   {PLANETS.map((p) => (
@@ -309,7 +328,8 @@ export default function CharactersPage() {
                   value={sagaFilter ?? ''}
                   onChange={(e) => setSagaFilter(e.target.value || null)}
                   aria-label="Filter by saga"
-                  className="rounded-xl border border-gray-800/60 bg-gray-900/70 px-3.5 py-2 text-sm text-gray-300 shadow-inner backdrop-blur-sm focus:border-purple-500 focus:outline-none"
+                  className="rounded-xl border px-3.5 py-2 text-sm shadow-inner backdrop-blur-sm focus:border-purple-500 focus:outline-none"
+                  style={{ borderColor: 'rgba(80,60,40,0.2)', background: 'rgba(80,60,40,0.08)', color: '#5a4a3a' }}
                 >
                   <option value="">All sagas</option>
                   {sagaOptions.map((s) => (
@@ -326,8 +346,13 @@ export default function CharactersPage() {
                   className={`rounded-xl border px-3.5 py-2 text-sm transition-colors ${
                     compareMode
                       ? 'border-purple-500 bg-purple-900/40 text-purple-300'
-                      : 'border-gray-800/60 bg-gray-900/70 text-gray-400 shadow-inner backdrop-blur-sm hover:border-gray-600/60 hover:text-gray-300'
+                      : 'shadow-inner backdrop-blur-sm hover:opacity-80'
                   }`}
+                  style={
+                    !compareMode
+                      ? { borderColor: 'rgba(80,60,40,0.2)', background: 'rgba(80,60,40,0.08)', color: '#8a7050' }
+                      : undefined
+                  }
                 >
                   {compareMode ? 'Exit compare' : 'Compare'}
                 </button>
@@ -348,24 +373,28 @@ export default function CharactersPage() {
                         setCompareSelection([])
                         navigate(url)
                       }}
-                      className="ml-auto rounded-md bg-purple-600 px-3 py-1 text-xs text-white transition-colors hover:bg-purple-500"
+                      className="ml-auto rounded-md px-3 py-1 font-serif text-xs transition-colors"
+                      style={{ background: 'rgba(80,60,40,0.8)', color: '#e8dcc8' }}
                     >
                       Compare!
                     </button>
                   )}
                   <button
                     onClick={() => setCompareSelection([])}
-                    className="text-xs text-gray-500 transition-colors hover:text-gray-300"
+                    className="text-xs transition-colors hover:opacity-80"
+                    style={{ color: '#8a7050' }}
                   >
                     Clear
                   </button>
                 </div>
               )}
 
-              <p className="mt-3 text-xs text-gray-600">
+              <p className="mt-3 text-xs" style={{ color: '#a09070' }}>
                 {filtered.length} character{filtered.length !== 1 ? 's' : ''}
                 {spoilerEnabled && spoilerCount > 0 && (
-                  <span className="ml-1 text-purple-500">({spoilerCount} hidden by spoiler mode)</span>
+                  <span className="ml-1" style={{ color: '#8a7050' }}>
+                    ({spoilerCount} hidden by spoiler mode)
+                  </span>
                 )}
               </p>
 
@@ -378,9 +407,14 @@ export default function CharactersPage() {
                     <section key={saga.id} id={saga.id} className="scroll-mt-16">
                       {idx > 0 && (
                         <div className="relative my-10 overflow-hidden">
-                          <div className="h-px w-full bg-gradient-to-r from-transparent via-gray-700/30 to-transparent" />
+                          <div className="h-px w-full bg-gradient-to-r from-transparent via-[rgba(80,60,40,0.15)] to-transparent" />
                           <div className="absolute inset-0 flex items-center justify-center">
-                            <span className="bg-gray-950 px-3 text-xxs text-gray-700">✦</span>
+                            <span
+                              className="px-3 text-xxs"
+                              style={{ background: 'rgba(80,60,40,0.04)', color: '#a09070' }}
+                            >
+                              ✦
+                            </span>
                           </div>
                         </div>
                       )}
@@ -394,8 +428,14 @@ export default function CharactersPage() {
                         <div className="mb-5 flex items-center gap-3">
                           <span className="h-8 w-1 shrink-0 rounded-full" style={{ backgroundColor: sagaColor }} />
                           <div>
-                            <h2 className="text-xl font-bold text-gray-100 sm:text-2xl">{saga.name}</h2>
-                            {saga.description && <p className="mt-0.5 text-sm text-gray-500">{saga.description}</p>}
+                            <h2 className="text-xl font-bold sm:text-2xl" style={{ color: '#e8dcc8' }}>
+                              {saga.name}
+                            </h2>
+                            {saga.description && (
+                              <p className="mt-0.5 text-sm" style={{ color: '#8a7050' }}>
+                                {saga.description}
+                              </p>
+                            )}
                           </div>
                         </div>
 
@@ -406,18 +446,21 @@ export default function CharactersPage() {
                             return (
                               <div
                                 key={c.id}
-                                className={`group relative cursor-pointer rounded-xl border bg-gray-900/70 p-4 shadow-inner backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl ${
+                                className={`group relative cursor-pointer rounded-xl border p-4 shadow-inner backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl ${
                                   compareMode && compareSelection.includes(c.id)
                                     ? 'border-purple-500 ring-1 ring-purple-500/50'
-                                    : 'border-gray-800/60 hover:border-gray-700/70 hover:shadow-gray-900/30'
+                                    : 'hover:opacity-80'
                                 }`}
-                                style={
-                                  isFeatured && planet?.color
+                                style={{
+                                  borderColor: 'rgba(80,60,40,0.2)',
+                                  ...(isFeatured && planet?.color
                                     ? {
                                         background: `linear-gradient(135deg, ${planet.color}10, ${planet.color}05 40%, rgba(15,23,42,0.7) 80%)`,
                                       }
-                                    : undefined
-                                }
+                                    : {
+                                        background: 'rgba(80,60,40,0.08)',
+                                      }),
+                                }}
                                 onClick={(e) => {
                                   if (compareMode) {
                                     handleCompareSelect(c.id)
@@ -438,23 +481,29 @@ export default function CharactersPage() {
                                 />
 
                                 <div className="flex items-start gap-3 pl-2.5">
-                                  <CharacterAvatar
-                                    character={c}
-                                    color={planet?.color ?? '#6b7280'}
-                                    size={52}
-                                    className="shrink-0 ring-1 ring-gray-700/50 transition-all duration-300 group-hover:ring-2"
-                                  />
+                                  <span
+                                    className="shrink-0 block rounded-full transition-all duration-300"
+                                    style={{ boxShadow: '0 0 0 1px rgba(80,60,40,0.3)' }}
+                                  >
+                                    <CharacterAvatar
+                                      character={c}
+                                      color={planet?.color ?? '#6b7280'}
+                                      size={52}
+                                      className="shrink-0"
+                                    />
+                                  </span>
                                   <div className="min-w-0 flex-1">
                                     <div className="flex items-center gap-1.5">
                                       <span
-                                        className={`truncate text-gray-200 ${
+                                        className={`truncate ${
                                           isFeatured ? 'text-base font-semibold' : 'text-sm font-medium'
                                         }`}
+                                        style={{ color: '#3a2a1a' }}
                                       >
                                         {c.name}
                                       </span>
                                       {c.pronunciation && (
-                                        <span className="shrink-0 text-xxs italic text-gray-600">
+                                        <span className="shrink-0 text-xxs italic" style={{ color: '#a09070' }}>
                                           /{c.pronunciation}/
                                         </span>
                                       )}
@@ -464,7 +513,8 @@ export default function CharactersPage() {
                                         e.stopPropagation()
                                         navigate(`/celestial-charts?focus=planet&id=${c.planet}`)
                                       }}
-                                      className="mt-0.5 flex items-center gap-1.5 text-xs text-gray-500 transition-colors hover:text-cyan-400"
+                                      className="mt-0.5 flex items-center gap-1.5 text-xs transition-colors hover:text-cyan-400"
+                                      style={{ color: '#8a7050' }}
                                     >
                                       <ColorDot color={planet?.color ?? '#6b7280'} size="xs" />
                                       {planet?.name ?? c.planet.replace(/_/g, ' ')}
@@ -472,7 +522,10 @@ export default function CharactersPage() {
                                   </div>
                                 </div>
 
-                                <p className="mt-2.5 pl-2.5 text-xs leading-relaxed text-gray-500 line-clamp-2">
+                                <p
+                                  className="mt-2.5 pl-2.5 text-xs leading-relaxed line-clamp-2"
+                                  style={{ color: '#8a7050' }}
+                                >
                                   {c.description}
                                 </p>
                               </div>
@@ -490,7 +543,7 @@ export default function CharactersPage() {
       ) : tab === 'relationships' ? (
         <RelationshipsTabContent />
       ) : (
-        <GenealogyManuscript families={FAMILY_TREES} charMap={new Map(ALL_CHARACTERS.map((c) => [c.id, c]))} />
+        <GenealogyManuscript families={FAMILY_TREES} charMap={ALL_CHARACTERS_MAP} />
       )}
 
       {detailChar && (

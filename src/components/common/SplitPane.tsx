@@ -43,7 +43,7 @@ export default function SplitPane({ left, right }: Props) {
     const handler = () => {
       if (draggingRef.current) draggingRef.current = false
     }
-    window.addEventListener('pointerup', handler)
+    window.addEventListener('pointerup', handler, { passive: true })
     return () => window.removeEventListener('pointerup', handler)
   }, [])
 

@@ -24,7 +24,7 @@ describe('StandaloneChronologyPage', () => {
 
   it('has a back link to the map', () => {
     renderPage()
-    expect(screen.getByText('Back to the map')).toBeInTheDocument()
+    expect(screen.getByText('Archive')).toBeInTheDocument()
   })
 
   it('renders saga index tabs', () => {

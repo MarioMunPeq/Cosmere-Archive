@@ -16,7 +16,8 @@ const CloseButton = memo(function CloseButton({
     <button
       onClick={onClick}
       aria-label={ariaLabel}
-      className={`${className} text-gray-600 transition-colors hover:text-gray-300`}
+      className={`${className} transition-colors`}
+      style={{ color: '#8a7050' }}
     >
       <CloseIcon />
     </button>

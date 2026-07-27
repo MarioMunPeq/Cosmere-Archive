@@ -56,16 +56,20 @@ export default function Breadcrumbs() {
 
   return (
     <nav aria-label="Breadcrumb" className="mb-2 px-4 pt-2 sm:px-6">
-      <ol className="flex flex-wrap items-center gap-1 text-xs text-gray-500">
+      <ol className="flex flex-wrap items-center gap-1 font-serif text-[10px] uppercase tracking-[0.1em]">
         {crumbs.map((crumb, i) => (
           <li key={crumb.to} className="flex items-center gap-1">
-            {i > 0 && <span className="select-none">/</span>}
+            {i > 0 && (
+              <span className="select-none" style={{ color: '#a09070' }}>
+                /
+              </span>
+            )}
             {i < crumbs.length - 1 ? (
-              <Link to={crumb.to} className="transition-colors hover:text-purple-400">
+              <Link to={crumb.to} className="transition-colors" style={{ color: '#8a7050' }}>
                 {crumb.label}
               </Link>
             ) : (
-              <span className="text-gray-300" aria-current="page">
+              <span aria-current="page" style={{ color: '#5a4a3a' }}>
                 {crumb.label}
               </span>
             )}

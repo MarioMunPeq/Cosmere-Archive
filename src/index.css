@@ -378,17 +378,13 @@ input,
   color: #2d1a0e;
 }
 
-/* ===== Remove ALL focus outlines inside the manuscript ===== */
-.manuscript-focus *:focus {
-  outline: none !important;
-  box-shadow: none !important;
-}
-.manuscript-focus *:focus-visible {
-  outline: none !important;
-  box-shadow: none !important;
-}
+/* ===== Archive focus styles ===== */
 .manuscript-focus *:focus:not(:focus-visible) {
   outline: none !important;
+}
+.manuscript-focus *:focus-visible {
+  outline: 2px solid rgba(138, 112, 80, 0.5) !important;
+  outline-offset: 2px !important;
 }
 
 /* ===== Paper grain overlay ===== */
@@ -939,5 +935,16 @@ html {
   to {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes note-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

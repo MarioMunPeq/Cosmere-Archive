@@ -12,6 +12,9 @@ export class SelectionSystem {
     otherDim: 0,
   }
 
+  private soulMap: Map<string, Soul> | null = null
+  private soulMapSource: Soul[] | null = null
+
   select(soul: Soul, allSouls: Soul[]): void {
     this.state.soulId = soul.id
     this.state.phase = 'growing'
@@ -51,13 +54,21 @@ export class SelectionSystem {
     }
   }
 
+  private getSoulMap(souls: Soul[]): Map<string, Soul> {
+    if (this.soulMap && this.soulMapSource === souls) return this.soulMap
+    this.soulMap = new Map(souls.map((s) => [s.id, s]))
+    this.soulMapSource = souls
+    return this.soulMap
+  }
+
   tick(dt: number, souls: Soul[]): void {
     const s = this.state
     if (s.phase === 'idle') return
 
     s.progress += dt
 
-    const selectedSoul = souls.find((x) => x.id === s.soulId)
+    const map = this.getSoulMap(souls)
+    const selectedSoul = s.soulId ? (map.get(s.soulId) ?? null) : null
 
     switch (s.phase) {
       case 'growing': {
@@ -139,7 +150,7 @@ export class SelectionSystem {
   }
 
   getSelectedSoul(souls: Soul[]): Soul | null {
-    return souls.find((s) => s.id === this.state.soulId) ?? null
+    return this.getSoulMap(souls).get(this.state.soulId!) ?? null
   }
 
   isDisplaying(): boolean {

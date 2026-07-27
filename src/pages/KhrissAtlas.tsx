@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
 import ArchivalViewer from '@/components/ars-arcanum/ArchivalViewer'
 
@@ -16,6 +16,7 @@ import {
 const TURN_DURATION = 380
 
 export default function KhrissAtlas() {
+  const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const planetParam = searchParams.get('planet')
 
@@ -131,7 +132,7 @@ export default function KhrissAtlas() {
   const leftContent = isIndex ? (
     <AtlasIndexLeft onNavigate={navigateTo} />
   ) : planetId ? (
-    <PlanetLeftPage planetId={planetId} onNavigate={navigateTo} />
+    <PlanetLeftPage planetId={planetId} onNavigate={navigateTo} onNavigatePage={(path) => navigate(path)} />
   ) : null
 
   const rightContent = isIndex ? <AtlasIndexRight /> : planetId ? <PlanetRightPage planetId={planetId} /> : null

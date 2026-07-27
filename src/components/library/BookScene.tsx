@@ -7,6 +7,7 @@ import {
   type Sprite as SpriteImpl,
   type Mesh as TurnMesh,
   type Mesh as ShadowMesh,
+  type BufferAttribute,
   BufferGeometry,
   Float32BufferAttribute,
   CanvasTexture,
@@ -45,16 +46,16 @@ function easeInQuad(t: number): number {
   return t * t
 }
 function easePageTurn(t: number): number {
-  if (t < 0.20) {
-    const phase = t / 0.20
-    return 0.20 * easeOutQuad(phase) * 0.65
+  if (t < 0.2) {
+    const phase = t / 0.2
+    return 0.2 * easeOutQuad(phase) * 0.65
   }
-  if (t < 0.80) {
-    const phase = (t - 0.20) / 0.60
-    return 0.20 + 0.60 * easeInOutQuad(phase)
+  if (t < 0.8) {
+    const phase = (t - 0.2) / 0.6
+    return 0.2 + 0.6 * easeInOutQuad(phase)
   }
-  const phase = (t - 0.80) / 0.20
-  return 0.80 + 0.20 * easeInQuad(phase)
+  const phase = (t - 0.8) / 0.2
+  return 0.8 + 0.2 * easeInQuad(phase)
 }
 
 const CAM_VEC: [number, number, number] = [0, 0.15, 3.0]
@@ -252,7 +253,11 @@ export default function BookScene({
 
   // Locked transform applied every frame during opened state
   // Prevents any post-animation reset from teleporting the book
-  const openedTransformRef = useRef<{ pos: [number, number, number]; scale: [number, number, number]; rot: [number, number, number] } | null>(null)
+  const openedTransformRef = useRef<{
+    pos: [number, number, number]
+    scale: [number, number, number]
+    rot: [number, number, number]
+  } | null>(null)
 
   // ── Per-frame animation loop ───────────────────────────────
   useFrame((_, delta) => {
@@ -447,7 +452,13 @@ export default function BookScene({
         if (Math.abs(x) > 1.2) dp[i3] = -0.6 * x
         if (Math.abs(y) > 0.9) dp[i3 + 1] = -0.6 * y
       }
-      dust.geometry.setAttribute('position', new Float32BufferAttribute([...dp], 3))
+      const posAttr = dust.geometry.attributes.position as BufferAttribute | undefined
+      if (posAttr) {
+        posAttr.array.set(dp)
+        posAttr.needsUpdate = true
+      } else {
+        dust.geometry.setAttribute('position', new Float32BufferAttribute([...dp], 3))
+      }
     }
   })
 

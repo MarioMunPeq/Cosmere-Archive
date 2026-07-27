@@ -32,9 +32,15 @@ export default function BackToTop() {
     <button
       onClick={scrollToTop}
       aria-label="Back to top"
-      className={`fixed bottom-6 right-6 z-40 flex h-10 w-10 items-center justify-center rounded-full bg-purple-700 text-white shadow-lg transition-all duration-300 hover:bg-purple-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 ${
+      className={`fixed bottom-6 right-6 z-40 flex h-10 w-10 items-center justify-center rounded-full shadow-lg transition-all duration-300 ${
         visible ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-4 opacity-0'
       }`}
+      style={{
+        background: 'rgba(80,60,40,0.8)',
+        color: '#e8dcc8',
+        backdropFilter: 'blur(8px)',
+        border: '1px solid rgba(80,60,40,0.15)',
+      }}
     >
       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
         <path

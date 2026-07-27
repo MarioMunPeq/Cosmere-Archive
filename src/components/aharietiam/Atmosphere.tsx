@@ -186,6 +186,10 @@ function AshDrift() {
     }
 
     const tick = () => {
+      if (document.hidden) {
+        rafRef.current = requestAnimationFrame(tick)
+        return
+      }
       ctx.clearRect(0, 0, w, h)
       for (const p of particles) {
         p.life++

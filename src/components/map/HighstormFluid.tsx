@@ -37,6 +37,10 @@ const HighstormBackCanvas = memo(function HighstormBackCanvas({ cx, cy, r }: Flu
     let frameId = 0
 
     function render(time: number) {
+      if (document.hidden) {
+        frameId = requestAnimationFrame(render)
+        return
+      }
       const t = time * 0.001
       const stormCenter = (t * STORM_SPEED) % (2 * Math.PI)
       const id = c.createImageData(w, h)
@@ -140,6 +144,10 @@ const HighstormFrontCanvas = memo(function HighstormFrontCanvas({ cx, cy, r }: F
     }
 
     function render(time: number) {
+      if (document.hidden) {
+        frameId = requestAnimationFrame(render)
+        return
+      }
       const t = time * 0.001
       const stormCenter = (t * STORM_SPEED) % (2 * Math.PI)
       const id = c.createImageData(w, h)

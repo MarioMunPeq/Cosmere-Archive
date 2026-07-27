@@ -15,6 +15,7 @@ import CameraRig from './CameraRig'
 import type { FocusTarget } from './CameraRig'
 import type { SoundEvents } from './CameraRig'
 import type { HonorbladeData } from '@/types/aharietiam'
+import { playFocus, playLeave, playHover, playReturn } from './sound-engine'
 
 /** Procedural circle placement — single source of truth */
 const RING_RADIUS = 6.5
@@ -27,16 +28,20 @@ function circlePosition(index: number): [number, number, number] {
 }
 
 function getBladePos(id: string): [number, number, number] {
-  const sorted = [...HONORBLADES].sort((a, b) => a.positionIndex - b.positionIndex)
-  const idx = sorted.findIndex((h) => h.id === id)
-  return idx >= 0 ? circlePosition(idx) : [0, 0, 0]
+  return BLADE_POS_MAP.get(id) ?? [0, 0, 0]
 }
 
+const BLADE_POS_MAP = new Map<string, [number, number, number]>()
+const SORTED = [...HONORBLADES].sort((a, b) => a.positionIndex - b.positionIndex)
+SORTED.forEach((h, i) => {
+  BLADE_POS_MAP.set(h.id, circlePosition(i))
+})
+
 const SOUND_EVENTS: SoundEvents = {
-  onFocusSword: () => {},
-  onLeaveSword: () => {},
-  onHoverSword: () => {},
-  onReturnOverview: () => {},
+  onFocusSword: playFocus,
+  onLeaveSword: playLeave,
+  onHoverSword: playHover,
+  onReturnOverview: playReturn,
 }
 
 export default memo(function Scene() {

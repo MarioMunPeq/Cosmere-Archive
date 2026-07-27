@@ -95,6 +95,10 @@ export function Canvas() {
 
     function tick(time: number) {
       if (!running) return
+      if (document.hidden) {
+        rAFRef.current = requestAnimationFrame(tick)
+        return
+      }
       const dt = Math.min(0.05, (time - (lastTimeRef.current || time)) / 1000)
       lastTimeRef.current = time
 

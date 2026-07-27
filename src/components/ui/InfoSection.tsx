@@ -9,7 +9,9 @@ interface Props {
 const InfoSection = memo(function InfoSection({ label, children, className = '' }: Props) {
   return (
     <div className={`mt-3 ${className}`}>
-      <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500">{label}</h4>
+      <h4 className="mb-1.5 font-serif text-[8px] uppercase tracking-[0.12em]" style={{ color: '#8a7050' }}>
+        {label}
+      </h4>
       {children}
     </div>
   )

@@ -436,8 +436,8 @@ export default function CameraRig({ focusTarget, onFlySettled, soundEvents }: Pr
   useEffect(() => {
     const dom = gl.domElement
     dom.addEventListener('pointerdown', handlePointerDown)
-    window.addEventListener('pointermove', handlePointerMove)
-    window.addEventListener('pointerup', handlePointerUp)
+    window.addEventListener('pointermove', handlePointerMove, { passive: true })
+    window.addEventListener('pointerup', handlePointerUp, { passive: true })
     dom.addEventListener('wheel', handleWheel, { passive: false })
     dom.addEventListener('contextmenu', (e) => e.preventDefault())
     return () => {

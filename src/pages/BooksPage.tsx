@@ -61,8 +61,13 @@ export default function BooksPage() {
               className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-300 ${
                 selectedSaga === null
                   ? 'bg-gradient-to-r from-cyan-700/40 to-purple-700/40 text-cyan-200 shadow-lg shadow-cyan-900/20 ring-1 ring-cyan-500/30'
-                  : 'bg-gray-800/40 text-gray-500 hover:text-gray-300 hover:bg-gray-800/60 ring-1 ring-gray-700/30'
+                  : 'ring-1 hover:opacity-80'
               }`}
+              style={
+                selectedSaga === null
+                  ? undefined
+                  : { background: 'rgba(80,60,40,0.06)', color: '#8a7050', boxShadow: '0 0 0 1px rgba(80,60,40,0.15)' }
+              }
             >
               All
             </button>
@@ -77,14 +82,16 @@ export default function BooksPage() {
                     setQuery('')
                   }}
                   className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-300 ${
-                    selectedSaga === saga.id
-                      ? 'text-white shadow-lg ring-1 ring-inset'
-                      : 'bg-gray-800/40 text-gray-500 hover:text-gray-300 hover:bg-gray-800/60 ring-1 ring-gray-700/30'
+                    selectedSaga === saga.id ? 'text-white shadow-lg ring-1 ring-inset' : 'ring-1 hover:opacity-80'
                   }`}
                   style={
                     selectedSaga === saga.id
                       ? { backgroundColor: `${color}25`, borderColor: `${color}50`, boxShadow: `0 0 12px ${color}20` }
-                      : undefined
+                      : {
+                          background: 'rgba(80,60,40,0.06)',
+                          color: '#8a7050',
+                          boxShadow: '0 0 0 1px rgba(80,60,40,0.15)',
+                        }
                   }
                 >
                   {sagaName}
@@ -94,22 +101,23 @@ export default function BooksPage() {
           </div>
 
           <div className="relative">
-            <IconSearch
-              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
-              size={14}
-            />
+            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2" style={{ color: '#8a7050' }}>
+              <IconSearch size={14} />
+            </span>
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search books..."
               aria-label="Search books"
-              className="w-44 rounded-lg border border-gray-700/40 bg-gray-900/60 px-3 py-1.5 pl-9 text-xs text-gray-300 placeholder-gray-600 outline-none transition-all focus:border-cyan-500/50 focus:shadow-lg focus:shadow-cyan-900/10 sm:w-48"
+              className="w-44 rounded-lg px-3 py-1.5 pl-9 text-xs placeholder:text-[#a09070]/50 outline-none transition-all focus:border-cyan-500/50 focus:shadow-lg focus:shadow-cyan-900/10 sm:w-48"
+              style={{ border: '1px solid rgba(80,60,40,0.2)', background: 'rgba(80,60,40,0.06)', color: '#5a4a3a' }}
             />
             {query && (
               <button
                 onClick={() => setQuery('')}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300"
+                className="absolute right-2 top-1/2 -translate-y-1/2 hover:opacity-80"
+                style={{ color: '#8a7050' }}
                 aria-label="Clear search"
               >
                 <CloseIcon size={14} />
@@ -132,10 +140,14 @@ export default function BooksPage() {
               <TransitionLink
                 key={book.id}
                 to={`/books/${book.id}`}
-                className="group flex items-start gap-4 rounded-2xl border border-gray-800/60 bg-gray-900/60 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black/30 animate-fade-in-up"
+                className="group flex items-start gap-4 rounded-2xl p-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black/30 animate-fade-in-up"
                 style={{
                   animationDelay: `${(i * 0.06).toFixed(2)}s`,
                   ['--card-glow' as string]: `${color}15`,
+                  contentVisibility: 'auto',
+                  containIntrinsicSize: 'auto 120px',
+                  border: '1px solid rgba(80,60,40,0.2)',
+                  background: 'rgba(80,60,40,0.06)',
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.borderColor = `${color}50`
@@ -148,20 +160,25 @@ export default function BooksPage() {
               >
                 <BookCover book={book} size="md" />
                 <div className="min-w-0 flex-1 flex flex-col gap-1.5">
-                  <div className="text-sm font-bold text-gray-200 group-hover:text-white transition-colors leading-tight">
+                  <div
+                    className="text-sm font-bold group-hover:opacity-80 transition-colors leading-tight"
+                    style={{ color: '#3a2a1a' }}
+                  >
                     {book.title}
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
+                  <div className="flex items-center gap-2 text-xs" style={{ color: '#8a7050' }}>
                     <span>#{book.order}</span>
                     {book.year && (
                       <>
-                        <span className="text-gray-700">·</span>
+                        <span style={{ color: '#a09070' }}>·</span>
                         <span>{book.year}</span>
                       </>
                     )}
                   </div>
                   {book.description && (
-                    <p className="mt-1 text-xs leading-relaxed text-gray-500 line-clamp-2">{book.description}</p>
+                    <p className="mt-1 text-xs leading-relaxed line-clamp-2" style={{ color: '#8a7050' }}>
+                      {book.description}
+                    </p>
                   )}
                   <div className="mt-auto pt-1">
                     <span

@@ -11,7 +11,7 @@ interface Props {
 
 const BackToMapButton = memo(function BackToMapButton({
   to = '/',
-  label = 'Back to the map',
+  label = 'Archive',
   className = '',
   variant = 'link',
 }: Props) {
@@ -19,7 +19,11 @@ const BackToMapButton = memo(function BackToMapButton({
     return (
       <TransitionLink
         to={to}
-        className={`rounded-lg bg-purple-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-600 ${className}`}
+        className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${className}`}
+        style={{
+          background: 'rgba(80,60,40,0.12)',
+          color: '#5a4a3a',
+        }}
       >
         {label}
       </TransitionLink>
@@ -29,7 +33,8 @@ const BackToMapButton = memo(function BackToMapButton({
   return (
     <TransitionLink
       to={to}
-      className={`inline-flex items-center gap-1.5 text-sm text-purple-400 transition-colors hover:text-purple-300 ${className}`}
+      className={`inline-flex items-center gap-1.5 text-sm transition-colors ${className}`}
+      style={{ color: '#8a7050' }}
     >
       <IconChevronLeft aria-hidden="true" />
       {label}

@@ -1,5 +1,5 @@
 'use client'
-import { memo, useMemo } from 'react'
+import { memo, useMemo, useCallback } from 'react'
 import { HONORBLADES } from '@/data/static/aharietiam'
 import Blade3D from './Blade3D'
 import TalnMemorial from './TalnMemorial'
@@ -39,6 +39,9 @@ export default memo(function BladeRing({ hoveredId, selectedId, focusedId, onHov
     [],
   )
 
+  const handleSelect = useCallback((id: string) => onSelect(id), [onSelect])
+  const handleHover = useCallback((id: string | null) => onHover(id), [onHover])
+
   const isFocusMode = focusedId !== null
 
   return (
@@ -62,9 +65,8 @@ export default memo(function BladeRing({ hoveredId, selectedId, focusedId, onHov
             hovered={isHovered}
             selected={isSelected}
             focused={isFocused}
-            onClick={() => onSelect(b.id)}
-            onPointerEnter={() => onHover(b.id)}
-            onPointerLeave={() => onHover(null)}
+            onSelect={handleSelect}
+            onHover={handleHover}
           />
         )
       })}
@@ -75,9 +77,8 @@ export default memo(function BladeRing({ hoveredId, selectedId, focusedId, onHov
         hovered={hoveredId === 'talenel'}
         selected={selectedId === 'talenel'}
         focused={focusedId === 'talenel'}
-        onClick={() => onSelect('talenel')}
-        onPointerEnter={() => onHover('talenel')}
-        onPointerLeave={() => onHover(null)}
+        onSelect={handleSelect}
+        onHover={handleHover}
       />
     </>
   )

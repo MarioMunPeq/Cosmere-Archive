@@ -11,6 +11,12 @@ const PLANETS = [...new Set(ALL_CHARACTERS.map((c) => c.planet.toLowerCase()))]
   .map((id) => ({ id, name: getPlanetById(id)?.name ?? id }))
   .sort((a, b) => a.name.localeCompare(b.name))
 
+const REL_COUNTS = new Map<string, number>()
+for (const r of CHARACTER_RELATIONSHIPS) {
+  REL_COUNTS.set(r.characters[0], (REL_COUNTS.get(r.characters[0]) ?? 0) + 1)
+  REL_COUNTS.set(r.characters[1], (REL_COUNTS.get(r.characters[1]) ?? 0) + 1)
+}
+
 function CharacterChip({
   char,
   selected,
@@ -21,18 +27,19 @@ function CharacterChip({
   onSelect: (id: string) => void
 }) {
   const planet = getPlanetById(char.planet.toLowerCase())
-  const relCount = CHARACTER_RELATIONSHIPS.filter(
-    (r) => r.characters[0] === char.id || r.characters[1] === char.id,
-  ).length
+  const relCount = REL_COUNTS.get(char.id) ?? 0
 
   return (
     <button
       onClick={() => onSelect(char.id)}
       className={`group relative flex shrink-0 snap-start flex-col items-center gap-1 rounded-xl border px-3 py-2.5 transition-all duration-300 ${
-        selected
-          ? 'border-purple-500/70 bg-purple-900/25 shadow-lg shadow-purple-900/20 scale-105'
-          : 'border-gray-700/40 bg-gray-800/40 hover:border-gray-600/60 hover:bg-gray-800/70 hover:scale-105'
+        selected ? 'scale-105' : 'hover:scale-105'
       }`}
+      style={{
+        borderColor: selected ? 'rgba(138,112,80,0.5)' : 'rgba(80,60,40,0.2)',
+        background: selected ? 'rgba(138,112,80,0.12)' : 'rgba(80,60,40,0.06)',
+        boxShadow: selected ? '0 4px 16px rgba(80,60,40,0.15)' : 'none',
+      }}
     >
       <span
         className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition-all duration-300"
@@ -45,17 +52,18 @@ function CharacterChip({
         {char.name.charAt(0)}
       </span>
       <span
-        className={`max-w-14 truncate text-xs font-medium transition-colors duration-300 ${
-          selected ? 'text-gray-100' : 'text-gray-400 group-hover:text-gray-300'
-        }`}
+        className="max-w-14 truncate text-xs font-medium transition-all duration-300 hover:opacity-80"
+        style={{ color: selected ? '#f2ece0' : '#8a7050' }}
       >
         {char.name}
       </span>
       {relCount > 0 && (
         <span
-          className={`absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-xxs font-semibold transition-colors duration-300 ${
-            selected ? 'bg-purple-500 text-white' : 'bg-gray-700/70 text-gray-400 group-hover:bg-gray-600'
-          }`}
+          className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-xxs font-semibold transition-colors duration-300"
+          style={{
+            background: selected ? '#8a7050' : 'rgba(80,60,40,0.3)',
+            color: selected ? '#f2ece0' : '#8a7050',
+          }}
         >
           {relCount}
         </span>
@@ -103,25 +111,33 @@ export default function RelationshipsTabContent() {
         <BackToMapButton className="mb-6" />
 
         <div className="flex items-center justify-between gap-4">
-          <h1 className="text-lg font-bold text-gray-100 sm:text-xl">Character Relationships</h1>
+          <h1 className="text-lg font-bold sm:text-xl" style={{ color: '#f2ece0' }}>
+            Character Relationships
+          </h1>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setGraphView(false)}
-              className={`rounded-lg border px-3 py-1.5 text-xs transition-colors ${
-                !graphView
-                  ? 'border-purple-500 bg-purple-900/30 text-purple-300'
-                  : 'border-gray-700/60 bg-gray-800/50 text-gray-400 hover:border-gray-600 hover:text-gray-300'
+              className={`rounded-lg border px-3 py-1.5 text-xs transition-colors hover:opacity-80 ${
+                !graphView ? 'border-purple-500 bg-purple-900/30 text-purple-300' : ''
               }`}
+              style={
+                !graphView
+                  ? undefined
+                  : { borderColor: 'rgba(80,60,40,0.25)', background: 'rgba(80,60,40,0.08)', color: '#8a7050' }
+              }
             >
               Single View
             </button>
             <button
               onClick={() => setGraphView(true)}
-              className={`rounded-lg border px-3 py-1.5 text-xs transition-colors ${
-                graphView
-                  ? 'border-purple-500 bg-purple-900/30 text-purple-300'
-                  : 'border-gray-700/60 bg-gray-800/50 text-gray-400 hover:border-gray-600 hover:text-gray-300'
+              className={`rounded-lg border px-3 py-1.5 text-xs transition-colors hover:opacity-80 ${
+                graphView ? 'border-purple-500 bg-purple-900/30 text-purple-300' : ''
               }`}
+              style={
+                graphView
+                  ? undefined
+                  : { borderColor: 'rgba(80,60,40,0.25)', background: 'rgba(80,60,40,0.08)', color: '#8a7050' }
+              }
             >
               Graph View
             </button>
@@ -130,7 +146,8 @@ export default function RelationshipsTabContent() {
               placeholder="Search characters..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-44 rounded-lg border border-gray-700/60 bg-gray-800/50 px-3 py-1.5 text-xs text-gray-300 placeholder-gray-600 outline-none transition-colors focus:border-purple-500/50 sm:w-56"
+              className="w-44 rounded-lg border px-3 py-1.5 text-xs outline-none transition-colors placeholder:text-[#a09070]/50 focus:border-purple-500/50 sm:w-56"
+              style={{ borderColor: 'rgba(80,60,40,0.25)', background: 'rgba(80,60,40,0.08)', color: '#5a4a3a' }}
             />
           </div>
         </div>
@@ -140,11 +157,10 @@ export default function RelationshipsTabContent() {
             <div className="flex flex-wrap gap-1.5">
               <button
                 onClick={() => setPlanetFilter('')}
-                className={`rounded-full px-3 py-1 text-xxs font-medium transition-colors ${
-                  !planetFilter
-                    ? 'bg-purple-700/30 text-purple-300'
-                    : 'bg-gray-800/50 text-gray-500 hover:text-gray-400'
+                className={`rounded-full px-3 py-1 text-xxs font-medium transition-colors hover:opacity-80 ${
+                  !planetFilter ? 'bg-purple-700/30 text-purple-300' : ''
                 }`}
+                style={!planetFilter ? undefined : { background: 'rgba(80,60,40,0.08)', color: '#8a7050' }}
               >
                 All
               </button>
@@ -152,11 +168,10 @@ export default function RelationshipsTabContent() {
                 <button
                   key={p.id}
                   onClick={() => setPlanetFilter(p.id)}
-                  className={`rounded-full px-3 py-1 text-xxs font-medium transition-colors ${
-                    planetFilter === p.id
-                      ? 'bg-purple-700/30 text-purple-300'
-                      : 'bg-gray-800/50 text-gray-500 hover:text-gray-400'
+                  className={`rounded-full px-3 py-1 text-xxs font-medium transition-colors hover:opacity-80 ${
+                    planetFilter === p.id ? 'bg-purple-700/30 text-purple-300' : ''
                   }`}
+                  style={planetFilter === p.id ? undefined : { background: 'rgba(80,60,40,0.08)', color: '#8a7050' }}
                 >
                   {p.name}
                 </button>
@@ -181,7 +196,10 @@ export default function RelationshipsTabContent() {
 
         <div className="mt-4 flex min-h-0 flex-1 flex-col gap-4 overflow-hidden">
           {graphView ? (
-            <div className="flex flex-1 rounded-lg border border-gray-700/30 bg-gray-900/50">
+            <div
+              className="flex flex-1 rounded-lg border"
+              style={{ borderColor: 'rgba(80,60,40,0.15)', background: 'rgba(80,60,40,0.06)' }}
+            >
               <ForceGraph
                 characters={ALL_CHARACTERS}
                 relationships={CHARACTER_RELATIONSHIPS}
@@ -191,7 +209,10 @@ export default function RelationshipsTabContent() {
             </div>
           ) : (
             <>
-              <div className="flex flex-1 flex-col rounded-lg border border-gray-700/30 bg-gray-900/50 p-4">
+              <div
+                className="flex flex-1 flex-col rounded-lg border p-4"
+                style={{ borderColor: 'rgba(80,60,40,0.15)', background: 'rgba(80,60,40,0.06)' }}
+              >
                 {selected ? (
                   <div
                     key={`graph-${selected.id}`}
@@ -209,13 +230,18 @@ export default function RelationshipsTabContent() {
                   </div>
                 ) : (
                   <div className="flex flex-1 items-center justify-center">
-                    <p className="text-sm text-gray-500">Select a character above to see their relationships.</p>
+                    <p className="text-sm" style={{ color: '#8a7050' }}>
+                      Select a character above to see their relationships.
+                    </p>
                   </div>
                 )}
               </div>
 
               {selected && relatedLinks.length > 0 && (
-                <div className="flex items-center gap-3 rounded-lg border border-gray-800/50 bg-gray-900/40 px-4 py-3">
+                <div
+                  className="flex items-center gap-3 rounded-lg border px-4 py-3"
+                  style={{ borderColor: 'rgba(80,60,40,0.2)', background: 'rgba(80,60,40,0.06)' }}
+                >
                   <div className="flex items-center gap-2.5 min-w-0">
                     <span
                       className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold"
@@ -227,8 +253,10 @@ export default function RelationshipsTabContent() {
                       {selected.name.charAt(0)}
                     </span>
                     <div className="min-w-0">
-                      <span className="text-sm font-semibold text-gray-200">{selected.name}</span>
-                      <span className="ml-2 text-xs text-gray-500">
+                      <span className="text-sm font-semibold" style={{ color: '#3a2a1a' }}>
+                        {selected.name}
+                      </span>
+                      <span className="ml-2 text-xs" style={{ color: '#8a7050' }}>
                         {getPlanetById(selected.planet.toLowerCase())?.name ?? selected.planet}
                       </span>
                     </div>
@@ -238,17 +266,22 @@ export default function RelationshipsTabContent() {
                       <button
                         key={link.character.id}
                         onClick={() => setSelectedId(link.character.id)}
-                        className="group inline-flex items-center gap-1 rounded-md border border-gray-800/60 bg-gray-900/60 px-2 py-1 text-xxs transition-all hover:border-gray-700/60 hover:bg-gray-800/60"
+                        className="group inline-flex items-center gap-1 rounded-md border px-2 py-1 text-xxs transition-all hover:opacity-80"
+                        style={{ borderColor: 'rgba(80,60,40,0.2)', background: 'rgba(80,60,40,0.08)' }}
                       >
-                        <span className="text-gray-400 transition-colors group-hover:text-gray-200">
+                        <span className="transition-colors" style={{ color: '#8a7050' }}>
                           {link.character.name}
                         </span>
-                        <span className="text-gray-600">·</span>
-                        <span className="text-gray-500 transition-colors group-hover:text-gray-400">{link.label}</span>
+                        <span style={{ color: '#a09070' }}>·</span>
+                        <span className="transition-colors" style={{ color: '#8a7050' }}>
+                          {link.label}
+                        </span>
                       </button>
                     ))}
                     {relatedLinks.length > 8 && (
-                      <span className="text-xxs text-gray-600">+{relatedLinks.length - 8} more</span>
+                      <span className="text-xxs" style={{ color: '#a09070' }}>
+                        +{relatedLinks.length - 8} more
+                      </span>
                     )}
                   </div>
                 </div>

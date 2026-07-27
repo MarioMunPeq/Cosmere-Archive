@@ -24,6 +24,7 @@ const H = 560
 
 export default function ForceGraph({ characters, relationships, selectedId, onSelectCharacter }: Props) {
   const svgRef = useRef<SVGSVGElement>(null)
+  const gRef = useRef<SVGGElement>(null)
   const [zoom, setZoom] = useState(1)
   const [pan, setPan] = useState({ x: 0, y: 0 })
   const [cursor, setCursor] = useState<'grab' | 'grabbing'>('grab')
@@ -33,6 +34,8 @@ export default function ForceGraph({ characters, relationships, selectedId, onSe
   const nodeDrag = useRef<{ id: string; startX: number; startY: number; nodeX: number; nodeY: number } | null>(null)
   const simRef = useRef<ReturnType<typeof forceSimulation<GraphNode>> | null>(null)
   const tickId = useRef(0)
+  const panRef = useRef({ x: 0, y: 0 })
+  const zoomRef = useRef(1)
 
   const { nodes, links, hasRelationships } = useMemo(() => {
     const nodeMap = new Map<string, GraphNode>()
@@ -144,8 +147,8 @@ export default function ForceGraph({ characters, relationships, selectedId, onSe
       const svg = svgRef.current
       if (!svg) return null
       const rect = svg.getBoundingClientRect()
-      const svgX = (clientX - rect.left - pan.x) / zoom
-      const svgY = (clientY - rect.top - pan.y) / zoom
+      const svgX = (clientX - rect.left - panRef.current.x) / zoomRef.current
+      const svgY = (clientY - rect.top - panRef.current.y) / zoomRef.current
       for (const n of nodes) {
         const nx = n.x ?? 0
         const ny = n.y ?? 0
@@ -156,7 +159,7 @@ export default function ForceGraph({ characters, relationships, selectedId, onSe
       }
       return null
     },
-    [nodes, zoom, pan, hasRelationships],
+    [nodes, hasRelationships],
   )
 
   const handlePointerDown = useCallback(
@@ -172,9 +175,9 @@ export default function ForceGraph({ characters, relationships, selectedId, onSe
       setCursor('grabbing')
       isPanning.current = true
       panDragStart.current = { x: e.clientX, y: e.clientY }
-      panOffset.current = { x: pan.x, y: pan.y }
+      panOffset.current = { x: panRef.current.x, y: panRef.current.y }
     },
-    [findNodeAtPoint, nodes, pan],
+    [findNodeAtPoint, nodes],
   )
 
   const handlePointerMove = useCallback(
@@ -182,8 +185,8 @@ export default function ForceGraph({ characters, relationships, selectedId, onSe
       if (nodeDrag.current) {
         const sim = simRef.current
         if (!sim) return
-        const dx = (e.clientX - nodeDrag.current.startX) / zoom
-        const dy = (e.clientY - nodeDrag.current.startY) / zoom
+        const dx = (e.clientX - nodeDrag.current.startX) / zoomRef.current
+        const dy = (e.clientY - nodeDrag.current.startY) / zoomRef.current
         const n = nodes.find((nd) => nd.id === nodeDrag.current!.id)
         if (n) {
           n.fx = nodeDrag.current.nodeX + dx
@@ -195,10 +198,15 @@ export default function ForceGraph({ characters, relationships, selectedId, onSe
       if (isPanning.current) {
         const dx = e.clientX - panDragStart.current.x
         const dy = e.clientY - panDragStart.current.y
-        setPan({ x: panOffset.current.x + dx, y: panOffset.current.y + dy })
+        const nx = panOffset.current.x + dx
+        const ny = panOffset.current.y + dy
+        panRef.current = { x: nx, y: ny }
+        if (gRef.current) {
+          gRef.current.setAttribute('transform', `translate(${nx}, ${ny}) scale(${zoomRef.current})`)
+        }
       }
     },
-    [zoom, nodes],
+    [nodes],
   )
 
   const handlePointerUp = useCallback(
@@ -223,6 +231,7 @@ export default function ForceGraph({ characters, relationships, selectedId, onSe
         return
       }
       isPanning.current = false
+      setPan({ ...panRef.current })
     },
     [nodes, onSelectCharacter],
   )
@@ -230,7 +239,14 @@ export default function ForceGraph({ characters, relationships, selectedId, onSe
   const handleWheel = useCallback((e: React.WheelEvent) => {
     e.preventDefault()
     const delta = e.deltaY > 0 ? -0.1 : 0.1
-    setZoom((z) => Math.max(0.3, Math.min(3, z + delta)))
+    setZoom((z) => {
+      const nz = Math.max(0.3, Math.min(3, z + delta))
+      zoomRef.current = nz
+      if (gRef.current) {
+        gRef.current.setAttribute('transform', `translate(${panRef.current.x}, ${panRef.current.y}) scale(${nz})`)
+      }
+      return nz
+    })
   }, [])
 
   return (
@@ -256,7 +272,7 @@ export default function ForceGraph({ characters, relationships, selectedId, onSe
           </feMerge>
         </filter>
       </defs>
-      <g transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
+      <g ref={gRef} transform={`translate(${pan.x}, ${pan.y}) scale(${zoom})`}>
         {links.map((link, i) => {
           const s = link.source as GraphNode
           const t = link.target as GraphNode

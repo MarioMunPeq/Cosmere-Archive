@@ -40,7 +40,7 @@ describe('CharactersPage', () => {
 
   it('has a back link to the map', () => {
     renderPage()
-    expect(screen.getByText('Back to the map')).toBeInTheDocument()
+    expect(screen.getByText('Archive')).toBeInTheDocument()
   })
 
   describe('relationships tab', () => {

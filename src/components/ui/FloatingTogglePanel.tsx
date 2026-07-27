@@ -22,7 +22,8 @@ function FloatingTogglePanel({
   const toggle = (
     <button
       onClick={onToggle}
-      className="rounded-lg border border-gray-700/60 bg-gray-900/80 px-2.5 py-1.5 text-xs text-gray-400 backdrop-blur-sm transition-colors hover:border-purple-500/60 hover:text-purple-400 sm:px-3"
+      className="rounded-lg border px-2.5 py-1.5 text-xs backdrop-blur-sm transition-colors hover:border-purple-500/60 hover:text-purple-400 sm:px-3"
+      style={{ borderColor: 'rgba(80,60,40,0.25)', background: 'rgba(80,60,40,0.1)', color: '#8a7050' }}
     >
       {buttonContent}
     </button>
@@ -30,9 +31,12 @@ function FloatingTogglePanel({
 
   const panel = show && (
     <div
-      className={`animate-fade-in-up rounded-xl border border-gray-700/60 bg-gray-900/95 p-3 shadow-2xl backdrop-blur-lg ${panelWidth ?? 'sm:w-56'} sm:p-4`}
+      className={`animate-fade-in-up rounded-xl border p-3 shadow-2xl backdrop-blur-lg ${panelWidth ?? 'sm:w-56'} sm:p-4`}
+      style={{ borderColor: 'rgba(80,60,40,0.25)', background: 'rgba(80,60,40,0.12)' }}
     >
-      <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-500">{title}</h4>
+      <h4 className="mb-3 text-xs font-bold uppercase tracking-wider" style={{ color: '#8a7050' }}>
+        {title}
+      </h4>
       {children}
     </div>
   )

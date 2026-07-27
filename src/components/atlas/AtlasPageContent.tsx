@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, type MouseEvent, type KeyboardEvent } from 'react'
 import { getPlanetById } from '@/data/static'
 import { MAGIC_SYSTEMS } from '@/data/static/magic-systems'
 import { WORLDHOPPER_MOVEMENTS } from '@/data/static/timeline'
@@ -388,9 +388,10 @@ export function AtlasIndexRight() {
 interface PlanetLeftProps {
   planetId: string
   onNavigate: (planetId: string) => void
+  onNavigatePage?: (path: string) => void
 }
 
-export function PlanetLeftPage({ planetId, onNavigate }: PlanetLeftProps) {
+export function PlanetLeftPage({ planetId, onNavigate, onNavigatePage }: PlanetLeftProps) {
   const planet = getPlanetById(planetId)
   const motif = PLANET_MOTIFS[planetId] ?? { glyph: '·', color: INK.subtle }
   const astro = PLANET_ASTRO[planetId]
@@ -471,7 +472,35 @@ export function PlanetLeftPage({ planetId, onNavigate }: PlanetLeftProps) {
                   {ms.shard}
                 </span>
                 {' — '}
-                {ms.name}
+                {onNavigatePage ? (
+                  <span
+                    role="button"
+                    tabIndex={0}
+                    onClick={(e: MouseEvent) => {
+                      e.stopPropagation()
+                      onNavigatePage(`/magic?system=${ms.id}`)
+                    }}
+                    onKeyDown={(e: KeyboardEvent) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        onNavigatePage(`/magic?system=${ms.id}`)
+                      }
+                    }}
+                    className="cursor-pointer transition-opacity hover:opacity-60 italic"
+                    style={{
+                      color: INK.subtle,
+                      textDecoration: 'underline',
+                      textDecorationStyle: 'dotted',
+                      textDecorationColor: `${INK.subtle}60`,
+                      textUnderlineOffset: '2px',
+                    }}
+                  >
+                    {ms.name}
+                  </span>
+                ) : (
+                  <span className="italic">{ms.name}</span>
+                )}
               </p>
             ))}
           </div>
@@ -492,11 +521,43 @@ export function PlanetLeftPage({ planetId, onNavigate }: PlanetLeftProps) {
         <div className="mb-5">
           <SectionLabel>Primary Sources</SectionLabel>
           <div className="space-y-[1px]">
-            {books.slice(0, 8).map((bookId) => (
-              <p key={bookId} className="font-serif" style={{ color: INK.meta, fontSize: 'clamp(9px,0.85vw,11px)' }}>
-                • {bookId.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
-              </p>
-            ))}
+            {books.slice(0, 8).map((bookId) => {
+              const displayName = bookId.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+              return (
+                <p key={bookId} className="font-serif" style={{ color: INK.meta, fontSize: 'clamp(9px,0.85vw,11px)' }}>
+                  •{' '}
+                  {onNavigatePage ? (
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      onClick={(e: MouseEvent) => {
+                        e.stopPropagation()
+                        onNavigatePage(`/books/${bookId}`)
+                      }}
+                      onKeyDown={(e: KeyboardEvent) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          onNavigatePage(`/books/${bookId}`)
+                        }
+                      }}
+                      className="cursor-pointer transition-opacity hover:opacity-60"
+                      style={{
+                        color: INK.meta,
+                        textDecoration: 'underline',
+                        textDecorationStyle: 'dotted',
+                        textDecorationColor: `${INK.meta}50`,
+                        textUnderlineOffset: '2px',
+                      }}
+                    >
+                      {displayName}
+                    </span>
+                  ) : (
+                    displayName
+                  )}
+                </p>
+              )
+            })}
             {books.length > 8 && (
               <p className="font-serif italic" style={{ color: INK.muted, fontSize: 'clamp(8px,0.75vw,9px)' }}>
                 + {books.length - 8} further entries

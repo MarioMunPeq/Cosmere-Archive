@@ -58,7 +58,8 @@ export default function BookPage() {
         <div className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6">
           <TransitionLink
             to="/books"
-            className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-cyan-400 transition-colors mb-6"
+            className="inline-flex items-center gap-1.5 text-xs transition-colors mb-6 hover:opacity-80"
+            style={{ color: '#8a7050' }}
           >
             <IconChevronLeft size={12} />
             Back to books
@@ -70,10 +71,10 @@ export default function BookPage() {
             <div className="flex-1">
               <h1 className="text-3xl font-bold text-gray-100">{book.title}</h1>
 
-              <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-sm text-gray-400">
+              <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-sm" style={{ color: '#8a7050' }}>
                 {saga && (
                   <span>
-                    Saga: <span className="text-gray-300">{saga.name}</span>
+                    Saga: <span style={{ color: '#5a4a3a' }}>{saga.name}</span>
                   </span>
                 )}
                 <span>
@@ -83,33 +84,51 @@ export default function BookPage() {
                 {book.year && <span>Published {book.year}</span>}
               </div>
 
-              {book.description && <p className="mt-4 leading-relaxed text-gray-400">{book.description}</p>}
+              {book.description && (
+                <p className="mt-4 leading-relaxed" style={{ color: '#8a7050' }}>
+                  {book.description}
+                </p>
+              )}
             </div>
           </div>
 
           {planets.length > 0 && (
             <section className="mt-10">
-              <h2 className="text-lg font-semibold text-gray-200">Planets ({planets.length})</h2>
+              <h2 className="text-lg font-semibold" style={{ color: '#3a2a1a' }}>
+                Planets ({planets.length})
+              </h2>
               <div className="mt-3 flex flex-wrap gap-2">
                 {planets.map((p) => (
                   <TransitionLink
                     key={p.id}
                     to={`/locations?tab=planets&planet=${p.id}`}
-                    className="flex items-center gap-2 rounded-xl border border-gray-800/60 bg-gray-900/60 px-4 py-2.5 transition-all duration-300 hover:-translate-y-0.5"
-                    style={{ ['--card-glow' as string]: `${p.color}15` }}
+                    className="flex items-center gap-2 rounded-xl px-4 py-2.5 transition-all duration-300 hover:-translate-y-0.5"
+                    style={{
+                      ['--card-glow' as string]: `${p.color}15`,
+                      background: 'rgba(80,60,40,0.06)',
+                      borderColor: 'rgba(80,60,40,0.2)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                    }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.borderColor = `${p.color}50`
                       e.currentTarget.style.boxShadow = `0 0 16px ${p.color}20`
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = ''
+                      e.currentTarget.style.borderColor = 'rgba(80,60,40,0.2)'
                       e.currentTarget.style.boxShadow = ''
                     }}
                   >
                     <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: p.color }} />
                     <div>
-                      <div className="text-sm font-medium text-gray-200">{p.name}</div>
-                      {p.shard && <div className="text-xs text-gray-500">{p.shard}</div>}
+                      <div className="text-sm font-medium" style={{ color: '#3a2a1a' }}>
+                        {p.name}
+                      </div>
+                      {p.shard && (
+                        <div className="text-xs" style={{ color: '#8a7050' }}>
+                          {p.shard}
+                        </div>
+                      )}
                     </div>
                   </TransitionLink>
                 ))}
@@ -119,27 +138,39 @@ export default function BookPage() {
 
           {magicSystems.length > 0 && (
             <section className="mt-8">
-              <h2 className="text-lg font-semibold text-gray-200">Magic Systems ({magicSystems.length})</h2>
+              <h2 className="text-lg font-semibold" style={{ color: '#3a2a1a' }}>
+                Magic Systems ({magicSystems.length})
+              </h2>
               <div className="mt-3 flex flex-wrap gap-2">
                 {magicSystems.map((ms) => (
                   <TransitionLink
                     key={ms.id}
                     to={`/magic?system=${ms.id}`}
-                    className="flex items-center gap-2 rounded-xl border border-gray-800/60 bg-gray-900/60 px-4 py-2.5 transition-all duration-300 hover:-translate-y-0.5"
-                    style={{ ['--card-glow' as string]: `${ms.color}15` }}
+                    className="flex items-center gap-2 rounded-xl px-4 py-2.5 transition-all duration-300 hover:-translate-y-0.5"
+                    style={{
+                      ['--card-glow' as string]: `${ms.color}15`,
+                      background: 'rgba(80,60,40,0.06)',
+                      borderColor: 'rgba(80,60,40,0.2)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                    }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.borderColor = `${ms.color}50`
                       e.currentTarget.style.boxShadow = `0 0 16px ${ms.color}20`
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = ''
+                      e.currentTarget.style.borderColor = 'rgba(80,60,40,0.2)'
                       e.currentTarget.style.boxShadow = ''
                     }}
                   >
                     <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: ms.color }} />
                     <div>
-                      <div className="text-sm font-medium text-gray-200">{ms.name}</div>
-                      <div className="text-xs text-gray-500">{ms.shard}</div>
+                      <div className="text-sm font-medium" style={{ color: '#3a2a1a' }}>
+                        {ms.name}
+                      </div>
+                      <div className="text-xs" style={{ color: '#8a7050' }}>
+                        {ms.shard}
+                      </div>
                     </div>
                   </TransitionLink>
                 ))}
@@ -149,32 +180,52 @@ export default function BookPage() {
 
           {characters.length > 0 && (
             <section className="mt-8">
-              <h2 className="text-lg font-semibold text-gray-200">Characters ({characters.length})</h2>
+              <h2 className="text-lg font-semibold" style={{ color: '#3a2a1a' }}>
+                Characters ({characters.length})
+              </h2>
               <div className="mt-3 grid gap-3 sm:grid-cols-2">
                 {characters.map((c) => (
                   <TransitionLink
                     key={c.id}
                     to={`/characters?character=${c.id}`}
-                    className="rounded-xl border border-gray-800/60 bg-gray-900/60 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20"
+                    className="rounded-xl p-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20"
+                    style={{
+                      background: 'rgba(80,60,40,0.06)',
+                      borderColor: 'rgba(80,60,40,0.2)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                    }}
                   >
-                    <div className="font-medium text-gray-200 text-sm">{c.name}</div>
-                    <div className="mt-0.5 text-xs text-gray-500 capitalize">{c.planet}</div>
-                    <div className="mt-1.5 text-xs leading-relaxed text-gray-500 line-clamp-2">{c.description}</div>
+                    <div className="font-medium text-sm" style={{ color: '#3a2a1a' }}>
+                      {c.name}
+                    </div>
+                    <div className="mt-0.5 text-xs capitalize" style={{ color: '#8a7050' }}>
+                      {c.planet}
+                    </div>
+                    <div className="mt-1.5 text-xs leading-relaxed line-clamp-2" style={{ color: '#8a7050' }}>
+                      {c.description}
+                    </div>
                   </TransitionLink>
                 ))}
               </div>
             </section>
           )}
 
-          <nav className="mt-10 flex items-center justify-between border-t border-gray-800 pt-6">
+          <nav
+            className="mt-10 flex items-center justify-between pt-6"
+            style={{ borderTop: '1px solid rgba(80,60,40,0.2)' }}
+          >
             {prevBook ? (
               <TransitionLink
                 to={`/books/${prevBook.id}`}
-                className="group flex items-center gap-2 text-sm text-gray-400 transition-colors hover:text-cyan-400"
+                className="group flex items-center gap-2 text-sm transition-colors hover:opacity-80"
+                style={{ color: '#8a7050' }}
               >
                 <IconChevronLeft size={14} className="transition-transform group-hover:-translate-x-0.5" />
                 <div className="text-right">
-                  <div className="text-xs text-gray-600">Previous</div>
+                  <div className="text-xs" style={{ color: '#a09070' }}>
+                    Previous
+                  </div>
                   <div className="text-sm">{prevBook.title}</div>
                 </div>
               </TransitionLink>
@@ -185,10 +236,13 @@ export default function BookPage() {
             {nextBook ? (
               <TransitionLink
                 to={`/books/${nextBook.id}`}
-                className="group flex items-center gap-2 text-sm text-gray-400 transition-colors hover:text-cyan-400"
+                className="group flex items-center gap-2 text-sm transition-colors hover:opacity-80"
+                style={{ color: '#8a7050' }}
               >
                 <div className="text-left">
-                  <div className="text-xs text-gray-600">Next</div>
+                  <div className="text-xs" style={{ color: '#a09070' }}>
+                    Next
+                  </div>
                   <div className="text-sm">{nextBook.title}</div>
                 </div>
                 <IconChevronRight size={14} className="transition-transform group-hover:translate-x-0.5" />

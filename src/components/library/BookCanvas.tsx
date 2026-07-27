@@ -41,9 +41,16 @@ export default function BookCanvas({ book, rect, onClose }: Props) {
   const rightDepth = totalSpreads - curSpread - 1
 
   useEffect(() => {
-    const up = () => setWs({ ww: window.innerWidth, wh: window.innerHeight })
-    window.addEventListener('resize', up)
-    return () => window.removeEventListener('resize', up)
+    let t: ReturnType<typeof setTimeout>
+    const up = () => {
+      clearTimeout(t)
+      t = setTimeout(() => setWs({ ww: window.innerWidth, wh: window.innerHeight }), 120)
+    }
+    window.addEventListener('resize', up, { passive: true })
+    return () => {
+      clearTimeout(t)
+      window.removeEventListener('resize', up)
+    }
   }, [])
 
   const dispatch = useCallback((event: BookEvent) => {
