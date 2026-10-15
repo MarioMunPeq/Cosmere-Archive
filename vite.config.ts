@@ -52,17 +52,31 @@ function fontPreload(): Plugin {
 export default defineConfig({
   base: '/Cosmere-Archive/',
   /**
-   * M1 · Block 8
+   * `optimizeDeps` only runs in dev, never in the build.
    *
-   * `@react-three/fiber` and `@react-three/drei` are excluded from dependency
-   * pre-bundling. Without this, Vite's optimiser folds `three` into a single
-   * 861 KB `react-three-fiber.esm` chunk, and `manualChunks` cannot split inside
-   * an already-pre-bundled dependency. Excluding them lets Rollup see three as
-   * individual modules, which is what makes the `three` / `r3f` split below
-   * possible. Both packages ship ESM, so excluding them is safe.
+   * M1 · Block 8 excluded `@react-three/fiber` and `@react-three/drei` here,
+   * claiming it was what allowed `three` to be split out of the r3f chunk.
+   * That was wrong: removing the exclusion produces byte-identical chunks,
+   * because the split comes entirely from `build.rollupOptions.output.codeSplitting`
+   * below. The exclusion had one real effect, and it was a bug: Vite's
+   * dependency scanner never walks an excluded package's tree, so r3f's
+   * transitive deps were left unoptimised and served raw.
+   *
+   * `zustand` is CommonJS and does `require('use-sync-external-store/shim/with-selector')`,
+   * also CommonJS. With no pre-bundle step the browser received the CJS file
+   * and the interop failed:
+   *
+   *   SyntaxError: The requested module '.../use-sync-external-store/shim/
+   *   with-selector.js' does not provide an export named 'default'
+   *
+   * That took down the whole /library route in dev — it rendered
+   * "ARCHIVE RECORD LOST" — while production, where nothing is pre-bundled,
+   * worked fine. Letting Vite scan r3f normally fixes it: zustand and
+   * use-sync-external-store get pre-bundled through esbuild, which converts the
+   * CJS to ESM.
    */
   optimizeDeps: {
-    exclude: ['@react-three/fiber', '@react-three/drei'],
+    include: [],
   },
   build: {
     target: 'es2022',
