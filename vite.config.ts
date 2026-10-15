@@ -51,22 +51,58 @@ function fontPreload(): Plugin {
 
 export default defineConfig({
   base: '/Cosmere-Archive/',
+  /**
+   * M1 · Block 8
+   *
+   * `@react-three/fiber` and `@react-three/drei` are excluded from dependency
+   * pre-bundling. Without this, Vite's optimiser folds `three` into a single
+   * 861 KB `react-three-fiber.esm` chunk, and `manualChunks` cannot split inside
+   * an already-pre-bundled dependency. Excluding them lets Rollup see three as
+   * individual modules, which is what makes the `three` / `r3f` split below
+   * possible. Both packages ship ESM, so excluding them is safe.
+   */
+  optimizeDeps: {
+    exclude: ['@react-three/fiber', '@react-three/drei'],
+  },
   build: {
     target: 'es2022',
     cssMinify: 'esbuild',
-    chunkSizeWarningLimit: 1000,
+    /**
+     * Was 1000 KB, which silenced the warning about the 861 KB three chunk
+     * instead of addressing it. The three chunk now sits just under this
+     * ceiling; anything larger is a regression and should fail loudly.
+     */
+    chunkSizeWarningLimit: 400,
     sourcemap: process.env.CI ? 'hidden' : false,
     rollupOptions: {
       output: {
-        manualChunks(id: string) {
-          if (
-            id.includes('node_modules/react/') ||
-            id.includes('node_modules/react-dom/') ||
-            id.includes('node_modules/react-router/') ||
-            id.includes('node_modules/react-router-dom/')
-          )
-            return 'vendor'
-          if (id.includes('node_modules/d3-force') || id.includes('node_modules/d3-')) return 'd3'
+        /**
+         * Rolldown (Vite 8) absorbs a `manualChunks` entry into its only
+         * importer, so `three` was merged back into `r3f` — nothing else imports
+         * it — leaving a single 872 KB chunk. `codeSplitting.groups` is honoured
+         * as declared, so the split actually holds.
+         *
+         * `priority` is highest-wins, so the catch-all group sits last at 10.
+         * Patterns use `[\\/]` as Rolldown documents for cross-platform safety,
+         * and are anchored on a trailing separator so `node_modules/three/`
+         * cannot also capture `node_modules/three-stdlib/`. Under pnpm the real
+         * paths look like `node_modules/.pnpm/<pkg>@<ver>/node_modules/<pkg>/…`
+         * and match as well.
+         */
+        codeSplitting: {
+          groups: [
+            // Higher priority wins, so the catch-all must be last.
+            {
+              name: 'vendor',
+              priority: 40,
+              test: /node_modules[\\/](react|react-dom|scheduler|react-router|react-router-dom)[\\/]/,
+            },
+            { name: 'd3', priority: 35, test: /node_modules[\\/]d3-(force|dispatch|quadtree|timer)[\\/]/ },
+            { name: 'gsap', priority: 35, test: /node_modules[\\/]gsap[\\/]/ },
+            { name: 'three', priority: 30, test: /node_modules[\\/]three[\\/]/, maxSize: 380 * 1024 },
+            { name: 'r3f', priority: 30, test: /node_modules[\\/]@react-three[\\/]/ },
+            { name: 'vendor-misc', priority: 10, test: /node_modules[\\/]/ },
+          ],
         },
       },
     },
