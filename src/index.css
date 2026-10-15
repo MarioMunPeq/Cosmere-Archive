@@ -704,20 +704,6 @@ html {
   }
 }
 
-/* Astronomical chart planet interactivity */
-.star-chart-planet {
-  transition: opacity 0.4s ease;
-}
-.star-chart-planet:hover {
-  opacity: 1 !important;
-}
-.star-chart-planet:hover .planet-glow {
-  opacity: 0.5 !important;
-}
-.star-chart-planet:hover .planet-sphere {
-  filter: brightness(1.2);
-}
-
 [data-theme='light'] body {
   background-color: var(--bg-page);
 }

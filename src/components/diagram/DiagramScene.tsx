@@ -819,7 +819,10 @@ function getContent(
           </div>
           <div style={{ fontSize: 5, textAlign: 'right', opacity: 0.2 }}>
             →{' '}
-            <Link to="/locations" style={{ textDecoration: 'underline', textUnderlineOffset: 1, color: 'inherit' }}>
+            <Link
+              to="/celestial-charts"
+              style={{ textDecoration: 'underline', textUnderlineOffset: 1, color: 'inherit' }}
+            >
               Atlas
             </Link>
           </div>

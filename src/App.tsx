@@ -1,5 +1,5 @@
 import { lazy } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import Layout from '@/components/common/Layout'
 import ErrorBoundary from '@/components/common/ErrorBoundary'
 import RouteFallback from '@/components/ui/RouteFallback'
@@ -36,8 +36,6 @@ export default function App() {
               </RouteFallback>
             }
           />
-          <Route path="map" element={<Navigate to="/celestial-charts" replace />} />
-          <Route path="locations" element={<Navigate to="/celestial-charts" replace />} />
           <Route
             path="celestial-charts"
             element={
@@ -63,8 +61,6 @@ export default function App() {
               </RouteFallback>
             }
           />
-          <Route path="family-tree" element={<Navigate to="/characters?tab=bloodlines" replace />} />
-          <Route path="heralds" element={<Navigate to="/aharietiam" replace />} />
           <Route
             path="aharietiam"
             element={
@@ -97,7 +93,6 @@ export default function App() {
               </RouteFallback>
             }
           />
-          <Route path="shards" element={<Navigate to="/celestial-charts" replace />} />
           <Route
             path="stats"
             element={
@@ -114,7 +109,6 @@ export default function App() {
               </RouteFallback>
             }
           />
-          <Route path="timeline" element={<Navigate to="/chronology" replace />} />
           <Route
             path="library"
             element={
@@ -124,7 +118,6 @@ export default function App() {
             }
           />
 
-          <Route path="glossary" element={<Navigate to="/magic" replace />} />
           <Route
             path="shadesmar"
             element={

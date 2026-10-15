@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
-Sitemap: https://cosmere-archive.vercel.app/sitemap.xml
+
+Sitemap: https://mariomunpeq.github.io/Cosmere-Archive/sitemap.xml
