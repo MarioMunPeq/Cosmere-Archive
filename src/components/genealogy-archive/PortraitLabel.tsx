@@ -72,7 +72,7 @@ export function PortraitLabel({ member, character, familyName }: Props) {
               flexShrink: 0,
             }}
           >
-            {!imgErr ? (
+            {!imgErr && url !== null ? (
               <img
                 src={url}
                 alt=""

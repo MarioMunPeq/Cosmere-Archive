@@ -1,0 +1,16 @@
+{
+  "id": "komashi-komashi-e",
+  "planet": "komashi",
+  "text": ["The population appears unaware of", "the broader Cosmere. The isolation", "appears deliberate."],
+  "style": "khriss",
+  "layout": {
+    "left": "12%",
+    "top": "36%",
+    "rotation": "-0.1deg",
+    "maxWidth": "160px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

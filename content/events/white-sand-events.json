@@ -1,0 +1,14 @@
+{
+  "id": "white-sand-events",
+  "title": "White Sand",
+  "summary": "Kenton, the last sand master, fights to save his guild in the merciless desert of Taldain. Khriss, a noble scholar, investigates the secrets of Investiture.",
+  "year": 100,
+  "endYear": null,
+  "type": "book",
+  "series": "white-sand",
+  "planets": ["taldain"],
+  "characters": ["kenton", "khriss"],
+  "worldhoppers": ["wh-khriss"],
+  "importance": 3,
+  "archivistNote": null
+}

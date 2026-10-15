@@ -1,0 +1,14 @@
+{
+  "id": "sazed-born",
+  "title": "Birth of Sazed",
+  "summary": "Sazed is born in Terris, a Keeper of Terris heritage who will become a kandra and later the vessel of Harmony.",
+  "year": 150,
+  "endYear": null,
+  "type": "birth",
+  "series": "mistborn-era-1",
+  "planets": ["scadrial"],
+  "characters": ["sazed"],
+  "worldhoppers": [],
+  "importance": 4,
+  "archivistNote": null
+}

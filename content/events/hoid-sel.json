@@ -1,0 +1,14 @@
+{
+  "id": "hoid-sel",
+  "title": "Hoid on Sel",
+  "summary": "Hoid visits Sel during the time of Elantris, adopting the identity of an informant: the steward of the Teod palace. He subtly helps Raoden and Sarene.",
+  "year": 12,
+  "endYear": null,
+  "type": "arrival",
+  "series": "elantris",
+  "planets": ["sel"],
+  "characters": [],
+  "worldhoppers": ["wh-hoid"],
+  "importance": 3,
+  "archivistNote": null
+}

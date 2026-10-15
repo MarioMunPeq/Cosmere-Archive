@@ -1,0 +1,15 @@
+{
+  "id": "clubs",
+  "name": "Clubs (Mennis)",
+  "pronunciation": null,
+  "summary": "A Smoker and grumpy old man who provides the crucial Allomantic coppercloud that hides Kelsier's crew from the Lord Ruler's Inquisitors and obligators. Clubs runs a carpenter's shop that serves as the crew's headquarters, taking in street urchins as apprentices while training them as part of the rebellion. Despite his constant complaining and gruff exterior, Clubs is deeply protective of his people and his principles. He ends up as a member of Elend's council after the Lord Ruler's fall, his coppercloud continuing to hide the crew's activities from prying eyes.",
+  "origin": "scadrial",
+  "books": ["the-final-empire", "the-well-of-ascension"],
+  "unlockAt": ["the-final-empire", "the-well-of-ascension"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

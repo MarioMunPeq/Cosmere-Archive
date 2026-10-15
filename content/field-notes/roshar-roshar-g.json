@@ -1,0 +1,16 @@
+{
+  "id": "roshar-roshar-g",
+  "planet": "roshar",
+  "text": ["A stable perpendicularity, though", "accessing it during the storm", "season is not advisable."],
+  "style": "khriss",
+  "layout": {
+    "left": "10%",
+    "top": "42%",
+    "rotation": "-1.4deg",
+    "maxWidth": "150px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

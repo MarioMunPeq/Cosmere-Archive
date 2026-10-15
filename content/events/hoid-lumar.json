@@ -1,0 +1,14 @@
+{
+  "id": "hoid-lumar",
+  "title": "Hoid on Lumar",
+  "summary": "Hoid visits Lumar, the world of the seas of spores, and narrates the story of Tress to his crew as one of his characteristic tales.",
+  "year": 1600,
+  "endYear": null,
+  "type": "arrival",
+  "series": "secret-projects",
+  "planets": ["lumar"],
+  "characters": [],
+  "worldhoppers": ["wh-hoid"],
+  "importance": 2,
+  "archivistNote": null
+}

@@ -1,0 +1,14 @@
+{
+  "id": "shades",
+  "name": "Shades",
+  "summary": "Cognitive shadows of the dead that inhabit the Forests of Hell on Threnody. Governed by Simple Rules: do not bleed, do not run, do not touch the shadows.",
+  "planet": "threnody",
+  "shard": "Ambition",
+  "category": "cognitive",
+  "color": "#8b5cf6",
+  "books": ["arcanum-unbounded"],
+  "classification": "Cognitive Manifestation",
+  "status": "Partially Documented",
+  "academicNote": null,
+  "allomanticMetals": []
+}

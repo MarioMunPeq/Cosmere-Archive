@@ -1,0 +1,10 @@
+{
+  "id": "aluminum",
+  "name": "Aluminum",
+  "alloy": "Duralumin",
+  "group": "enhancement",
+  "allomanticPower": "Wipe internal Allomantic reserves",
+  "feruchemicalPower": "Store identity",
+  "hemalurgicProperty": "Steals spiritual connection",
+  "color": "#e5e7eb"
+}

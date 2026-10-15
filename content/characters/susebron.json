@@ -1,0 +1,15 @@
+{
+  "id": "susebron",
+  "name": "Susebron",
+  "pronunciation": null,
+  "summary": "The God-King of T'Telir, the absolute ruler of Hallandren who has been manipulated and silenced by his priests for most of his life. As a Returned god, Susebron has a divine Breath and incredible power, but his tongue was cut out as a child to prevent him from giving commands or revealing the truth of his imprisonment. His relationship with Siri awakens him to the reality of his situation, and he eventually recovers his tongue and his voice, unleashing his power as the most powerful Awakener in Nalthis. His quiet dignity, patience, and capacity for love despite his imprisonment make him one of the Cosmere's most sympathetic rulers.",
+  "origin": "nalthis",
+  "books": ["warbreaker"],
+  "unlockAt": ["warbreaker"],
+  "portrait": "characters/Susebron.webp",
+  "born": 260,
+  "died": null,
+  "status": "living",
+  "groups": ["nalthian"],
+  "titles": ["God-King of T'Telir", "Voice Bearer", "Freedom"]
+}

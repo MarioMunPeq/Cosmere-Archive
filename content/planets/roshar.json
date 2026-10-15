@@ -1,0 +1,35 @@
+{
+  "id": "roshar",
+  "name": "Roshar",
+  "pronunciation": null,
+  "summary": "Home of the Knights Radiant, the highstorms, and the Shattered Plains. The most active planet in the Cosmere today.",
+  "shards": ["honor", "cultivation", "odium"],
+  "color": "#06b6d4",
+  "connectedPlanets": [],
+  "series": ["stormlight", "arcanum-unbounded"],
+  "books": [
+    "the-way-of-kings",
+    "words-of-radiance",
+    "oathbringer",
+    "rhythm-of-war",
+    "wind-and-truth",
+    "arcanum-unbounded"
+  ],
+  "investiture": [
+    {
+      "name": "Surgebinding",
+      "summary": "The ten orders of Knights Radiant use Stormlight to manipulate natural forces.",
+      "shard": "Honor"
+    },
+    {
+      "name": "Old Magic",
+      "summary": "Primitive investiture tied to the Nightwatcher and the boons/ curses she bestows.",
+      "shard": "Cultivation"
+    },
+    {
+      "name": "Voidbinding",
+      "summary": "Investiture fueled by Odium, associated with the Unmade and the Fused.",
+      "shard": "Odium"
+    }
+  ]
+}

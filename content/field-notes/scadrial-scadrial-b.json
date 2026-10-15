@@ -1,0 +1,16 @@
+{
+  "id": "scadrial-scadrial-b",
+  "planet": "scadrial",
+  "text": ["Nazh says I should distinguish eras", "more clearly. He is correct for once."],
+  "style": "khriss",
+  "layout": {
+    "left": "74%",
+    "top": "26%",
+    "rotation": "-1.9deg",
+    "maxWidth": "150px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

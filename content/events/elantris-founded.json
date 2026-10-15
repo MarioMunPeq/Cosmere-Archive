@@ -1,0 +1,14 @@
+{
+  "id": "elantris-founded",
+  "title": "Founding of Elantris",
+  "summary": "On Sel, the first humans discover how to use AonDor and build the city of Elantris. The Elantrians become divine beings through the Shaod.",
+  "year": -4800,
+  "endYear": null,
+  "type": "historical",
+  "series": "elantris",
+  "planets": ["sel"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 4,
+  "archivistNote": null
+}

@@ -1,0 +1,14 @@
+{
+  "id": "hero-of-ages",
+  "title": "The Hero of Ages",
+  "summary": "Ruin, freed, threatens to destroy Scadrial. Vin and Elend die fighting. Sazed, the Terris Keeper, takes both Shards — Preservation and Ruin — and becomes Harmony, rebuilding Scadrial in the Catacendre.",
+  "year": 1026,
+  "endYear": null,
+  "type": "book",
+  "series": "mistborn-era-1",
+  "planets": ["scadrial"],
+  "characters": ["vin", "elend", "sazed", "spook", "ten-soon", "marsh"],
+  "worldhoppers": [],
+  "importance": 5,
+  "archivistNote": null
+}

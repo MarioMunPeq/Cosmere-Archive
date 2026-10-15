@@ -1,0 +1,14 @@
+{
+  "id": "awakening",
+  "name": "Awakening",
+  "summary": "Using BioChromatic Breath to animate objects and grant sentience. Color perception determines power. The Eighth Heightening grants the ability to Awaken with visual Commands.",
+  "planet": "nalthis",
+  "shard": "Endowment",
+  "category": "biochromatic",
+  "color": "#d946ef",
+  "books": ["warbreaker"],
+  "classification": "BioChromatic",
+  "status": "Documented",
+  "academicNote": null,
+  "allomanticMetals": []
+}

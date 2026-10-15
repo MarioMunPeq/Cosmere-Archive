@@ -1,0 +1,14 @@
+{
+  "id": "ambition-fall",
+  "title": "Fall of Ambition",
+  "summary": "Ambition, mortally wounded by Odium, falls on Threnody and dies. Her remains of Investiture permeate the planet, creating the Shadows and the dangerous entities of the Silent Forest.",
+  "year": -8200,
+  "endYear": null,
+  "type": "cataclysm",
+  "series": "pre-cosmere",
+  "planets": ["threnody"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 5,
+  "archivistNote": null
+}

@@ -1,0 +1,14 @@
+{
+  "id": "spren-death",
+  "title": "Death of the Radiant Spren",
+  "summary": "Thousands of spren bonded to the Knights Radiant die when their oaths are broken. The few that survive, like the Stormfather and the Nightwatcher, are left deeply traumatized. Bondsmith spren become extremely rare.",
+  "year": -499,
+  "endYear": null,
+  "type": "cataclysm",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 4,
+  "archivistNote": null
+}

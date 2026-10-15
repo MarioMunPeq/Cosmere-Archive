@@ -1,0 +1,14 @@
+{
+  "id": "voidbinding",
+  "name": "Voidbinding",
+  "summary": "Investiture fueled by Odium, associated with the Unmade and the Fused. Uses Voidlight instead of Stormlight.",
+  "planet": "roshar",
+  "shard": "Odium",
+  "category": "voidbinding",
+  "color": "#ef4444",
+  "books": ["words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "classification": "Environmental",
+  "status": "Partially Documented",
+  "academicNote": "Voidbinding appears to mirror Surgebinding in structure, but the underlying principles differ fundamentally.",
+  "allomanticMetals": []
+}

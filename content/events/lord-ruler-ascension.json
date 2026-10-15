@@ -1,0 +1,14 @@
+{
+  "id": "lord-ruler-ascension",
+  "title": "Ascension of the Lord Ruler",
+  "summary": "Rashek kills Alendi at the Well of Ascension, takes the power of Preservation and uses it to transform Scadrial. He moves the planet, changes the geography and becomes the Lord Ruler, absolute sovereign of the Final Empire.",
+  "year": 1,
+  "endYear": null,
+  "type": "historical",
+  "series": "mistborn-era-1",
+  "planets": ["scadrial"],
+  "characters": ["rashek"],
+  "worldhoppers": [],
+  "importance": 5,
+  "archivistNote": "Dates before the Lord Ruler’s calendar reforms should be considered approximate. Scadrian chronology becomes reliable only after the establishment of the Final Empire."
+}

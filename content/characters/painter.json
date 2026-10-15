@@ -1,0 +1,15 @@
+{
+  "id": "painter",
+  "name": "Nikaro (Painter)",
+  "pronunciation": null,
+  "summary": "A lonely young man from the futuristic city of Torio on Komashi who works as a nightmare painter—an artist who paints nightmarish entities born of human fear to trap them in canvas before they can harm anyone. Isolated and unappreciated, Painter lives a quiet life of duty until a mysterious force swaps his consciousness with Yumi, a yoki-hijo from Komashi's parallel past. Forced to inhabit each other's worlds, Painter discovers that his seemingly mundane talent for painting and his unique perspective on fear are more important than he ever imagined. His journey is about finding purpose and connection in a world that has made him feel invisible.",
+  "origin": "komashi",
+  "books": ["yumi-and-the-nightmare-painter"],
+  "unlockAt": ["yumi-and-the-nightmare-painter"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

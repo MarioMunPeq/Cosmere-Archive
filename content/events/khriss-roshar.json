@@ -1,0 +1,14 @@
+{
+  "id": "khriss-roshar",
+  "title": "Khriss Visits Roshar",
+  "summary": "Khriss travels to Roshar to document the Rosharan Investiture system, including the spren, Stormlight and the Knights Radiant. She writes extensively about her observations.",
+  "year": 1500,
+  "endYear": null,
+  "type": "arrival",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": [],
+  "worldhoppers": ["wh-khriss"],
+  "importance": 3,
+  "archivistNote": null
+}

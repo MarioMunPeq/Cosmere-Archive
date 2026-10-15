@@ -1,0 +1,14 @@
+{
+  "id": "sand-mastery",
+  "name": "Sand Mastery",
+  "summary": "Manipulating white sand using Investiture. Practiced by the Darksiders on Taldain. Sand turns black when investiture is expended.",
+  "planet": "taldain",
+  "shard": "Autonomy",
+  "category": "sand_mastery",
+  "color": "#eab308",
+  "books": ["white-sand-vol-1", "white-sand-vol-2", "white-sand-vol-3"],
+  "classification": "Kinetic Investiture",
+  "status": "Documented",
+  "academicNote": null,
+  "allomanticMetals": []
+}

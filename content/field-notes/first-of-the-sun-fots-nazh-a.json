@@ -1,0 +1,16 @@
+{
+  "id": "first-of-the-sun-fots-nazh-a",
+  "planet": "first-of-the-sun",
+  "text": ["An aviar bit me.", "I do not think it was personal."],
+  "style": "nazh",
+  "layout": {
+    "left": "30%",
+    "top": "20%",
+    "rotation": "1.9deg",
+    "maxWidth": "110px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

@@ -1,0 +1,14 @@
+{
+  "id": "hemalurgy",
+  "name": "Hemalurgy",
+  "summary": "Stealing attributes from others via metal spikes driven through the body. The most dangerous metallic art, capable of stealing Allomancy, Feruchemy, or other attributes.",
+  "planet": "scadrial",
+  "shard": "Ruin",
+  "category": "metallic_art",
+  "color": "#dc2626",
+  "books": ["the-final-empire", "the-hero-of-ages", "the-alloy-of-law", "the-lost-metal"],
+  "classification": "Metallic Art",
+  "status": "Partially Documented",
+  "academicNote": "Hemalurgic research remains severely restricted by Silverlight protocol due to its ethical implications.",
+  "allomanticMetals": []
+}

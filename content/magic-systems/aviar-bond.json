@@ -1,0 +1,14 @@
+{
+  "id": "aviar-bond",
+  "name": "Aviar Bond",
+  "summary": "Birds on First of the Sun that bond with humans granting various abilities such as mental shielding or enhanced senses. The bond is formed through parasitic worms.",
+  "planet": "first-of-the-sun",
+  "shard": "Autonomy",
+  "category": "bonding",
+  "color": "#22c55e",
+  "books": ["arcanum-unbounded", "the-sunlit-man"],
+  "classification": "Bonded Investiture",
+  "status": "Partially Documented",
+  "academicNote": null,
+  "allomanticMetals": []
+}

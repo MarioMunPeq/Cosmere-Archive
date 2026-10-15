@@ -1,0 +1,14 @@
+{
+  "id": "taldain-trade",
+  "title": "Taldain Interplanetary Trade",
+  "summary": "Taldain becomes an early center of interplanetary trade thanks to its advanced technology and the influence of Autonomy.",
+  "year": 120,
+  "endYear": null,
+  "type": "historical",
+  "series": "white-sand",
+  "planets": ["taldain"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 2,
+  "archivistNote": null
+}

@@ -1,0 +1,14 @@
+{
+  "id": "final-empire-creation",
+  "title": "Creation of the Final Empire",
+  "summary": "Rashek, as the Lord Ruler, reorganizes Scadrial into the Final Empire. He creates the Mistborn (Allomancers), the Steel Inquisitors and the system of noble houses. The mist covers the world and ash falls from the sky.",
+  "year": 5,
+  "endYear": null,
+  "type": "historical",
+  "series": "mistborn-era-1",
+  "planets": ["scadrial"],
+  "characters": ["rashek"],
+  "worldhoppers": [],
+  "importance": 5,
+  "archivistNote": null
+}

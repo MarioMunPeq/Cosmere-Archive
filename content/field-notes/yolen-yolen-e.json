@@ -1,0 +1,16 @@
+{
+  "id": "yolen-yolen-e",
+  "planet": "yolen",
+  "text": ["The few surviving records", "contradict each other on nearly", "every detail. Frustrating."],
+  "style": "khriss",
+  "layout": {
+    "left": "72%",
+    "top": "10%",
+    "rotation": "1.0deg",
+    "maxWidth": "145px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

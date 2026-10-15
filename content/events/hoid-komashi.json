@@ -1,0 +1,14 @@
+{
+  "id": "hoid-komashi",
+  "title": "Hoid on Komashi",
+  "summary": "Hoid visits Komashi, the planet of Yumi, fascinated by its unique system of nightmares and spirit summoning.",
+  "year": 1610,
+  "endYear": null,
+  "type": "arrival",
+  "series": "secret-projects",
+  "planets": ["komashi"],
+  "characters": [],
+  "worldhoppers": ["wh-hoid"],
+  "importance": 2,
+  "archivistNote": null
+}

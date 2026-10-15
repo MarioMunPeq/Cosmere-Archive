@@ -1,0 +1,12 @@
+{
+  "id": "stormlight",
+  "name": "The Stormlight Archive",
+  "color": "#06b6d4",
+  "order": 6,
+  "summary": "The central epic of the Cosmere. Knights Radiant, storms, and warriors.",
+  "spine": {
+    "ink": null,
+    "foil": "#06b6d4",
+    "crop": "50% 20%"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "scadrial-scadrial-h",
+  "planet": "scadrial",
+  "text": ["The basin region shows evidence", "of deliberate geological reshaping.", "The scale is enormous."],
+  "style": "khriss",
+  "layout": {
+    "left": "10%",
+    "top": "56%",
+    "rotation": "1.4deg",
+    "maxWidth": "155px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

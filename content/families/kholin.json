@@ -1,0 +1,117 @@
+{
+  "id": "kholin",
+  "name": "Kholin Dynasty",
+  "color": "#fbbf24",
+  "summary": "The ruling house of Alethkar on Roshar. Gavilar and Dalinar are brothers; after Gavilar's death, Navani later married Dalinar.",
+  "rootIds": ["kholin-house"],
+  "members": [
+    {
+      "id": "kholin-house",
+      "name": "House Kholin",
+      "character": null,
+      "spouse": null,
+      "parents": [],
+      "isDeceased": true,
+      "gender": "male"
+    },
+    {
+      "id": "gavilar",
+      "name": "Gavilar Kholin",
+      "character": null,
+      "spouse": "navani",
+      "parents": ["kholin-house"],
+      "isDeceased": true,
+      "gender": "male"
+    },
+    {
+      "id": "navani",
+      "name": "Navani Kholin",
+      "character": "navani",
+      "spouse": "gavilar",
+      "parents": [],
+      "isDeceased": false,
+      "gender": "female"
+    },
+    {
+      "id": "dalinar",
+      "name": "Dalinar Kholin",
+      "character": "dalinar",
+      "spouse": null,
+      "parents": ["kholin-house"],
+      "isDeceased": false,
+      "gender": "male"
+    },
+    {
+      "id": "evi",
+      "name": "Evi",
+      "character": null,
+      "spouse": "dalinar",
+      "parents": [],
+      "isDeceased": true,
+      "gender": "female"
+    },
+    {
+      "id": "jasnah",
+      "name": "Jasnah Kholin",
+      "character": "jasnah",
+      "spouse": null,
+      "parents": ["gavilar", "navani"],
+      "isDeceased": false,
+      "gender": "female"
+    },
+    {
+      "id": "elhokar",
+      "name": "Elhokar Kholin",
+      "character": "elhokar",
+      "spouse": null,
+      "parents": ["gavilar", "navani"],
+      "isDeceased": true,
+      "gender": "male"
+    },
+    {
+      "id": "aesudan",
+      "name": "Aesudan",
+      "character": null,
+      "spouse": "elhokar",
+      "parents": [],
+      "isDeceased": true,
+      "gender": "female"
+    },
+    {
+      "id": "gavinor",
+      "name": "Gavinor Kholin",
+      "character": null,
+      "spouse": null,
+      "parents": ["elhokar", "aesudan"],
+      "isDeceased": false,
+      "gender": "male"
+    },
+    {
+      "id": "adolin",
+      "name": "Adolin Kholin",
+      "character": "adolin",
+      "spouse": "shallan",
+      "parents": ["dalinar", "evi"],
+      "isDeceased": false,
+      "gender": "male"
+    },
+    {
+      "id": "renarin",
+      "name": "Renarin Kholin",
+      "character": "renarin",
+      "spouse": null,
+      "parents": ["dalinar", "evi"],
+      "isDeceased": false,
+      "gender": "male"
+    },
+    {
+      "id": "shallan",
+      "name": "Shallan Davar",
+      "character": "shallan",
+      "spouse": "adolin",
+      "parents": [],
+      "isDeceased": false,
+      "gender": "female"
+    }
+  ]
+}

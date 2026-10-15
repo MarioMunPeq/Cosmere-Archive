@@ -1,0 +1,14 @@
+{
+  "id": "elantris-fall",
+  "title": "Fall of Elantris",
+  "summary": "The Shaod of Elantris stops functioning correctly, likely due to the death of Devotion and Dominion. The Elantrians become deformed beings in constant pain. The city falls into misery and isolation.",
+  "year": -1500,
+  "endYear": null,
+  "type": "cataclysm",
+  "series": "elantris",
+  "planets": ["sel"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 5,
+  "archivistNote": null
+}

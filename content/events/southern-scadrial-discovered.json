@@ -1,0 +1,14 @@
+{
+  "id": "southern-scadrial-discovered",
+  "title": "Southern Scadrial Discovered",
+  "summary": "Waxillium Ladrian travels beyond the Seran Mountains and discovers the Malwish civilization in the southern continent of Scadrial. The Malwish use advanced investiture technology — including medallions that grant Feruchemical powers — and have preserved knowledge of the Catacendre.",
+  "year": 1326,
+  "endYear": null,
+  "type": "discovery",
+  "series": "mistborn-era-2",
+  "planets": ["scadrial"],
+  "characters": ["wax", "marasi", "steris"],
+  "worldhoppers": [],
+  "importance": 4,
+  "archivistNote": null
+}

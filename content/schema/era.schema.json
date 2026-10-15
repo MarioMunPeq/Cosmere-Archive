@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "era",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "startYear", "endYear", "color", "summary"],
+  "properties": {
+    "id": { "$ref": "common#/$defs/id" },
+    "name": { "$ref": "common#/$defs/nonEmptyString" },
+    "startYear": { "type": "integer" },
+    "endYear": { "type": "integer" },
+    "color": { "$ref": "common#/$defs/hexColor" },
+    "summary": { "$ref": "common#/$defs/summary" }
+  }
+}

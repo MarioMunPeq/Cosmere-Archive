@@ -1,0 +1,16 @@
+{
+  "id": "nalthis-nalthis-c",
+  "planet": "nalthis",
+  "text": ["Endowment's perpendicularity is", "notably quiet compared to", "other Shards."],
+  "style": "khriss",
+  "layout": {
+    "left": "14%",
+    "top": "74%",
+    "rotation": "-0.7deg",
+    "maxWidth": "150px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

@@ -1,0 +1,15 @@
+{
+  "id": "khriss",
+  "name": "Khriss",
+  "pronunciation": null,
+  "summary": "A scholar from the Darkside of Taldain who becomes the Cosmere's foremost expert on investiture and the fundamental laws of magic across all worlds. Trained as a scientist, Khriss travels across the Cosmere with her assistant Nazh, documenting planetary systems, studying Shards, and analyzing the various manifestations of investiture. She provides the scientific framework for understanding the Cosmere's magic systems, writing the planetary essays in Arcanum Unbounded. Her involvement in the events of White Sand, her knowledge of the Dor, and her network of worldhoppers make her one of the most influential non-Shardic figures in the Cosmere. She is the author of the Ars Arcanum found at the end of many Cosmere books.",
+  "origin": "taldain",
+  "books": ["white-sand-vol-1", "white-sand-vol-2", "white-sand-vol-3", "arcanum-unbounded"],
+  "unlockAt": ["white-sand-vol-1", "white-sand-vol-2", "white-sand-vol-3", "arcanum-unbounded"],
+  "portrait": null,
+  "born": 70,
+  "died": null,
+  "status": "living",
+  "groups": ["taldaini"],
+  "titles": ["Cosmere Scholar", "Author of Ars Arcanum", "Noble"]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "siri-born",
+  "title": "Birth of Siri",
+  "summary": "Siri is born, the younger princess of Idris on Nalthis. She will become the queen of T'Telir, wife of the god-king Susebron.",
+  "year": 270,
+  "endYear": null,
+  "type": "birth",
+  "series": "warbreaker",
+  "planets": ["nalthis"],
+  "characters": ["siri"],
+  "worldhoppers": [],
+  "importance": 3,
+  "archivistNote": null
+}

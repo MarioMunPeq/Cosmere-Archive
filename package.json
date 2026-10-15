@@ -21,7 +21,9 @@
     "test:budget": "tsx scripts/check-budget.ts",
     "test:assets": "tsx scripts/check-assets.ts",
     "test:e2e": "playwright test",
-    "ci": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm test:contrast && pnpm test:assets && pnpm build && pnpm test:budget",
+    "content:migrate": "tsx scripts/generate-content.ts",
+    "content:validate": "tsx scripts/validate-content.ts",
+    "ci": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm content:validate && pnpm test:contrast && pnpm test:assets && pnpm build && pnpm test:budget",
     "ci:all": "pnpm run ci",
     "prepare": "husky"
   },

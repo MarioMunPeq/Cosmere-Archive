@@ -1,0 +1,14 @@
+{
+  "id": "sorceress-lumar",
+  "title": "The Sorceress of Lumar",
+  "summary": "A mysterious and powerful worldhopper known only as the Sorceress rules the Midnight Sea of Lumar. She possesses rare and powerful magical artifacts, including corrupted aethers. Tress bargains with her for Charlie's freedom, revealing the Sorceress to be a sadistic collector whose powers rival those of Shards.",
+  "year": 1600,
+  "endYear": null,
+  "type": "historical",
+  "series": "secret-projects",
+  "planets": ["lumar"],
+  "characters": [],
+  "worldhoppers": ["wh-hoid"],
+  "importance": 3,
+  "archivistNote": null
+}

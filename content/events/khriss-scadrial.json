@@ -1,0 +1,14 @@
+{
+  "id": "khriss-scadrial",
+  "title": "Khriss on Scadrial",
+  "summary": "Khriss visits Scadrial to study allomancy, feruchemy and hemalurgy. Her notes help understand how Investiture works in the world of Harmony.",
+  "year": 1100,
+  "endYear": null,
+  "type": "arrival",
+  "series": "arcanum-unbounded",
+  "planets": ["scadrial"],
+  "characters": [],
+  "worldhoppers": ["wh-khriss"],
+  "importance": 3,
+  "archivistNote": null
+}

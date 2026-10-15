@@ -1,0 +1,23 @@
+{
+  "id": "komashi",
+  "name": "Komashi",
+  "pronunciation": null,
+  "summary": "Split between a waking realm and a dream realm. Home of spirit summoners and nightmare painters.",
+  "shards": ["virtuosity"],
+  "color": "#0ea5e9",
+  "connectedPlanets": [],
+  "series": ["secret-projects"],
+  "books": ["yumi-and-the-nightmare-painter"],
+  "investiture": [
+    {
+      "name": "Yoki-Hijo",
+      "summary": "Spirit summoning performed by yoki-hijo maidens. Summons spirits from the dream realm.",
+      "shard": "Virtuosity"
+    },
+    {
+      "name": "Nightmare Painting",
+      "summary": "Trapping emotions and experiences in art. Creates functional magical artifacts.",
+      "shard": "Virtuosity"
+    }
+  ]
+}

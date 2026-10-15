@@ -1,0 +1,16 @@
+{
+  "id": "taldain-taldain-b",
+  "planet": "taldain",
+  "text": ["Nazh finds this projection", "unsatisfactory. I find his", "critiques predictable."],
+  "style": "khriss",
+  "layout": {
+    "left": "74%",
+    "top": "32%",
+    "rotation": "-2.8deg",
+    "maxWidth": "145px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

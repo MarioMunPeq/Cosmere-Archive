@@ -1,0 +1,20 @@
+{
+  "id": "talenel",
+  "name": "Talenel (Taln)",
+  "title": "Herald of War",
+  "order": "Stonewards",
+  "kind": "herald",
+  "pronunciation": null,
+  "summary": "The patron of the Stonewards. Endured over four thousand years of torture on Braize without breaking the Oathpact. When he finally arrived on Roshar at the start of The Way of Kings, he believed he had returned to warn humanity — but the Desolation had already begun. The only Herald to hold true.",
+  "surges": ["Cohesion", "Tension"],
+  "attributes": ["Dependable", "Resourceful"],
+  "essence": "Loam",
+  "soulcasting": "Soil",
+  "honorbladeGrants": "Cohesion and Tension — the power to alter the strength of molecular bonds and to change the stiffness of objects.",
+  "quote": "\"I did not break. They could not make me break.\"",
+  "books": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "status": "standing",
+  "connections": ["shalash"],
+  "positionIndex": 8,
+  "color": "#f97316"
+}

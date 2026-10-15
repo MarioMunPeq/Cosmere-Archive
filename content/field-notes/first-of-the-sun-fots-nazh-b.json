@@ -1,0 +1,21 @@
+{
+  "id": "first-of-the-sun-fots-nazh-b",
+  "planet": "first-of-the-sun",
+  "text": [
+    "Khriss says the islands",
+    "are shifting. I say the map",
+    "is fine. She recalculated.",
+    "The map was not fine."
+  ],
+  "style": "nazh",
+  "layout": {
+    "left": "62%",
+    "top": "64%",
+    "rotation": "-1.5deg",
+    "maxWidth": "140px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

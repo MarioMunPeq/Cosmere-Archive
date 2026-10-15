@@ -1,0 +1,15 @@
+{
+  "id": "auxiliary",
+  "name": "Auxiliary",
+  "pronunciation": null,
+  "summary": "A sentient spren bonded to Sigzil—later known as Nomad—who takes the form of a silver metallic rod that can transform into various weapons and tools. Auxiliary is a highspren, the type bonded by the Skybreakers, and has a formal, logical, and occasionally sarcastic personality. As a spren bound by a Dawnshard, Auxiliary is uniquely affected by Nomad's inability to harm others, which forces them to find creative non-lethal solutions to problems. Their relationship, built on centuries of partnership and mutual respect, is central to Nomad's journey on Canticle in The Sunlit Man.",
+  "origin": "roshar",
+  "books": ["the-sunlit-man"],
+  "unlockAt": ["the-sunlit-man"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

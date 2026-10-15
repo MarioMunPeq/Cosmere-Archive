@@ -1,0 +1,15 @@
+{
+  "id": "steris",
+  "name": "Steris Harms",
+  "pronunciation": null,
+  "summary": "Waxillium's fiancée and later wife, a woman whose extreme organization, list-making, and social awkwardness initially make her seem cold and unapproachable. Beneath her meticulous exterior lies a fiercely brave and resourceful woman who proves invaluable on Wax's adventures: her countless contingency plans, legal knowledge, and unexpected physical courage save the day more than once. Her relationship with Wax grows from an arranged engagement into a genuine partnership, and her journey from a socially anxious noblewoman to a confident leader is one of the most quietly powerful arcs in the Wax and Wayne series.",
+  "origin": "scadrial",
+  "books": ["the-alloy-of-law", "shadows-of-self", "the-bands-of-mourning", "the-lost-metal"],
+  "unlockAt": ["the-alloy-of-law", "shadows-of-self", "the-bands-of-mourning", "the-lost-metal"],
+  "portrait": "characters/Steris.webp",
+  "born": 1305,
+  "died": null,
+  "status": "living",
+  "groups": ["scadrian"],
+  "titles": ["Strategist", "Wax's Wife", "Planner"]
+}

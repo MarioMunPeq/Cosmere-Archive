@@ -1,0 +1,14 @@
+{
+  "id": "yoki-hijo",
+  "name": "Yoki-Hijo",
+  "summary": "Spirit summoning performed by yoki-hijo maidens on Komashi. They summon spirits from the dream realm and produce Hion threads that power technology.",
+  "planet": "komashi",
+  "shard": "Virtuosity",
+  "category": "yoki_hijo",
+  "color": "#0ea5e9",
+  "books": ["yumi-and-the-nightmare-painter"],
+  "classification": "Cognitive Manifestation",
+  "status": "Partially Documented",
+  "academicNote": null,
+  "allomanticMetals": []
+}

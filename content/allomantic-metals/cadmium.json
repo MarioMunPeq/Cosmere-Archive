@@ -1,0 +1,10 @@
+{
+  "id": "cadmium",
+  "name": "Cadmium",
+  "alloy": "Bendalloy",
+  "group": "temporal",
+  "allomanticPower": "Slow time bubble",
+  "feruchemicalPower": "Store breath",
+  "hemalurgicProperty": "Steals temporal power",
+  "color": "#8b5cf6"
+}

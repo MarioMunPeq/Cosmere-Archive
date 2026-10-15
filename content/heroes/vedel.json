@@ -1,0 +1,20 @@
+{
+  "id": "vedel",
+  "name": "Vedel",
+  "title": "Herald of Healers",
+  "order": "Edgedancers",
+  "kind": "herald",
+  "pronunciation": null,
+  "summary": "The patron of the Edgedancers. Associated with healing, growth, and the restorative arts. Known for her compassion during the ages of the Heralds, Vedel has not been seen in modern times on Roshar.",
+  "surges": ["Abrasion", "Progression"],
+  "attributes": ["Loving", "Healing"],
+  "essence": "Vine",
+  "soulcasting": "Grass",
+  "honorbladeGrants": "Abrasion and Progression — the power to alter friction and to accelerate the healing of living things.",
+  "quote": "\"The deepest wounds are those the eye cannot see.\"",
+  "books": ["oathbringer", "rhythm-of-war"],
+  "status": "fallen",
+  "connections": [],
+  "positionIndex": 3,
+  "color": "#34d399"
+}

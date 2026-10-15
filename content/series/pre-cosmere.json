@@ -1,0 +1,12 @@
+{
+  "id": "pre-cosmere",
+  "name": "Pre-Cosmere",
+  "color": "#8a7050",
+  "order": 0,
+  "summary": "Events before the Shattering of Adonalsium and the division of the Shards.",
+  "spine": {
+    "ink": null,
+    "foil": "#c8a96a",
+    "crop": "50% 20%"
+  }
+}

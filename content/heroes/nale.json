@@ -1,0 +1,20 @@
+{
+  "id": "nale",
+  "name": "Nale (Nalan)",
+  "title": "Herald of Justice",
+  "order": "Skybreakers",
+  "kind": "herald",
+  "pronunciation": null,
+  "summary": "The patron of the Skybreakers and the only Herald to actively lead his order. For millennia he hunted surgebinders, believing it would prevent another Desolation. His rigid adherence to law masked a deep fear of the return of the Voidbringers.",
+  "surges": ["Gravitation", "Division"],
+  "attributes": ["Just", "Confident"],
+  "essence": "Sinew",
+  "soulcasting": "Blood",
+  "honorbladeGrants": "Gravitation and Division — the power to control gravity and to destroy the bonds between objects.",
+  "quote": "\"The law is not a suggestion. It is the foundation upon which civilization rests.\"",
+  "books": ["words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "status": "fallen",
+  "connections": [],
+  "positionIndex": 1,
+  "color": "#f87171"
+}

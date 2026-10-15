@@ -1,0 +1,14 @@
+{
+  "id": "kelsier-roshar",
+  "title": "Kelsier Expands the Ghostbloods to Roshar",
+  "summary": "The Ghostbloods establish operations on Roshar, seeking access to Rosharan investiture (Stormlight) and learning about the spren and the Radiants. Kelsier leads from the shadows.",
+  "year": 1050,
+  "endYear": null,
+  "type": "arrival",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": ["kelsier"],
+  "worldhoppers": ["wh-kelsier"],
+  "importance": 4,
+  "archivistNote": null
+}

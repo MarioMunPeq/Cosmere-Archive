@@ -1,0 +1,21 @@
+{
+  "id": "yolen-yolen-nazh-a",
+  "planet": "yolen",
+  "text": [
+    "I have drawn a large question",
+    "mark over the entire page.",
+    "Khriss removed it.",
+    "I drew a smaller one."
+  ],
+  "style": "nazh",
+  "layout": {
+    "left": "58%",
+    "top": "24%",
+    "rotation": "0.8deg",
+    "maxWidth": "135px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

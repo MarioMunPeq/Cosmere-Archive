@@ -1,0 +1,14 @@
+{
+  "id": "kandra-first",
+  "title": "Creation of the First Kandra",
+  "summary": "The Lord Ruler and the Steel Inquisitors create the first kandra using advanced hemalurgy and metalminds. The kandra become immortal servants of the Final Empire.",
+  "year": 50,
+  "endYear": null,
+  "type": "discovery",
+  "series": "mistborn-era-1",
+  "planets": ["scadrial"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 3,
+  "archivistNote": null
+}

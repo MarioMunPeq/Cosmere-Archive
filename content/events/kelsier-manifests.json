@@ -1,0 +1,14 @@
+{
+  "id": "kelsier-manifests",
+  "title": "Kelsier Manifests",
+  "summary": "Kelsier, still trapped in the Cognitive Realm, manifests before Wax and Marasi through a kandra body and metalmind technology. He orchestrates events to protect Scadrial from Autonomy.",
+  "year": 1326,
+  "endYear": null,
+  "type": "historical",
+  "series": "mistborn-era-2",
+  "planets": ["scadrial"],
+  "characters": ["kelsier", "wax"],
+  "worldhoppers": ["wh-kelsier"],
+  "importance": 5,
+  "archivistNote": null
+}

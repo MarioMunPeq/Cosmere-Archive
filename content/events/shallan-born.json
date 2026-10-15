@@ -1,0 +1,14 @@
+{
+  "id": "shallan-born",
+  "title": "Birth of Shallan Davar",
+  "summary": "Shallan Davar is born in Jah Keved, Roshar. Daughter of House Davar. She will become a Lightweaver and one of the most important Radiants, heir to the order of the Lightweavers.",
+  "year": 1478,
+  "endYear": null,
+  "type": "birth",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": ["shallan"],
+  "worldhoppers": [],
+  "importance": 5,
+  "archivistNote": null
+}

@@ -1,0 +1,16 @@
+{
+  "id": "canticle-canticle-e",
+  "planet": "canticle",
+  "text": ["No indigenous Investiture detected.", "The planet may be a recent", "arrival in the Cosmere."],
+  "style": "khriss",
+  "layout": {
+    "left": "50%",
+    "top": "4%",
+    "rotation": "-2.2deg",
+    "maxWidth": "150px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

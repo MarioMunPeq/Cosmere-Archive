@@ -1,0 +1,16 @@
+{
+  "id": "nalthis-nalthis-nazh-a",
+  "planet": "nalthis",
+  "text": ["A Returned offered me a coin.", "I do not know what it meant.", "Khriss would not explain."],
+  "style": "nazh",
+  "layout": {
+    "left": "50%",
+    "top": "58%",
+    "rotation": "1.5deg",
+    "maxWidth": "130px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

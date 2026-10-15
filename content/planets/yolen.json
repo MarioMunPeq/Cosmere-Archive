@@ -1,0 +1,18 @@
+{
+  "id": "yolen",
+  "name": "Yolen",
+  "pronunciation": null,
+  "summary": "The original world. Birthplace of Hoid and site of the Shattering of Adonalsium. Now lost and inaccessible.",
+  "shards": ["adonalsium"],
+  "color": "#a78bfa",
+  "connectedPlanets": [],
+  "series": [],
+  "books": [],
+  "investiture": [
+    {
+      "name": "Adonalsium's Investiture",
+      "summary": "The primeval investiture of Adonalsium, before the Shattering. Its nature is unknown.",
+      "shard": "Adonalsium"
+    }
+  ]
+}

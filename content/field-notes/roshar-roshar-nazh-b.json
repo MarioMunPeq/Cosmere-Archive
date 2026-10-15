@@ -1,0 +1,16 @@
+{
+  "id": "roshar-roshar-nazh-b",
+  "planet": "roshar",
+  "text": ["The bridge crews carry more than", "stone. The survivors carry something", "else entirely. Harder to map."],
+  "style": "nazh",
+  "layout": {
+    "left": "60%",
+    "top": "68%",
+    "rotation": "-1.6deg",
+    "maxWidth": "140px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

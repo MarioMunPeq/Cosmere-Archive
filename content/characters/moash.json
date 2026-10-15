@@ -1,0 +1,15 @@
+{
+  "id": "moash",
+  "name": "Moash (Vyre)",
+  "pronunciation": null,
+  "summary": "A former bridgeman of Bridge Four who becomes one of the most tragic and reviled figures in the Stormlight Archive. Once Kaladin's friend and ally, Moash's grandparents were executed by lighteyes for defending their property, filling him with a burning hatred of the nobility. After being recruited by Odium, Moash embraces his role as Vyre—the instrument of the God of Hatred—and commits increasingly horrific acts, including killing Elhokar Kholin and Teft. His deliberate rejection of hope and redemption, even when offered, makes him a chilling portrayal of how grief and hatred can consume a person entirely. Moash is Kaladin's dark mirror: a man who could have been a Radiant but chose to become a monster.",
+  "origin": "roshar",
+  "books": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war"],
+  "unlockAt": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

@@ -1,0 +1,16 @@
+{
+  "id": "nalthis-nalthis-nazh-b",
+  "planet": "nalthis",
+  "text": ["The colours here are fine.", "They are colours."],
+  "style": "nazh",
+  "layout": {
+    "left": "28%",
+    "top": "18%",
+    "rotation": "-0.8deg",
+    "maxWidth": "110px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

@@ -1,0 +1,14 @@
+{
+  "id": "ghostbloods-founded",
+  "title": "Founding of the Ghostbloods",
+  "summary": "Kelsier, from the Cognitive Realm, founds the organization known as the Ghostbloods with the goal of protecting Scadrial from external threats and obtaining resources from other planets.",
+  "year": 1030,
+  "endYear": null,
+  "type": "historical",
+  "series": "stormlight",
+  "planets": ["scadrial", "roshar"],
+  "characters": ["kelsier"],
+  "worldhoppers": ["wh-kelsier"],
+  "importance": 4,
+  "archivistNote": null
+}

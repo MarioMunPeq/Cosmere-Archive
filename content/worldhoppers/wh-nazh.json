@@ -1,0 +1,41 @@
+{
+  "id": "wh-nazh",
+  "name": "Nazh",
+  "color": "#eab308",
+  "summary": "Cartographer and spy. Collects information for Khriss.",
+  "character": "nazh",
+  "planets": ["threnody", "taldain", "scadrial", "sel", "roshar"],
+  "series": ["stormlight", "arcanum-unbounded"],
+  "movements": [
+    {
+      "year": 800,
+      "planet": "threnody",
+      "summary": "Born on Threnody."
+    },
+    {
+      "year": 850,
+      "planet": "taldain",
+      "summary": "Meets Khriss and begins cartography work."
+    },
+    {
+      "year": 1000,
+      "planet": "scadrial",
+      "summary": "Maps Scadrial during the Final Empire."
+    },
+    {
+      "year": 1200,
+      "planet": "sel",
+      "summary": "Maps Sel post-Elantris."
+    },
+    {
+      "year": 1400,
+      "planet": "roshar",
+      "summary": "Detailed maps of Roshar."
+    },
+    {
+      "year": 1504,
+      "planet": "roshar",
+      "summary": "Gathers intelligence on the war in Roshar."
+    }
+  ]
+}

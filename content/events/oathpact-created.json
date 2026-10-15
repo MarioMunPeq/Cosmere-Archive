@@ -1,0 +1,14 @@
+{
+  "id": "oathpact-created",
+  "title": "Creation of the Oathpact",
+  "summary": "Honor and the ten Heralds create the Oathpact, a binding pact that sends the Voidbringers back to Damnation after each Desolation. The Heralds must suffer on Braize between Desolations.",
+  "year": -4450,
+  "endYear": null,
+  "type": "historical",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 5,
+  "archivistNote": null
+}

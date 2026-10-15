@@ -1,0 +1,14 @@
+{
+  "id": "nightblood-created",
+  "title": "Creation of Nightblood",
+  "summary": "Vasher and Shashara create Nightblood, a sentient sword imbued with Investiture. The sword is incredibly powerful but also dangerously naive. Shashara is killed by Vasher for revealing the secret of its creation.",
+  "year": 290,
+  "endYear": null,
+  "type": "historical",
+  "series": "warbreaker",
+  "planets": ["nalthis"],
+  "characters": ["vasher", "nightblood"],
+  "worldhoppers": ["wh-vasher"],
+  "importance": 4,
+  "archivistNote": null
+}

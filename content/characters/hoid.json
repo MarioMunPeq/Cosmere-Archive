@@ -1,0 +1,41 @@
+{
+  "id": "hoid",
+  "name": "Hoid",
+  "pronunciation": null,
+  "summary": "A mysterious and immortal wanderer who appears throughout the Cosmere, known by many names: Cephandrius, the Drifter, Wit, Midius, and the King's Wit of Alethkar. An original being from before the Shattering of Adonalsium who refused to take up a Shard, Hoid has dedicated his existence to opposing the Shards and seeking something he lost—perhaps his original purpose, or the power to match them. He appears in almost every Cosmere novel, often as a storyteller, beggar, or advisor, dispensing cryptic wisdom and collecting secrets. Hoid is a Lightweaver bonded to the cryptic spren Design, and his true nature and goals remain the overarching mystery of the Cosmere.",
+  "origin": "roshar",
+  "books": [
+    "the-final-empire",
+    "elantris",
+    "warbreaker",
+    "the-way-of-kings",
+    "words-of-radiance",
+    "oathbringer",
+    "rhythm-of-war",
+    "wind-and-truth",
+    "tress-of-the-emerald-sea",
+    "yumi-and-the-nightmare-painter",
+    "the-sunlit-man",
+    "arcanum-unbounded"
+  ],
+  "unlockAt": [
+    "the-final-empire",
+    "elantris",
+    "warbreaker",
+    "the-way-of-kings",
+    "words-of-radiance",
+    "oathbringer",
+    "rhythm-of-war",
+    "wind-and-truth",
+    "tress-of-the-emerald-sea",
+    "yumi-and-the-nightmare-painter",
+    "the-sunlit-man",
+    "arcanum-unbounded"
+  ],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "living",
+  "groups": ["other"],
+  "titles": ["Immortal Wanderer", "Storyteller", "Refused the Shard"]
+}

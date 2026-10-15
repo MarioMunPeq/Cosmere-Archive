@@ -1,0 +1,21 @@
+{
+  "id": "canticle-canticle-a",
+  "planet": "canticle",
+  "text": [
+    "Iron deposits inconsistent with",
+    "standard planetary formation",
+    "models. Composition suggests",
+    "deliberate intervention."
+  ],
+  "style": "khriss",
+  "layout": {
+    "left": "10%",
+    "top": "4%",
+    "rotation": "-0.3deg",
+    "maxWidth": "170px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

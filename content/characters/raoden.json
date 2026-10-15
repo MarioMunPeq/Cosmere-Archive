@@ -1,0 +1,15 @@
+{
+  "id": "raoden",
+  "name": "Raoden",
+  "pronunciation": null,
+  "summary": "Prince of Arelon, the heir to the throne of the kingdom that contains the fallen city of Elantris. Struck by the Shaod—the magical transformation that turns people into Elantrians—Raoden is secretly thrown into the cursed city by his father, who pretends he died of illness. Inside the rotting city, Raoden discovers a hidden community of survivors and becomes their leader, organizing them, providing hope, and using the remnants of AonDor to create a semblance of civilization. His gentle, determined nature and his refusal to abandon hope even in Elantris's hell make him the moral compass of the story.",
+  "origin": "sel",
+  "books": ["elantris"],
+  "unlockAt": ["elantris"],
+  "portrait": null,
+  "born": -490,
+  "died": null,
+  "status": "living",
+  "groups": ["elantrian"],
+  "titles": ["Prince of Arelon", "Restorer of Elantris", "Elantrian"]
+}

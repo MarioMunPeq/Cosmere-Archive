@@ -1,0 +1,15 @@
+{
+  "id": "rashek",
+  "name": "The Lord Ruler",
+  "pronunciation": null,
+  "summary": "The immortal tyrant who ruled the Final Empire with an iron fist for over a thousand years. Born Rashek, a Terris packman who killed the original Hero of Ages—his friend Alendi—and took the power of the Well of Ascension for himself. He used this power to remake Scadrial, creating the ash-choked world the skaa know, and used the power of the metal Atium to sustain his immortality through Compounding. Despite his tyranny, the Lord Ruler genuinely believed he was saving the world from Ruin, containing the Deepness through brutal but necessary measures. His death at Vin's hands unleashes chaos on Scadrial but also frees it from a thousand years of oppression.",
+  "origin": "scadrial",
+  "books": ["the-final-empire", "the-well-of-ascension", "the-hero-of-ages"],
+  "unlockAt": ["the-final-empire", "the-well-of-ascension", "the-hero-of-ages"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

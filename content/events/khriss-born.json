@@ -1,0 +1,14 @@
+{
+  "id": "khriss-born",
+  "title": "Birth of Khriss",
+  "summary": "Khriss is born on Taldain as a noble scholar. She will become the main researcher of the Cosmere and author of the Ars Arcanum.",
+  "year": 70,
+  "endYear": null,
+  "type": "birth",
+  "series": "white-sand",
+  "planets": ["taldain"],
+  "characters": ["khriss"],
+  "worldhoppers": ["wh-khriss"],
+  "importance": 4,
+  "archivistNote": null
+}

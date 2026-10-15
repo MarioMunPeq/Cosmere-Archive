@@ -1,0 +1,15 @@
+{
+  "id": "lopen",
+  "name": "Lopen",
+  "pronunciation": null,
+  "summary": "A Herdazian bridgeman from Bridge Four who becomes one of the first Windrunner squires and later a full Knight Radiant. Known for his irreverent humor, his missing arm (which he treats with characteristic nonchalance), his large extended family, and his endless supply of jokes and insults. Lopen is the heart of Bridge Four's morale, using his relentless optimism and wit to keep the bridgemen's spirits up even in the darkest moments. He eventually regrows his arm through Stormlight and speaks his oaths, becoming a Windrunner who proves that Radiants come from all walks of life.",
+  "origin": "roshar",
+  "books": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "unlockAt": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

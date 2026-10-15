@@ -1,0 +1,14 @@
+{
+  "id": "silence-fort",
+  "title": "Silence's Fort",
+  "summary": "On Threnody, Silence Montane, a Shadow hunter, runs an inn at the Silent Fortress while trying to keep her children safe from the dangers of the forest.",
+  "year": 170,
+  "endYear": null,
+  "type": "book",
+  "series": "arcanum-unbounded",
+  "planets": ["threnody"],
+  "characters": ["silence"],
+  "worldhoppers": [],
+  "importance": 2,
+  "archivistNote": null
+}

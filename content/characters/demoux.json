@@ -1,0 +1,15 @@
+{
+  "id": "demoux",
+  "name": "Demoux",
+  "pronunciation": null,
+  "summary": "A general in the armies of the Final Empire and later the New Empire, originally one of Kelsier's crew members. A loyal soldier and a dedicated follower of the Survivor's teachings, Demoux fights in the siege of Luthadel and the final battle against Ruin. Centuries later, he appears on the island of First of the Sun as a member of the Seventeenth Shard—a mysterious organization that monitors Shardic activity across the Cosmere. His appearance in Sixth of the Dusk reveals that he has become a worldhopper, his loyalty to the Survivor's cause extending beyond Scadrial itself.",
+  "origin": "scadrial",
+  "books": ["the-final-empire", "the-well-of-ascension", "the-hero-of-ages"],
+  "unlockAt": ["the-final-empire", "the-well-of-ascension", "the-hero-of-ages"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

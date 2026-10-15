@@ -1,0 +1,14 @@
+{
+  "id": "ambition-hunt",
+  "title": "Odium Hunts Ambition",
+  "summary": "Odium (Rayse) begins his crusade against the other Shards, seeking to destroy them. His first victim is Ambition, whom he wounds gravely in the space between planets.",
+  "year": -8500,
+  "endYear": null,
+  "type": "cataclysm",
+  "series": "pre-cosmere",
+  "planets": ["threnody"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 5,
+  "archivistNote": null
+}

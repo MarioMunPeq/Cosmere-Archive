@@ -1,0 +1,20 @@
+{
+  "id": "sel-sel-d",
+  "planet": "sel",
+  "text": [
+    "The Dor's pressure gradient varies",
+    "inversely with population density.",
+    "A correlation I cannot yet explain."
+  ],
+  "style": "khriss",
+  "layout": {
+    "left": "14%",
+    "top": "74%",
+    "rotation": "0.8deg",
+    "maxWidth": "165px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

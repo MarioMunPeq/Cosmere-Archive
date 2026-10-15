@@ -1,0 +1,14 @@
+{
+  "id": "aluminum-discovery",
+  "title": "Aluminum Discovered on Scadrial",
+  "summary": "The malatium, gold, and aluminum alloys are discovered and reverse-engineered from Inquisitors' spikes and Lord Ruler's artifacts. Aluminium is found to be Allomantically inert, blocking external Investiture — a discovery that later proves vital for feruchemical and hemalurgic research.",
+  "year": 1030,
+  "endYear": null,
+  "type": "historical",
+  "series": "mistborn-era-2",
+  "planets": ["scadrial"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 3,
+  "archivistNote": null
+}

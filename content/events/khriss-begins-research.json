@@ -1,0 +1,14 @@
+{
+  "id": "khriss-begins-research",
+  "title": "Khriss Begins Her Research",
+  "summary": "Khriss, a scholar from Taldain, begins a journey through the Cosmere to document all the systems of Investiture. Her work will become the basis of the Ars Arcanum.",
+  "year": 110,
+  "endYear": null,
+  "type": "historical",
+  "series": "white-sand",
+  "planets": ["taldain", "scadrial", "roshar", "nalthis", "sel"],
+  "characters": [],
+  "worldhoppers": ["wh-khriss"],
+  "importance": 3,
+  "archivistNote": null
+}

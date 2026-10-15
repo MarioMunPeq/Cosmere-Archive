@@ -1,0 +1,15 @@
+{
+  "id": "blushweaver",
+  "name": "Blushweaver",
+  "pronunciation": null,
+  "summary": "A Returned goddess of the Court of Gods, known for her boldness, strategic cunning, and unapologetic embrace of her own power. Unlike the other Returned who play politics carefully, Blushweaver is direct, ambitious, and willing to manipulate or seduce to achieve her goals. She becomes a key ally of Lightsong in investigating the conspiracy against the God-King, though her motivations are always her own. Her death at the hands of the conspirators is a brutal reminder that even the immortal Returned are not safe from the machinations of mortals.",
+  "origin": "nalthis",
+  "books": ["warbreaker"],
+  "unlockAt": ["warbreaker"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

@@ -1,0 +1,16 @@
+{
+  "id": "scadrial-scadrial-nazh-b",
+  "planet": "scadrial",
+  "text": ["The mists are harmless", "if you are not an idiot.", "I was not harmed."],
+  "style": "nazh",
+  "layout": {
+    "left": "26%",
+    "top": "60%",
+    "rotation": "-2.0deg",
+    "maxWidth": "120px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

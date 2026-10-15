@@ -1,0 +1,15 @@
+{
+  "id": "rysn",
+  "name": "Rysn Ftori",
+  "pronunciation": null,
+  "summary": "A young Rosharan woman who begins as a brash and overconfident trader's apprentice from Thaylenah. After a fall during her first expedition leaves her paralyzed from the waist down, Rysn must adapt to a new life of physical limitation—but her mind and spirit remain sharp. She bonds the greatshell Chiri-Chiri, becomes a skilled trader and captain in her own right, and is eventually chosen by the Sleepless to lead the expedition to Akinah, where she bonds with the Dawnshard—an ancient Command of creation that transforms her into something more than human. Rysn's story is about finding strength in vulnerability and discovering that the most important adventures are the ones that challenge your perception of yourself.",
+  "origin": "roshar",
+  "books": ["words-of-radiance", "oathbringer", "dawnshard", "rhythm-of-war"],
+  "unlockAt": ["words-of-radiance", "oathbringer", "dawnshard", "rhythm-of-war"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

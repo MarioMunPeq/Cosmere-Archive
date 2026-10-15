@@ -1,0 +1,14 @@
+{
+  "id": "well-of-ascension",
+  "title": "The Well of Ascension",
+  "summary": "Elend tries to hold together the New Empire while Vin releases what she believes is the power of the Well of Ascension. In reality, she frees Ruin from his prison. The countdown to the Catacendre begins.",
+  "year": 1025,
+  "endYear": null,
+  "type": "book",
+  "series": "mistborn-era-1",
+  "planets": ["scadrial"],
+  "characters": ["vin", "elend", "sazed", "spook"],
+  "worldhoppers": [],
+  "importance": 5,
+  "archivistNote": null
+}

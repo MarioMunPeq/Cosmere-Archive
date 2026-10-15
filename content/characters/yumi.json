@@ -1,0 +1,15 @@
+{
+  "id": "yumi",
+  "name": "Yumi",
+  "pronunciation": null,
+  "summary": "A revered yoki-hijo from the world of Komashi, a young woman who summons benevolent spirits to stack stones into intricate, towering structures for her people. Her life is one of ritual, duty, and isolation—she cannot marry, cannot touch the ground, and must spend her days in precise, ritualized service. When a mysterious force swaps her consciousness with Nikaro (Painter) from a parallel futuristic Komashi, she must learn to navigate a world of machines, nightmarish entities, and personal freedom for the first time. Yumi's story explores the tension between duty and desire, tradition and progress, and the profound connection that can form between two people who see the world completely differently.",
+  "origin": "komashi",
+  "books": ["yumi-and-the-nightmare-painter"],
+  "unlockAt": ["yumi-and-the-nightmare-painter"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

@@ -1,0 +1,21 @@
+{
+  "id": "roshar-roshar-f",
+  "planet": "roshar",
+  "text": [
+    "Spren density near the eastern",
+    "peaks is unusually high. A",
+    "correlation with crem deposits",
+    "seems probable."
+  ],
+  "style": "khriss",
+  "layout": {
+    "left": "63%",
+    "top": "46%",
+    "rotation": "0.7deg",
+    "maxWidth": "160px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

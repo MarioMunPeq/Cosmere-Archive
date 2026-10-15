@@ -1,0 +1,14 @@
+{
+  "id": "chayshan",
+  "name": "ChayShan",
+  "summary": "Martial-art-based investiture from Hrovell on Sel. Channeled through precise movements and stances.",
+  "planet": "sel",
+  "shard": "Dominion",
+  "category": "selish",
+  "color": "#a3e635",
+  "books": ["elantris"],
+  "classification": "Symbolic Manipulation",
+  "status": "Poorly Understood",
+  "academicNote": "The relationship between ChayShan’s physical movements and its investiture effects has yet to be fully mapped.",
+  "allomanticMetals": []
+}

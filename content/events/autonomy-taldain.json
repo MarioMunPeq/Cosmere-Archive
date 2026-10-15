@@ -1,0 +1,14 @@
+{
+  "id": "autonomy-taldain",
+  "title": "Autonomy Establishes on Taldain",
+  "summary": "Bavadin (Autonomy) settles on Taldain, a two-faced world. She creates the Sand Masters and the system of invested sands.",
+  "year": -5500,
+  "endYear": null,
+  "type": "arrival",
+  "series": "white-sand",
+  "planets": ["taldain"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 4,
+  "archivistNote": null
+}

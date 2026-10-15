@@ -1,0 +1,15 @@
+{
+  "id": "dilaf",
+  "name": "Dilaf",
+  "pronunciation": null,
+  "summary": "A Fjordell priest and leader of the Dakhor monks, a secret order of religious fanatics who use a forbidden form of bone-based Forgery to gain supernatural power. Dilaf is a zealot of the highest order, hating Elantris and all Elantrians with a burning passion born from personal tragedy. He serves as Hrathen's assistant while secretly pursuing his own agenda of total destruction. Dilaf is a terrifying figure of religious extremism, his face covered in ritual scars and his body twisted by the Dakhor transformations. His final confrontation with Raoden and Sarene reveals the true horror of what Shaod can do to a person.",
+  "origin": "sel",
+  "books": ["elantris"],
+  "unlockAt": ["elantris"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

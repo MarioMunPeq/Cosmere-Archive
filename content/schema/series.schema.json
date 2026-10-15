@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "series",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "color", "order", "summary"],
+  "properties": {
+    "id": { "$ref": "common#/$defs/id" },
+    "name": { "$ref": "common#/$defs/nonEmptyString" },
+    "color": { "$ref": "common#/$defs/hexColor" },
+    "order": { "type": "integer", "minimum": 0, "maximum": 100 },
+    "summary": { "$ref": "common#/$defs/summary" },
+    "spine": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Library spine material, consumed by M3.",
+      "properties": {
+        "ink": { "anyOf": [{ "$ref": "common#/$defs/hexColor" }, { "type": "null" }] },
+        "foil": { "$ref": "common#/$defs/hexColor" },
+        "crop": { "type": "string", "pattern": "^[0-9]+% [0-9]+%$" }
+      }
+    }
+  }
+}

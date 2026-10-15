@@ -1,0 +1,14 @@
+{
+  "id": "wax-goes-roughs",
+  "title": "Wax Goes to the Roughs",
+  "summary": "Waxillium Ladrian, fleeing his noble responsibilities, goes to the Roughs region of the Basin, where he becomes a lawman on the frontier, protecting settlers.",
+  "year": 1320,
+  "endYear": null,
+  "type": "historical",
+  "series": "mistborn-era-2",
+  "planets": ["scadrial"],
+  "characters": ["wax"],
+  "worldhoppers": [],
+  "importance": 3,
+  "archivistNote": null
+}

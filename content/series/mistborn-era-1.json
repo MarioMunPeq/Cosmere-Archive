@@ -1,0 +1,12 @@
+{
+  "id": "mistborn-era-1",
+  "name": "Mistborn Era 1",
+  "color": "#ef4444",
+  "order": 1,
+  "summary": "The original Mistborn trilogy: The Final Empire, The Well of Ascension, The Hero of Ages.",
+  "spine": {
+    "ink": null,
+    "foil": "#ef4444",
+    "crop": "50% 20%"
+  }
+}

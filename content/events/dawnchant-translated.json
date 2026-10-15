@@ -1,0 +1,14 @@
+{
+  "id": "dawnchant-translated",
+  "title": "Translation of the Dawnchant",
+  "summary": "Scholars on Roshar, including Jasnah Kholin and Jegger, work to translate the Dawnchant — the ancient language of the Dawnsingers. The translation reveals the true history of the Heralds and the Recreance, changing humanity's understanding of its past.",
+  "year": 1165,
+  "endYear": null,
+  "type": "discovery",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": ["jasnah"],
+  "worldhoppers": [],
+  "importance": 3,
+  "archivistNote": null
+}

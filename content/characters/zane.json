@@ -1,0 +1,15 @@
+{
+  "id": "zane",
+  "name": "Zane",
+  "pronunciation": null,
+  "summary": "Straff Venture's Mistborn son, a secret weapon and a broken man. Zane is a Pewterarm and Tineye who can also burn atium, making him one of the most dangerous Allomancers alive. He is tormented by a voice in his head—which may be a manifestation of Ruin—that drives him toward increasingly erratic and violent behavior. Zane serves as his father's assassin and spy while secretly working for the Lord Ruler, but his connection to Vin and his desperate search for meaning make him a tragic figure. His death at Elend's hands ends the threat he posed while leaving the mystery of his voice unresolved.",
+  "origin": "scadrial",
+  "books": ["the-well-of-ascension"],
+  "unlockAt": ["the-well-of-ascension"],
+  "portrait": "characters/Zane.webp",
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

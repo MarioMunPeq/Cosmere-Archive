@@ -1,0 +1,15 @@
+{
+  "id": "nazh",
+  "name": "Nazh",
+  "pronunciation": null,
+  "summary": "A mysterious collector of maps and information who works as an agent for Khriss, traveling across the Cosmere to document planetary systems and gather intelligence. Hailing from Threnody, Nazh is resourceful, grumpy, and perpetually exasperated by the dangers of his job. His hand-drawn maps and notes appear in the Arcanum Unbounded system essays, providing invaluable geographical insight into the Cosmere's worlds. Despite his complaints, his dedication to the work and his skill at surviving impossible situations make him an indispensable asset to Khriss's research.",
+  "origin": "threnody",
+  "books": ["arcanum-unbounded"],
+  "unlockAt": ["arcanum-unbounded"],
+  "portrait": null,
+  "born": 700,
+  "died": null,
+  "status": "living",
+  "groups": ["other"],
+  "titles": ["Cartographer", "Khriss's Agent"]
+}

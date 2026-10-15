@@ -1,0 +1,18 @@
+{
+  "id": "first-of-the-sun",
+  "name": "First of the Sun",
+  "pronunciation": null,
+  "summary": "A tropical archipelago where hunters bond with magical aviar and the island of Patji prowls.",
+  "shards": ["autonomy"],
+  "color": "#22c55e",
+  "connectedPlanets": [],
+  "series": ["arcanum-unbounded", "secret-projects"],
+  "books": ["arcanum-unbounded", "the-sunlit-man"],
+  "investiture": [
+    {
+      "name": "Aviar Bond",
+      "summary": "Birds that bond with humans granting various abilities such as mental shielding or enhanced senses.",
+      "shard": "Autonomy"
+    }
+  ]
+}

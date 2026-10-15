@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "character",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "summary", "origin", "books", "unlockAt", "portrait", "status"],
+  "properties": {
+    "id": { "$ref": "common#/$defs/id" },
+    "name": { "$ref": "common#/$defs/nonEmptyString" },
+    "pronunciation": { "type": ["string", "null"], "maxLength": 60 },
+    "summary": { "$ref": "common#/$defs/summary" },
+    "origin": { "$ref": "common#/$defs/id" },
+    "books": {
+      "allOf": [{ "$ref": "common#/$defs/idArray" }],
+      "minItems": 1
+    },
+    "unlockAt": {
+      "allOf": [{ "$ref": "common#/$defs/idArray" }],
+      "description": "Books that must be read before this record is shown. Subset of books (rule V8)."
+    },
+    "portrait": {
+      "$ref": "common#/$defs/assetPath",
+      "description": "null when no image exists; the Monogram component covers the gap."
+    },
+    "born": { "type": ["integer", "null"] },
+    "died": { "type": ["integer", "null"] },
+    "status": { "enum": ["living", "deceased", "unknown", "transformed"] },
+    "groups": {
+      "type": "array",
+      "items": { "enum": ["radiant", "scadrian", "elantrian", "nalthian", "taldaini", "other"] },
+      "uniqueItems": true
+    },
+    "titles": { "type": "array", "items": { "type": "string", "maxLength": 60 }, "uniqueItems": true }
+  }
+}

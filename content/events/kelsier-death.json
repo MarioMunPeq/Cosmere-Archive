@@ -1,0 +1,14 @@
+{
+  "id": "kelsier-death",
+  "title": "Death of Kelsier",
+  "summary": "Kelsier is killed by the Lord Ruler during the initial rebellion. His death becomes the catalyst that unites the underground and eventually brings down the Final Empire.",
+  "year": 1022,
+  "endYear": null,
+  "type": "death",
+  "series": "mistborn-era-1",
+  "planets": ["scadrial"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 5,
+  "archivistNote": "The circumstances of Kelsier's survival beyond death remain deliberately obscure. The Sovereign's later appearances suggest his cognitive shadow persisted, though the mechanism differs significantly from known Rosharan or Nalthian models."
+}

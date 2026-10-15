@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "hero",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "title", "order", "kind", "summary", "surges", "status"],
+  "properties": {
+    "id": { "$ref": "common#/$defs/id" },
+    "name": { "$ref": "common#/$defs/nonEmptyString" },
+    "title": { "type": "string", "minLength": 1, "maxLength": 80 },
+    "order": { "type": "string", "maxLength": 40 },
+    "kind": { "enum": ["herald", "radiant", "knight", "shard", "worldhopper"] },
+    "pronunciation": { "type": ["string", "null"], "maxLength": 60 },
+    "summary": { "$ref": "common#/$defs/summary" },
+    "surges": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 2, "maxLength": 80 },
+      "minItems": 1,
+      "maxItems": 2
+    },
+    "attributes": { "type": "array", "items": { "type": "string", "maxLength": 40 } },
+    "essence": { "type": ["string", "null"], "maxLength": 300 },
+    "soulcasting": { "type": ["string", "null"], "maxLength": 300 },
+    "honorbladeGrants": { "type": ["string", "null"], "maxLength": 300 },
+    "quote": { "type": ["string", "null"], "maxLength": 400 },
+    "books": { "$ref": "common#/$defs/idArray" },
+    "status": { "enum": ["fallen", "standing", "missing", "unknown"] },
+    "connections": { "$ref": "common#/$defs/idArray" },
+    "positionIndex": { "type": "integer", "minimum": 0, "maximum": 20 },
+    "color": { "$ref": "common#/$defs/hexColor" }
+  }
+}

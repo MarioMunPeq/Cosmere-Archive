@@ -1,0 +1,10 @@
+{
+  "id": "tin",
+  "name": "Tin",
+  "alloy": "Pewter",
+  "group": "physical",
+  "allomanticPower": "Enhance senses",
+  "feruchemicalPower": "Store senses",
+  "hemalurgicProperty": "Steals senses",
+  "color": "#fbbf24"
+}

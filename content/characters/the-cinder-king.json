@@ -1,0 +1,15 @@
+{
+  "id": "the-cinder-king",
+  "name": "The Cinder King",
+  "pronunciation": null,
+  "summary": "The tyrannical ruler of Canticle, a world orbiting so close to its sun that civilization exists only on a massive train track that constantly moves ahead of the scorching dawn. The Cinder King uses Torment bonds—a perversion of investiture—to control the planet's population, forcing them to serve him or be left behind to burn in the sun. He is cruel, manipulative, and deeply paranoid, endlessly pursuing the sun across Canticle's surface and crushing anyone who challenges his absolute authority. His confrontation with Nomad reveals the cost of absolute power and the darkness that can consume even those who started with good intentions.",
+  "origin": "canticle",
+  "books": ["the-sunlit-man"],
+  "unlockAt": ["the-sunlit-man"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

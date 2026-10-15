@@ -1,0 +1,14 @@
+{
+  "id": "preservation-ruin-scadrial",
+  "title": "Creation of Scadrial",
+  "summary": "Preservation (Leras) and Ruin (Ati) create Scadrial as part of a pact: Preservation creates life and Ruin will eventually destroy it. They create the first humans on Scadrial.",
+  "year": -7000,
+  "endYear": null,
+  "type": "historical",
+  "series": "mistborn-era-1",
+  "planets": ["scadrial"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 5,
+  "archivistNote": null
+}

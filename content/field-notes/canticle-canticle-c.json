@@ -1,0 +1,16 @@
+{
+  "id": "canticle-canticle-c",
+  "planet": "canticle",
+  "text": ["The planet's rotation is unusually", "slow for its orbital distance.", "Tidal locking may be in progress."],
+  "style": "khriss",
+  "layout": {
+    "left": "30%",
+    "top": "40%",
+    "rotation": "1.5deg",
+    "maxWidth": "150px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

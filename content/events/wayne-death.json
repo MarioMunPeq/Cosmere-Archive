@@ -1,0 +1,14 @@
+{
+  "id": "wayne-death",
+  "title": "Death of Wayne",
+  "summary": "Wayne sacrifices himself heroically during the final battle against Autonomy, using his Mistborn powers to save Wax and destroy Autonomy's avatar. His death marks the end of an era.",
+  "year": 1328,
+  "endYear": null,
+  "type": "death",
+  "series": "mistborn-era-2",
+  "planets": ["scadrial"],
+  "characters": ["wayne"],
+  "worldhoppers": [],
+  "importance": 5,
+  "archivistNote": null
+}

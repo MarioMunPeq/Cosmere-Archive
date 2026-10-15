@@ -1,0 +1,39 @@
+{
+  "id": "allomancy",
+  "name": "Allomancy",
+  "summary": "Burning metals ingested to grant physical or mental powers. Sixteen base metals arranged in four groups: Physical, Mental, Temporal, and Enhancement. Mistborn can burn all metals; Mistings can burn only one.",
+  "planet": "scadrial",
+  "shard": "Preservation",
+  "category": "metallic_art",
+  "color": "#ef4444",
+  "books": [
+    "the-final-empire",
+    "the-well-of-ascension",
+    "the-hero-of-ages",
+    "the-alloy-of-law",
+    "shadows-of-self",
+    "the-bands-of-mourning",
+    "the-lost-metal"
+  ],
+  "classification": "Metallic Art",
+  "status": "Documented",
+  "academicNote": null,
+  "allomanticMetals": [
+    "iron",
+    "steel",
+    "tin",
+    "pewter",
+    "zinc",
+    "brass",
+    "copper",
+    "bronze",
+    "cadmium",
+    "bendalloy",
+    "gold",
+    "electrum",
+    "aluminum",
+    "duralumin",
+    "chromium",
+    "nicrosil"
+  ]
+}

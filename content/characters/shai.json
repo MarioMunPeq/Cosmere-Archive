@@ -1,0 +1,15 @@
+{
+  "id": "shai",
+  "name": "Wan ShaiLu",
+  "pronunciation": null,
+  "summary": "A master Forger from the MaiPon region of Sel, a practitioner of Forgery—the art of rewriting an object's history through meticulous stamps infused with investiture. Shai is captured while attempting to steal the Sceptre of the Rose Palace and is recruited to create a Forged copy of the empire's dying emperor. Her story in The Emperor's Soul explores the philosophical implications of Forgery: if you rewrite a thing's entire history, does it become a different thing? Shai's brilliance, resourcefulness, and deep understanding of the spiritual essence of objects make her one of the most compelling characters in Sel's magical traditions.",
+  "origin": "sel",
+  "books": ["arcanum-unbounded"],
+  "unlockAt": ["arcanum-unbounded"],
+  "portrait": null,
+  "born": -10,
+  "died": null,
+  "status": "living",
+  "groups": ["elantrian"],
+  "titles": ["Soulmaster", "Forger", "Thief"]
+}

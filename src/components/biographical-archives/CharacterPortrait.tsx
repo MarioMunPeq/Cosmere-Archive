@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from 'react'
+import Monogram from '@/components/common/Monogram'
 import { getCharacterPortrait, getCharacterPortraitFallback } from '@/utils'
 
 interface Props {
@@ -14,6 +15,8 @@ export default function CharacterPortrait({ name, isDeceased, size = 96, showCap
   const imgRef = useRef<SVGImageElement | null>(null)
   const [state, setState] = useState<'loading' | 'ok' | 'failed'>('loading')
   const r = size / 2
+  // Null when no portrait exists on disk (decision D-DATA): we draw the
+  // Monogram straight away instead of issuing a request that will 404.
   const imgSrc = getCharacterPortrait(name)
 
   const handleError = useCallback(() => {
@@ -81,8 +84,12 @@ export default function CharacterPortrait({ name, isDeceased, size = 96, showCap
         {/* Inner paper well */}
         <circle cx={r} cy={r} r={innerR} fill="#e8dcc8" />
 
-        {/* Portrait image or placeholder */}
-        {state !== 'failed' ? (
+        {/* Portrait image, or the Monogram when none exists (D-DATA) */}
+        {imgSrc === null || state === 'failed' ? (
+          <foreignObject x={frameWidth} y={frameWidth} width={innerR * 2} height={innerR * 2}>
+            <Monogram name={name} size={innerR * 2} isDeceased={isDeceased} className="block rounded-[2px]" />
+          </foreignObject>
+        ) : (
           <image
             ref={imgRef}
             href={imgSrc}
@@ -95,20 +102,6 @@ export default function CharacterPortrait({ name, isDeceased, size = 96, showCap
             onLoad={handleLoad}
             style={{ opacity: state === 'loading' ? 0 : 0.92 }}
           />
-        ) : (
-          <g>
-            <circle cx={r} cy={r} r={imageR} fill="#ede4d4" />
-            <circle
-              cx={r}
-              cy={r}
-              r={imageR - 4}
-              fill="none"
-              stroke="rgba(160,140,110,0.08)"
-              strokeWidth="0.5"
-              strokeDasharray="1.5 2.5"
-            />
-            <circle cx={r} cy={r} r={3} fill="rgba(160,140,110,0.1)" />
-          </g>
         )}
 
         {/* Gold ring frame — three concentric rings */}

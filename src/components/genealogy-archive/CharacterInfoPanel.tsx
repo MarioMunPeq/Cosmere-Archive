@@ -62,7 +62,7 @@ function InfoMedallion({ name, isDeceased, onClick }: { name: string; isDeceased
         }}
       >
         <div style={{ width: '100%', height: '100%', borderRadius: '50%', overflow: 'hidden', background: '#ede4d2' }}>
-          {!err ? (
+          {!err && url !== null ? (
             <img
               src={url}
               alt={name}

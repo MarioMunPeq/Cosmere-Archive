@@ -1,0 +1,15 @@
+{
+  "id": "rock",
+  "name": "Rock (Numuhukumakiaki'aialunamor)",
+  "pronunciation": null,
+  "summary": "A Horneater bridgeman from the Unkalaki highlands who becomes Bridge Four's cook and spiritual heart. Rock is a large, gentle, and deeply humorous man with a peculiar way of speaking in third person, a profound reverence for food and cooking, and a connection to the mystical hot springs of the Horneater Peaks—which he claims are gateways to the realm of the gods. He refuses to fight, believing the Unkalaki honor code forbids him from taking a life, but his courage and loyalty are unquestionable. Rock eventually leaves Bridge Four to return to his people, becoming their chieftain in the Horneater Peaks.",
+  "origin": "roshar",
+  "books": ["the-way-of-kings", "words-of-radiance", "oathbringer"],
+  "unlockAt": ["the-way-of-kings", "words-of-radiance", "oathbringer"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

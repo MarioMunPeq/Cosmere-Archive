@@ -1,0 +1,14 @@
+{
+  "id": "kelsier-born",
+  "title": "Birth of Kelsier",
+  "summary": "Kelsier is born on Scadrial, a half-brother of the noble house Era who will become the Survivor of Hathsin, the symbol of rebellion against the Lord Ruler.",
+  "year": 990,
+  "endYear": null,
+  "type": "birth",
+  "series": "mistborn-era-1",
+  "planets": ["scadrial"],
+  "characters": ["kelsier"],
+  "worldhoppers": ["wh-kelsier"],
+  "importance": 4,
+  "archivistNote": null
+}

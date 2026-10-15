@@ -1,0 +1,14 @@
+{
+  "id": "sunlit-man",
+  "title": "The Sunlit Man",
+  "summary": "Sigzil, a former Windrunner of Roshar now known as Nomad, flees across the Cosmere pursued by the invincible Night of the Sunset (Torre del Alba). On the planet Canticle, he finds a new purpose and faces his destiny.",
+  "year": 1620,
+  "endYear": null,
+  "type": "book",
+  "series": "secret-projects",
+  "planets": ["canticle"],
+  "characters": ["sigzil", "hoid", "khriss"],
+  "worldhoppers": ["wh-hoid", "wh-khriss"],
+  "importance": 4,
+  "archivistNote": null
+}

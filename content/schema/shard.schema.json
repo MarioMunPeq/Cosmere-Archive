@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "shard",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "color", "summary"],
+  "properties": {
+    "id": { "$ref": "common#/$defs/id" },
+    "name": { "$ref": "common#/$defs/nonEmptyString" },
+    "color": {
+      "$ref": "common#/$defs/hexColor",
+      "description": "Must clear 3:1 against --surface-base (checked by pnpm test:contrast)."
+    },
+    "summary": { "$ref": "common#/$defs/summary" },
+    "reviewed": {
+      "type": "boolean",
+      "description": "false while the summary is placeholder text awaiting real content."
+    }
+  }
+}

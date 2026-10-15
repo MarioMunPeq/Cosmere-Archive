@@ -1,0 +1,10 @@
+{
+  "id": "duralumin",
+  "name": "Duralumin",
+  "alloy": "Aluminum",
+  "group": "enhancement",
+  "allomanticPower": "Burn next metal instantly for massive burst",
+  "feruchemicalPower": "Store connection",
+  "hemalurgicProperty": "Steals Connection",
+  "color": "#9ca3af"
+}

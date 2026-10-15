@@ -1,0 +1,15 @@
+{
+  "id": "parlin",
+  "name": "Parlin",
+  "pronunciation": null,
+  "summary": "Siri's cousin and an Idrian guard assigned to protect her during her journey to T'Telir. A reluctant soldier who follows orders despite his fear and uncertainty, Parlin represents the ordinary person caught in the currents of history. He accompanies Siri into the Court of Gods and struggles to adjust to the strange, dangerous world of Hallandren. His loyalty to Siri and his gradual realization that the priests are not to be trusted make him an important supporting figure in Siri's story.",
+  "origin": "nalthis",
+  "books": ["warbreaker"],
+  "unlockAt": ["warbreaker"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

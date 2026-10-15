@@ -1,0 +1,15 @@
+{
+  "id": "taln",
+  "name": "Taln",
+  "pronunciation": null,
+  "summary": "Herald of War, patron of the Stonewards, and known as Talenelat'Elin or simply the Unbroken. Of all the Heralds, Taln endured the longest on Braize without breaking—over four thousand years of torture after the last Desolation—and never once gave in to Odium's demands. When he finally did break, it was because humans had failed, not him. Upon returning to Roshar, he appears in the warcamps as a delusional, broken man mumbling about the Desolation, dismissed as a mad beggar by those who should have revered him. His nobility and endurance are legendary among the Heralds.",
+  "origin": "roshar",
+  "books": ["oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "unlockAt": ["oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "living",
+  "groups": ["radiant"],
+  "titles": ["Herald of War", "The Unbroken", "Bearer of Pain"]
+}

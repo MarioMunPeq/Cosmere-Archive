@@ -1,0 +1,15 @@
+{
+  "id": "marsh",
+  "name": "Marsh",
+  "pronunciation": null,
+  "summary": "Kelsier's older brother, a dedicated skaa revolutionary and member of the original rebellion. Unlike Kelsier's flamboyant charisma, Marsh is serious, skeptical, and driven by a quiet but intense hatred of the nobility. He is forcibly transformed into a Steel Inquisitor—his eyes pierced with metal spikes—becoming a tool of Ruin while fighting to maintain his own identity. After Harmony's ascension, Marsh is freed and becomes an immortal servant of Harmony, continuing to protect Scadrial in secret, his appearance as an Inquisitor making him a terrifying figure even to his allies.",
+  "origin": "scadrial",
+  "books": ["the-final-empire", "the-well-of-ascension", "the-hero-of-ages", "the-lost-metal"],
+  "unlockAt": ["the-final-empire", "the-well-of-ascension", "the-hero-of-ages", "the-lost-metal"],
+  "portrait": "characters/Marsh.webp",
+  "born": 988,
+  "died": null,
+  "status": "living",
+  "groups": ["scadrian"],
+  "titles": ["Steel Inquisitor", "Kelsier's Brother", "Spy of Harmony"]
+}

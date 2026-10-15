@@ -1,0 +1,15 @@
+{
+  "id": "vin",
+  "name": "Vin",
+  "pronunciation": null,
+  "summary": "A street urchin from the skaa slums of Luthadel who discovers she is one of the most powerful Mistborn in Scadrial's history. Taken under the wing of Kelsier, Vin infiltrates the noble houses, learns to master all sixteen allomantic metals, and falls in love with Elend Venture. She becomes the vessel of Preservation before ultimately sacrificing herself to defeat Ruin, cementing her legacy as one of the Cosmere's most powerful and beloved figures. Her journey from abused street child to savior of a world is the heart of the original Mistborn trilogy.",
+  "origin": "scadrial",
+  "books": ["the-final-empire", "the-well-of-ascension", "the-hero-of-ages", "arcanum-unbounded"],
+  "unlockAt": ["the-final-empire", "the-well-of-ascension", "the-hero-of-ages", "arcanum-unbounded"],
+  "portrait": "characters/Vin.webp",
+  "born": 1022,
+  "died": 1026,
+  "status": "deceased",
+  "groups": ["scadrian"],
+  "titles": ["Mistborn", "Hero of Ages", "Ascendant"]
+}

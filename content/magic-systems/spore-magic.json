@@ -1,0 +1,14 @@
+{
+  "id": "spore-magic",
+  "name": "Spore Magic",
+  "summary": "Twelve types of magical spores make up the seas of Lumar. Each type has unique properties when activated by water. Extremely dangerous and unpredictable.",
+  "planet": "lumar",
+  "shard": "Mercy",
+  "category": "spore",
+  "color": "#f472b6",
+  "books": ["tress-of-the-emerald-sea"],
+  "classification": "Environmental",
+  "status": "Partially Documented",
+  "academicNote": "Spore interaction with water suggests a Connection-based mechanism, but the precise Investiture pathways remain unidentified.",
+  "allomanticMetals": []
+}

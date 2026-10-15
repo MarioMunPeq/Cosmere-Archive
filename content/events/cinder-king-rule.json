@@ -1,0 +1,14 @@
+{
+  "id": "cinder-king-rule",
+  "title": "Rise of the Cinder King",
+  "summary": "A ruthless warlord known only as the Cinder King seizes control of the planet Canticle, forcing its people into a desperate exodus from the scorching sun. He hunts Sigzil (Nomad) across the surface, wielding powerful investiture tied to Canticle's heat. Nomad ultimately defeats him, freeing Canticle's refugees.",
+  "year": 1620,
+  "endYear": null,
+  "type": "historical",
+  "series": "secret-projects",
+  "planets": ["canticle"],
+  "characters": ["sigzil"],
+  "worldhoppers": [],
+  "importance": 4,
+  "archivistNote": null
+}

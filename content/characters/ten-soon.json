@@ -1,0 +1,15 @@
+{
+  "id": "ten-soon",
+  "name": "TenSoon",
+  "pronunciation": null,
+  "summary": "A kandra of the Third Generation who becomes one of the most important figures in Scadrial's history. Initially assigned by the First Contract to be the Lord Ruler's spy, TenSoon is given to Vin as a companion in the form of a dog named OreSeur. After OreSeur's death, TenSoon takes his place and helps Vin discover the truth about the kandra and the Lord Ruler's secrets. He later becomes the third Kandra, receiving the Blessing of Presence and ushering in a new era of freedom for his people. His loyalty to Vin and his willingness to defy the First Contract make him a revolutionary among the kandra.",
+  "origin": "scadrial",
+  "books": ["the-hero-of-ages"],
+  "unlockAt": ["the-hero-of-ages"],
+  "portrait": null,
+  "born": 200,
+  "died": null,
+  "status": "living",
+  "groups": ["scadrian"],
+  "titles": ["Kandra", "Freedom", "Vin's Friend"]
+}

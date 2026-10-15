@@ -1,0 +1,15 @@
+{
+  "id": "ham",
+  "name": "Hammond (Ham)",
+  "pronunciation": null,
+  "summary": "A Pewterarm and philosopher who serves as Kelsier's muscle and moral sounding board. Ham is a man of contradictions: a powerful warrior who would rather discuss philosophy, a loyal soldier who questions the morality of the crew's actions, and a family man who walks the edge of death every day. His ability to burn pewter grants him superhuman strength and endurance, making him one of the most dangerous fighters in the crew. Ham's ongoing debates with Breeze about the nature of good and evil, and his unwavering loyalty to his friends, make him one of the most thoughtful members of Kelsier's rebellion.",
+  "origin": "scadrial",
+  "books": ["the-final-empire", "the-well-of-ascension", "the-hero-of-ages"],
+  "unlockAt": ["the-final-empire", "the-well-of-ascension", "the-hero-of-ages"],
+  "portrait": null,
+  "born": 995,
+  "died": 1026,
+  "status": "deceased",
+  "groups": ["scadrian"],
+  "titles": ["Pewter Misting", "Soldier", "Philosopher"]
+}

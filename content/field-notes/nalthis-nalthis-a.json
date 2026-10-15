@@ -1,0 +1,21 @@
+{
+  "id": "nalthis-nalthis-a",
+  "planet": "nalthis",
+  "text": [
+    "BioChromatic aura intensity varies",
+    "predictably with each Heightening.",
+    "The gradient is consistent across",
+    "all sampled populations."
+  ],
+  "style": "khriss",
+  "layout": {
+    "left": "10%",
+    "top": "4%",
+    "rotation": "0.4deg",
+    "maxWidth": "170px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

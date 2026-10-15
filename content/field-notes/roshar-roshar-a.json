@@ -1,0 +1,21 @@
+{
+  "id": "roshar-roshar-a",
+  "planet": "roshar",
+  "text": [
+    "Stormlight concentration exceeds my",
+    "earlier estimates by a considerable",
+    "margin. The entire ecosystem has",
+    "adapted to high Investiture density."
+  ],
+  "style": "khriss",
+  "layout": {
+    "left": "10%",
+    "top": "4%",
+    "rotation": "-0.6deg",
+    "maxWidth": "170px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

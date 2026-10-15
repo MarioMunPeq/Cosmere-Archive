@@ -1,0 +1,29 @@
+{
+  "id": "sigzil",
+  "name": "Sigzil / Nomad",
+  "pronunciation": null,
+  "summary": "A former Knight Radiant of the Skybreakers turned worldhopper who becomes known across the Cosmere as Nomad. Born on Roshar, Sigzil was once Hoid's apprentice, traveling and learning about the nature of investiture and the Shards. He bears a Dawnshard—a primordial Command of creation—which prevents him from harming others and has made him a target of the relentless Night Brigade. His journey across the Cosmere, including his time on UTol and Canticle, explores the cost of the Dawnshard's binding and the question of whether a man of peace can survive in a violent universe.",
+  "origin": "roshar",
+  "books": [
+    "the-way-of-kings",
+    "words-of-radiance",
+    "oathbringer",
+    "rhythm-of-war",
+    "wind-and-truth",
+    "the-sunlit-man"
+  ],
+  "unlockAt": [
+    "the-way-of-kings",
+    "words-of-radiance",
+    "oathbringer",
+    "rhythm-of-war",
+    "wind-and-truth",
+    "the-sunlit-man"
+  ],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

@@ -1,0 +1,14 @@
+{
+  "id": "adalinar-born",
+  "title": "Birth of Adolin Kholin",
+  "summary": "Adolin Kholin is born in the Silver Kingdoms of Roshar. Son of Dalinar and Evi Kholin. He will become an exceptional duelist and eventually a Radiant without oaths, bonded to Maya.",
+  "year": 1476,
+  "endYear": null,
+  "type": "birth",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": ["dalinar"],
+  "worldhoppers": [],
+  "importance": 4,
+  "archivistNote": null
+}

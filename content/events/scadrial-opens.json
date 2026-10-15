@@ -1,0 +1,14 @@
+{
+  "id": "scadrial-opens",
+  "title": "Scadrial Opens to the Cosmere",
+  "summary": "After the defeat of Autonomy, Scadrial begins its integration into the interplanetary community of the Cosmere. Trade and the exchange of knowledge between planets accelerates.",
+  "year": 1329,
+  "endYear": null,
+  "type": "historical",
+  "series": "mistborn-era-2",
+  "planets": ["scadrial"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 4,
+  "archivistNote": null
+}

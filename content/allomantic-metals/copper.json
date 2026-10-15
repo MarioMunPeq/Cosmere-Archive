@@ -1,0 +1,10 @@
+{
+  "id": "copper",
+  "name": "Copper",
+  "alloy": "Bronze",
+  "group": "mental",
+  "allomanticPower": "Hide Allomantic pulses",
+  "feruchemicalPower": "Store memories",
+  "hemalurgicProperty": "Steals intelligence",
+  "color": "#f97316"
+}

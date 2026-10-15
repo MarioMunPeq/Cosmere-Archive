@@ -1,0 +1,14 @@
+{
+  "id": "five-scholars",
+  "title": "The Five Scholars",
+  "summary": "Vasher, Shashara, Denth, Arsteel, and other investiture researchers form the Five Scholars on Nalthis. They pioneer the development of Awakening techniques, including the creation of lifeless and the discovery of the Command to grant sentience to objects.",
+  "year": 200,
+  "endYear": null,
+  "type": "historical",
+  "series": "warbreaker",
+  "planets": ["nalthis"],
+  "characters": ["vasher", "denth"],
+  "worldhoppers": [],
+  "importance": 4,
+  "archivistNote": null
+}

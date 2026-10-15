@@ -1,0 +1,21 @@
+{
+  "id": "sel-sel-g",
+  "planet": "sel",
+  "text": [
+    "The border between Arelon and",
+    "Fjorden correlates precisely with",
+    "a shift in the Dor's flow.",
+    "Deliberate?"
+  ],
+  "style": "khriss",
+  "layout": {
+    "left": "10%",
+    "top": "26%",
+    "rotation": "0.2deg",
+    "maxWidth": "165px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

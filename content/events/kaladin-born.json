@@ -1,0 +1,14 @@
+{
+  "id": "kaladin-born",
+  "title": "Birth of Kaladin",
+  "summary": "Kaladin is born in Hearthstone, Roshar. Son of Lirin and Hesina, a surgeon. He will become the most powerful Windrunner since the original Radiants.",
+  "year": 1475,
+  "endYear": null,
+  "type": "birth",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": ["kaladin"],
+  "worldhoppers": [],
+  "importance": 5,
+  "archivistNote": null
+}

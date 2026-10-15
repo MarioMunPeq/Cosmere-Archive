@@ -1,0 +1,14 @@
+{
+  "id": "tress-events",
+  "title": "Tress of the Emerald Sea",
+  "summary": "Tress, a young woman from a remote island on Lumar, crosses seas of dragon scales to rescue her love, Charlie, kidnapped by the sorceress of the Emerald Sea. Hoid narrates the story as one of his tales.",
+  "year": 1600,
+  "endYear": null,
+  "type": "book",
+  "series": "secret-projects",
+  "planets": ["lumar"],
+  "characters": [],
+  "worldhoppers": ["wh-hoid"],
+  "importance": 3,
+  "archivistNote": null
+}

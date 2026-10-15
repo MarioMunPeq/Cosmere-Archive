@@ -1,0 +1,15 @@
+{
+  "id": "kaladin",
+  "name": "Kaladin",
+  "pronunciation": null,
+  "summary": "A darkeyed surgeon's son from Hearthstone who becomes the most legendary Windrunner of the Knights Radiant. Enslaved and sold into Bridge Four after a betrayal by his lighteyed master, Kaladin rises from bridgeman to captain of the Kholin honor guard, bonding the honorspren Sylphrena. Known for his unwavering protection of those he cannot save and his struggle with depression, he is the first Windrunner in millennia to speak the Fourth Ideal.",
+  "origin": "roshar",
+  "books": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "unlockAt": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "portrait": "characters/Kaladin.webp",
+  "born": 1475,
+  "died": null,
+  "status": "living",
+  "groups": ["radiant"],
+  "titles": ["Windrunner", "Son of Honor", "Captain"]
+}

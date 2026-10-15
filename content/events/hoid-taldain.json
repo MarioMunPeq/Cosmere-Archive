@@ -1,0 +1,14 @@
+{
+  "id": "hoid-taldain",
+  "title": "Hoid on Taldain",
+  "summary": "Hoid visits Taldain during the events of White Sand, observing Khriss and Kenton.",
+  "year": 100,
+  "endYear": null,
+  "type": "arrival",
+  "series": "white-sand",
+  "planets": ["taldain"],
+  "characters": [],
+  "worldhoppers": ["wh-hoid"],
+  "importance": 2,
+  "archivistNote": null
+}

@@ -1,0 +1,16 @@
+{
+  "id": "yolen-yolen-nazh-b",
+  "planet": "yolen",
+  "text": ["Nothing here is on any", "chart. Including us."],
+  "style": "nazh",
+  "layout": {
+    "left": "34%",
+    "top": "60%",
+    "rotation": "-1.3deg",
+    "maxWidth": "110px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

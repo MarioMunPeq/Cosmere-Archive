@@ -1,0 +1,15 @@
+{
+  "id": "kenton",
+  "name": "Kenton",
+  "pronunciation": null,
+  "summary": "The last surviving sand master of the Diem on Taldain's Dayside. Arrogant, stubborn, and fiercely devoted to his dying order, Kenton is the sole survivor of a coup that destroys the Diem, forcing him to rebuild from nothing. He must navigate the perilous politics of the Taishin council, prove that sand mastery is worth preserving, and confront the limits of his own pride. His relationship with Khriss, the off-world scholar who refuses to leave him alone, grows from annoyance to respect as they work together to uncover the secrets of investiture on Taldain. Kenton's journey is one of humility, sacrifice, and the realization that some battles require allies, not just individual strength.",
+  "origin": "taldain",
+  "books": ["white-sand-vol-1", "white-sand-vol-2", "white-sand-vol-3"],
+  "unlockAt": ["white-sand-vol-1", "white-sand-vol-2", "white-sand-vol-3"],
+  "portrait": null,
+  "born": 80,
+  "died": null,
+  "status": "living",
+  "groups": ["taldaini"],
+  "titles": ["Master of Sand", "Last of the Diary"]
+}

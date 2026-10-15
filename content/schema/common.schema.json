@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "common",
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Kebab-case identifier. No underscores (rule V15)."
+    },
+    "idArray": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/id" },
+      "uniqueItems": true
+    },
+    "nullableIdArray": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/id" },
+      "uniqueItems": true
+    },
+    "hexColor": {
+      "type": "string",
+      "pattern": "^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$"
+    },
+    "assetPath": {
+      "type": ["string", "null"],
+      "pattern": "^(images|characters|content|models)/[A-Za-z0-9._/-]+$"
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 400
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 40,
+      "maxLength": 1200
+    }
+  }
+}

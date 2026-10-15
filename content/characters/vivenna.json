@@ -1,0 +1,15 @@
+{
+  "id": "vivenna",
+  "name": "Vivenna",
+  "pronunciation": null,
+  "summary": "The elder princess of Idris, trained from birth to marry the God-King of T'Telir and save her people from political annihilation. When her younger sister Siri is sent instead, Vivenna follows to T'Telir intending to rescue her, only to be corrupted by her own prejudices and nearly destroyed by the city's dangers. After training with Vasher, Vivenna becomes a powerful Awakener in her own right, learning to command the Lifeless and use BioChromatic Breath effectively. She cuts her hair, dons a sword, and becomes a warrior who ultimately chooses her own path—one of independence and strength—rather than the marriage she was raised for. Later, she travels to Roshar as one of the Cosmere's most capable worldhoppers.",
+  "origin": "nalthis",
+  "books": ["warbreaker", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "unlockAt": ["warbreaker", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "portrait": "characters/Vivenna.webp",
+  "born": 265,
+  "died": null,
+  "status": "living",
+  "groups": ["nalthian"],
+  "titles": ["Princess of Idris", "Awakener", "Wanderer"]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "e-words-of-radiance",
+  "title": "Words of Radiance",
+  "summary": "Kaladin swears the second ideal of the Windrunners. Shallan discovers her past and swears her ideals. Szeth is killed by Kaladin and later resurrected by Nale with the Shard of Honor. The Everstorm arrives.",
+  "year": 1501,
+  "endYear": null,
+  "type": "book",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": ["kaladin", "shallan", "dalinar", "szeth", "hoid", "navani"],
+  "worldhoppers": ["wh-hoid", "wh-vasher"],
+  "importance": 5,
+  "archivistNote": null
+}

@@ -1,0 +1,37 @@
+{
+  "id": "scadrial",
+  "name": "Scadrial",
+  "pronunciation": null,
+  "summary": "Birthplace of allomancy, feruchemy, and hemallurgy. A planet marked by ash, mists, and revolution.",
+  "shards": ["preservation", "ruin", "harmony"],
+  "color": "#ef4444",
+  "connectedPlanets": [],
+  "series": ["mistborn-era-1", "mistborn-era-2", "arcanum-unbounded"],
+  "books": [
+    "the-final-empire",
+    "the-well-of-ascension",
+    "the-hero-of-ages",
+    "the-alloy-of-law",
+    "shadows-of-self",
+    "the-bands-of-mourning",
+    "the-lost-metal",
+    "arcanum-unbounded"
+  ],
+  "investiture": [
+    {
+      "name": "Allomancy",
+      "summary": "Burning metals ingested to grant physical or mental powers. Sixteen base metals.",
+      "shard": "Preservation"
+    },
+    {
+      "name": "Feruchemy",
+      "summary": "Storing attributes like strength, speed, or memory in metal minds for later use.",
+      "shard": "Ruin"
+    },
+    {
+      "name": "Hemalurgy",
+      "summary": "Stealing attributes from others via metal spikes driven through the body.",
+      "shard": "Ruin"
+    }
+  ]
+}

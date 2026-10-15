@@ -1,0 +1,15 @@
+{
+  "id": "fort",
+  "name": "Fort",
+  "pronunciation": null,
+  "summary": "A thick-browed, foxlike humanoid alien from the planet UTol who joins Nomad on his journey to Canticle. Consumed by an unquenchable desire for vengeance against the Night Brigade for the destruction of his homeworld, Fort is gruff, pragmatic, and deeply wounded by the loss of everything he loved. His partnership with Nomad is built on mutual need rather than friendship, but over time, Fort's rigid exterior begins to crack as he discovers that revenge may not bring the peace he seeks. His physical strength and his knowledge of the Night Brigade make him a valuable ally in Nomad's struggle on Canticle.",
+  "origin": "canticle",
+  "books": ["the-sunlit-man"],
+  "unlockAt": ["the-sunlit-man"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

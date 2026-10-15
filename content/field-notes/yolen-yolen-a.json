@@ -1,0 +1,20 @@
+{
+  "id": "yolen-yolen-a",
+  "planet": "yolen",
+  "text": [
+    "The original world. Fragmentary",
+    "records only. I have been unable",
+    "to verify any claims made about it."
+  ],
+  "style": "khriss",
+  "layout": {
+    "left": "10%",
+    "top": "4%",
+    "rotation": "-0.2deg",
+    "maxWidth": "165px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

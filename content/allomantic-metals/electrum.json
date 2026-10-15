@@ -1,0 +1,10 @@
+{
+  "id": "electrum",
+  "name": "Electrum",
+  "alloy": "Gold",
+  "group": "temporal",
+  "allomanticPower": "See your future",
+  "feruchemicalPower": "Store determination",
+  "hemalurgicProperty": "Steals future sight",
+  "color": "#d97706"
+}

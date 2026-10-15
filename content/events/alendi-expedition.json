@@ -1,0 +1,14 @@
+{
+  "id": "alendi-expedition",
+  "title": "Alendi's Expedition to the Well",
+  "summary": "Alendi, a Khlenni explorer, discovers the Well of Ascension on Scadrial and begins an expedition to reach it. Rashek is hired as a mountain guide.",
+  "year": 1,
+  "endYear": null,
+  "type": "historical",
+  "series": "mistborn-era-1",
+  "planets": ["scadrial"],
+  "characters": ["rashek"],
+  "worldhoppers": [],
+  "importance": 4,
+  "archivistNote": null
+}

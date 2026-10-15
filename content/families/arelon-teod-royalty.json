@@ -1,0 +1,54 @@
+{
+  "id": "arelon-teod-royalty",
+  "name": "Arelon & Teod Royalty",
+  "color": "#f472b6",
+  "summary": "The royal families of Arelon and Teod on Sel, united through the political marriage of Raoden and Sarene.",
+  "rootIds": ["sel-crowns"],
+  "members": [
+    {
+      "id": "sel-crowns",
+      "name": "Royal Houses of Sel",
+      "character": null,
+      "spouse": null,
+      "parents": [],
+      "isDeceased": true,
+      "gender": "male"
+    },
+    {
+      "id": "iadon",
+      "name": "King Iadon",
+      "character": null,
+      "spouse": null,
+      "parents": ["sel-crowns"],
+      "isDeceased": true,
+      "gender": "male"
+    },
+    {
+      "id": "eventeo",
+      "name": "King Eventeo",
+      "character": null,
+      "spouse": null,
+      "parents": ["sel-crowns"],
+      "isDeceased": true,
+      "gender": "male"
+    },
+    {
+      "id": "raoden",
+      "name": "Raoden",
+      "character": "raoden",
+      "spouse": "sarene",
+      "parents": ["iadon"],
+      "isDeceased": false,
+      "gender": "male"
+    },
+    {
+      "id": "sarene",
+      "name": "Sarene",
+      "character": "sarene",
+      "spouse": "raoden",
+      "parents": ["eventeo"],
+      "isDeceased": false,
+      "gender": "female"
+    }
+  ]
+}

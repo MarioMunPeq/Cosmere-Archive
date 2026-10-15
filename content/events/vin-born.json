@@ -1,0 +1,14 @@
+{
+  "id": "vin-born",
+  "title": "Birth of Vin",
+  "summary": "Vin is born on Scadrial, a young half-skaa who will become the most powerful Mistborn in history, capable of killing the Lord Ruler and facing Ruin.",
+  "year": 1022,
+  "endYear": null,
+  "type": "birth",
+  "series": "mistborn-era-1",
+  "planets": ["scadrial"],
+  "characters": ["vin"],
+  "worldhoppers": [],
+  "importance": 5,
+  "archivistNote": null
+}

@@ -1,0 +1,21 @@
+{
+  "id": "canticle-canticle-nazh-b",
+  "planet": "canticle",
+  "text": [
+    "Khriss insists on accurate",
+    "measurements. I insist on",
+    "not being on fire.",
+    "We disagree on priorities."
+  ],
+  "style": "nazh",
+  "layout": {
+    "left": "34%",
+    "top": "62%",
+    "rotation": "-0.7deg",
+    "maxWidth": "140px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

@@ -1,0 +1,14 @@
+{
+  "id": "alloy-of-law",
+  "title": "The Alloy of Law",
+  "summary": "Waxillium Ladrian returns to Elendel after his uncle's death to claim his title. He faces a conspiracy of the Ghostbloods that threatens the Basin. He meets Wayne, Marasi and Steris.",
+  "year": 1324,
+  "endYear": null,
+  "type": "book",
+  "series": "mistborn-era-2",
+  "planets": ["scadrial"],
+  "characters": ["wax", "wayne", "marasi", "steris"],
+  "worldhoppers": [],
+  "importance": 4,
+  "archivistNote": null
+}

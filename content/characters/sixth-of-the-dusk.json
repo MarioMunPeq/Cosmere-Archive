@@ -1,0 +1,15 @@
+{
+  "id": "sixth-of-the-dusk",
+  "name": "Sixth of the Dusk",
+  "pronunciation": null,
+  "summary": "A trapper from the islands of First of the Sun, a world of jungles, predatory wildlife, and mysterious ancient ruins. Dusk uses a bond with his Aviar—a bird gifted by the local gods—to see the immediate future and avoid danger. He is one of the most skilled hunters on his world, navigating the deadly Pantheon with practiced ease. When off-worlders arrive on First of the Sun seeking to exploit its resources, Dusk must confront the reality that his world is part of a much larger Cosmere. His story explores the collision between primitive survival and interstellar colonization, and the price of progress.",
+  "origin": "first-of-the-sun",
+  "books": ["arcanum-unbounded"],
+  "unlockAt": ["arcanum-unbounded"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

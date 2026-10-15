@@ -1,0 +1,14 @@
+{
+  "id": "dalinar-born",
+  "title": "Birth of Dalinar Kholin",
+  "summary": "Dalinar Kholin is born, brother of King Gavilar. He will become the Bondsmith, the most important military leader of his era and the champion of Honor.",
+  "year": 1460,
+  "endYear": null,
+  "type": "birth",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": ["dalinar"],
+  "worldhoppers": [],
+  "importance": 5,
+  "archivistNote": null
+}

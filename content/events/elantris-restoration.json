@@ -1,0 +1,14 @@
+{
+  "id": "elantris-restoration",
+  "title": "Elantris: The Restoration",
+  "summary": "Prince Raoden discovers that AonDor can be corrected by modifying the main Aon to reflect the death of Devotion and Dominion. Elantris is restored and the Elantrians become divine once more.",
+  "year": 12,
+  "endYear": null,
+  "type": "book",
+  "series": "elantris",
+  "planets": ["sel"],
+  "characters": ["raoden", "sarene", "hoid"],
+  "worldhoppers": ["wh-hoid"],
+  "importance": 4,
+  "archivistNote": null
+}

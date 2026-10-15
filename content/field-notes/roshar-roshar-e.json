@@ -1,0 +1,16 @@
+{
+  "id": "roshar-roshar-e",
+  "planet": "roshar",
+  "text": ["Semi-major axis: 0.84 AU"],
+  "style": "khriss",
+  "layout": {
+    "left": "48%",
+    "top": "74%",
+    "rotation": "-0.8deg",
+    "maxWidth": "120px"
+  },
+  "crossedOut": true,
+  "correction": "Revised to 0.82 AU after additional parallax measurements.",
+  "sketch": null,
+  "sketchSize": null
+}

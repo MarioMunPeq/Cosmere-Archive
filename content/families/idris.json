@@ -1,0 +1,54 @@
+{
+  "id": "idris",
+  "name": "Idris Royal Family",
+  "color": "#38bdf8",
+  "summary": "The ruling family of Idris on Nalthis. Princess Siri was sent to marry the God-King Susebron in Vivenna's place.",
+  "rootIds": ["dedelin"],
+  "members": [
+    {
+      "id": "dedelin",
+      "name": "King Dedelin",
+      "character": null,
+      "spouse": null,
+      "parents": [],
+      "isDeceased": true,
+      "gender": "male"
+    },
+    {
+      "id": "idris-queen",
+      "name": "Queen of Idris",
+      "character": null,
+      "spouse": null,
+      "parents": [],
+      "isDeceased": true,
+      "gender": "female"
+    },
+    {
+      "id": "vivenna",
+      "name": "Vivenna",
+      "character": "vivenna",
+      "spouse": null,
+      "parents": ["dedelin", "idris-queen"],
+      "isDeceased": false,
+      "gender": "female"
+    },
+    {
+      "id": "siri",
+      "name": "Siri",
+      "character": "siri",
+      "spouse": "susebron",
+      "parents": ["dedelin", "idris-queen"],
+      "isDeceased": false,
+      "gender": "female"
+    },
+    {
+      "id": "susebron",
+      "name": "Susebron",
+      "character": "susebron",
+      "spouse": "siri",
+      "parents": [],
+      "isDeceased": false,
+      "gender": "male"
+    }
+  ]
+}

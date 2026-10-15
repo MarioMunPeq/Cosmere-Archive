@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "allomantic-metal",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "alloy", "group", "allomanticPower", "feruchemicalPower", "hemalurgicProperty"],
+  "properties": {
+    "id": { "$ref": "common#/$defs/id" },
+    "name": { "$ref": "common#/$defs/nonEmptyString" },
+    "alloy": { "$ref": "common#/$defs/nonEmptyString" },
+    "group": { "enum": ["physical", "mental", "temporal", "enhancement"] },
+    "allomanticPower": { "type": "string", "minLength": 3, "maxLength": 160 },
+    "feruchemicalPower": { "type": "string", "minLength": 3, "maxLength": 160 },
+    "hemalurgicProperty": { "type": "string", "minLength": 3, "maxLength": 160 },
+    "color": { "$ref": "common#/$defs/hexColor" }
+  }
+}

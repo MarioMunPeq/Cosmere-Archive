@@ -1,0 +1,21 @@
+{
+  "id": "canticle-canticle-d",
+  "planet": "canticle",
+  "text": [
+    "The sun appears closer than",
+    "surface temperature suggests.",
+    "Calibrate instruments before",
+    "next visit."
+  ],
+  "style": "khriss",
+  "layout": {
+    "left": "14%",
+    "top": "74%",
+    "rotation": "0.7deg",
+    "maxWidth": "155px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

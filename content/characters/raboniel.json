@@ -1,0 +1,15 @@
+{
+  "id": "raboniel",
+  "name": "Raboniel (Lady of Wishes)",
+  "pronunciation": null,
+  "summary": "A Fused scholar and commander of the forces of Odium, one of the most ancient and dangerous of the singers' immortal souls. Known as the Lady of Wishes, Raboniel leads the occupation of Urithiru with the stated goal of ending the cycle of war between humans and singers—by any means necessary. She is brilliant, patient, and terrifying, able to work alongside Navani on revolutionary scientific discoveries while simultaneously using her children as tools for her plans. Her ultimate goal—to give all of Roshar a permanent death through anti-investiture—reveals the depth of her despair after millennia of conflict. Raboniel is one of the Cosmere's most complex antagonists, driven by genuine love for her people twisted into monstrous resolve.",
+  "origin": "roshar",
+  "books": ["rhythm-of-war"],
+  "unlockAt": ["rhythm-of-war"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

@@ -1,0 +1,20 @@
+{
+  "id": "battar",
+  "name": "Battar",
+  "title": "Herald of Wisdom",
+  "order": "Elsecallers",
+  "kind": "herald",
+  "pronunciation": null,
+  "summary": "The patron of the Elsecallers. Associated with wisdom, counsel, and guidance. Battar served as an advisor to the Heralds and the Radiants of old. Her current status and location are unknown.",
+  "surges": ["Transformation", "Transportation"],
+  "attributes": ["Wise", "Careful"],
+  "essence": "Talus",
+  "soulcasting": "Clay",
+  "honorbladeGrants": "Transformation and Transportation — the power to alter matter and to move between realms.",
+  "quote": "\"Wisdom is knowing what questions to ask — not knowing the answers.\"",
+  "books": ["oathbringer", "rhythm-of-war"],
+  "status": "fallen",
+  "connections": [],
+  "positionIndex": 6,
+  "color": "#f472b6"
+}

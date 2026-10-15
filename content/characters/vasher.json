@@ -1,0 +1,15 @@
+{
+  "id": "vasher",
+  "name": "Vasher",
+  "pronunciation": null,
+  "summary": "Also known as Kalad the Usurper, the master Awakener who created the sentient sword Nightblood and the legendary army of Kalad's Phantoms. A warrior from Nalthis who has lived for centuries through the power of Returned Breath, Vasher is a grumpy, pragmatic, and deeply tired immortal who has seen too much death. He teaches Vivenna how to Awaken and later travels to Roshar, where he becomes known as Zahel, an unassuming swordmaster training the Kholin youth. His deep understanding of BioChromatic Breath and the mechanics of investiture makes him one of the most knowledgeable beings in the Cosmere, though he prefers to keep his secrets.",
+  "origin": "nalthis",
+  "books": ["warbreaker", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "unlockAt": ["warbreaker", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "living",
+  "groups": ["nalthian"],
+  "titles": ["The Sinister", "Nightblood Bearer", "Wanderer"]
+}

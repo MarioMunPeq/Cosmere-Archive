@@ -1,0 +1,16 @@
+{
+  "id": "scadrial-scadrial-c",
+  "planet": "scadrial",
+  "text": ["Preservation's perpendicularity remains", "the most stable I have measured", "in any world system."],
+  "style": "khriss",
+  "layout": {
+    "left": "14%",
+    "top": "76%",
+    "rotation": "-0.4deg",
+    "maxWidth": "165px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

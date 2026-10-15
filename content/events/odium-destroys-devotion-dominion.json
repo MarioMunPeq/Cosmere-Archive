@@ -1,0 +1,14 @@
+{
+  "id": "odium-destroys-devotion-dominion",
+  "title": "Odium Destroys Devotion and Dominion",
+  "summary": "Odium travels to Sel and destroys Aona and Skai. Their Investitures become trapped in the Cognitive Realm, creating the Sea of Souls. This event will warp Sel's magic for millennia.",
+  "year": -5000,
+  "endYear": null,
+  "type": "cataclysm",
+  "series": "elantris",
+  "planets": ["sel"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 5,
+  "archivistNote": null
+}

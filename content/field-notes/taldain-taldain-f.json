@@ -1,0 +1,16 @@
+{
+  "id": "taldain-taldain-f",
+  "planet": "taldain",
+  "text": ["The Kerzta region remains on my", "list for a dedicated survey.", "Access is restricted."],
+  "style": "khriss",
+  "layout": {
+    "left": "44%",
+    "top": "74%",
+    "rotation": "-1.6deg",
+    "maxWidth": "150px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

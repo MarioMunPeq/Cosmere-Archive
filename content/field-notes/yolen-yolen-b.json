@@ -1,0 +1,16 @@
+{
+  "id": "yolen-yolen-b",
+  "planet": "yolen",
+  "text": ["What existed before the", "Shattering? The answer may be", "lost to time."],
+  "style": "khriss",
+  "layout": {
+    "left": "74%",
+    "top": "44%",
+    "rotation": "-2.6deg",
+    "maxWidth": "130px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

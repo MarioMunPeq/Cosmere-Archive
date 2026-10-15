@@ -1,0 +1,15 @@
+{
+  "id": "vathi",
+  "name": "Vathi",
+  "pronunciation": null,
+  "summary": "A scholar from First of the Sun who studies the Aviar—the magical birds that grant cognitive abilities like future sight—and the mysterious ruins of the Pantheon. Vathi is an academic, curious about the world's mysteries and dedicated to preserving its knowledge. She accompanies Sixth of the Dusk on expeditions into the deadly jungle, her scientific mind complementing his survival instincts. Her discovery of the off-worlders' interest in her planet and her role in the events of the story make her a key figure in First of the Sun's future.",
+  "origin": "first-of-the-sun",
+  "books": ["arcanum-unbounded"],
+  "unlockAt": ["arcanum-unbounded"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

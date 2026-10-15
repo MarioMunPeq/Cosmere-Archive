@@ -1,0 +1,16 @@
+{
+  "id": "threnody-threnody-nazh-b",
+  "planet": "threnody",
+  "text": ["The shadows do not", "respond to cartography.", "I checked."],
+  "style": "nazh",
+  "layout": {
+    "left": "56%",
+    "top": "66%",
+    "rotation": "-0.9deg",
+    "maxWidth": "115px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

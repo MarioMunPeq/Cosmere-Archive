@@ -1,0 +1,16 @@
+{
+  "id": "threnody-threnody-nazh-a",
+  "planet": "threnody",
+  "text": ["I am not returning here.", "I have said this before.", "I will say it again."],
+  "style": "nazh",
+  "layout": {
+    "left": "30%",
+    "top": "22%",
+    "rotation": "1.2deg",
+    "maxWidth": "120px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

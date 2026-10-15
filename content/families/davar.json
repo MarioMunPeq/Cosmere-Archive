@@ -1,0 +1,81 @@
+{
+  "id": "davar",
+  "name": "Davar Family",
+  "color": "#34d399",
+  "summary": "A minor lighteyed house of Jah Keved on Roshar. Shallan has four older brothers and a younger sister who died in childhood.",
+  "rootIds": ["lin-davar"],
+  "members": [
+    {
+      "id": "lin-davar",
+      "name": "Lin Davar",
+      "character": null,
+      "spouse": null,
+      "parents": [],
+      "isDeceased": true,
+      "gender": "male"
+    },
+    {
+      "id": "lady-davar",
+      "name": "Lady Davar",
+      "character": null,
+      "spouse": null,
+      "parents": [],
+      "isDeceased": true,
+      "gender": "female"
+    },
+    {
+      "id": "helaran-davar",
+      "name": "Helaran Davar",
+      "character": null,
+      "spouse": null,
+      "parents": ["lin-davar", "lady-davar"],
+      "isDeceased": true,
+      "gender": "male"
+    },
+    {
+      "id": "balat-davar",
+      "name": "Balat Davar",
+      "character": null,
+      "spouse": null,
+      "parents": ["lin-davar", "lady-davar"],
+      "isDeceased": false,
+      "gender": "male"
+    },
+    {
+      "id": "wikim-davar",
+      "name": "Wikim Davar",
+      "character": null,
+      "spouse": null,
+      "parents": ["lin-davar", "lady-davar"],
+      "isDeceased": false,
+      "gender": "male"
+    },
+    {
+      "id": "jushu-davar",
+      "name": "Jushu Davar",
+      "character": null,
+      "spouse": null,
+      "parents": ["lin-davar", "lady-davar"],
+      "isDeceased": false,
+      "gender": "male"
+    },
+    {
+      "id": "shallan",
+      "name": "Shallan Davar",
+      "character": "shallan",
+      "spouse": "adolin",
+      "parents": ["lin-davar", "lady-davar"],
+      "isDeceased": false,
+      "gender": "female"
+    },
+    {
+      "id": "adolin",
+      "name": "Adolin Kholin",
+      "character": "adolin",
+      "spouse": "shallan",
+      "parents": [],
+      "isDeceased": false,
+      "gender": "male"
+    }
+  ]
+}

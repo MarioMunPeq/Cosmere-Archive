@@ -1,0 +1,15 @@
+{
+  "id": "lightsong",
+  "name": "Lightsong",
+  "pronunciation": null,
+  "summary": "A Returned god of the Court of Gods, known for his laid-back, skeptical demeanor and his refusal to take his divine responsibilities seriously. Unlike the other Returned, Lightsong does not believe he was sent back for any great purpose and spends his days lounging, gambling, and making sarcastic observations. However, beneath his cynical exterior lies a profound sense of worthlessness and a desperate search for meaning. His investigation into the conspiracy against the God-King reveals the depth of his intelligence and his capacity for self-sacrifice. Lightsong's journey from a god who believes in nothing to one who gives everything for others is one of the most emotionally resonant arcs in the Cosmere.",
+  "origin": "nalthis",
+  "books": ["warbreaker"],
+  "unlockAt": ["warbreaker"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

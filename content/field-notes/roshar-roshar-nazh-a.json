@@ -1,0 +1,21 @@
+{
+  "id": "roshar-roshar-nazh-a",
+  "planet": "roshar",
+  "text": [
+    "Khriss measured the highstorm",
+    "velocity from a sheltered valley.",
+    "I told her this was methodologically",
+    "unsound. She did not listen."
+  ],
+  "style": "nazh",
+  "layout": {
+    "left": "30%",
+    "top": "18%",
+    "rotation": "2.2deg",
+    "maxWidth": "145px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

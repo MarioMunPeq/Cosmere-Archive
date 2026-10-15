@@ -1,0 +1,14 @@
+{
+  "id": "the-manywar",
+  "title": "The Manywar",
+  "summary": "A devastating war on Nalthis between Hallandren and Idris, fought using invested technology. The conflict escalates to the point where Kalad unleashes his Phantoms, an army of lifeless soldiers that ends the war but nearly destroys both sides.",
+  "year": 50,
+  "endYear": null,
+  "type": "historical",
+  "series": "warbreaker",
+  "planets": ["nalthis"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 4,
+  "archivistNote": null
+}

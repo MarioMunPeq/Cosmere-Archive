@@ -1,0 +1,15 @@
+{
+  "id": "silence",
+  "name": "Silence Montane",
+  "pronunciation": null,
+  "summary": "A shadow hunter and innkeeper on the haunted world of Threnody, where deadly shades—the cognitive shadows of the dead—hunt the living at night. Silence runs the Waystop inn with her family while secretly working as a bounty hunter, tracking down criminals through the forest of shadows. Her story in Shadows for Silence in the Forests of Hell explores the desperate measures a mother will take to protect her family in a world where the slightest mistake invites death by shades. Silence is practical, ruthless, and deeply protective, embodying the harsh survival instinct that life on Threnody demands.",
+  "origin": "threnody",
+  "books": ["arcanum-unbounded"],
+  "unlockAt": ["arcanum-unbounded"],
+  "portrait": null,
+  "born": 130,
+  "died": null,
+  "status": "living",
+  "groups": ["other"],
+  "titles": ["Shadow Hunter", "Innkeeper", "Survivor"]
+}

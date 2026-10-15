@@ -1,0 +1,15 @@
+{
+  "id": "sadeas",
+  "name": "Torol Sadeas",
+  "pronunciation": null,
+  "summary": "Highprince of Alethkar and Dalinar's most persistent rival. A cunning, ruthless, and charismatic political operator who believes that honor is a luxury for the powerful and that the only true victory is personal advancement. Sadeas betrays Dalinar in the Shattered Plains, feeds his own men into battles for Shards, and plots to seize the throne of Alethkar for himself. His manipulation of the Alethi political system and his coalition with the other highprinces make him one of the most dangerous men on Roshar. His death at the hands of Adolin Kholin—a moment of un-Radiant vengeance—sends shockwaves through the court.",
+  "origin": "roshar",
+  "books": ["the-way-of-kings", "words-of-radiance", "oathbringer"],
+  "unlockAt": ["the-way-of-kings", "words-of-radiance", "oathbringer"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

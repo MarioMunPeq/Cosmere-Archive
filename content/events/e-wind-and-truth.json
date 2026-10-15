@@ -1,0 +1,14 @@
+{
+  "id": "e-wind-and-truth",
+  "title": "Wind and Truth",
+  "summary": "Conclusion of the first arc of the Stormlight Archive. The final battle for Roshar decides the fate of the Cosmere. The confrontation between Dalinar and Odium (now Taravangian) reaches its climax.",
+  "year": 1504,
+  "endYear": null,
+  "type": "book",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": ["kaladin", "shallan", "dalinar", "hoid", "szeth", "nightblood", "navani", "taravangian"],
+  "worldhoppers": ["wh-hoid", "wh-vasher", "wh-kelsier", "wh-nazh"],
+  "importance": 5,
+  "archivistNote": null
+}

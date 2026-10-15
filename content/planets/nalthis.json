@@ -1,0 +1,18 @@
+{
+  "id": "nalthis",
+  "name": "Nalthis",
+  "pronunciation": null,
+  "summary": "Realm of BioChromatic Breath, where color gives power and gods walk among mortals.",
+  "shards": ["endowment"],
+  "color": "#d946ef",
+  "connectedPlanets": ["roshar"],
+  "series": ["warbreaker"],
+  "books": ["warbreaker"],
+  "investiture": [
+    {
+      "name": "Awakening",
+      "summary": "Using BioChromatic Breath to animate objects and grant sentience. Color perception determines power.",
+      "shard": "Endowment"
+    }
+  ]
+}

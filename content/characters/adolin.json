@@ -1,0 +1,15 @@
+{
+  "id": "adolin",
+  "name": "Adolin Kholin",
+  "pronunciation": null,
+  "summary": "Eldest son of Dalinar Kholin and heir to House Kholin. A supremely talented duelist and duelmaster known for his flamboyant style, impeccable fashion sense, and genuine kindness—qualities rare among the Alethi lighteyes. Adolin struggles with the pressure of his family's expectations and the growing distance between himself and his Radiant father and brother. He bonds the deadeye shardblade Maya and discovers that spren thought dead can be revived through companionship rather than force. His relationship with Shallan Davar and his own journey toward becoming a Radiant mark him as a key figure on Roshar.",
+  "origin": "roshar",
+  "books": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "unlockAt": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "portrait": "characters/Adolin.webp",
+  "born": 1476,
+  "died": null,
+  "status": "living",
+  "groups": ["radiant"],
+  "titles": ["Duelist", "Prince", "Sword Bearer"]
+}

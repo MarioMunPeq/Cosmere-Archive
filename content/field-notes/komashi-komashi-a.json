@@ -1,0 +1,21 @@
+{
+  "id": "komashi-komashi-a",
+  "planet": "komashi",
+  "text": [
+    "Virtuosity's Investiture permeates",
+    "this world system at a fundamental",
+    "level. Potentially the most",
+    "Invested planet per capita."
+  ],
+  "style": "khriss",
+  "layout": {
+    "left": "10%",
+    "top": "4%",
+    "rotation": "-0.9deg",
+    "maxWidth": "175px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

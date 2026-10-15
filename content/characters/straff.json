@@ -1,0 +1,15 @@
+{
+  "id": "straff",
+  "name": "Straff Venture",
+  "pronunciation": null,
+  "summary": "The high noble lord of House Venture, father of Elend, and one of the most powerful and ruthless men in the Final Empire. A powerful Allomancer who burns tin with extreme precision, Straff is paranoid, cruel, and willing to sacrifice anyone—including his own children—to maintain his power. He leads a massive army to Luthadel during the siege, seeking to claim the city for himself, and his constant tension with his Mistborn son Zane makes him an unpredictable force. His death at the hands of Vin is a turning point in the siege of Luthadel.",
+  "origin": "scadrial",
+  "books": ["the-final-empire", "the-well-of-ascension"],
+  "unlockAt": ["the-final-empire", "the-well-of-ascension"],
+  "portrait": "characters/Straff.webp",
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

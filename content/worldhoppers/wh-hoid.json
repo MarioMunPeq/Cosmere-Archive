@@ -1,0 +1,102 @@
+{
+  "id": "wh-hoid",
+  "name": "Hoid",
+  "color": "#a78bfa",
+  "summary": "Appears in almost every world. Storyteller, wanderer, seeker.",
+  "character": "hoid",
+  "planets": [
+    "yolen",
+    "roshar",
+    "scadrial",
+    "nalthis",
+    "sel",
+    "taldain",
+    "first-of-the-sun",
+    "lumar",
+    "komashi",
+    "canticle"
+  ],
+  "series": ["stormlight", "mistborn-era-1", "elantris", "warbreaker", "secret-projects"],
+  "movements": [
+    {
+      "year": -10000,
+      "planet": "yolen",
+      "summary": "Present at the Shattering of Adonalsium. Refuses a Shard."
+    },
+    {
+      "year": -9900,
+      "planet": "yolen",
+      "summary": "Begins his eternal wandering across the Cosmere."
+    },
+    {
+      "year": -2500,
+      "planet": "roshar",
+      "summary": "Witnesses the betrayal of the Knights Radiant."
+    },
+    {
+      "year": -500,
+      "planet": "sel",
+      "summary": "Visits Sel, observes the fall of Elantris."
+    },
+    {
+      "year": 12,
+      "planet": "sel",
+      "summary": "In Elantris as an informant in the palace of Teod."
+    },
+    {
+      "year": 100,
+      "planet": "taldain",
+      "summary": "On Taldain during the events of White Sand."
+    },
+    {
+      "year": 290,
+      "planet": "nalthis",
+      "summary": "Collects BioChromatic Breaths on Nalthis."
+    },
+    {
+      "year": 300,
+      "planet": "nalthis",
+      "summary": "Observes the events of Warbreaker."
+    },
+    {
+      "year": 1024,
+      "planet": "scadrial",
+      "summary": "On Scadrial during the fall of the Lord Ruler."
+    },
+    {
+      "year": 1328,
+      "planet": "scadrial",
+      "summary": "Observes the defeat of Autonomy."
+    },
+    {
+      "year": 1499,
+      "planet": "roshar",
+      "summary": "Tutor of stories for King Elhokar on Roshar."
+    },
+    {
+      "year": 1500,
+      "planet": "roshar",
+      "summary": "Participates in the war on Roshar as a messenger."
+    },
+    {
+      "year": 1504,
+      "planet": "roshar",
+      "summary": "Taravangian takes his Breaths."
+    },
+    {
+      "year": 1600,
+      "planet": "lumar",
+      "summary": "Narrates the story of Tress."
+    },
+    {
+      "year": 1610,
+      "planet": "komashi",
+      "summary": "Visits Komashi, observes Yumi and Nikaro."
+    },
+    {
+      "year": 1620,
+      "planet": "canticle",
+      "summary": "Helps Nomad (Sigzil) in his escape."
+    }
+  ]
+}

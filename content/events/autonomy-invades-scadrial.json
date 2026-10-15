@@ -1,0 +1,14 @@
+{
+  "id": "autonomy-invades-scadrial",
+  "title": "Autonomy Invades Scadrial",
+  "summary": "Bavadin, the Shard of Autonomy, launches a full-scale invasion of Scadrial using an avatar named Taldain's Trell and Hemalurgic constructs. The city of Elendel is attacked with a devastating investiture bomb. Wax and the Ghostbloods ally to defend the planet.",
+  "year": 1328,
+  "endYear": null,
+  "type": "cataclysm",
+  "series": "mistborn-era-2",
+  "planets": ["scadrial"],
+  "characters": ["wax", "wayne", "marasi", "kelsier", "steris"],
+  "worldhoppers": ["wh-kelsier"],
+  "importance": 5,
+  "archivistNote": null
+}

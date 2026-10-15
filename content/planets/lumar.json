@@ -1,0 +1,18 @@
+{
+  "id": "lumar",
+  "name": "Lumar",
+  "pronunciation": null,
+  "summary": "An archipelago where the oceans are made of colored spores, ruled by witches and dragons.",
+  "shards": ["mercy"],
+  "color": "#f472b6",
+  "connectedPlanets": [],
+  "series": ["secret-projects"],
+  "books": ["tress-of-the-emerald-sea"],
+  "investiture": [
+    {
+      "name": "Spore Magic",
+      "summary": "Twelve types of magical spores make up the seas. Each type has unique properties when activated by water.",
+      "shard": "Mercy"
+    }
+  ]
+}

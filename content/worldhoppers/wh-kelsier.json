@@ -1,0 +1,46 @@
+{
+  "id": "wh-kelsier",
+  "name": "Kelsier",
+  "color": "#ef4444",
+  "summary": "The Survivor. Operates from the Cognitive Realm.",
+  "character": "kelsier",
+  "planets": ["scadrial", "roshar"],
+  "series": ["mistborn-era-1", "mistborn-era-2", "stormlight"],
+  "movements": [
+    {
+      "year": 990,
+      "planet": "scadrial",
+      "summary": "Born on Scadrial."
+    },
+    {
+      "year": 1024,
+      "planet": "scadrial",
+      "summary": "Dies fighting the Lord Ruler."
+    },
+    {
+      "year": 1028,
+      "planet": "scadrial",
+      "summary": "Trapped in the Cognitive Realm, plans his return."
+    },
+    {
+      "year": 1030,
+      "planet": "scadrial",
+      "summary": "Founds the Ghostbloods."
+    },
+    {
+      "year": 1050,
+      "planet": "scadrial",
+      "summary": "The Ghostbloods expand to Roshar via agents."
+    },
+    {
+      "year": 1326,
+      "planet": "scadrial",
+      "summary": "Manifests before Wax and Marasi."
+    },
+    {
+      "year": 1503,
+      "planet": "scadrial",
+      "summary": "The Ghostbloods operate in the Shattered Plains via agents."
+    }
+  ]
+}

@@ -5,7 +5,7 @@ export type SizeTier = 'hero' | 'large' | 'medium' | 'small' | 'minor'
 interface Props {
   id: string
   name: string
-  imageUrl: string
+  imageUrl: string | null
   isSelected: boolean
   isRelated: boolean
   isDeceased: boolean
@@ -369,7 +369,7 @@ function PortraitImage({
   seed,
 }: {
   name: string
-  imageUrl: string
+  imageUrl: string | null
   tier: SizeTier
   seed: number
 }) {

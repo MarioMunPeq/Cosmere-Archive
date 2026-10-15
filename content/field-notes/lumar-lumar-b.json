@@ -1,0 +1,21 @@
+{
+  "id": "lumar-lumar-b",
+  "planet": "lumar",
+  "text": [
+    "Almost lost these notes during an",
+    "incident on the Verdant Sea.",
+    "The spores react violently to",
+    "moisture."
+  ],
+  "style": "khriss",
+  "layout": {
+    "left": "74%",
+    "top": "34%",
+    "rotation": "-1.5deg",
+    "maxWidth": "160px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

@@ -1,0 +1,21 @@
+{
+  "id": "scadrial-scadrial-nazh-a",
+  "planet": "scadrial",
+  "text": [
+    "I drew the map of Luthadel",
+    "from memory because Khriss",
+    "refused to let me near the city.",
+    "Something about \"methodology.\""
+  ],
+  "style": "nazh",
+  "layout": {
+    "left": "58%",
+    "top": "16%",
+    "rotation": "1.8deg",
+    "maxWidth": "150px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

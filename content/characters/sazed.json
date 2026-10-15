@@ -1,0 +1,31 @@
+{
+  "id": "sazed",
+  "name": "Sazed",
+  "pronunciation": "sah-ZED",
+  "summary": "A Terris Keeper of the Synod, born with the ability to store attributes in metalminds through Feruchemy. As a Keeper, Sazed preserves the knowledge of all of Scadrial's religions and cultures, believing that information must survive even if the civilizations that created it do not. He serves as advisor, historian, and friend to both Vin and Elend, carrying the weight of a thousand faiths on his shoulders. After the death of Vin and Elend, Sazed ascends as Harmony, the combined Shard of Preservation and Ruin, becoming the god of Scadrial and guiding its civilization through the next thousand years.",
+  "origin": "scadrial",
+  "books": [
+    "the-final-empire",
+    "the-well-of-ascension",
+    "the-hero-of-ages",
+    "the-alloy-of-law",
+    "shadows-of-self",
+    "the-bands-of-mourning",
+    "the-lost-metal"
+  ],
+  "unlockAt": [
+    "the-final-empire",
+    "the-well-of-ascension",
+    "the-hero-of-ages",
+    "the-alloy-of-law",
+    "shadows-of-self",
+    "the-bands-of-mourning",
+    "the-lost-metal"
+  ],
+  "portrait": null,
+  "born": 150,
+  "died": null,
+  "status": "living",
+  "groups": ["scadrian"],
+  "titles": ["Keeper", "Harmony", "Hero of Ages"]
+}

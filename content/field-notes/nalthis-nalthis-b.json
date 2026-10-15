@@ -1,0 +1,20 @@
+{
+  "id": "nalthis-nalthis-b",
+  "planet": "nalthis",
+  "text": [
+    "I had nearly forgotten how pleasant",
+    "this climate is. My notes from",
+    "the first expedition were accurate."
+  ],
+  "style": "khriss",
+  "layout": {
+    "left": "74%",
+    "top": "30%",
+    "rotation": "-1.2deg",
+    "maxWidth": "155px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

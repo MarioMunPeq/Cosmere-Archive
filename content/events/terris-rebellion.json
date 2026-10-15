@@ -1,0 +1,14 @@
+{
+  "id": "terris-rebellion",
+  "title": "Terris Rebellion",
+  "summary": "The Terris people rebel against the Lord Ruler. The rebellion is brutally crushed. Feruchemists are persecuted and nearly exterminated. The Keepers of Terris heritage begin hiding their metalminds.",
+  "year": 100,
+  "endYear": null,
+  "type": "cataclysm",
+  "series": "mistborn-era-1",
+  "planets": ["scadrial"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 3,
+  "archivistNote": null
+}

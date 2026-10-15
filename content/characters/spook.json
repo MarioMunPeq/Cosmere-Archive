@@ -1,0 +1,15 @@
+{
+  "id": "spook",
+  "name": "Spook",
+  "pronunciation": null,
+  "summary": "The youngest member of Kelsier's crew, a Tineye with the ability to flare his senses physically. Quiet, overlooked, and desperately seeking validation, Spook's journey from a shy teenager to a hardened leader is one of the most dramatic transformations in the series. He is burned by a mysterious fire that leaves him scarred but grants him a unique allomantic ability, and later leads the underground resistance in Luthadel after Vin and Elend leave. He marries Beldre and becomes a revered figure known as the Lord Mistborn, but his later life is complicated by the discovery of his true heritage and his role in Scadrial's history.",
+  "origin": "scadrial",
+  "books": ["the-final-empire", "the-well-of-ascension", "the-hero-of-ages"],
+  "unlockAt": ["the-final-empire", "the-well-of-ascension", "the-hero-of-ages"],
+  "portrait": "characters/Spook.webp",
+  "born": 1020,
+  "died": null,
+  "status": "living",
+  "groups": ["scadrian"],
+  "titles": ["Lord Mistborn", "Survivor", "Founder of Elendel"]
+}

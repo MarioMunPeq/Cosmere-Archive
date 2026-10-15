@@ -1,0 +1,14 @@
+{
+  "id": "devotion-dominion-sel",
+  "title": "Devotion and Dominion on Sel",
+  "summary": "Devotion (Aona) and Dominion (Skai) arrive on Sel and create a civilization where magic depends on geography and belief systems.",
+  "year": -6500,
+  "endYear": null,
+  "type": "arrival",
+  "series": "elantris",
+  "planets": ["sel"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 4,
+  "archivistNote": null
+}

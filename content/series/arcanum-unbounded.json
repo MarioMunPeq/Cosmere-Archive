@@ -1,0 +1,12 @@
+{
+  "id": "arcanum-unbounded",
+  "name": "Arcanum Unbounded",
+  "color": "#8b5cf6",
+  "order": 7,
+  "summary": "Collection of Cosmere short stories with information about each system.",
+  "spine": {
+    "ink": null,
+    "foil": "#8b5cf6",
+    "crop": "50% 20%"
+  }
+}

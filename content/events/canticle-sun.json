@@ -1,0 +1,14 @@
+{
+  "id": "canticle-sun",
+  "title": "The Sun of Canticle",
+  "summary": "Canticle is a planet trapped in an unstable orbit, constantly moving to avoid being scorched by its sun. The population lives in mobile cities that flee the dawn. The local investiture is tied to extreme heat.",
+  "year": 1620,
+  "endYear": null,
+  "type": "discovery",
+  "series": "secret-projects",
+  "planets": ["canticle"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 3,
+  "archivistNote": null
+}

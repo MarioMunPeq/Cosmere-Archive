@@ -1,0 +1,15 @@
+{
+  "id": "kokerlii",
+  "name": "Kokerlii",
+  "pronunciation": null,
+  "summary": "A small, squat humanoid alien from the planet UTol who becomes one of Nomad's traveling companions on Canticle. Kokerlii is chatty, optimistic, and provides much-needed comic relief in the grim setting of the sun-scorched world. Despite his small size and apparent weakness, Kokerlii possesses a surprisingly sharp mind and an unbreakable spirit. He serves as a moral compass for Nomad, reminding him of the value of hope and friendship even in the most desperate circumstances.",
+  "origin": "canticle",
+  "books": ["the-sunlit-man"],
+  "unlockAt": ["the-sunlit-man"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

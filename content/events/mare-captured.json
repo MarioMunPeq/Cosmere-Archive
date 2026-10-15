@@ -1,0 +1,14 @@
+{
+  "id": "mare-captured",
+  "title": "Capture of Mare",
+  "summary": "Mare, Kelsier's wife, is captured by the Steel Inquisitors and sent to the Pits of Hathsin, where she dies. Kelsier survives and escapes, gaining his allomantic powers in the process.",
+  "year": 1020,
+  "endYear": null,
+  "type": "historical",
+  "series": "mistborn-era-1",
+  "planets": ["scadrial"],
+  "characters": ["kelsier"],
+  "worldhoppers": [],
+  "importance": 4,
+  "archivistNote": null
+}

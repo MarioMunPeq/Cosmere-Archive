@@ -1,0 +1,16 @@
+{
+  "id": "first-of-the-sun-fots-d",
+  "planet": "first-of-the-sun",
+  "text": ["Sixth of the Dusk's account", "provided the most reliable data on", "the aviar bonding process."],
+  "style": "khriss",
+  "layout": {
+    "left": "12%",
+    "top": "34%",
+    "rotation": "-1.7deg",
+    "maxWidth": "160px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

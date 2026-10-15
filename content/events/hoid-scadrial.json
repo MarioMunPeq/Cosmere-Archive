@@ -1,0 +1,14 @@
+{
+  "id": "hoid-scadrial",
+  "title": "Hoid on Scadrial",
+  "summary": "Hoid visits Scadrial during the events of Mistborn Era 1, observing the fall of the Lord Ruler and the ascension of Harmony.",
+  "year": 1024,
+  "endYear": null,
+  "type": "arrival",
+  "series": "mistborn-era-1",
+  "planets": ["scadrial"],
+  "characters": [],
+  "worldhoppers": ["wh-hoid"],
+  "importance": 3,
+  "archivistNote": null
+}

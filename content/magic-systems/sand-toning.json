@@ -1,0 +1,14 @@
+{
+  "id": "sand-toning",
+  "name": "Sand Toning",
+  "summary": "A lesser-known variant of Sand Mastery with different properties. Produces musical tones through sand manipulation.",
+  "planet": "taldain",
+  "shard": "Autonomy",
+  "category": "sand_mastery",
+  "color": "#a16207",
+  "books": ["white-sand-vol-1", "white-sand-vol-2", "white-sand-vol-3"],
+  "classification": "Kinetic Investiture",
+  "status": "Partially Documented",
+  "academicNote": null,
+  "allomanticMetals": []
+}

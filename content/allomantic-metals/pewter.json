@@ -1,0 +1,10 @@
+{
+  "id": "pewter",
+  "name": "Pewter",
+  "alloy": "Tin",
+  "group": "physical",
+  "allomanticPower": "Enhance physical abilities",
+  "feruchemicalPower": "Store physical strength",
+  "hemalurgicProperty": "Steals Feruchemical power",
+  "color": "#d97706"
+}

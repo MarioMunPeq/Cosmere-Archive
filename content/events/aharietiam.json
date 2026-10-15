@@ -1,0 +1,14 @@
+{
+  "id": "aharietiam",
+  "title": "Aharietiam — The Final Desolation",
+  "summary": "The final Desolation. The Heralds, led by Jezrien, achieve a decisive victory. However, Talenel (Taln) is the only one who returns to Braize; the other nine Heralds abandon the Oathpact, leaving Taln alone to endure eternal torment.",
+  "year": -2500,
+  "endYear": null,
+  "type": "historical",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 5,
+  "archivistNote": "The Heralds’ abandonment of the Oathpact remains one of the most debated events in Cosmere history. Scadrian and Selish accounts of this period differ markedly from Rosharan sources, and several Silverlight researchers have proposed that the event was not a betrayal but a calculated sacrifice."
+}

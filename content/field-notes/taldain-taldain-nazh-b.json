@@ -1,0 +1,16 @@
+{
+  "id": "taldain-taldain-nazh-b",
+  "planet": "taldain",
+  "text": ["Khriss spent three days", "arguing with a sand master", "about orbital mechanics.", "The sand master won."],
+  "style": "nazh",
+  "layout": {
+    "left": "60%",
+    "top": "56%",
+    "rotation": "-2.3deg",
+    "maxWidth": "135px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

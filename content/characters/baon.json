@@ -1,0 +1,15 @@
+{
+  "id": "baon",
+  "name": "Baon",
+  "pronunciation": null,
+  "summary": "A Darksider mercenary from Taldain who serves as Khriss's bodyguard and guide during her expedition to Dayside. Skilled in combat and unusually knowledgeable about Sand Mastery for a Darksider, Baon is protective, pragmatic, and quietly observant. His loyalty to Khriss and his expertise in survival on the harsh Dayside make him invaluable to her research. Baon's past and his connection to the wider Cosmere suggest depths that are only hinted at in the White Sand graphic novels.",
+  "origin": "taldain",
+  "books": ["white-sand-vol-1", "white-sand-vol-2", "white-sand-vol-3"],
+  "unlockAt": ["white-sand-vol-1", "white-sand-vol-2", "white-sand-vol-3"],
+  "portrait": null,
+  "born": 75,
+  "died": null,
+  "status": "living",
+  "groups": ["taldaini"],
+  "titles": ["Master of Sand", "Guardian"]
+}

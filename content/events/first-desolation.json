@@ -1,0 +1,14 @@
+{
+  "id": "first-desolation",
+  "title": "First Desolation",
+  "summary": "The first of many Desolations begins, where the Voidbringers attack Roshar. The Heralds and the Knights Radiant form the first defenses. The Oathpact is established.",
+  "year": -5000,
+  "endYear": null,
+  "type": "cataclysm",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 5,
+  "archivistNote": "Rosharan records of the early Desolations are fragmentary at best. The exact chronology has been reconstructed from singer songs, spren memories, and the few surviving Dawnchant texts."
+}

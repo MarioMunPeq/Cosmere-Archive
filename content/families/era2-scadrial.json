@@ -1,0 +1,45 @@
+{
+  "id": "era2-scadrial",
+  "name": "Ladrian & Harms Family",
+  "color": "#2dd4bf",
+  "summary": "Waxillium Ladrian, Steris Harms, and her half-sister Marasi Colms — the interconnected families of Scadrial's Era 2.",
+  "rootIds": ["lord-harms"],
+  "members": [
+    {
+      "id": "lord-harms",
+      "name": "Lord Harms",
+      "character": null,
+      "spouse": null,
+      "parents": [],
+      "isDeceased": true,
+      "gender": "male"
+    },
+    {
+      "id": "steris",
+      "name": "Steris Harms",
+      "character": "steris",
+      "spouse": "wax",
+      "parents": ["lord-harms"],
+      "isDeceased": false,
+      "gender": "female"
+    },
+    {
+      "id": "marasi",
+      "name": "Marasi Colms",
+      "character": "marasi",
+      "spouse": null,
+      "parents": ["lord-harms"],
+      "isDeceased": false,
+      "gender": "female"
+    },
+    {
+      "id": "wax",
+      "name": "Waxillium Ladrian",
+      "character": "wax",
+      "spouse": "steris",
+      "parents": [],
+      "isDeceased": false,
+      "gender": "male"
+    }
+  ]
+}

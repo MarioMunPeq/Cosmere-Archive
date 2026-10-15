@@ -1,0 +1,14 @@
+{
+  "id": "nightblood-sentient",
+  "title": "Nightblood Awakens",
+  "summary": "Nightblood, the sentient sword created by Vasher and Shashara, awakens fully. Its only mission: to destroy evil. But it does not truly understand what 'evil' is.",
+  "year": 290,
+  "endYear": null,
+  "type": "discovery",
+  "series": "warbreaker",
+  "planets": ["nalthis"],
+  "characters": ["nightblood", "vasher"],
+  "worldhoppers": ["wh-vasher"],
+  "importance": 4,
+  "archivistNote": null
+}

@@ -1,0 +1,15 @@
+{
+  "id": "charlie",
+  "name": "Charlie",
+  "pronunciation": null,
+  "summary": "A young man from the Rock nation on Lumar, the adventurous and kind-hearted son of the duke who wins Tress's heart with his genuine interest in her opinions and his stories of the wider world. After offending the Sorceress of the Midnight Sea, Charlie is cursed and taken to her island, setting in motion Tress's epic journey to rescue him. Despite his curse, which prevents him from speaking the truth, Charlie's inherent goodness and love for Tress endure, and he proves himself worthy of her sacrifice by actively working against the Sorceress in his own way.",
+  "origin": "lumar",
+  "books": ["tress-of-the-emerald-sea"],
+  "unlockAt": ["tress-of-the-emerald-sea"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

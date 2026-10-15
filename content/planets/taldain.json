@@ -1,0 +1,23 @@
+{
+  "id": "taldain",
+  "name": "Taldain",
+  "pronunciation": null,
+  "summary": "A world of two faces: a sun-baked desert and an ocean of darkness. Land of sand masters.",
+  "shards": ["autonomy"],
+  "color": "#eab308",
+  "connectedPlanets": [],
+  "series": ["white-sand"],
+  "books": ["white-sand-vol-1", "white-sand-vol-2", "white-sand-vol-3"],
+  "investiture": [
+    {
+      "name": "Sand Mastery",
+      "summary": "Manipulating sand using Investiture. Practiced by the Darksiders.",
+      "shard": "Autonomy"
+    },
+    {
+      "name": "Sand Toning",
+      "summary": "A lesser-known variant of Sand Mastery with different properties.",
+      "shard": "Autonomy"
+    }
+  ]
+}

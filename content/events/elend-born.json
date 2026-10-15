@@ -1,0 +1,14 @@
+{
+  "id": "elend-born",
+  "title": "Birth of Elend Venture",
+  "summary": "Elend Venture is born, son of House Venture, a Scadrian noble who dreams of a democratic government and will become the king of the New Empire.",
+  "year": 1021,
+  "endYear": null,
+  "type": "birth",
+  "series": "mistborn-era-1",
+  "planets": ["scadrial"],
+  "characters": ["elend"],
+  "worldhoppers": [],
+  "importance": 4,
+  "archivistNote": null
+}

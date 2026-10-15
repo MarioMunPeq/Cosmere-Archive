@@ -1,0 +1,16 @@
+{
+  "id": "sel-sel-b",
+  "planet": "sel",
+  "text": ["Nazh insists this landmass map is", "incorrect by twelve leagues.", "I disagree. He drew the original."],
+  "style": "khriss",
+  "layout": {
+    "left": "74%",
+    "top": "28%",
+    "rotation": "-0.2deg",
+    "maxWidth": "170px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

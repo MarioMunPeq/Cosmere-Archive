@@ -1,0 +1,15 @@
+{
+  "id": "mare",
+  "name": "Mare",
+  "pronunciation": null,
+  "summary": "Kelsier's late wife and a fellow skaa rebel. She was a clever and resourceful woman who helped Kelsier plan some of his most daring heists before being captured and executed in the Pits of Hathsin. Kelsier's love for Mare—and his guilt over her death—drives his entire rebellion against the Lord Ruler. The flower she drew in the Pits becomes the symbol of the skaa rebellion, and her memory fuels Kelsier's determination to create a world where the skaa can live free.",
+  "origin": "scadrial",
+  "books": ["the-final-empire"],
+  "unlockAt": ["the-final-empire"],
+  "portrait": "characters/Mare.webp",
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

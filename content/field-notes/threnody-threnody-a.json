@@ -1,0 +1,21 @@
+{
+  "id": "threnody-threnody-a",
+  "planet": "threnody",
+  "text": [
+    "Ambition's death Investiture",
+    "permeates this world at every",
+    "measurable level. The cognitive",
+    "realm is saturated."
+  ],
+  "style": "khriss",
+  "layout": {
+    "left": "10%",
+    "top": "4%",
+    "rotation": "0.8deg",
+    "maxWidth": "170px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

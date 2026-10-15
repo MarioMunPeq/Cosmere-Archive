@@ -1,0 +1,15 @@
+{
+  "id": "lift",
+  "name": "Lift",
+  "pronunciation": null,
+  "summary": "A young Reshi girl who became an Edgedancer of the Knights Radiant, bonded to the cultivation spren Wyndle. Lift is unique among Radiants in that she can convert food directly into Stormlight through a process related to her connection to Cultivation, bypassing the need for highstorms. She speaks with a modern slang that baffles other Rosharans, is fiercely independent, and has declared herself the unofficial hero of her people, though she would deny wanting any such responsibility. Her ability to touch the Cognitive Realm and her connection to ancient powers make her more significant than even she realizes.",
+  "origin": "roshar",
+  "books": ["words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "unlockAt": ["words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "portrait": null,
+  "born": 1485,
+  "died": null,
+  "status": "living",
+  "groups": ["radiant"],
+  "titles": ["Edgedancer", "Radiant", "She Who Never Ages"]
+}

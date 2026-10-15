@@ -1,0 +1,16 @@
+{
+  "id": "threnody-threnody-g",
+  "planet": "threnody",
+  "text": ["The Homeland continent appears", "to be the origin of the shadows.", "Further investigation postponed."],
+  "style": "khriss",
+  "layout": {
+    "left": "36%",
+    "top": "4%",
+    "rotation": "-1.1deg",
+    "maxWidth": "160px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

@@ -1,0 +1,14 @@
+{
+  "id": "nomad-flights",
+  "title": "Hoid Helps Nomad",
+  "summary": "Hoid discovers that his former disciple Sigzil (Nomad) is being pursued and offers him help and refuge, although his own problems with Taravangian limit what he can do.",
+  "year": 1620,
+  "endYear": null,
+  "type": "historical",
+  "series": "secret-projects",
+  "planets": ["canticle", "lumar"],
+  "characters": ["sigzil", "hoid"],
+  "worldhoppers": ["wh-hoid"],
+  "importance": 3,
+  "archivistNote": null
+}

@@ -1,0 +1,15 @@
+{
+  "id": "taravangian",
+  "name": "Taravangian",
+  "pronunciation": null,
+  "summary": "King of Kharbranth and one of the most complex figures in the Cosmere. Cursed by the curse of the Diagram, Taravangian's intelligence fluctuates wildly: on some days he is a genius capable of predicting the future, on others a simple-minded child filled with compassion. He founded the Diagram—a secret organization dedicated to saving humanity by any means necessary—and orchestrated the deaths of countless innocents to position himself. In a stunning turn, he kills Odium's Vessel and Ascends to become the new Shard of Odium, wielding the power of Passion with an inscrutable plan.",
+  "origin": "roshar",
+  "books": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "unlockAt": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "portrait": null,
+  "born": 1445,
+  "died": null,
+  "status": "living",
+  "groups": ["radiant"],
+  "titles": ["King of Kharbranth", "Odium", "The Wisest"]
+}

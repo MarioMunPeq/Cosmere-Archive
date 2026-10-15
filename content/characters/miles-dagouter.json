@@ -1,0 +1,15 @@
+{
+  "id": "miles-dagouter",
+  "name": "Miles Dagouter (Miles Hundredlives)",
+  "pronunciation": null,
+  "summary": "A Twinborn bounty hunter combining steel Allomancy (Coinshot) with gold Feruchemy (Bloodmaker), creating a Compounding healing loop that makes him virtually immortal. Miles is a religious zealot who sees the corruption of Elendel's nobility as a sin requiring violent cleansing, leading him to become a mass murderer in the name of justice. His immunity to conventional death—he has been killed hundreds of times and regenerated—makes him one of the most terrifying opponents Wax has ever faced. The question of whether an immortal criminal can truly be stopped, and at what moral cost, is central to his arc.",
+  "origin": "scadrial",
+  "books": ["the-alloy-of-law", "shadows-of-self"],
+  "unlockAt": ["the-alloy-of-law", "shadows-of-self"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

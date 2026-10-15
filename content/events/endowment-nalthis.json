@@ -1,0 +1,14 @@
+{
+  "id": "endowment-nalthis",
+  "title": "Endowment Arrives on Nalthis",
+  "summary": "Edgli (Endowment) arrives on Nalthis and begins experimenting with Investiture, creating the system of BioChromatic Breaths. War marks the planet's early history.",
+  "year": -6000,
+  "endYear": null,
+  "type": "arrival",
+  "series": "warbreaker",
+  "planets": ["nalthis"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 4,
+  "archivistNote": null
+}

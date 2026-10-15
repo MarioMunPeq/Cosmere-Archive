@@ -1,0 +1,15 @@
+{
+  "id": "rlain",
+  "name": "Rlain",
+  "pronunciation": null,
+  "summary": "A listener scout who infiltrated the Alethi warcamps and later joined Bridge Four, becoming the only listener to be fully accepted among humans during the war between their peoples. After the listeners transformed into the Fused and stormform, Rlain was left alone, caught between two worlds—distrusted by humans for being a singer and rejected by his own people for failing to join the transformation. His bond with the spren Tumi makes him the first singer Truthwatcher in the history of the Knights Radiant, and his friendship with Renarin Kholin offers hope for reconciliation between humans and singers. Rlain's quiet dignity and resilience in the face of alienation from both sides of the war make him one of the most compelling characters in the Stormlight Archive.",
+  "origin": "roshar",
+  "books": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "unlockAt": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

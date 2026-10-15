@@ -1,0 +1,16 @@
+{
+  "id": "canticle-canticle-f",
+  "planet": "canticle",
+  "text": ["The population's migratory pattern", "follows the habitable band.", "Logically necessary."],
+  "style": "khriss",
+  "layout": {
+    "left": "12%",
+    "top": "42%",
+    "rotation": "0.5deg",
+    "maxWidth": "150px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

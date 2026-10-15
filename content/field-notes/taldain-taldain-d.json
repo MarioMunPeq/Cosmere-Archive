@@ -1,0 +1,16 @@
+{
+  "id": "taldain-taldain-d",
+  "planet": "taldain",
+  "text": ["Autonomy's influence here is more", "overt than in any other system", "I have studied."],
+  "style": "khriss",
+  "layout": {
+    "left": "72%",
+    "top": "10%",
+    "rotation": "1.1deg",
+    "maxWidth": "150px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

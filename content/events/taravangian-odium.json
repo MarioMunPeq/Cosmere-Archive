@@ -1,0 +1,14 @@
+{
+  "id": "taravangian-odium",
+  "title": "Taravangian Becomes Odium",
+  "summary": "Taravangian, the king of Kharbranth, finally achieves his goal: in a moment of supreme intelligence, he manipulates events to become the new vessel of Odium, replacing Rayse.",
+  "year": 1504,
+  "endYear": null,
+  "type": "historical",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": ["taravangian", "dalinar", "hoid"],
+  "worldhoppers": ["wh-hoid"],
+  "importance": 5,
+  "archivistNote": "This represents the first known instance of a Shard changing Vessels not through death or voluntary transfer, but through deliberate manipulation. The implications for our understanding of Shardic bonds are profound."
+}

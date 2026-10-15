@@ -1,0 +1,14 @@
+{
+  "id": "aondor",
+  "name": "AonDor",
+  "summary": "Symbol-based magic tied to the geography of Arelon on Sel. Aons are complex symbols drawn in the air that produce magical effects. Weakened drastically after the Reod.",
+  "planet": "sel",
+  "shard": "Devotion",
+  "category": "selish",
+  "color": "#14b8a6",
+  "books": ["elantris"],
+  "classification": "Symbolic Manipulation",
+  "status": "Documented",
+  "academicNote": null,
+  "allomanticMetals": []
+}

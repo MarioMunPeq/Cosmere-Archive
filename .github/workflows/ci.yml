@@ -33,7 +33,7 @@ jobs:
       - run: pnpm test
 
   budgets:
-    name: Design tokens and asset references
+    name: Content, design tokens and asset references
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -43,6 +43,10 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # M1 · Block 6 — validates content/ against the 14 JSON Schemas and the
+      # semantic rules V1–V15 of REBUILD_PLAN §7.5. Must report 0 broken
+      # references and 0 missing assets.
+      - run: pnpm content:validate
       # Reads src/design/tokens.css and asserts every text x surface pair
       # clears its WCAG threshold. 42 checks.
       - run: pnpm test:contrast

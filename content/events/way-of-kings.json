@@ -1,0 +1,14 @@
+{
+  "id": "way-of-kings",
+  "title": "The Way of Kings",
+  "summary": "Kaladin becomes a slave and discovers his bond with Sylphrena. Shallan travels to the Shattered Plains to steal Jasnah's gem. Dalinar seeks a path to unite Alethkar as the Everstorm approaches. Hoid appears as King Elhokar's storytelling tutor.",
+  "year": 1500,
+  "endYear": null,
+  "type": "book",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": ["kaladin", "shallan", "dalinar", "jasnah", "hoid", "szeth"],
+  "worldhoppers": ["wh-hoid", "wh-vasher"],
+  "importance": 5,
+  "archivistNote": null
+}

@@ -1,0 +1,12 @@
+{
+  "id": "warbreaker",
+  "name": "Warbreaker",
+  "color": "#d946ef",
+  "order": 3,
+  "summary": "Gods, breaths, and talking swords on the world of Nalthis.",
+  "spine": {
+    "ink": null,
+    "foil": "#d946ef",
+    "crop": "50% 20%"
+  }
+}

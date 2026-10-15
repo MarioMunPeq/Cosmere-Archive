@@ -1,0 +1,15 @@
+{
+  "id": "syl",
+  "name": "Sylphrena",
+  "pronunciation": null,
+  "summary": "An honorspren bonded to Kaladin, who serves as his conscience, guide, and closest friend. Syl was one of the last of the ancient spren born in the cognitive realm, drawn to Kaladin because of his innate protection of others. She takes the form of a young woman, often seen as a faint blue figure or a floating trail of light. Her bond with Kaladin was severely damaged when he broke his oath to protect Elhokar, nearly killing her, but the Windrunner's Fourth Ideal restored her fully. Syl is fiercely protective of Kaladin, with a playful, curious personality that belies her ancient nature as a splinter of Honor.",
+  "origin": "roshar",
+  "books": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "unlockAt": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

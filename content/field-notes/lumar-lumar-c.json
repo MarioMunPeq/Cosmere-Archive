@@ -1,0 +1,16 @@
+{
+  "id": "lumar-lumar-c",
+  "planet": "lumar",
+  "text": ["Two moons. Both exhibit unusual", "orbital precession that defies", "standard gravitational models."],
+  "style": "khriss",
+  "layout": {
+    "left": "12%",
+    "top": "74%",
+    "rotation": "0.2deg",
+    "maxWidth": "155px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

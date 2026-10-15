@@ -1,0 +1,14 @@
+{
+  "id": "dakhor",
+  "name": "Dakhor",
+  "summary": "Bone-based magic used by the Fjordell priesthood on Sel. Powered by blood sacrifices and bone-rearranging rituals.",
+  "planet": "sel",
+  "shard": "Dominion",
+  "category": "selish",
+  "color": "#991b1b",
+  "books": ["elantris"],
+  "classification": "Symbolic Manipulation",
+  "status": "Partially Documented",
+  "academicNote": null,
+  "allomanticMetals": []
+}

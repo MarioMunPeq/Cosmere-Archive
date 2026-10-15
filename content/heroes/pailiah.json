@@ -1,0 +1,20 @@
+{
+  "id": "pailiah",
+  "name": "Pailiah",
+  "title": "Herald of the Learned",
+  "order": "Truthwatchers",
+  "kind": "herald",
+  "pronunciation": null,
+  "summary": "The patron of the Truthwatchers. A seeker of knowledge and truth, she hid herself away for millennia in the depths of the Palanaeum, guarding secrets that predate the Oathpact itself.",
+  "surges": ["Progression", "Illumination"],
+  "attributes": ["Learned", "Giving"],
+  "essence": "Marble",
+  "soulcasting": "Stone",
+  "honorbladeGrants": "Progression and Illumination — the power to heal and to create illusions of light and sound.",
+  "quote": "\"To know is to bear a burden. Ignorance is the lighter path, but not the truer one.\"",
+  "books": ["words-of-radiance", "oathbringer"],
+  "status": "fallen",
+  "connections": [],
+  "positionIndex": 4,
+  "color": "#2dd4bf"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "nalthis-nalthis-f",
+  "planet": "nalthis",
+  "text": [
+    "Colour saturation here is measurably",
+    "higher than anywhere else in the",
+    "Cosmere. Not merely aesthetic."
+  ],
+  "style": "khriss",
+  "layout": {
+    "left": "42%",
+    "top": "4%",
+    "rotation": "0.6deg",
+    "maxWidth": "165px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

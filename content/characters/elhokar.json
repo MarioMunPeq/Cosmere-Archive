@@ -1,0 +1,15 @@
+{
+  "id": "elhokar",
+  "name": "Elhokar Kholin",
+  "pronunciation": null,
+  "summary": "King of Alethkar after the assassination of his father Gavilar. A well-meaning but paranoid ruler who struggles to fill his father's shadow, Elhokar is known for his obsession with assassination threats, his poor judgment in choosing advisors, and his genuine desire to be a good king. He begins to see strange symbols that he cannot decipher—spren patterns, later revealed to be his potential as a Lightweaver—but his journey is cut short and he never speaks his oaths. His death at the hands of Moash sends shockwaves through the Alethi court.",
+  "origin": "roshar",
+  "books": ["the-way-of-kings", "words-of-radiance", "oathbringer"],
+  "unlockAt": ["the-way-of-kings", "words-of-radiance", "oathbringer"],
+  "portrait": "characters/Elhokar.webp",
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

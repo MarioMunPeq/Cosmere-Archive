@@ -1,0 +1,14 @@
+{
+  "id": "yumi-events",
+  "title": "Yumi and the Nightmare Painter",
+  "summary": "Yumi, a spirit summoner from Komashi, and Nikaro, a nightmare painter, mysteriously swap places. They must discover how their connection works to save their world from the nightmares.",
+  "year": 1610,
+  "endYear": null,
+  "type": "book",
+  "series": "secret-projects",
+  "planets": ["komashi"],
+  "characters": ["hoid"],
+  "worldhoppers": ["wh-hoid"],
+  "importance": 3,
+  "archivistNote": null
+}

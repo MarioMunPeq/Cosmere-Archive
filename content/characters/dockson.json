@@ -1,0 +1,15 @@
+{
+  "id": "dockson",
+  "name": "Dockson",
+  "pronunciation": null,
+  "summary": "The organizational mastermind of Kelsier's crew, the man who manages the logistics, finances, and planning that allow the rebellion to function. Dockson is not an Allomancer, but his strategic mind and administrative skills make him invaluable. He is the steady, reliable heart of the crew, the one who holds everything together while the more flashy members pursue their goals. After the Lord Ruler's fall, Dockson struggles with the transition from revolutionary to bureaucrat and ultimately dies defending the new government during the siege of Luthadel.",
+  "origin": "scadrial",
+  "books": ["the-final-empire", "the-well-of-ascension"],
+  "unlockAt": ["the-final-empire", "the-well-of-ascension"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

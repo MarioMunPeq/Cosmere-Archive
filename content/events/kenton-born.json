@@ -1,0 +1,14 @@
+{
+  "id": "kenton-born",
+  "title": "Birth of Kenton",
+  "summary": "Kenton is born on Taldain, who will become the last Sand Master and a key figure in the survival of the Sand Diary.",
+  "year": 80,
+  "endYear": null,
+  "type": "birth",
+  "series": "white-sand",
+  "planets": ["taldain"],
+  "characters": ["kenton"],
+  "worldhoppers": [],
+  "importance": 3,
+  "archivistNote": null
+}

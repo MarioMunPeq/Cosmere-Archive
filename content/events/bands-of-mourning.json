@@ -1,0 +1,14 @@
+{
+  "id": "bands-of-mourning",
+  "title": "The Bands of Mourning",
+  "summary": "Wax travels to the south of Scadrial and discovers an advanced civilization that survived the Catacendre. He finds the Bands of Mourning and discovers that invested technology can change the world.",
+  "year": 1326,
+  "endYear": null,
+  "type": "book",
+  "series": "mistborn-era-2",
+  "planets": ["scadrial"],
+  "characters": ["wax", "wayne", "marasi", "steris", "kelsier"],
+  "worldhoppers": ["wh-kelsier"],
+  "importance": 4,
+  "archivistNote": null
+}

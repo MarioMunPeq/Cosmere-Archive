@@ -1,0 +1,14 @@
+{
+  "id": "nazh-maps",
+  "title": "Nazh Maps the Cosmere",
+  "summary": "Nazh travels the Cosmere creating detailed maps of the known planets. His maps are the most accurate and are found in most academic collections.",
+  "year": 1400,
+  "endYear": null,
+  "type": "historical",
+  "series": "arcanum-unbounded",
+  "planets": ["roshar", "scadrial", "sel", "nalthis", "taldain", "threnody"],
+  "characters": [],
+  "worldhoppers": ["wh-nazh"],
+  "importance": 2,
+  "archivistNote": null
+}

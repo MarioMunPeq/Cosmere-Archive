@@ -1,0 +1,14 @@
+{
+  "id": "hoid-begins-wandering",
+  "title": "Hoid Begins His Wandering",
+  "summary": "Hoid, having refused a Shard, begins his eternal journey through the Cosmere. He seeks knowledge, power, and a way to be everywhere at once. His presence is felt at key moments in history.",
+  "year": -9900,
+  "endYear": null,
+  "type": "historical",
+  "series": "pre-cosmere",
+  "planets": ["roshar", "scadrial", "sel", "nalthis", "taldain"],
+  "characters": [],
+  "worldhoppers": ["wh-hoid"],
+  "importance": 5,
+  "archivistNote": null
+}

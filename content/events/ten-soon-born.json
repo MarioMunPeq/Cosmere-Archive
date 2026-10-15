@@ -1,0 +1,14 @@
+{
+  "id": "ten-soon-born",
+  "title": "Birth of TenSoon",
+  "summary": "TenSoon, a kandra of the Third Generation, is created. He will become a rebel kandra who helps Vin and eventually gains his freedom thanks to Sazed/Harmony.",
+  "year": 200,
+  "endYear": null,
+  "type": "birth",
+  "series": "mistborn-era-1",
+  "planets": ["scadrial"],
+  "characters": ["ten-soon"],
+  "worldhoppers": [],
+  "importance": 3,
+  "archivistNote": null
+}

@@ -1,0 +1,15 @@
+{
+  "id": "tress",
+  "name": "Tress",
+  "pronunciation": null,
+  "summary": "A young woman from a remote island on the spore-covered world of Lumar, where she lives a simple life as a cupwasher. When her love, the adventurous Charlie, is kidnapped and cursed by the Sorceress of the Midnight Sea, Tress leaves her sheltered home for the first time and embarks on a perilous journey across the dangerous spore seas. Crewed by a motley assortment of pirates, dragons, and a talking rat, she discovers unexpected depths of courage, resourcefulness, and determination. Narrated by Hoid with characteristic wit, Tress's journey from ordinary cupwasher to legendary explorer is a celebration of the idea that anyone can become a hero when they have something worth fighting for.",
+  "origin": "lumar",
+  "books": ["tress-of-the-emerald-sea"],
+  "unlockAt": ["tress-of-the-emerald-sea"],
+  "portrait": null,
+  "born": 1580,
+  "died": null,
+  "status": "living",
+  "groups": ["other"],
+  "titles": ["Navigator", "Heroine of Lumar", "Captain"]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "elantris",
+  "name": "Elantris",
+  "color": "#14b8a6",
+  "order": 2,
+  "summary": "Sanderson's first published novel. A cursed city and a fallen prince.",
+  "spine": {
+    "ink": null,
+    "foil": "#14b8a6",
+    "crop": "50% 20%"
+  }
+}

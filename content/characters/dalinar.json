@@ -1,0 +1,15 @@
+{
+  "id": "dalinar",
+  "name": "Dalinar Kholin",
+  "pronunciation": null,
+  "summary": "Highprince of House Kholin, known across Alethkar as the Blackthorn—the most feared warlord of his generation. After the death of his brother Gavilar, Dalinar is haunted by visions from the Almighty and dedicates himself to uniting the warring monarchs of Roshar against the coming Desolation. He bonds the Stormfather to become a Bondsmith, the rarest and most powerful order of the Knights Radiant, capable of forging Connection between all things. His journey from brutal conqueror to principled leader defines the moral heart of the Stormlight Archive.",
+  "origin": "roshar",
+  "books": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "unlockAt": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "portrait": "characters/Dalinar.webp",
+  "born": 1460,
+  "died": null,
+  "status": "living",
+  "groups": ["radiant"],
+  "titles": ["Bondsmith", "Highprince", "Champion of Honor"]
+}

@@ -1,0 +1,54 @@
+{
+  "id": "survivor",
+  "name": "Survivor's Kin",
+  "color": "#a78bfa",
+  "summary": "The found family bonded to Kelsier, the Survivor of Hathsin. Marsh is Kelsier's older brother; Spook is their distant cousin.",
+  "rootIds": ["survivor-circle"],
+  "members": [
+    {
+      "id": "survivor-circle",
+      "name": "Survivor's Circle",
+      "character": null,
+      "spouse": null,
+      "parents": [],
+      "isDeceased": true,
+      "gender": "male"
+    },
+    {
+      "id": "kelsier",
+      "name": "Kelsier",
+      "character": "kelsier",
+      "spouse": "mare",
+      "parents": ["survivor-circle"],
+      "isDeceased": false,
+      "gender": "male"
+    },
+    {
+      "id": "mare",
+      "name": "Mare",
+      "character": null,
+      "spouse": "kelsier",
+      "parents": [],
+      "isDeceased": true,
+      "gender": "female"
+    },
+    {
+      "id": "marsh",
+      "name": "Marsh",
+      "character": "marsh",
+      "spouse": null,
+      "parents": ["survivor-circle"],
+      "isDeceased": false,
+      "gender": "male"
+    },
+    {
+      "id": "spook",
+      "name": "Spook",
+      "character": "spook",
+      "spouse": null,
+      "parents": ["survivor-circle"],
+      "isDeceased": false,
+      "gender": "male"
+    }
+  ]
+}

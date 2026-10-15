@@ -1,0 +1,15 @@
+{
+  "id": "siri",
+  "name": "Siri",
+  "pronunciation": null,
+  "summary": "The younger princess of Idris, a spontaneous and rebellious young woman who is unexpectedly sent to T'Telir in place of her more refined sister Vivenna to marry the God-King Susebron. Initially terrified and overwhelmed by the divine politics of the Court of Gods, Siri discovers that the God-King is not the monster she was led to expect. Her relationship with Susebron grows from fear to genuine affection, and she becomes a key figure in the conspiracy against the priests who control the throne. Siri's journey from impulsive girl to determined queen demonstrates that courage and love can overcome even the most rigid systems of power.",
+  "origin": "nalthis",
+  "books": ["warbreaker"],
+  "unlockAt": ["warbreaker"],
+  "portrait": "characters/Siri.webp",
+  "born": 270,
+  "died": null,
+  "status": "living",
+  "groups": ["nalthian"],
+  "titles": ["Princess of Idris", "Queen of T'Telir", "God-King's Wife"]
+}

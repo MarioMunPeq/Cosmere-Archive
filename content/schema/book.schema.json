@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "book",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "title", "series", "order", "summary", "cover"],
+  "properties": {
+    "id": { "$ref": "common#/$defs/id" },
+    "title": { "$ref": "common#/$defs/nonEmptyString" },
+    "series": { "$ref": "common#/$defs/id" },
+    "order": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Position within the series. 0 marks an interlude (novellas such as Dawnshard), 1+ marks the main sequence."
+    },
+    "published": { "type": ["integer", "null"], "minimum": 2005, "maximum": 2040 },
+    "wordCount": {
+      "type": ["integer", "null"],
+      "minimum": 10000,
+      "maximum": 700000,
+      "description": "Graphic novel volumes run ~15k words, so the floor is well below a prose novel."
+    },
+    "summary": { "$ref": "common#/$defs/summary" },
+    "cover": { "$ref": "common#/$defs/assetPath" },
+    "volumeNumber": { "type": ["string", "null"], "maxLength": 40 },
+    "classification": { "type": ["string", "null"], "maxLength": 80 },
+    "archiveDescription": { "type": ["string", "null"], "maxLength": 900 }
+  }
+}

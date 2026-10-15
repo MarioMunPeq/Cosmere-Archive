@@ -1,0 +1,16 @@
+{
+  "id": "threnody-threnody-e",
+  "planet": "threnody",
+  "text": ["Nazh refuses to return here.", "I cannot entirely fault him."],
+  "style": "khriss",
+  "layout": {
+    "left": "72%",
+    "top": "10%",
+    "rotation": "-1.3deg",
+    "maxWidth": "130px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

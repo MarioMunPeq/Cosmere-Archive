@@ -1,0 +1,16 @@
+{
+  "id": "lumar-lumar-e",
+  "planet": "lumar",
+  "text": ["Emergency jettison of equipment", "during the second expedition.", "Some records incomplete."],
+  "style": "khriss",
+  "layout": {
+    "left": "10%",
+    "top": "48%",
+    "rotation": "1.3deg",
+    "maxWidth": "150px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

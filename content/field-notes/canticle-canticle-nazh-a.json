@@ -1,0 +1,16 @@
+{
+  "id": "canticle-canticle-nazh-a",
+  "planet": "canticle",
+  "text": ["The sun does not care about", "my instruments. I do not", "care about the sun."],
+  "style": "nazh",
+  "layout": {
+    "left": "60%",
+    "top": "22%",
+    "rotation": "1.4deg",
+    "maxWidth": "125px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

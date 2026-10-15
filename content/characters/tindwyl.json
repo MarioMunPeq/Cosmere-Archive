@@ -1,0 +1,15 @@
+{
+  "id": "tindwyl",
+  "name": "Tindwyl",
+  "pronunciation": null,
+  "summary": "A Terris Feruchemist of the Synod, sent to Luthadel during the siege to train Elend Venture as a proper leader. Tindwyl is a stern, wise, and no-nonsense elder who forces Elend to confront his weaknesses and grow into the ruler the new empire needs. She is also a Keeper, preserving the wisdom of ancient Terris knowledge. Her relationship with Sazed, built on mutual respect and shared purpose, blossoms into a deep love—making her death at the hands of the Koloss one of the most painful blows Sazed ever endures.",
+  "origin": "scadrial",
+  "books": ["the-well-of-ascension", "the-hero-of-ages"],
+  "unlockAt": ["the-well-of-ascension", "the-hero-of-ages"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

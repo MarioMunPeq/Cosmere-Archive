@@ -1,0 +1,15 @@
+{
+  "id": "ais",
+  "name": "Ais",
+  "pronunciation": null,
+  "summary": "A Daysider woman from Taldain and the leader of the Lady Masks, a group of warriors who protect travelers across the Deep Desert. Ais is tough, resourceful, and deeply connected to the traditions of Dayside. She provides crucial assistance to Khriss's expedition, guiding them through the treacherous desert and the political intrigues of the various factions. Her knowledge of the Deep Desert and its secrets plays a key role in the discovery of the Sand Lord's truth.",
+  "origin": "taldain",
+  "books": ["white-sand-vol-1", "white-sand-vol-2", "white-sand-vol-3"],
+  "unlockAt": ["white-sand-vol-1", "white-sand-vol-2", "white-sand-vol-3"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

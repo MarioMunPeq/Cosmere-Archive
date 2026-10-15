@@ -1,0 +1,20 @@
+{
+  "id": "jezrien",
+  "name": "Jezrien",
+  "title": "King of Heralds",
+  "order": "Windrunners",
+  "kind": "herald",
+  "pronunciation": null,
+  "summary": "The patron of the Windrunners and the king of the Heralds. His Honorblade was stolen by Szeth, who used it to murder Gavilar Kholin. Jezrien was later killed by Moash with a dagger infused with anti-light — the first true death of a Herald in millennia.",
+  "surges": ["Adhesion", "Gravitation"],
+  "attributes": ["Leading", "Protecting"],
+  "essence": "Zephyr",
+  "soulcasting": "Air",
+  "honorbladeGrants": "Adhesion and Gravitation — the power to bind objects together and to alter the direction of gravity itself.",
+  "quote": "\"I have given you the sky. The rest you must earn.\"",
+  "books": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war"],
+  "status": "fallen",
+  "connections": ["shalash"],
+  "positionIndex": 0,
+  "color": "#60a5fa"
+}

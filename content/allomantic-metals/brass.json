@@ -1,0 +1,10 @@
+{
+  "id": "brass",
+  "name": "Brass",
+  "alloy": "Zinc",
+  "group": "mental",
+  "allomanticPower": "Soothe emotions (calm)",
+  "feruchemicalPower": "Store warmth",
+  "hemalurgicProperty": "Steals cognitive function",
+  "color": "#059669"
+}

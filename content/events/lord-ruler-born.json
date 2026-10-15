@@ -1,0 +1,14 @@
+{
+  "id": "lord-ruler-born",
+  "title": "Birth of Rashek",
+  "summary": "Rashek (future Lord Ruler) is born on Scadrial as a mountain shepherd of the Terris people. He does not know the fate that awaits him.",
+  "year": -100,
+  "endYear": null,
+  "type": "birth",
+  "series": "mistborn-era-1",
+  "planets": ["scadrial"],
+  "characters": ["rashek"],
+  "worldhoppers": [],
+  "importance": 4,
+  "archivistNote": null
+}

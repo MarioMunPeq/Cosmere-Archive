@@ -1,0 +1,10 @@
+{
+  "id": "nicrosil",
+  "name": "Nicrosil",
+  "alloy": "Chromium",
+  "group": "enhancement",
+  "allomanticPower": "Enhance next Allomancer's burst",
+  "feruchemicalPower": "Store investiture",
+  "hemalurgicProperty": "Steals investiture type",
+  "color": "#06b6d4"
+}

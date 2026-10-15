@@ -1,0 +1,36 @@
+{
+  "id": "wh-vasher",
+  "name": "Vasher",
+  "color": "#f472b6",
+  "summary": "Kalad the Usurper. Wielder of Nightblood, expert in Awakening.",
+  "character": "vasher",
+  "planets": ["nalthis", "roshar"],
+  "series": ["warbreaker", "stormlight", "arcanum-unbounded"],
+  "movements": [
+    {
+      "year": 290,
+      "planet": "nalthis",
+      "summary": "Creates Nightblood with Shashara."
+    },
+    {
+      "year": 300,
+      "planet": "nalthis",
+      "summary": "Participates in the events of Warbreaker."
+    },
+    {
+      "year": 400,
+      "planet": "roshar",
+      "summary": "Travels to Roshar as Zahel."
+    },
+    {
+      "year": 1500,
+      "planet": "roshar",
+      "summary": "Lives hidden on Roshar, trains Kaladin as Zahel."
+    },
+    {
+      "year": 1503,
+      "planet": "roshar",
+      "summary": "Helps defend Urithiru."
+    }
+  ]
+}

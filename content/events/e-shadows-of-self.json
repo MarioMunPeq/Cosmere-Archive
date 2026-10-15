@@ -1,0 +1,14 @@
+{
+  "id": "e-shadows-of-self",
+  "title": "Shadows of Self",
+  "summary": "Wax uncovers a deeper conspiracy of the Ghostbloods. His (false) sister Telsin turns out to be an agent of Autonomy. Hemalurgy and the secrets of identity are explored.",
+  "year": 1325,
+  "endYear": null,
+  "type": "book",
+  "series": "mistborn-era-2",
+  "planets": ["scadrial"],
+  "characters": ["wax", "wayne", "marasi", "steris"],
+  "worldhoppers": [],
+  "importance": 4,
+  "archivistNote": null
+}

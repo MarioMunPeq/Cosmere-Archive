@@ -1,0 +1,12 @@
+{
+  "id": "mistborn-era-2",
+  "name": "Mistborn Era 2",
+  "color": "#f59e0b",
+  "order": 5,
+  "summary": "Wax & Wayne: a mix of western and steampunk on Scadrial.",
+  "spine": {
+    "ink": null,
+    "foil": "#f59e0b",
+    "crop": "50% 20%"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "worldhopper",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "summary", "planets", "series"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^wh-[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Namespaced so a journey record never collides with the character record of the same name."
+    },
+    "name": { "$ref": "common#/$defs/nonEmptyString" },
+    "color": { "$ref": "common#/$defs/hexColor" },
+    "summary": { "$ref": "common#/$defs/summary" },
+    "character": {
+      "anyOf": [{ "$ref": "common#/$defs/id" }, { "type": "null" }],
+      "description": "The character this journey belongs to, when they are also a character record."
+    },
+    "planets": { "allOf": [{ "$ref": "common#/$defs/idArray" }], "minItems": 1 },
+    "series": { "$ref": "common#/$defs/idArray" },
+    "movements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["year", "planet", "summary"],
+        "properties": {
+          "year": { "type": "integer" },
+          "planet": { "$ref": "common#/$defs/id" },
+          "summary": { "type": "string", "minLength": 5, "maxLength": 400 }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "forgery",
+  "name": "Forgery",
+  "summary": "Altering an object's past through special seals. Most potent in the MaiPon region of Sel. Used extensively by Shai in The Emperor's Soul.",
+  "planet": "sel",
+  "shard": "Devotion",
+  "category": "selish",
+  "color": "#0d9488",
+  "books": ["arcanum-unbounded"],
+  "classification": "Symbolic Manipulation",
+  "status": "Documented",
+  "academicNote": null,
+  "allomanticMetals": []
+}

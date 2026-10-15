@@ -1,0 +1,21 @@
+{
+  "id": "scadrial-scadrial-e",
+  "planet": "scadrial",
+  "text": [
+    "Allomancy functions off-world",
+    "without the attenuation observed",
+    "in other Investitures.",
+    "Worth further study."
+  ],
+  "style": "khriss",
+  "layout": {
+    "left": "72%",
+    "top": "42%",
+    "rotation": "0.6deg",
+    "maxWidth": "155px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

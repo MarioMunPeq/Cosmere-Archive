@@ -1,0 +1,14 @@
+{
+  "id": "final-empire-book",
+  "title": "The Final Empire",
+  "summary": "Kelsier recruits Vin and a crew of thieves to infiltrate the nobility and overthrow the Lord Ruler. Kelsier dies in the process, but Vin manages to assassinate the tyrant. The Final Empire falls.",
+  "year": 1024,
+  "endYear": null,
+  "type": "book",
+  "series": "mistborn-era-1",
+  "planets": ["scadrial"],
+  "characters": ["kelsier", "vin", "elend", "sazed", "spook", "ham", "breeze", "clubs"],
+  "worldhoppers": ["wh-kelsier"],
+  "importance": 5,
+  "archivistNote": null
+}

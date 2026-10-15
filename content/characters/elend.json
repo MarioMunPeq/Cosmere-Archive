@@ -1,0 +1,15 @@
+{
+  "id": "elend",
+  "name": "Elend Venture",
+  "pronunciation": null,
+  "summary": "Heir to House Venture, the most powerful noble house in the Final Empire, and later king of the New Empire. An idealist and scholar who dreams of democracy and equality between skaa and nobles, Elend is initially a poor Allomancer—but after burning the mists and ingesting a bead of lerasium, he becomes a Mistborn of extraordinary power. His rule is marked by his struggle to balance his philosophical ideals with the brutal realities of war. He marries Vin and ultimately sacrifices himself alongside her to save Scadrial, becoming a martyr for the world he helped free.",
+  "origin": "scadrial",
+  "books": ["the-final-empire", "the-well-of-ascension", "the-hero-of-ages"],
+  "unlockAt": ["the-final-empire", "the-well-of-ascension", "the-hero-of-ages"],
+  "portrait": "characters/Elend.webp",
+  "born": 1021,
+  "died": 1026,
+  "status": "deceased",
+  "groups": ["scadrian"],
+  "titles": ["King of the New Empire", "Ascendant", "Visionary"]
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "planet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "summary", "shards", "color"],
+  "properties": {
+    "id": { "$ref": "common#/$defs/id" },
+    "name": { "$ref": "common#/$defs/nonEmptyString" },
+    "pronunciation": { "type": ["string", "null"], "maxLength": 60 },
+    "summary": { "$ref": "common#/$defs/summary" },
+    "shards": {
+      "type": "array",
+      "items": { "$ref": "common#/$defs/nonEmptyString" },
+      "uniqueItems": true
+    },
+    "color": { "$ref": "common#/$defs/hexColor" },
+    "connectedPlanets": { "$ref": "common#/$defs/idArray" },
+    "series": { "$ref": "common#/$defs/idArray" },
+    "books": { "$ref": "common#/$defs/idArray" },
+    "investiture": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "summary"],
+        "properties": {
+          "name": { "$ref": "common#/$defs/nonEmptyString" },
+          "summary": { "type": "string", "minLength": 10, "maxLength": 600 },
+          "shard": { "type": ["string", "null"], "maxLength": 60 }
+        }
+      }
+    }
+  }
+}

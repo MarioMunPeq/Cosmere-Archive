@@ -1,0 +1,15 @@
+{
+  "id": "gavilar",
+  "name": "Gavilar Kholin",
+  "pronunciation": null,
+  "summary": "The late King of Alethkar, brother of Dalinar Kholin, and father of Jasnah and Elhokar. A visionary king who united the warring princedoms of Alethkar under one banner, Gavilar was also a man with dangerous ambitions. His research into the Heralds, his discovery of the true nature of the Knights Radiant, and his desire to become a Herald himself led to his assassination by Szeth on the night he signed a treaty with the Parshendi. Gavilar's death set the events of the Stormlight Archive in motion, but his legacy is far more complex than the heroic king the stories remember: his ambition may have been the catalyst that brought the Desolation itself.",
+  "origin": "roshar",
+  "books": ["the-way-of-kings", "oathbringer"],
+  "unlockAt": ["the-way-of-kings", "oathbringer"],
+  "portrait": "characters/Gavilar.webp",
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

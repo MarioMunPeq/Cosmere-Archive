@@ -1,0 +1,14 @@
+{
+  "id": "scouring-of-ajay",
+  "title": "Scouring of Ajay",
+  "summary": "Tress and her crew liberate the sea of Ajay from the tyrannical clutches of the Verdant Legion. Using cannons, cunning, and fungal spores, they destroy the Legion's fortress and free the spore harvesters, turning Ajay's twelve kingdoms into a free confederation.",
+  "year": 1600,
+  "endYear": null,
+  "type": "historical",
+  "series": "secret-projects",
+  "planets": ["lumar"],
+  "characters": [],
+  "worldhoppers": ["wh-hoid"],
+  "importance": 3,
+  "archivistNote": null
+}

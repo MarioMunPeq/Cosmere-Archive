@@ -1,0 +1,14 @@
+{
+  "id": "e-oathbringer",
+  "title": "Oathbringer",
+  "summary": "Dalinar opens the Honor's Perpendicularity in Thaylen City. He discovers his past as the Bondsmith, the warrior who killed his wife under the influence of Odium. The Everstorm ravages Roshar.",
+  "year": 1502,
+  "endYear": null,
+  "type": "book",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": ["kaladin", "shallan", "dalinar", "hoid", "navani", "szeth", "nightblood", "vasher"],
+  "worldhoppers": ["wh-hoid", "wh-vasher", "wh-kelsier"],
+  "importance": 5,
+  "archivistNote": "The Everstorm represents a fundamental change to Rosharan investiture. Unlike the highstorms that preceded it, which were part of Honor’s original design, the Everstorm was created by Odium. Its long-term effects on Roshar’s ecology and investiture systems are still being studied."
+}

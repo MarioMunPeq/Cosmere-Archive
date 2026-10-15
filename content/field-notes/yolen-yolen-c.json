@@ -1,0 +1,16 @@
+{
+  "id": "yolen-yolen-c",
+  "planet": "yolen",
+  "text": ["Yolen does not appear on any", "contemporary star chart. Its", "location was deliberately purged."],
+  "style": "khriss",
+  "layout": {
+    "left": "14%",
+    "top": "74%",
+    "rotation": "0.6deg",
+    "maxWidth": "160px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

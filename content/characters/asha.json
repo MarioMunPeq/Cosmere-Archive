@@ -1,0 +1,15 @@
+{
+  "id": "asha",
+  "name": "Ash (Shalash)",
+  "pronunciation": null,
+  "summary": "Herald of Beauty, patron of the Lightweavers, and daughter of the Herald Ishar. As Shalash, she is the patron of artists and beauty, but after millennia of being worshipped through art, she developed an obsessive compulsion to destroy any depiction of herself. She roams Roshar as a wanderer known simply as Ash, working alongside other Heralds in secret to hide the truth of the Oathpact and the origin of the Heralds' powers. Her relationship with Taln is one of deep, painful loyalty.",
+  "origin": "roshar",
+  "books": ["oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "unlockAt": ["oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

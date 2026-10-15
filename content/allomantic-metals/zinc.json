@@ -1,0 +1,10 @@
+{
+  "id": "zinc",
+  "name": "Zinc",
+  "alloy": "Brass",
+  "group": "mental",
+  "allomanticPower": "Riot emotions (enflame)",
+  "feruchemicalPower": "Store mental speed",
+  "hemalurgicProperty": "Steals emotional fortitude",
+  "color": "#10b981"
+}

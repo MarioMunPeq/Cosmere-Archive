@@ -1,0 +1,14 @@
+{
+  "id": "shashara-executed",
+  "title": "Execution of Shashara",
+  "summary": "Shashara, one of the Five Scholars, reveals the secret of creating sentient invested objects to the public. Vasher kills her with Nightblood to prevent the knowledge from spreading, fearing the devastation it could cause across the Cosmere.",
+  "year": 295,
+  "endYear": null,
+  "type": "death",
+  "series": "warbreaker",
+  "planets": ["nalthis"],
+  "characters": ["vasher", "nightblood"],
+  "worldhoppers": [],
+  "importance": 4,
+  "archivistNote": null
+}

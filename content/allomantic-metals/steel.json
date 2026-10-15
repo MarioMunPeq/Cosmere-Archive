@@ -1,0 +1,10 @@
+{
+  "id": "steel",
+  "name": "Steel",
+  "alloy": "Iron",
+  "group": "physical",
+  "allomanticPower": "Push on nearby metals",
+  "feruchemicalPower": "Store physical speed",
+  "hemalurgicProperty": "Steals Allomantic power",
+  "color": "#9ca3af"
+}

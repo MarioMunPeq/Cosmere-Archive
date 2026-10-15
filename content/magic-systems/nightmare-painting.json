@@ -1,0 +1,14 @@
+{
+  "id": "nightmare-painting",
+  "name": "Nightmare Painting",
+  "summary": "Trapping emotions and experiences in art on Komashi. Created by nightmare painters to contain dangerous emotions and memories.",
+  "planet": "komashi",
+  "shard": "Virtuosity",
+  "category": "nightmare",
+  "color": "#0284c7",
+  "books": ["yumi-and-the-nightmare-painter"],
+  "classification": "Cognitive Manifestation",
+  "status": "Partially Documented",
+  "academicNote": null,
+  "allomanticMetals": []
+}

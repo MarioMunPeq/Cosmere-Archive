@@ -1,0 +1,16 @@
+{
+  "id": "lumar-lumar-nazh-a",
+  "planet": "lumar",
+  "text": ["The spores ate through my boots.", "Then my spare boots.", "I have no more boots."],
+  "style": "nazh",
+  "layout": {
+    "left": "28%",
+    "top": "22%",
+    "rotation": "1.3deg",
+    "maxWidth": "130px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

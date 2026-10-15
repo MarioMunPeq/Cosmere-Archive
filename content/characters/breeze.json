@@ -1,0 +1,15 @@
+{
+  "id": "breeze",
+  "name": "Breeze",
+  "pronunciation": null,
+  "summary": "A Soother and one of the most charismatic members of Kelsier's crew. A well-dressed, elegant nobleman with a flair for the dramatic, Breeze uses his Allomantic ability to soothe emotions—calming anger, doubt, and fear—to manipulate crowds, nobles, and enemies alike. Despite his lazy and self-serving demeanor, Breeze is deeply loyal to his crew and spends years protecting Elend's government through subtle emotional manipulation. After the war, he becomes an advisor to the new empire, using his powers for the good of the skaa he claims not to care about.",
+  "origin": "scadrial",
+  "books": ["the-final-empire", "the-well-of-ascension", "the-hero-of-ages"],
+  "unlockAt": ["the-final-empire", "the-well-of-ascension", "the-hero-of-ages"],
+  "portrait": null,
+  "born": 993,
+  "died": 1026,
+  "status": "deceased",
+  "groups": ["scadrian"],
+  "titles": ["Zinc Misting", "Manipulator", "Skaa Noble"]
+}

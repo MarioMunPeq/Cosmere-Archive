@@ -1,0 +1,14 @@
+{
+  "id": "silver-kingdom-founded",
+  "title": "Founding of the Silver Kingdoms",
+  "summary": "After the first Desolation, the Silver Kingdoms of Roshar are founded: Alethela, Kholin, Valhav, etc. The system of oaths and spren begins to formalize.",
+  "year": -4400,
+  "endYear": null,
+  "type": "historical",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 4,
+  "archivistNote": null
+}

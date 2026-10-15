@@ -1,0 +1,21 @@
+{
+  "id": "sel-sel-a",
+  "planet": "sel",
+  "text": [
+    "The Dor is unlike any other",
+    "Investiture. It behaves as if",
+    "constrained by the cognitive",
+    "realm's unusual geography."
+  ],
+  "style": "khriss",
+  "layout": {
+    "left": "10%",
+    "top": "4%",
+    "rotation": "-0.5deg",
+    "maxWidth": "160px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

@@ -1,0 +1,21 @@
+{
+  "id": "taldain-taldain-a",
+  "planet": "taldain",
+  "text": [
+    "Dayside heat measurements consistent",
+    "with a close binary star model.",
+    "The dark side remains largely",
+    "unvisited."
+  ],
+  "style": "khriss",
+  "layout": {
+    "left": "10%",
+    "top": "4%",
+    "rotation": "-1.0deg",
+    "maxWidth": "170px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

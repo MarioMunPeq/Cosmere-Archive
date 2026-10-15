@@ -1,0 +1,21 @@
+{
+  "id": "sel-sel-nazh-b",
+  "planet": "sel",
+  "text": [
+    "Khriss insists on measuring",
+    "the Dor from atop a rooftop.",
+    "I fell off the rooftop.",
+    "She did not help."
+  ],
+  "style": "nazh",
+  "layout": {
+    "left": "56%",
+    "top": "62%",
+    "rotation": "2.1deg",
+    "maxWidth": "140px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

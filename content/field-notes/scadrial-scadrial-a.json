@@ -1,0 +1,21 @@
+{
+  "id": "scadrial-scadrial-a",
+  "planet": "scadrial",
+  "text": [
+    "Metal composition differs measurably",
+    "between pre- and post-Catacendre",
+    "samples. A remarkable record of",
+    "planetary transformation."
+  ],
+  "style": "khriss",
+  "layout": {
+    "left": "10%",
+    "top": "4%",
+    "rotation": "0.3deg",
+    "maxWidth": "175px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

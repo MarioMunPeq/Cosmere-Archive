@@ -1,0 +1,10 @@
+{
+  "id": "gold",
+  "name": "Gold",
+  "alloy": "Electrum",
+  "group": "temporal",
+  "allomanticPower": "See your past self",
+  "feruchemicalPower": "Store health",
+  "hemalurgicProperty": "Steals healing",
+  "color": "#f59e0b"
+}

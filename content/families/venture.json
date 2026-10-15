@@ -1,0 +1,45 @@
+{
+  "id": "venture",
+  "name": "Venture Dynasty",
+  "color": "#f87171",
+  "summary": "The noble house that ruled the Final Empire on Scadrial. Straff's illegitimate son Zane was a Mistborn assassin.",
+  "rootIds": ["straff"],
+  "members": [
+    {
+      "id": "straff",
+      "name": "Straff Venture",
+      "character": null,
+      "spouse": null,
+      "parents": [],
+      "isDeceased": true,
+      "gender": "male"
+    },
+    {
+      "id": "elend",
+      "name": "Elend Venture",
+      "character": "elend",
+      "spouse": "vin",
+      "parents": ["straff"],
+      "isDeceased": false,
+      "gender": "male"
+    },
+    {
+      "id": "vin",
+      "name": "Vin",
+      "character": "vin",
+      "spouse": "elend",
+      "parents": [],
+      "isDeceased": false,
+      "gender": "female"
+    },
+    {
+      "id": "zane",
+      "name": "Zane",
+      "character": null,
+      "spouse": null,
+      "parents": ["straff"],
+      "isDeceased": true,
+      "gender": "male"
+    }
+  ]
+}

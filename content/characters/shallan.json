@@ -1,0 +1,15 @@
+{
+  "id": "shallan",
+  "name": "Shallan Davar",
+  "pronunciation": null,
+  "summary": "A lighteyed scholar and artist from the fractured House Davar of Jah Keved. To escape her traumatic past and her mother's death, Shallan develops multiple personalities—including the bold Veil and the violent Radiant—to cope. She bonds the cryptic Testament (later Pattern) to become a Lightweaver of the Knights Radiant, capable of creating illusions and soulcasting. Her investigation of the Ghostbloods and her marriage to Adolin Kholin place her at the center of Roshar's unfolding conflict.",
+  "origin": "roshar",
+  "books": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "unlockAt": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "portrait": "characters/Shallan.webp",
+  "born": 1478,
+  "died": null,
+  "status": "living",
+  "groups": ["radiant"],
+  "titles": ["Lightweaver", "Truthwatcher", "Illuminator"]
+}

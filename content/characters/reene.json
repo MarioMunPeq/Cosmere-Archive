@@ -1,0 +1,15 @@
+{
+  "id": "reene",
+  "name": "Reen",
+  "pronunciation": null,
+  "summary": "Vin's older half-brother who raised her on the streets of Luthadel. A brutal and abusive figure, Reen taught Vin the hard lessons she needed to survive: trust no one, always have an escape route, and never show weakness. His cruelty was born of a desperate desire to keep her alive in a world that would destroy her, and his voice echoes in Vin's head throughout her journey long after his death. His murder at the hands of the Inquisitors is the final trauma that pushes Vin toward her destiny.",
+  "origin": "scadrial",
+  "books": ["the-final-empire"],
+  "unlockAt": ["the-final-empire"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

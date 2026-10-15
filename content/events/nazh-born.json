@@ -1,0 +1,14 @@
+{
+  "id": "nazh-born",
+  "title": "Birth of Nazh",
+  "summary": "Nazh is born, who will become a cartographer and spy in the service of Khriss. His maps and notes are an invaluable source of information about the Cosmere.",
+  "year": 700,
+  "endYear": null,
+  "type": "birth",
+  "series": "arcanum-unbounded",
+  "planets": ["threnody"],
+  "characters": [],
+  "worldhoppers": ["wh-nazh"],
+  "importance": 2,
+  "archivistNote": null
+}

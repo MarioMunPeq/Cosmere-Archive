@@ -1,0 +1,18 @@
+{
+  "id": "threnody",
+  "name": "Threnody",
+  "pronunciation": null,
+  "summary": "A world of silent forests where shadows lurk and silence is the only defense.",
+  "shards": ["ambition"],
+  "color": "#8b5cf6",
+  "connectedPlanets": [],
+  "series": ["arcanum-unbounded"],
+  "books": ["arcanum-unbounded"],
+  "investiture": [
+    {
+      "name": "Shades",
+      "summary": "Cognitive shadows of the dead that inhabit the Forests of Hell. Governed by Simple Rules.",
+      "shard": "Ambition"
+    }
+  ]
+}

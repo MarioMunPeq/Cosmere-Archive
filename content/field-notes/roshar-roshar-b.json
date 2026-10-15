@@ -1,0 +1,21 @@
+{
+  "id": "roshar-roshar-b",
+  "planet": "roshar",
+  "text": [
+    "Nazh insists this coastline maps",
+    "incorrectly. He may eventually be",
+    "right, though I suspect he has",
+    "confused it with a different continent."
+  ],
+  "style": "khriss",
+  "layout": {
+    "left": "73%",
+    "top": "22%",
+    "rotation": "-2.1deg",
+    "maxWidth": "160px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

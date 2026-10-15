@@ -1,0 +1,14 @@
+{
+  "id": "kelsier-survives",
+  "title": "Kelsier Survives in the Cognitive Realm",
+  "summary": "Kelsier, trapped in the Scadrian Cognitive Realm after his death, discovers how to interact with the physical world using his connection to Investiture. He begins planning his return.",
+  "year": 1028,
+  "endYear": null,
+  "type": "historical",
+  "series": "mistborn-era-1",
+  "planets": ["scadrial"],
+  "characters": ["kelsier"],
+  "worldhoppers": ["wh-kelsier"],
+  "importance": 5,
+  "archivistNote": null
+}

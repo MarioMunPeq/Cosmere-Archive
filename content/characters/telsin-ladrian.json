@@ -1,0 +1,15 @@
+{
+  "id": "telsin-ladrian",
+  "name": "Telsin Ladrian",
+  "pronunciation": null,
+  "summary": "Waxillium's sister and the true leader of the Set, the secret organization working to free Scadrial from Harmony's influence and align with the Shard Autonomy. Telsin is brilliant, manipulative, and utterly convinced that Harmony's control over Scadrial is a form of slavery that must be broken. Her relationship with Wax is defined by their childhood bond and her gradual transformation into an enemy who genuinely believes she is fighting for the right side. The confrontation between brother and sister in The Lost Metal forces Wax to choose between family and duty, with devastating consequences.",
+  "origin": "scadrial",
+  "books": ["shadows-of-self", "the-bands-of-mourning", "the-lost-metal"],
+  "unlockAt": ["shadows-of-self", "the-bands-of-mourning", "the-lost-metal"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

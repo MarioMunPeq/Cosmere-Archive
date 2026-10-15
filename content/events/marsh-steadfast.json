@@ -1,0 +1,14 @@
+{
+  "id": "marsh-steadfast",
+  "title": "Marsh Watches",
+  "summary": "Marsh, Steel Inquisitor and brother of Kelsier, survives the millennia as an inquisitor, serving as a spy and watchman of the Basin under the orders of Harmony.",
+  "year": 1026,
+  "endYear": null,
+  "type": "historical",
+  "series": "mistborn-era-1",
+  "planets": ["scadrial"],
+  "characters": ["marsh"],
+  "worldhoppers": [],
+  "importance": 3,
+  "archivistNote": null
+}

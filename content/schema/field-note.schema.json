@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "field-note",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "planet", "text", "style", "layout"],
+  "properties": {
+    "id": { "$ref": "common#/$defs/id" },
+    "planet": { "$ref": "common#/$defs/id" },
+    "text": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1, "maxLength": 400 }
+    },
+    "style": { "enum": ["khriss", "nazh"] },
+    "layout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["left", "top"],
+      "properties": {
+        "left": { "type": "string", "pattern": "^[0-9.]+%$" },
+        "top": { "type": "string", "pattern": "^[0-9.]+%$" },
+        "rotation": {
+          "anyOf": [{ "type": "string", "maxLength": 24 }, { "type": "null" }]
+        },
+        "maxWidth": {
+          "anyOf": [{ "type": "string", "maxLength": 24 }, { "type": "null" }]
+        }
+      }
+    },
+    "crossedOut": { "type": "boolean" },
+    "correction": { "type": ["string", "null"], "maxLength": 400 },
+    "sketch": { "type": ["string", "null"], "maxLength": 60 },
+    "sketchSize": { "type": ["number", "null"] }
+  }
+}

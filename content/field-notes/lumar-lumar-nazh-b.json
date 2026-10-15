@@ -1,0 +1,16 @@
+{
+  "id": "lumar-lumar-nazh-b",
+  "planet": "lumar",
+  "text": ["Khriss labelled this sea \"Verdant.\"", "It is clearly blue-green.", "I do not know what verdant means."],
+  "style": "nazh",
+  "layout": {
+    "left": "62%",
+    "top": "62%",
+    "rotation": "-1.1deg",
+    "maxWidth": "145px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

@@ -1,0 +1,46 @@
+{
+  "id": "wh-khriss",
+  "name": "Khriss",
+  "color": "#22c55e",
+  "summary": "Scholar from Taldain. Documents investiture systems.",
+  "character": "khriss",
+  "planets": ["taldain", "scadrial", "roshar", "first-of-the-sun", "canticle"],
+  "series": ["white-sand", "arcanum-unbounded", "secret-projects"],
+  "movements": [
+    {
+      "year": 100,
+      "planet": "taldain",
+      "summary": "As a scholar, investigates White Sand."
+    },
+    {
+      "year": 110,
+      "planet": "scadrial",
+      "summary": "Begins documenting allomancy and feruchemy."
+    },
+    {
+      "year": 120,
+      "planet": "taldain",
+      "summary": "Publishes her first findings."
+    },
+    {
+      "year": 500,
+      "planet": "roshar",
+      "summary": "Early research on Roshar."
+    },
+    {
+      "year": 1100,
+      "planet": "scadrial",
+      "summary": "Studies the effects of the Catacendre."
+    },
+    {
+      "year": 1500,
+      "planet": "roshar",
+      "summary": "Documents the return of the Knights Radiant."
+    },
+    {
+      "year": 1620,
+      "planet": "canticle",
+      "summary": "Helps Nomad and studies Canticle."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "yolen-yolen-f",
+  "planet": "yolen",
+  "text": ["Hoid refuses to discuss his", "memories of this place.", "That alone is telling."],
+  "style": "khriss",
+  "layout": {
+    "left": "12%",
+    "top": "38%",
+    "rotation": "-1.9deg",
+    "maxWidth": "140px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

@@ -1,0 +1,15 @@
+{
+  "id": "venli",
+  "name": "Venli",
+  "pronunciation": null,
+  "summary": "A singer of the listener people who becomes a Knight Radiant of the Willshapers, bonded to the spren Timbre. Unlike her heroic sister Eshonai, Venli was seduced by the promise of power from Odium, betraying her people and enabling the singers' transformation into the Fused. Tormented by guilt, she slowly embraces the Radiant path and works to free her people from Odium's control. Her journey is one of redemption, betrayal, and the difficult choice to become better than one's past actions.",
+  "origin": "roshar",
+  "books": ["words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "unlockAt": ["words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "portrait": null,
+  "born": 1480,
+  "died": null,
+  "status": "living",
+  "groups": ["radiant"],
+  "titles": ["Willshaper", "Singer", "Radiant"]
+}

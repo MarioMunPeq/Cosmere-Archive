@@ -1,0 +1,14 @@
+{
+  "id": "wax-born",
+  "title": "Birth of Waxillium Ladrian",
+  "summary": "Waxillium Ladrian is born in House Ladrian of Elendel, Scadrial. He will become a Mistborn, lawman of the Roughs, and eventually save the Basin on multiple occasions.",
+  "year": 1300,
+  "endYear": null,
+  "type": "birth",
+  "series": "mistborn-era-2",
+  "planets": ["scadrial"],
+  "characters": ["wax"],
+  "worldhoppers": [],
+  "importance": 4,
+  "archivistNote": null
+}

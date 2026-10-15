@@ -1,0 +1,16 @@
+{
+  "id": "sel-sel-nazh-a",
+  "planet": "sel",
+  "text": ["Every Selish map I have seen", "is wrong. Every single one.", "Including mine. But mostly", "theirs."],
+  "style": "nazh",
+  "layout": {
+    "left": "38%",
+    "top": "18%",
+    "rotation": "-1.4deg",
+    "maxWidth": "130px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

@@ -1,0 +1,15 @@
+{
+  "id": "hrathen",
+  "name": "Hrathen",
+  "pronunciation": null,
+  "summary": "A high priest of the Fjordell Empire sent to convert the kingdom of Arelon to the Shu-Dereth faith—by persuasion if possible, by conquest if necessary. Fierce in his devotion to his god Jaddeth but tormented by doubt about his methods, Hrathen is one of the Cosmere's most compelling antagonists. He donates his Breath to the people of Arelon, preparing them for war, and ultimately betrays his own empire to help save the very people he was sent to conquer. His crisis of faith and his relationship with Sarene, based on mutual respect and opposition, create one of the most nuanced villain arcs in the Cosmere.",
+  "origin": "sel",
+  "books": ["elantris"],
+  "unlockAt": ["elantris"],
+  "portrait": null,
+  "born": -510,
+  "died": 12,
+  "status": "deceased",
+  "groups": ["elantrian"],
+  "titles": ["High Priest of Dominon", "Gyorn", "Converted"]
+}

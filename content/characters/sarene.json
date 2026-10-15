@@ -1,0 +1,15 @@
+{
+  "id": "sarene",
+  "name": "Sarene",
+  "pronunciation": null,
+  "summary": "Princess of Teod, a kingdom across the sea from Arelon. Intelligent, diplomatic, and fiercely independent, Sarene arrives in Arelon for a political marriage to Prince Raoden only to find he has—officially—died before she arrived. Rather than return home, she uses her position to infiltrate Arelon's political and social elite, organizing a secret resistance against the scheming high priest Hrathen. Sarene is a master of political manipulation and etiquette, using the very systems designed to constrain women to her advantage. Her wit, determination, and strategic mind make her Raoden's equal in every way.",
+  "origin": "sel",
+  "books": ["elantris"],
+  "unlockAt": ["elantris"],
+  "portrait": null,
+  "born": -495,
+  "died": null,
+  "status": "living",
+  "groups": ["elantrian"],
+  "titles": ["Princess of Teod", "Strategist", "Raoden's Wife"]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "denth",
+  "name": "Denth",
+  "pronunciation": null,
+  "summary": "A mercenary captain on Nalthis, charming, deadly, and deeply mysterious. Denth is one of the most skilled fighters in Hallandren, secretly a Returned from a previous era and one of the original leaders of the cult that seeks to control the God-King. He is also one of Kalad's Phantoms—a legendary army created by Vasher—and holds a centuries-old grudge against his former leader. Under his friendly, easygoing demeanor lies a ruthless pragmatist who will kill anyone who threatens his mission. His duel with Vasher is one of the most dramatic confrontations in Warbreaker, revealing the depth of their shared and bitter history.",
+  "origin": "nalthis",
+  "books": ["warbreaker"],
+  "unlockAt": ["warbreaker"],
+  "portrait": null,
+  "born": null,
+  "died": 300,
+  "status": "deceased",
+  "groups": ["nalthian"],
+  "titles": ["Mercenary", "Worldhopper Leader", "Assassin"]
+}

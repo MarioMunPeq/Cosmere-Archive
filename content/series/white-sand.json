@@ -1,0 +1,12 @@
+{
+  "id": "white-sand",
+  "name": "White Sand",
+  "color": "#eab308",
+  "order": 4,
+  "summary": "Graphic novel set on the planet Taldain, filled with deserts.",
+  "spine": {
+    "ink": null,
+    "foil": "#eab308",
+    "crop": "50% 20%"
+  }
+}

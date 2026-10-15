@@ -1,0 +1,16 @@
+{
+  "id": "komashi-komashi-c",
+  "planet": "komashi",
+  "text": ["This page was rewritten after the", "second visit corrected several", "key measurements."],
+  "style": "khriss",
+  "layout": {
+    "left": "14%",
+    "top": "74%",
+    "rotation": "0.9deg",
+    "maxWidth": "165px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

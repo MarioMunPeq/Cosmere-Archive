@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "event",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "title", "summary", "year", "type", "series", "planets", "importance"],
+  "properties": {
+    "id": { "$ref": "common#/$defs/id" },
+    "title": { "$ref": "common#/$defs/nonEmptyString" },
+    "summary": { "$ref": "common#/$defs/summary" },
+    "year": { "type": "integer" },
+    "endYear": { "type": ["integer", "null"] },
+    "type": {
+      "enum": ["historical", "book", "cataclysm", "discovery", "birth", "death", "arrival", "departure"]
+    },
+    "series": { "$ref": "common#/$defs/id" },
+    "planets": {
+      "allOf": [{ "$ref": "common#/$defs/idArray" }],
+      "description": "May be empty for cosmic events that predate or involve no planet (the Shattering, the existence of Adonalsium)."
+    },
+    "characters": { "$ref": "common#/$defs/idArray" },
+    "worldhoppers": { "$ref": "common#/$defs/idArray" },
+    "importance": { "type": "integer", "minimum": 1, "maximum": 5 },
+    "archivistNote": { "type": ["string", "null"], "maxLength": 800 }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "eshonai",
+  "name": "Eshonai",
+  "pronunciation": null,
+  "summary": "A listener explorer and warleader who dreamed of discovering what lay beyond the Shattered Plains. Eshonai was the first of her people to explore the world beyond the listeners' lands, learning to read and write in the human tongue and negotiating with the Alethi before the war began. She discovered the ancient city of Urithiru in her journeys and sought a peaceful future for her people, but was pressured into taking stormform—a parasitic transformation that robbed her of her will and made her a tool of Odium. As a Shardbearer and proto-Willshaper, Eshonai's story is one of hope destroyed by desperation, and the tragedy of a peacemaker forced into a war she never wanted. Her flashbacks in Words of Radiance and Rhythm of War reveal the listener perspective on the human invasion of Roshar.",
+  "origin": "roshar",
+  "books": ["the-way-of-kings", "words-of-radiance"],
+  "unlockAt": ["the-way-of-kings", "words-of-radiance"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

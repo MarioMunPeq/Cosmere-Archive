@@ -1,0 +1,22 @@
+{
+  "id": "feruchemy",
+  "name": "Feruchemy",
+  "summary": "Storing attributes like strength, speed, or memory in metal minds for later use. Feruchemical power scales with the time spent storing.",
+  "planet": "scadrial",
+  "shard": "Ruin",
+  "category": "metallic_art",
+  "color": "#f97316",
+  "books": [
+    "the-final-empire",
+    "the-well-of-ascension",
+    "the-hero-of-ages",
+    "the-alloy-of-law",
+    "shadows-of-self",
+    "the-bands-of-mourning",
+    "the-lost-metal"
+  ],
+  "classification": "Metallic Art",
+  "status": "Documented",
+  "academicNote": null,
+  "allomanticMetals": []
+}

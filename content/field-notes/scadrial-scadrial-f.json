@@ -1,0 +1,16 @@
+{
+  "id": "scadrial-scadrial-f",
+  "planet": "scadrial",
+  "text": ["Lord Ruler's alterations to the", "planet's geography render older", "maps largely obsolete."],
+  "style": "khriss",
+  "layout": {
+    "left": "12%",
+    "top": "36%",
+    "rotation": "-2.4deg",
+    "maxWidth": "160px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

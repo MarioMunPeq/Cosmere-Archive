@@ -1,0 +1,14 @@
+{
+  "id": "old-magic",
+  "name": "Old Magic",
+  "summary": "Primitive investiture tied to the Nightwatcher and the boons and curses she bestows upon those who seek her in the Valley.",
+  "planet": "roshar",
+  "shard": "Cultivation",
+  "category": "old_magic",
+  "color": "#22c55e",
+  "books": ["oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "classification": "Environmental",
+  "status": "Poorly Understood",
+  "academicNote": "The Nightwatcher’s exact nature and limitations remain a subject of debate among Silverlight scholars.",
+  "allomanticMetals": []
+}

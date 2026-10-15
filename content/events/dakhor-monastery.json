@@ -1,0 +1,14 @@
+{
+  "id": "dakhor-monastery",
+  "title": "Construction of the Dakhor Monastery",
+  "summary": "On Sel, the Dakhor Monastery is built as an alternative military power center. The Dakhor monks develop a form of magic based on sacrifice and bone deformation.",
+  "year": 600,
+  "endYear": null,
+  "type": "historical",
+  "series": "elantris",
+  "planets": ["sel"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 3,
+  "archivistNote": null
+}

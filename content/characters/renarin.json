@@ -1,0 +1,15 @@
+{
+  "id": "renarin",
+  "name": "Renarin Kholin",
+  "pronunciation": null,
+  "summary": "The younger son of Dalinar Kholin, born with a natural weakness that caused him to be treated with a mix of protection and pity. Despite his epilepsy and his father's initial dismissiveness, Renarin bonds the mysterious spren Glys to become a Truthwatcher—an order gifted with future sight rather than factual truth. His visions and his corrupted spren mark him as an anomaly among the Radiants, and his growing friendship with Rlain the listener offers hope for cross-species understanding on Roshar.",
+  "origin": "roshar",
+  "books": ["words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "unlockAt": ["words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "portrait": "characters/Renarin.webp",
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

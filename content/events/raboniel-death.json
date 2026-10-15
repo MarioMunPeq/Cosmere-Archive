@@ -1,0 +1,14 @@
+{
+  "id": "raboniel-death",
+  "title": "Death of Raboniel",
+  "summary": "Raboniel, the Lady of Pains, leader of the Fused, sacrifices herself along with her daughter to stop the advance of the war. A moment of tragic understanding between enemies.",
+  "year": 1503,
+  "endYear": null,
+  "type": "death",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": ["raboniel", "navani"],
+  "worldhoppers": [],
+  "importance": 4,
+  "archivistNote": null
+}

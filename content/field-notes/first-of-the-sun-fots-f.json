@@ -1,0 +1,16 @@
+{
+  "id": "first-of-the-sun-fots-f",
+  "planet": "first-of-the-sun",
+  "text": ["Patji's eye may be a natural", "perpendicularity.", "Further observation required."],
+  "style": "khriss",
+  "layout": {
+    "left": "40%",
+    "top": "74%",
+    "rotation": "-1.0deg",
+    "maxWidth": "130px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

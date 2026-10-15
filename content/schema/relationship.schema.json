@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "relationship",
+  "description": "One edge of the normalised relationship table. The collection is a JSON array of these.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "from", "to", "type", "kind"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^rel-[a-z0-9]+(-[a-z0-9]+)+$" },
+    "from": { "$ref": "common#/$defs/id" },
+    "to": { "$ref": "common#/$defs/id" },
+    "type": {
+      "enum": [
+        "parent",
+        "child",
+        "spouse",
+        "sibling",
+        "mentor",
+        "student",
+        "ally",
+        "enemy",
+        "rival",
+        "bonded",
+        "commander",
+        "subordinate",
+        "creator",
+        "creation",
+        "member",
+        "leader",
+        "heir",
+        "spouse",
+        "mentee",
+        "allegiance",
+        "wielder",
+        "wields"
+      ]
+    },
+    "label": { "type": ["string", "null"], "maxLength": 60 },
+    "kind": { "enum": ["character", "concept", "family", "planet", "book", "group"] }
+  }
+}

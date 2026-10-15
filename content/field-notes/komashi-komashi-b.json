@@ -1,0 +1,16 @@
+{
+  "id": "komashi-komashi-b",
+  "planet": "komashi",
+  "text": ["Prison world hypothesis", "remains conjectural."],
+  "style": "khriss",
+  "layout": {
+    "left": "74%",
+    "top": "36%",
+    "rotation": "-2.0deg",
+    "maxWidth": "130px"
+  },
+  "crossedOut": true,
+  "correction": "Confirmed by subsequent expedition.",
+  "sketch": null,
+  "sketchSize": null
+}

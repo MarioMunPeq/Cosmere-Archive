@@ -1,0 +1,21 @@
+{
+  "id": "lumar-lumar-a",
+  "planet": "lumar",
+  "text": [
+    "The aether spores behave unlike",
+    "any Investiture I have previously",
+    "documented. They appear to",
+    "respond to Intent directly."
+  ],
+  "style": "khriss",
+  "layout": {
+    "left": "10%",
+    "top": "4%",
+    "rotation": "-0.7deg",
+    "maxWidth": "170px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

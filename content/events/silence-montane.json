@@ -1,0 +1,14 @@
+{
+  "id": "silence-montane",
+  "title": "Silence Montane on Threnody",
+  "summary": "Silence Montane, a bounty hunter on Threnody, navigates the Forests of Hell where the Shades of the dead hunt the living. She runs a fort that shelters travelers and occasionally takes on dangerous contracts, following the Simple Rules that keep people alive on this deadly world.",
+  "year": 700,
+  "endYear": null,
+  "type": "historical",
+  "series": "arcanum-unbounded",
+  "planets": ["threnody"],
+  "characters": ["silence"],
+  "worldhoppers": [],
+  "importance": 3,
+  "archivistNote": null
+}

@@ -1,0 +1,15 @@
+{
+  "id": "szeth",
+  "name": "Szeth",
+  "pronunciation": "SETH",
+  "summary": "The Assassin in White, a Skybreaker from the isolated land of Shinovar who wields the legendary Honorblade of Jezrien. Szeth is bound by a magical oathstone: whoever holds the stone controls him absolutely, forcing him to commit terrible acts against his will. Known for his terrible efficiency with the Surges of Adhesion and Gravitation, Szeth assassinates Gavilar Kholin and later serves Taravangian before being freed by Dalinar. Under the tutelage of Nightblood and his new spren, he seeks absolution and a new purpose as a Knight Radiant sworn to the law.",
+  "origin": "roshar",
+  "books": ["the-way-of-kings", "words-of-radiance", "oathbringer", "wind-and-truth"],
+  "unlockAt": ["the-way-of-kings", "words-of-radiance", "oathbringer", "wind-and-truth"],
+  "portrait": null,
+  "born": 1470,
+  "died": null,
+  "status": "living",
+  "groups": ["radiant"],
+  "titles": ["Assassin of Kings", "True Windrunner", "Shin"]
+}

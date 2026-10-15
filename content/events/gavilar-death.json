@@ -1,0 +1,14 @@
+{
+  "id": "gavilar-death",
+  "title": "Death of Gavilar Kholin",
+  "summary": "King Gavilar Kholin is killed by Szeth during a peace feast with the parshmen. Szeth is forced to bear Nightblood (Jezrien's Honorblade) and serve Gavilar's killers. This event triggers the war on Roshar.",
+  "year": 1499,
+  "endYear": null,
+  "type": "cataclysm",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": ["szeth", "dalinar", "jasnah"],
+  "worldhoppers": ["wh-hoid"],
+  "importance": 5,
+  "archivistNote": null
+}

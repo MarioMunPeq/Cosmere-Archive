@@ -1,0 +1,21 @@
+{
+  "id": "first-of-the-sun-fots-c",
+  "planet": "first-of-the-sun",
+  "text": [
+    "The Pantheon archipelago remains",
+    "incompletely charted. Several",
+    "islands appear and disappear from",
+    "navigation records."
+  ],
+  "style": "khriss",
+  "layout": {
+    "left": "14%",
+    "top": "74%",
+    "rotation": "0.4deg",
+    "maxWidth": "165px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

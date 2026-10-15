@@ -1,0 +1,14 @@
+{
+  "id": "surgebinding",
+  "name": "Surgebinding",
+  "summary": "The ten orders of Knights Radiant use Stormlight to manipulate natural forces. Surgebinding requires a Nahel bond between a human and a spren, allowing access to two of the ten Surges.",
+  "planet": "roshar",
+  "shard": "Honor",
+  "category": "surgebinding",
+  "color": "#06b6d4",
+  "books": ["the-way-of-kings", "words-of-radiance", "oathbringer", "dawnshard", "rhythm-of-war", "wind-and-truth"],
+  "classification": "Bonded Investiture",
+  "status": "Documented",
+  "academicNote": null,
+  "allomanticMetals": []
+}

@@ -1,0 +1,14 @@
+{
+  "id": "e-catacendre",
+  "title": "The Catacendre",
+  "summary": "Harmony rebuilds Scadrial. The planet is moved back to its correct orbit, the ash and mist disappear. The surviving skaa and nobles must learn to live in a new world. Elendel is founded as the city of the future.",
+  "year": 1026,
+  "endYear": null,
+  "type": "cataclysm",
+  "series": "mistborn-era-1",
+  "planets": ["scadrial"],
+  "characters": ["sazed", "spook", "ten-soon", "marsh", "elend", "vin", "kelsier", "hoid"],
+  "worldhoppers": ["wh-hoid"],
+  "importance": 5,
+  "archivistNote": "The Catacendre represents the only known instance of a single person assuming two Shards simultaneously and successfully merging them. Whether Harmony’s dual nature is a strength or a limitation remains a central question in Cosmere theology."
+}

@@ -1,0 +1,16 @@
+{
+  "id": "threnody-threnody-d",
+  "planet": "threnody",
+  "text": ["The Silences are periods of", "relative safety. The pattern", "appears tied to orbital position."],
+  "style": "khriss",
+  "layout": {
+    "left": "52%",
+    "top": "74%",
+    "rotation": "1.3deg",
+    "maxWidth": "150px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

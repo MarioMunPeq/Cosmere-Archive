@@ -1,0 +1,15 @@
+{
+  "id": "dabbid",
+  "name": "Dabbid",
+  "pronunciation": null,
+  "summary": "A silent bridgeman from Bridge Four who cannot speak due to a traumatic event in his past—or so it seems. Dabbid is often underestimated by the other bridgemen, seen as simple or slow, but he possesses remarkable loyalty, observation skills, and courage. During the occupation of Urithiru in Rhythm of War, Dabbid emerges as a hero, taking care of a catatonic Kaladin, communicating through written notes, and coordinating the resistance within the Tower. He is revealed to be a squire of the Windrunners, speaking his first words in years during the crisis. Dabbid's story proves that heroism comes in all forms, and that silence does not mean absence.",
+  "origin": "roshar",
+  "books": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war"],
+  "unlockAt": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

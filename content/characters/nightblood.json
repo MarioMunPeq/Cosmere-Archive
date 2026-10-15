@@ -1,0 +1,15 @@
+{
+  "id": "nightblood",
+  "name": "Nightblood",
+  "pronunciation": null,
+  "summary": "A sentient sword forged on Nalthis with a single Command: destroy evil. Created by the scholars Shashara and Vasher using a dangerous variant of Awakening, Nightblood is a sword of immense power that consumes investiture from its wielder and the world around it. It is dangerously literal, has a childlike but murderous personality, and speaks telepathically to its wielder, offering constant advice about killing. On Roshar, Nightblood proves capable of cutting through almost anything—including the Unmade and even the concept of investiture itself—and its unique nature makes it one of the most feared and unpredictable weapons in the Cosmere.",
+  "origin": "nalthis",
+  "books": ["warbreaker", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "unlockAt": ["warbreaker", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "portrait": null,
+  "born": 290,
+  "died": null,
+  "status": "living",
+  "groups": ["nalthian"],
+  "titles": ["Sentient Sword", "Soul Devourer", "Evil Destroyer"]
+}

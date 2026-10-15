@@ -1,0 +1,16 @@
+{
+  "id": "sel-sel-e",
+  "planet": "sel",
+  "text": ["Measurements from MaiPon have", "produced unusually consistent", "longitudinal readings."],
+  "style": "khriss",
+  "layout": {
+    "left": "56%",
+    "top": "74%",
+    "rotation": "-1.0deg",
+    "maxWidth": "145px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

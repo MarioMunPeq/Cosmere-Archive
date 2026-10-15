@@ -1,0 +1,16 @@
+{
+  "id": "lumar-lumar-d",
+  "planet": "lumar",
+  "text": ["The aether may predate Shardic", "Investiture in this system.", "If true, this is significant."],
+  "style": "khriss",
+  "layout": {
+    "left": "36%",
+    "top": "74%",
+    "rotation": "-1.2deg",
+    "maxWidth": "145px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

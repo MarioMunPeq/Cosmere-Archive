@@ -1,0 +1,14 @@
+{
+  "id": "honor-cultivation-roshar",
+  "title": "Honor and Cultivation Arrive on Roshar",
+  "summary": "Tanavast (Honor) and Koravellium Avast (Cultivation) arrive on Roshar and begin shaping the continent. They create the spren as manifestations of the planet's natural Investiture.",
+  "year": -8000,
+  "endYear": null,
+  "type": "arrival",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 5,
+  "archivistNote": null
+}

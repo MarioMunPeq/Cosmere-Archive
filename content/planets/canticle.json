@@ -1,0 +1,18 @@
+{
+  "id": "canticle",
+  "name": "Canticle",
+  "pronunciation": null,
+  "summary": "A planet dragged through space, scorched by its sun, where people live fleeing the dawn.",
+  "shards": ["ambition"],
+  "color": "#f97316",
+  "connectedPlanets": [],
+  "series": ["secret-projects"],
+  "books": ["the-sunlit-man"],
+  "investiture": [
+    {
+      "name": "Torment Bond",
+      "summary": "Investiture bonded to individuals grants heat resistance and other abilities. The planet itself is a trapped entity.",
+      "shard": "Ambition"
+    }
+  ]
+}

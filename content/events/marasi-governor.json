@@ -1,0 +1,14 @@
+{
+  "id": "marasi-governor",
+  "title": "Marasi Becomes Governor",
+  "summary": "After the Battle of Elendel, Marasi Colms is appointed governor of Elendel. She implements reforms to prepare Scadrial for its new role in the wider Cosmere and establishes diplomatic relations with the Malwish.",
+  "year": 1329,
+  "endYear": null,
+  "type": "historical",
+  "series": "mistborn-era-2",
+  "planets": ["scadrial"],
+  "characters": ["marasi"],
+  "worldhoppers": [],
+  "importance": 3,
+  "archivistNote": null
+}

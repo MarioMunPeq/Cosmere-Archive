@@ -1,0 +1,14 @@
+{
+  "id": "hoid-first-sun",
+  "title": "Hoid on First of the Sun",
+  "summary": "Hoid visits First of the Sun, observing the aviar hunters and the evolution of the Patji system.",
+  "year": 500,
+  "endYear": null,
+  "type": "arrival",
+  "series": "arcanum-unbounded",
+  "planets": ["first-of-the-sun"],
+  "characters": [],
+  "worldhoppers": ["wh-hoid"],
+  "importance": 2,
+  "archivistNote": null
+}

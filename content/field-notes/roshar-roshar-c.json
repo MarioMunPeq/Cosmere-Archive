@@ -1,0 +1,16 @@
+{
+  "id": "roshar-roshar-c",
+  "planet": "roshar",
+  "text": ["Three moons. A common oversight", "in earlier catalogues."],
+  "style": "khriss",
+  "layout": {
+    "left": "28%",
+    "top": "40%",
+    "rotation": "1.2deg",
+    "maxWidth": "130px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

@@ -1,0 +1,14 @@
+{
+  "id": "vivenna-born",
+  "title": "Birth of Vivenna",
+  "summary": "Vivenna is born, the elder princess of Idris, originally destined to marry the god-king. She will become a warrior and Awakener of breaths.",
+  "year": 265,
+  "endYear": null,
+  "type": "birth",
+  "series": "warbreaker",
+  "planets": ["nalthis"],
+  "characters": ["vivenna"],
+  "worldhoppers": [],
+  "importance": 3,
+  "archivistNote": null
+}

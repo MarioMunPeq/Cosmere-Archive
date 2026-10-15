@@ -1,0 +1,16 @@
+{
+  "id": "komashi-komashi-nazh-b",
+  "planet": "komashi",
+  "text": ["The locals stare at me.", "I stare back.", "This is acceptable."],
+  "style": "nazh",
+  "layout": {
+    "left": "58%",
+    "top": "58%",
+    "rotation": "-1.8deg",
+    "maxWidth": "120px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

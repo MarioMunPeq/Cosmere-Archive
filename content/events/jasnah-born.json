@@ -1,0 +1,14 @@
+{
+  "id": "jasnah-born",
+  "title": "Birth of Jasnah Kholin",
+  "summary": "Jasnah Kholin is born, daughter of King Gavilar. She will become the most learned Lightweaver on Roshar, a political leader and eventual queen of Alethkar.",
+  "year": 1465,
+  "endYear": null,
+  "type": "birth",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": ["jasnah"],
+  "worldhoppers": [],
+  "importance": 4,
+  "archivistNote": null
+}

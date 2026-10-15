@@ -1,0 +1,14 @@
+{
+  "id": "e-rhythm-of-war",
+  "title": "Rhythm of War",
+  "summary": "Science and war collide. The Fused take the tower of Urithiru. Navani discovers the rhythms of Roshar and anti-light, a way to counter the power of the Radiants and the Fused.",
+  "year": 1503,
+  "endYear": null,
+  "type": "book",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": ["kaladin", "shallan", "dalinar", "navani", "hoid", "szeth", "nightblood", "venli", "raboniel"],
+  "worldhoppers": ["wh-hoid", "wh-vasher", "wh-kelsier", "wh-khriss"],
+  "importance": 5,
+  "archivistNote": null
+}

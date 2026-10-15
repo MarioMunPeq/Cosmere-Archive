@@ -1,0 +1,14 @@
+{
+  "id": "heralds-scatter",
+  "title": "The Heralds Scatter",
+  "summary": "The nine Heralds who abandoned the Oathpact scatter across Roshar, living as mortals. Some go mad (Nale seeks 'order' through chaos), others hide (Shalash destroys art depicting herself).",
+  "year": -498,
+  "endYear": null,
+  "type": "historical",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 4,
+  "archivistNote": null
+}

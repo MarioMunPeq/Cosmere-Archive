@@ -1,0 +1,14 @@
+{
+  "id": "wayne-born",
+  "title": "Birth of Wayne",
+  "summary": "Wayne is born in the slums of Elendel, Scadrial. He will become Wax's best friend and partner, a Mistborn with a unique talent for disguise and negotiation.",
+  "year": 1302,
+  "endYear": null,
+  "type": "birth",
+  "series": "mistborn-era-2",
+  "planets": ["scadrial"],
+  "characters": ["wayne"],
+  "worldhoppers": [],
+  "importance": 3,
+  "archivistNote": null
+}

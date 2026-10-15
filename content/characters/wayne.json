@@ -1,0 +1,15 @@
+{
+  "id": "wayne",
+  "name": "Wayne",
+  "pronunciation": null,
+  "summary": "Wax's eccentric partner and best friend, a Feruchemist with the ability to store speed in metalminds—allowing him to move impossibly fast, stand perfectly still, or exchange speed for healing. Wayne is a master of disguise, able to mimic accents and mannerisms so perfectly that he can pass as anyone. Despite his childish love of hats, cheap alcohol, and mischief, Wayne is deeply philosophical, haunted by his past and the man he killed in his youth. His journey toward forgiveness and his ultimate sacrifice in the Lost Metal cement him as one of Scadrial's most beloved and tragic figures.",
+  "origin": "scadrial",
+  "books": ["the-alloy-of-law", "shadows-of-self", "the-bands-of-mourning", "the-lost-metal"],
+  "unlockAt": ["the-alloy-of-law", "shadows-of-self", "the-bands-of-mourning", "the-lost-metal"],
+  "portrait": "characters/Wayne.webp",
+  "born": 1302,
+  "died": 1328,
+  "status": "deceased",
+  "groups": ["scadrian"],
+  "titles": ["Master of Disguise", "Negotiator", "Best Friend"]
+}

@@ -1,0 +1,33 @@
+{
+  "id": "sel",
+  "name": "Sel",
+  "pronunciation": null,
+  "summary": "World of Elantris, where magic depends on geographic location and belief systems.",
+  "shards": ["devotion", "dominion"],
+  "color": "#14b8a6",
+  "connectedPlanets": [],
+  "series": ["elantris", "arcanum-unbounded"],
+  "books": ["elantris", "arcanum-unbounded"],
+  "investiture": [
+    {
+      "name": "AonDor",
+      "summary": "Symbol-based magic tied to the geography of Arelon. Weakened after the Reod.",
+      "shard": "Devotion"
+    },
+    {
+      "name": "Dakhor",
+      "summary": "Bone-based magic used by the Fjordell priesthood. Powered by blood sacrifices.",
+      "shard": "Dominion"
+    },
+    {
+      "name": "Forgery",
+      "summary": "Altering an object's past through seals. Most potent in MaiPon.",
+      "shard": "Devotion"
+    },
+    {
+      "name": "ChayShan",
+      "summary": "Martial-art-based investiture from Hrovell. Channeled through precise movements.",
+      "shard": "Dominion"
+    }
+  ]
+}

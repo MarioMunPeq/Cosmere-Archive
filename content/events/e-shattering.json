@@ -1,0 +1,14 @@
+{
+  "id": "e-shattering",
+  "title": "Shattering of Adonalsium",
+  "summary": "Sixteen people, led by a conspiracy, kill Adonalsium and divide its power into sixteen Shards. Each represents an aspect of divinity.",
+  "year": -10000,
+  "endYear": null,
+  "type": "cataclysm",
+  "series": "pre-cosmere",
+  "planets": [],
+  "characters": ["hoid", "khriss", "shai"],
+  "worldhoppers": ["wh-hoid", "wh-khriss"],
+  "importance": 5,
+  "archivistNote": null
+}

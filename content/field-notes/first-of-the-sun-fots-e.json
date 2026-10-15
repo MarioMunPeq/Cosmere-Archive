@@ -1,0 +1,16 @@
+{
+  "id": "first-of-the-sun-fots-e",
+  "planet": "first-of-the-sun",
+  "text": ["The local cognitive realm is", "unusually turbulent near the", "dead Shard's resting place."],
+  "style": "khriss",
+  "layout": {
+    "left": "72%",
+    "top": "10%",
+    "rotation": "1.2deg",
+    "maxWidth": "155px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

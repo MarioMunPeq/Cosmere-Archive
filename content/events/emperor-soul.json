@@ -1,0 +1,14 @@
+{
+  "id": "emperor-soul",
+  "title": "The Emperor's Soul",
+  "summary": "Wan ShaiLu, a master Forger on Sel, is hired to forge a new soul for the wounded emperor of the Rose Empire. Her work leads her to discover deep secrets about Investiture on Sel.",
+  "year": 14,
+  "endYear": null,
+  "type": "book",
+  "series": "elantris",
+  "planets": ["sel"],
+  "characters": ["shai"],
+  "worldhoppers": [],
+  "importance": 3,
+  "archivistNote": null
+}

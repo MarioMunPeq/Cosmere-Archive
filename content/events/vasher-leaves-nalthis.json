@@ -1,0 +1,14 @@
+{
+  "id": "vasher-leaves-nalthis",
+  "title": "Vasher Leaves Nalthis",
+  "summary": "Vasher, with Nightblood, leaves Nalthis and travels to Roshar. His arrival goes unnoticed but will change the planet's fate. On Roshar he adopts a secret identity and hides Nightblood.",
+  "year": 400,
+  "endYear": null,
+  "type": "departure",
+  "series": "stormlight",
+  "planets": ["nalthis", "roshar"],
+  "characters": ["vasher", "nightblood"],
+  "worldhoppers": ["wh-vasher"],
+  "importance": 4,
+  "archivistNote": null
+}

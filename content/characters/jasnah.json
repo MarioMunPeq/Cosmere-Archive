@@ -1,0 +1,15 @@
+{
+  "id": "jasnah",
+  "name": "Jasnah Kholin",
+  "pronunciation": null,
+  "summary": "Queen of Alethkar and eldest child of Gavilar Kholin. A brilliant scholar and heretic who rejects the Vorin Church's teachings, Jasnah bonds the cryptic Ivory to become an Elsecaller capable of soulcasting and traveling between realms. She is the first person in millennia to discover the true nature of the Knights Radiant and the Voidbringers. Known for her razor-sharp intellect, pragmatic ruthlessness, and unshakable atheism in a world of literal gods, Jasnah rules Alethkar from Urithiru with a vision for a more enlightened society.",
+  "origin": "roshar",
+  "books": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "unlockAt": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "portrait": "characters/Jasnah.webp",
+  "born": 1465,
+  "died": null,
+  "status": "living",
+  "groups": ["radiant"],
+  "titles": ["Lightweaver", "Queen of Alethkar", "Scholar"]
+}

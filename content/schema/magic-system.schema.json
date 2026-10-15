@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "magic-system",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "summary", "planet", "category"],
+  "properties": {
+    "id": { "$ref": "common#/$defs/id" },
+    "name": { "$ref": "common#/$defs/nonEmptyString" },
+    "summary": { "$ref": "common#/$defs/summary" },
+    "planet": { "$ref": "common#/$defs/id" },
+    "shard": { "type": ["string", "null"], "maxLength": 80 },
+    "category": { "type": "string", "minLength": 1, "maxLength": 60 },
+    "color": { "$ref": "common#/$defs/hexColor" },
+    "books": { "$ref": "common#/$defs/idArray" },
+    "classification": { "type": ["string", "null"], "maxLength": 80 },
+    "status": { "type": ["string", "null"], "maxLength": 60 },
+    "academicNote": { "type": ["string", "null"], "maxLength": 1200 },
+    "allomanticMetals": { "$ref": "common#/$defs/idArray" }
+  }
+}

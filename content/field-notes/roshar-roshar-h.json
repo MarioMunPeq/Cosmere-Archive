@@ -1,0 +1,21 @@
+{
+  "id": "roshar-roshar-h",
+  "planet": "roshar",
+  "text": [
+    "The Shattered Plains formation",
+    "remains unexplained by standard",
+    "geological models. The pattern is",
+    "too regular to be natural."
+  ],
+  "style": "khriss",
+  "layout": {
+    "left": "50%",
+    "top": "4%",
+    "rotation": "0.5deg",
+    "maxWidth": "170px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

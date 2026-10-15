@@ -1,0 +1,14 @@
+{
+  "id": "odium-roshar",
+  "title": "Odium Arrives on Roshar",
+  "summary": "Rayse (Odium) follows Honor and Cultivation to Roshar, beginning millennia of conflict. The three Shards become trapped in the Rosharan system.",
+  "year": -7800,
+  "endYear": null,
+  "type": "arrival",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 5,
+  "archivistNote": null
+}

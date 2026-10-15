@@ -1,0 +1,15 @@
+{
+  "id": "wax",
+  "name": "Waxillium Ladrian",
+  "pronunciation": null,
+  "summary": "A Twinborn from a noble house, combining Steel Allomancy (Coinshot) with Iron Feruchemy (Skimmer). Wax spent his youth in the Roughs—the frontier beyond the Elendel Basin—working as a lawman, bringing justice to the lawless towns of Scadrial's wild west. Called back to Elendel after his uncle's death, he inherits the title of Lord Ladrian and must balance his duties as a nobleman with his instincts as a investigator. Wax is a man of faith in Harmony, though his confidence in the god's plans is repeatedly tested. His journey forces him to reconcile the violence of his past with the responsibilities of his present, culminating in a confrontation with forces from beyond Scadrial itself.",
+  "origin": "scadrial",
+  "books": ["the-alloy-of-law", "shadows-of-self", "the-bands-of-mourning", "the-lost-metal"],
+  "unlockAt": ["the-alloy-of-law", "shadows-of-self", "the-bands-of-mourning", "the-lost-metal"],
+  "portrait": "characters/Waxillium.webp",
+  "born": 1300,
+  "died": null,
+  "status": "living",
+  "groups": ["scadrian"],
+  "titles": ["Law of the Frontier", "Mistborn", "Defender of the Basin"]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "sixth-of-dusk",
+  "title": "Sixth of the Dusk",
+  "summary": "Dusk, a hunter from First of the Sun, uses magical aviar birds to hunt on the dangerous island of Patji. The avians grant him enhanced cognitive abilities. The world begins to feel the pressure of interplanetary trade.",
+  "year": 500,
+  "endYear": null,
+  "type": "book",
+  "series": "arcanum-unbounded",
+  "planets": ["first-of-the-sun"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 2,
+  "archivistNote": null
+}

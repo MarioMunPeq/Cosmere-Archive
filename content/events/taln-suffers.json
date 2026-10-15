@@ -1,0 +1,14 @@
+{
+  "id": "taln-suffers",
+  "title": "Taln Endures Braize",
+  "summary": "Talenel'Elin, Herald of War, endures alone millennia of torture on Braize without breaking, keeping the Voidbringers imprisoned. His unbreakable will prevents new Desolations.",
+  "year": -2500,
+  "endYear": null,
+  "type": "historical",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": ["taln"],
+  "worldhoppers": [],
+  "importance": 5,
+  "archivistNote": null
+}

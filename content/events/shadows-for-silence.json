@@ -1,0 +1,14 @@
+{
+  "id": "shadows-for-silence",
+  "title": "First Settlers of Threnody",
+  "summary": "The first humans arrive on Threnody and discover a terrifying world where the Shadows (remnants of Ambition) lurk in the forests. Survival requires absolute silence and strict rules.",
+  "year": -400,
+  "endYear": null,
+  "type": "historical",
+  "series": "arcanum-unbounded",
+  "planets": ["threnody"],
+  "characters": [],
+  "worldhoppers": [],
+  "importance": 3,
+  "archivistNote": null
+}

@@ -1,0 +1,16 @@
+{
+  "id": "komashi-komashi-f",
+  "planet": "komashi",
+  "text": ["The Father Machine remains poorly", "understood. I suspect it predates", "human habitation."],
+  "style": "khriss",
+  "layout": {
+    "left": "42%",
+    "top": "74%",
+    "rotation": "-1.5deg",
+    "maxWidth": "155px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

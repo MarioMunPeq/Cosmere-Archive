@@ -1,0 +1,15 @@
+{
+  "id": "navani",
+  "name": "Navani Kholin",
+  "pronunciation": null,
+  "summary": "Widow of King Gavilar Kholin and mother of Jasnah and Elhokar. A brilliant scholar and engineer who pioneered the study of fabrials—devices that trap spren to produce magical effects—and later discovered the revolutionary principles of anti-Stormlight and Towerlight along with the rhythms of Roshar. For years sidelined by the patriarchal Alethi society, Navani proves herself the greatest scientific mind of her era when she bonds the Sibling and becomes the Bondsmith of Urithiru during the tower's occupation by the Fused.",
+  "origin": "roshar",
+  "books": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "unlockAt": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "portrait": "characters/Navani.webp",
+  "born": 1440,
+  "died": null,
+  "status": "living",
+  "groups": ["radiant"],
+  "titles": ["Scholar", "Light Engineer", "Widow Queen"]
+}

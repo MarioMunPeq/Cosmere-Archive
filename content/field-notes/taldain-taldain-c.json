@@ -1,0 +1,16 @@
+{
+  "id": "taldain-taldain-c",
+  "planet": "taldain",
+  "text": ["The sand on the Dayside shifts in", "response to Investiture exposure.", "A useful indicator."],
+  "style": "khriss",
+  "layout": {
+    "left": "14%",
+    "top": "74%",
+    "rotation": "0.5deg",
+    "maxWidth": "160px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

@@ -1,0 +1,21 @@
+{
+  "id": "taldain-taldain-e",
+  "planet": "taldain",
+  "text": [
+    "The border between Dayside and",
+    "Darkside is the sharpest",
+    "environmental gradient in the",
+    "known Cosmere."
+  ],
+  "style": "khriss",
+  "layout": {
+    "left": "12%",
+    "top": "38%",
+    "rotation": "-0.3deg",
+    "maxWidth": "165px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

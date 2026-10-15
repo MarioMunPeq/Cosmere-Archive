@@ -1,0 +1,15 @@
+{
+  "id": "kelsier",
+  "name": "Kelsier",
+  "pronunciation": "KEL-see-er",
+  "summary": "The Survivor of Hathsin, a Mistborn of unparalleled skill and charisma who leads the skaa rebellion against the Lord Ruler. After surviving the brutal Pits of Hathsin where his wife Mare was killed, Kelsier emerges as a revolutionary legend, inspiring the skaa to believe they can overthrow a being worshipped as a god for a thousand years. Though he dies in the process, his cognitive shadow persists beyond death, eventually returning as a figure of religious worship—the Survivor—and playing a pivotal role in Scadrial's affairs across centuries. His legend extends beyond Scadrial, making him one of the Cosmere's most influential non-Shardic figures.",
+  "origin": "scadrial",
+  "books": ["the-final-empire", "the-hero-of-ages", "arcanum-unbounded", "the-lost-metal"],
+  "unlockAt": ["the-final-empire", "the-hero-of-ages", "arcanum-unbounded", "the-lost-metal"],
+  "portrait": "characters/Kelsier.webp",
+  "born": 990,
+  "died": 1024,
+  "status": "deceased",
+  "groups": ["scadrian"],
+  "titles": ["Survivor of Hathsin", "Thief", "Founder of the Ghostbloods"]
+}

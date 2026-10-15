@@ -1,0 +1,16 @@
+{
+  "id": "threnody-threnody-b",
+  "planet": "threnody",
+  "text": ["Cognitive shadows are both", "abundant and hostile.", "Extreme caution advised for", "any visitor."],
+  "style": "khriss",
+  "layout": {
+    "left": "74%",
+    "top": "42%",
+    "rotation": "-1.8deg",
+    "maxWidth": "155px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

@@ -1,0 +1,16 @@
+{
+  "id": "komashi-komashi-d",
+  "planet": "komashi",
+  "text": ["The shroud effect limits external", "observation significantly. Data", "accumulated over several visits."],
+  "style": "khriss",
+  "layout": {
+    "left": "72%",
+    "top": "10%",
+    "rotation": "1.4deg",
+    "maxWidth": "160px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

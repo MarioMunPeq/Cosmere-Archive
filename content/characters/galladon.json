@@ -1,0 +1,15 @@
+{
+  "id": "galladon",
+  "name": "Galladon",
+  "pronunciation": null,
+  "summary": "An Elantrian from Sel who survived the Shaod and was living in the fallen city of Elantris when Raoden arrived. Stoic, pessimistic, and deeply loyal, Galladon was one of the first to recognize Raoden's leadership potential and became his most trusted ally inside the city. His signature phrase, 'Kolo,' and his dry humor mask a profound wisdom and an unbreakable spirit. Galladon plays a crucial role in the restoration of Elantris, helping Raoden rediscover AonDor and proving that even the most broken people can find purpose.",
+  "origin": "sel",
+  "books": ["elantris"],
+  "unlockAt": ["elantris"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

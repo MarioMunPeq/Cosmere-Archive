@@ -1,0 +1,14 @@
+{
+  "id": "warbreaker-events",
+  "title": "Warbreaker",
+  "summary": "Princess Siri is sent to marry the god-king Susebron in T'Telir. Vivenna tries to rescue her but discovers everything is more complex. Vasher and Denth fight for the fate of Nalthis. The awakening of breaths changes the balance of power.",
+  "year": 300,
+  "endYear": null,
+  "type": "book",
+  "series": "warbreaker",
+  "planets": ["nalthis"],
+  "characters": ["siri", "vivenna", "susebron", "vasher", "denth", "nightblood"],
+  "worldhoppers": ["wh-vasher"],
+  "importance": 4,
+  "archivistNote": null
+}

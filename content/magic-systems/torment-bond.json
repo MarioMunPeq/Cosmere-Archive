@@ -1,0 +1,14 @@
+{
+  "id": "torment-bond",
+  "name": "Torment Bond",
+  "summary": "Investiture bonded to individuals on Canticle grants heat resistance, flight, and other abilities. The planet itself is a trapped entity, and the bonds connect to its pain.",
+  "planet": "canticle",
+  "shard": "Ambition",
+  "category": "bonding",
+  "color": "#f97316",
+  "books": ["the-sunlit-man"],
+  "classification": "Bonded Investiture",
+  "status": "Poorly Understood",
+  "academicNote": "The bond appears to draw upon the planet’s own Investiture rather than an external Shardic source.",
+  "allomanticMetals": []
+}

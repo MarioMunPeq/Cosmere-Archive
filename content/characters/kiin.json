@@ -1,0 +1,15 @@
+{
+  "id": "kiin",
+  "name": "Kiin",
+  "pronunciation": null,
+  "summary": "Sarene's uncle in Teod, a former pirate captain who now runs a modest restaurant in the city of Kae. Despite his unassuming appearance and love of cooking, Kiin is a former pirate king with extensive knowledge of Arelon's underworld and political intrigues. He becomes a key figure in the Elantris resistance, using his old contacts and his surprisingly strategic mind to organize opposition to Hrathen's coup. His relationship with his estranged brother, King Eventeo, and his devotion to his niece Sarene reveal a man of deep principle beneath the jovial exterior.",
+  "origin": "sel",
+  "books": ["elantris"],
+  "unlockAt": ["elantris"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

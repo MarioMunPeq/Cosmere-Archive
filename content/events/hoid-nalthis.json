@@ -1,0 +1,14 @@
+{
+  "id": "hoid-nalthis",
+  "title": "Hoid on Nalthis",
+  "summary": "Hoid visits Nalthis during the time of Warbreaker, collecting BioChromatic Breaths and observing the events. He accumulates thousands of Breaths over the centuries.",
+  "year": 300,
+  "endYear": null,
+  "type": "arrival",
+  "series": "warbreaker",
+  "planets": ["nalthis"],
+  "characters": [],
+  "worldhoppers": ["wh-hoid"],
+  "importance": 3,
+  "archivistNote": null
+}

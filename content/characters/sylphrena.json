@@ -1,0 +1,15 @@
+{
+  "id": "sylphrena",
+  "name": "Sylphrena (Syl)",
+  "pronunciation": null,
+  "summary": "An honorspren of the highest order, bonded to Kaladin Stormblessed as his partner in the Windrunner order of the Knights Radiant. Syl first appeared to Kaladin as a tiny blue fairy-like figure, growing in size and complexity as their bond deepened. She is playful, curious, and fiercely protective of Kaladin, but also ancient and wise in ways she does not always express. As an honorspren, Syl embodies the fundamental nature of Honor—keeping oaths, protecting the innocent, and resisting oppression. She was nearly killed when Kaladin broke his oath, but the Windrunner's Fourth Ideal saved her, restoring her fully and marking their bond as the strongest among the Radiants.",
+  "origin": "roshar",
+  "books": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "unlockAt": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

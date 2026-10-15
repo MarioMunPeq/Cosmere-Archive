@@ -1,0 +1,15 @@
+{
+  "id": "teft",
+  "name": "Teft",
+  "pronunciation": null,
+  "summary": "A former soldier in the Alethi army turned bridgeman and one of the first members of Bridge Four. A Windrunner of the Knights Radiant, Teft is the oldest of the new Radiants and serves as a mentor and father figure to Kaladin, though he struggles with his own demons—specifically his addiction to the narcotic known as moss, born from guilt over his family's past. His enforcer spren Phendorana bonds with him as he speaks his oaths, but the trauma of his past nearly destroys him. Teft's sacrifice in Rhythm of War, where he is killed by Moash while protecting his Radiant ideals, is one of the most heart-wrenching moments in the series.",
+  "origin": "roshar",
+  "books": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war"],
+  "unlockAt": ["the-way-of-kings", "words-of-radiance", "oathbringer", "rhythm-of-war"],
+  "portrait": null,
+  "born": null,
+  "died": null,
+  "status": "unknown",
+  "groups": [],
+  "titles": []
+}

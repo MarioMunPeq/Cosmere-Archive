@@ -1,0 +1,14 @@
+{
+  "id": "szeth-born",
+  "title": "Birth of Szeth",
+  "summary": "Szeth is born, son of Neturo, of the nation of Shinovar on Roshar. He will become the Assassin in White, bearer of Nightblood and a true Windrunner.",
+  "year": 1470,
+  "endYear": null,
+  "type": "birth",
+  "series": "stormlight",
+  "planets": ["roshar"],
+  "characters": ["szeth"],
+  "worldhoppers": [],
+  "importance": 4,
+  "archivistNote": null
+}

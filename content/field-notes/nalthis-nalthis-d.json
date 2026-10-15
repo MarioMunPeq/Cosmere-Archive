@@ -1,0 +1,16 @@
+{
+  "id": "nalthis-nalthis-d",
+  "planet": "nalthis",
+  "text": ["The Returned present a unique", "challenge to standard Cognitive", "Shadow classification."],
+  "style": "khriss",
+  "layout": {
+    "left": "72%",
+    "top": "48%",
+    "rotation": "0.9deg",
+    "maxWidth": "155px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}

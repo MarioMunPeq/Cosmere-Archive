@@ -1,0 +1,15 @@
+{
+  "id": "marasi",
+  "name": "Marasi Colms",
+  "pronunciation": null,
+  "summary": "Steris's half-sister, a dedicated law student and a Mistborn who can burn cadmium and bendalloy—slowing or speeding time in bubbles. Unlike the more famous Mistborn of the past, Marasi is methodical, bookish, and principled, preferring evidence and procedure to brute force. She becomes one of Elendel's finest constables and later its governor, using her sharp legal mind and growing understanding of the Cosmere to protect her city. Her discoveries about the nature of investiture and external investiture interference mark her as one of Scadrial's most important scholars.",
+  "origin": "scadrial",
+  "books": ["the-alloy-of-law", "shadows-of-self", "the-bands-of-mourning", "the-lost-metal"],
+  "unlockAt": ["the-alloy-of-law", "shadows-of-self", "the-bands-of-mourning", "the-lost-metal"],
+  "portrait": "characters/Marasi.webp",
+  "born": 1310,
+  "died": null,
+  "status": "living",
+  "groups": ["scadrian"],
+  "titles": ["Governor", "Lawyer", "Leader"]
+}

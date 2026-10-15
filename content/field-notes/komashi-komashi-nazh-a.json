@@ -1,0 +1,16 @@
+{
+  "id": "komashi-komashi-nazh-a",
+  "planet": "komashi",
+  "text": ["Everything here is covered", "in a thin layer of something.", "I stopped asking what."],
+  "style": "nazh",
+  "layout": {
+    "left": "34%",
+    "top": "20%",
+    "rotation": "0.9deg",
+    "maxWidth": "130px"
+  },
+  "crossedOut": false,
+  "correction": null,
+  "sketch": null,
+  "sketchSize": null
+}
