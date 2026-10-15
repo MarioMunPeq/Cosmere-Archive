@@ -4,6 +4,50 @@ import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 import { visualizer } from 'rollup-plugin-visualizer'
 import path from 'path'
+import type { Plugin } from 'vite'
+
+/**
+ * M1 · Block 4
+ * Injects <link rel="preload" as="font"> for the self-hosted woff2 files that
+ * src/design/fonts.css references. Vite fingerprints those assets, so the href
+ * is only known at build time and cannot be written by hand in index.html.
+ *
+ * Only the `normal` faces are preloaded: they are the ones used above the fold.
+ * The italic display face is fetched lazily by the browser when first needed.
+ */
+const CRITICAL_FONTS = ['eb-garamond-latin-wght-normal', 'inter-latin-wght-normal']
+
+function fontPreload(): Plugin {
+  let base = '/'
+  return {
+    name: 'font-preload',
+    apply: 'build',
+    configResolved(config) {
+      base = config.base
+    },
+    transformIndexHtml: {
+      order: 'post',
+      handler(html, ctx) {
+        const bundle = ctx.bundle
+        if (!bundle) return html
+
+        const hrefs = Object.keys(bundle)
+          .filter((f) => CRITICAL_FONTS.some((n) => f.includes(n)) && f.endsWith('.woff2'))
+          .map((f) => `${base}${f}`)
+
+        if (hrefs.length === 0) return html
+
+        const tags = hrefs
+          .map((h) => `<link rel="preload" href="${h}" as="font" type="font/woff2" crossorigin>`)
+          .join('\n    ')
+
+        return html.includes('</title>')
+          ? html.replace('</title>', `</title>\n    ${tags}`)
+          : html.replace(/<head>/, `<head>\n    ${tags}`)
+      },
+    },
+  }
+}
 
 export default defineConfig({
   base: '/Cosmere-Archive/',
@@ -30,6 +74,7 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
+    fontPreload(),
     ...(process.env.ANALYZE
       ? [visualizer({ open: true, filename: 'dist/stats.html', gzipSize: true, brotliSize: true })]
       : []),
