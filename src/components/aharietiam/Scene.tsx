@@ -9,7 +9,6 @@ import Particles from './Particles'
 import InfoMonolith from './InfoMonolith'
 import HeraldSymbol from './HeraldSymbol'
 import ControlsLegend from './ControlsLegend'
-import DebugAharietiam from './DebugAharietiam'
 import { HONORBLADES } from '@/data/static/aharietiam'
 import CameraRig from './CameraRig'
 import type { FocusTarget } from './CameraRig'
@@ -48,7 +47,6 @@ export default memo(function Scene() {
   const [hoveredId, setHoveredId] = useState<string | null>(null)
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [focusedId, setFocusedId] = useState<string | null>(null)
-  const [debug, setDebug] = useState(false)
   const [inspectPhase, setInspectPhase] = useState<'idle' | 'entering' | 'inspecting' | 'exiting'>('idle')
 
   const [focusTarget, setFocusTarget] = useState<FocusTarget | null>(null)
@@ -108,8 +106,6 @@ export default memo(function Scene() {
 
   return (
     <div className="relative w-screen h-screen overflow-hidden" style={{ background: '#030205' }}>
-      {debug && <DebugAharietiam onClose={() => setDebug(false)} />}
-
       {/* Atmosphere — stars, nebula, mountains, ash */}
       <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 1 }}>
         <Atmosphere />
@@ -204,24 +200,6 @@ export default memo(function Scene() {
       {/* Controls legend */}
       <ControlsLegend />
       {isFocusMode && <ReturnButton onClose={handleClose} />}
-
-      {/* Debug toggle */}
-      <div className="fixed bottom-4 right-4" style={{ zIndex: 50 }}>
-        <button
-          onClick={() => setDebug((d) => !d)}
-          className="text-[10px] opacity-30 hover:opacity-100 transition-opacity cursor-pointer"
-          style={{
-            background: 'rgba(255,235,210,0.05)',
-            border: '1px solid rgba(255,235,210,0.1)',
-            color: 'rgba(255,235,210,0.5)',
-            padding: '4px 10px',
-            borderRadius: 4,
-            fontFamily: 'monospace',
-          }}
-        >
-          {debug ? 'HIDE DEBUG' : 'DEBUG'}
-        </button>
-      </div>
     </div>
   )
 })
