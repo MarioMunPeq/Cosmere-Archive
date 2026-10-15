@@ -1,3 +1,9 @@
 node_modules
 dist
 pnpm-lock.yaml
+
+# Playwright ephemeral output (M1 · Block 7)
+test-results
+playwright-report
+blob-report
+.playwright

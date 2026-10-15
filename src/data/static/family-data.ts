@@ -6,16 +6,36 @@ export const FAMILY_TREES: FamilyDefinition[] = [
     name: 'Kholin Dynasty',
     color: '#fbbf24',
     description:
-      'The ruling house of Alethkar on Roshar. Gavilar and Dalinar are brothers; after Gavilar\'s death, Navani later married Dalinar.',
+      "The ruling house of Alethkar on Roshar. Gavilar and Dalinar are brothers; after Gavilar's death, Navani later married Dalinar.",
     members: [
       { id: 'kholin_house', name: 'House Kholin', isDeceased: true, gender: 'male' },
 
-      { id: 'gavilar', name: 'Gavilar Kholin', parentIds: ['kholin_house'], spouseId: 'navani', isDeceased: true, gender: 'male' },
+      {
+        id: 'gavilar',
+        name: 'Gavilar Kholin',
+        parentIds: ['kholin_house'],
+        spouseId: 'navani',
+        isDeceased: true,
+        gender: 'male',
+      },
       { id: 'navani', name: 'Navani Kholin', spouseId: 'gavilar', characterId: 'navani', gender: 'female' },
-      { id: 'dalinar', name: 'Dalinar Kholin', parentIds: ['kholin_house'], spouseId: 'evi', characterId: 'dalinar', gender: 'male' },
+      {
+        id: 'dalinar',
+        name: 'Dalinar Kholin',
+        parentIds: ['kholin_house'],
+        spouseId: 'evi',
+        characterId: 'dalinar',
+        gender: 'male',
+      },
       { id: 'evi', name: 'Evi', spouseId: 'dalinar', isDeceased: true, gender: 'female' },
 
-      { id: 'jasnah', name: 'Jasnah Kholin', parentIds: ['gavilar', 'navani'], characterId: 'jasnah', gender: 'female' },
+      {
+        id: 'jasnah',
+        name: 'Jasnah Kholin',
+        parentIds: ['gavilar', 'navani'],
+        characterId: 'jasnah',
+        gender: 'female',
+      },
       {
         id: 'elhokar',
         name: 'Elhokar Kholin',
@@ -87,7 +107,7 @@ export const FAMILY_TREES: FamilyDefinition[] = [
     name: 'Venture Dynasty',
     color: '#f87171',
     description:
-      'The noble house that ruled the Final Empire on Scadrial. Straff\'s illegitimate son Zane was a Mistborn assassin.',
+      "The noble house that ruled the Final Empire on Scadrial. Straff's illegitimate son Zane was a Mistborn assassin.",
     members: [
       { id: 'straff', name: 'Straff Venture', isDeceased: true, gender: 'male' },
 
@@ -110,11 +130,18 @@ export const FAMILY_TREES: FamilyDefinition[] = [
     name: "Survivor's Kin",
     color: '#a78bfa',
     description:
-      'The found family bonded to Kelsier, the Survivor of Hathsin. Marsh is Kelsier\'s older brother; Spook is their distant cousin.',
+      "The found family bonded to Kelsier, the Survivor of Hathsin. Marsh is Kelsier's older brother; Spook is their distant cousin.",
     members: [
       { id: 'survivor_circle', name: "Survivor's Circle", isDeceased: true, gender: 'male' },
 
-      { id: 'kelsier', name: 'Kelsier', parentIds: ['survivor_circle'], spouseId: 'mare', characterId: 'kelsier', gender: 'male' },
+      {
+        id: 'kelsier',
+        name: 'Kelsier',
+        parentIds: ['survivor_circle'],
+        spouseId: 'mare',
+        characterId: 'kelsier',
+        gender: 'male',
+      },
       { id: 'mare', name: 'Mare', spouseId: 'kelsier', isDeceased: true, gender: 'female' },
       { id: 'marsh', name: 'Marsh', parentIds: ['survivor_circle'], characterId: 'marsh', gender: 'male' },
       { id: 'spook', name: 'Spook', parentIds: ['survivor_circle'], characterId: 'spook', gender: 'male' },
@@ -126,7 +153,7 @@ export const FAMILY_TREES: FamilyDefinition[] = [
     name: 'Idris Royal Family',
     color: '#38bdf8',
     description:
-      'The ruling family of Idris on Nalthis. Princess Siri was sent to marry the God-King Susebron in Vivenna\'s place.',
+      "The ruling family of Idris on Nalthis. Princess Siri was sent to marry the God-King Susebron in Vivenna's place.",
     members: [
       { id: 'dedelin', name: 'King Dedelin', spouseId: 'idris_queen', isDeceased: true, gender: 'male' },
       { id: 'idris_queen', name: 'Queen of Idris', spouseId: 'dedelin', isDeceased: true, gender: 'female' },
@@ -162,7 +189,14 @@ export const FAMILY_TREES: FamilyDefinition[] = [
       { id: 'eventeo', name: 'King Eventeo', parentIds: ['sel_crowns'], isDeceased: true, gender: 'male' },
 
       { id: 'raoden', name: 'Raoden', parentIds: ['iadon'], spouseId: 'sarene', characterId: 'raoden', gender: 'male' },
-      { id: 'sarene', name: 'Sarene', parentIds: ['eventeo'], spouseId: 'raoden', characterId: 'sarene', gender: 'female' },
+      {
+        id: 'sarene',
+        name: 'Sarene',
+        parentIds: ['eventeo'],
+        spouseId: 'raoden',
+        characterId: 'sarene',
+        gender: 'female',
+      },
     ],
     rootIds: ['sel_crowns'],
   },
@@ -171,11 +205,18 @@ export const FAMILY_TREES: FamilyDefinition[] = [
     name: 'Ladrian & Harms Family',
     color: '#2dd4bf',
     description:
-      'Waxillium Ladrian, Steris Harms, and her half-sister Marasi Colms — the interconnected families of Scadrial\'s Era 2.',
+      "Waxillium Ladrian, Steris Harms, and her half-sister Marasi Colms — the interconnected families of Scadrial's Era 2.",
     members: [
       { id: 'lord_harms', name: 'Lord Harms', isDeceased: true, gender: 'male' },
 
-      { id: 'steris', name: 'Steris Harms', parentIds: ['lord_harms'], spouseId: 'wax', characterId: 'steris', gender: 'female' },
+      {
+        id: 'steris',
+        name: 'Steris Harms',
+        parentIds: ['lord_harms'],
+        spouseId: 'wax',
+        characterId: 'steris',
+        gender: 'female',
+      },
       { id: 'marasi', name: 'Marasi Colms', parentIds: ['lord_harms'], characterId: 'marasi', gender: 'female' },
       { id: 'wax', name: 'Waxillium Ladrian', spouseId: 'steris', characterId: 'wax', gender: 'male' },
     ],

@@ -5,9 +5,19 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  # M1 · Block 7 — manual re-deploy of the current main without pushing.
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
-  check:
+  quality:
+    name: Format, lint, types, unit tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,7 +27,82 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
+
+  budgets:
+    name: Design tokens and asset references
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      # Reads src/design/tokens.css and asserts every text x surface pair
+      # clears its WCAG threshold. 42 checks.
+      - run: pnpm test:contrast
+      # Scans src/ for references under public/ plus the images/covers/{id}.webp
+      # convention, and asserts they exist.
+      - run: pnpm test:assets
+
+  build:
+    name: Build and bundle budget
+    runs-on: ubuntu-latest
+    needs: [quality, budgets]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - run: pnpm build
+        env:
+          CI: true
+      # Chunk, css, font and dist budgets from REBUILD_PLAN 9.2 / 8.7.
+      - run: pnpm test:budget
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          retention-days: 7
+
+  deploy:
+    name: Deploy to GitHub Pages
+    # M1 · Block 7 — the gate that did not exist before.
+    # deploy.yml used to be a separate workflow with no `needs`, so it published
+    # on any push to main, including commits whose CI had failed. Jobs in one
+    # workflow cannot depend on jobs in another, so the deploy job lives here.
+    needs: [quality, budgets, build]
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+        env:
+          CI: true
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - id: deployment
+        uses: actions/deploy-pages@v4

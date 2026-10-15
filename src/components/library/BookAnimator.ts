@@ -2,13 +2,7 @@ export type BookState = 'idle' | 'extracting' | 'opened' | 'turningPage' | 'clos
 
 export type Direction = 'forward' | 'backward'
 
-export type BookEvent =
-  | 'EXTRACT'
-  | 'EXTRACT_DONE'
-  | 'TURN_START'
-  | 'TURN_DONE'
-  | 'CLOSE'
-  | 'CLOSE_DONE'
+export type BookEvent = 'EXTRACT' | 'EXTRACT_DONE' | 'TURN_START' | 'TURN_DONE' | 'CLOSE' | 'CLOSE_DONE'
 
 const TRANSITIONS: Record<BookState, Partial<Record<BookEvent, BookState>>> = {
   idle: { EXTRACT: 'extracting' },
