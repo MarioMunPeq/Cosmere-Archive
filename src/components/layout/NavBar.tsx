@@ -142,6 +142,10 @@ export default function NavBar({ onSearch }: Props) {
             <button
               type="button"
               onClick={onSearch}
+              // The word "Search" is `hidden lg:inline`, so below 1024px this
+              // button is an icon with nothing to announce — axe `button-name`.
+              // It is the only control on the bar that loses its name this way.
+              aria-label="Search"
               className={[
                 'flex h-[var(--target-min)] min-w-[44px] items-center gap-2 rounded-[var(--radius-md)] px-3',
                 'text-ui text-[var(--text-secondary)]',
@@ -152,9 +156,14 @@ export default function NavBar({ onSearch }: Props) {
             >
               <DestinationIcon name="search" size={18} />
               <span className="hidden lg:inline">Search</span>
-              <kbd className="hidden rounded-[var(--radius-sm)] border border-[var(--border-subtle)] px-1.5 py-0.5 font-[var(--font-mono)] text-[11px] text-[var(--text-tertiary)] xl:inline">
-                ⌘K
-              </kbd>
+              {/* The shortcut hint is generated content. As a text node it
+                  became part of the button's visible label while `aria-label`
+                  said only "Search", which fails WCAG 2.5.3 the other way round.
+                  See `.search-hint` in index.css. */}
+              <kbd
+                data-hint="⌘K"
+                className="search-hint hidden rounded-[var(--radius-sm)] border border-[var(--border-subtle)] px-1.5 py-0.5 font-[var(--font-mono)] text-[11px] text-[var(--text-tertiary)] xl:inline"
+              />
             </button>
           )}
         </div>
