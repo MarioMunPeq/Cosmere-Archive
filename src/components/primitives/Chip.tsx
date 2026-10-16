@@ -33,8 +33,8 @@ interface Common {
 }
 
 const SIZE: Record<ChipSize, string> = {
-  sm: 'h-6 px-2 gap-1 text-[var(--text-micro)]',
-  md: 'h-8 px-3 gap-[6px] text-[var(--text-meta)]',
+  sm: 'h-6 px-2 gap-1 text-micro',
+  md: 'h-8 px-3 gap-[6px] text-meta',
 }
 
 const BASE =

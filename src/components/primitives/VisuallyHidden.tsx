@@ -32,7 +32,7 @@ export default function VisuallyHidden({ children, focusable = false, as: Tag = 
         focusable
           ? // The clip is lifted on focus and the box is pinned to the viewport
             // corner so the revealed text is actually visible.
-            `absolute top-2 left-2 z-[var(--z-skip-link)] rounded-[var(--radius-md)] bg-[var(--surface-raised)] px-3 py-2 text-[var(--text-ui)] text-[var(--text-primary)] shadow-[var(--shadow-2)] [clip:auto] [clip-path:none] [height:auto] [width:auto] focus-visible:[clip:auto] focus-visible:[clip-path:none] focus-visible:[height:auto] focus-visible:[width:auto] ${className}`
+            `absolute top-2 left-2 z-[var(--z-skip-link)] rounded-[var(--radius-md)] bg-[var(--surface-raised)] px-3 py-2 text-ui text-[var(--text-primary)] shadow-[var(--shadow-2)] [clip:auto] [clip-path:none] [height:auto] [width:auto] focus-visible:[clip:auto] focus-visible:[clip-path:none] focus-visible:[height:auto] focus-visible:[width:auto] ${className}`
           : `absolute h-px w-px overflow-hidden [clip:rect(0_0_0_0)] [clip-path:inset(50%)] [white-space:nowrap] ${className}`
       }
     >

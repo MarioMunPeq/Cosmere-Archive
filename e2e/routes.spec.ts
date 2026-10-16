@@ -29,6 +29,7 @@ const ROUTES: { hash: string; name: string; heading: RegExp }[] = [
   { hash: '/about', name: 'about', heading: /about/i },
   { hash: '/books', name: 'books', heading: /books|volumes/i },
   { hash: '/celestial-charts', name: 'celestial charts', heading: /celestial|chart|atlas/i },
+  { hash: '/historical', name: 'historical index', heading: /historical archive/i },
 ]
 
 for (const { hash, name, heading } of ROUTES) {
@@ -74,6 +75,71 @@ for (const { hash, name, heading } of ROUTES) {
     await expect(headingEl).toHaveText(heading)
   })
 }
+
+test.describe('M2.3 landing', () => {
+  test('D-HOME the four doors are real links with real counters', async ({ page }) => {
+    await page.goto('/')
+
+    // Scope to the doors: the page also has the Historical band's list, so a
+    // bare `main ul` matches both.
+    const doors = page.getByRole('list', { name: 'Core sections' })
+    await expect(doors.locator('a[href]')).toHaveCount(4)
+
+    // Every door must be an anchor, not a button.
+    expect(await doors.locator('button').count()).toBe(0)
+
+    for (const href of ['#/library', '#/characters', '#/shadesmar', '#/stats']) {
+      await expect(doors.locator(`a[href="${href}"]`)).toHaveCount(1)
+    }
+
+    // Counters come from the data, so each door shows two numbers.
+    const library = doors.locator('a[href="#/library"]')
+    await expect(library).toContainText('22')
+    await expect(library).toContainText('volumes')
+  })
+
+  test('D-HOME the title is 36px on mobile and 48px on desktop', async ({ page }) => {
+    await page.goto('/')
+    const h1 = page.getByRole('heading', { level: 1 })
+
+    await page.setViewportSize({ width: 375, height: 800 })
+    expect(await h1.evaluate((el) => parseFloat(getComputedStyle(el).fontSize))).toBeCloseTo(36, 0)
+
+    await page.setViewportSize({ width: 1280, height: 900 })
+    expect(await h1.evaluate((el) => parseFloat(getComputedStyle(el).fontSize))).toBeCloseTo(48, 0)
+  })
+
+  test('D-HOME the doors reflow 1 / 2 / 4 columns', async ({ page }) => {
+    await page.goto('/')
+    const list = page.getByRole('list', { name: 'Core sections' })
+
+    const columnsAt = async (width: number) => {
+      await page.setViewportSize({ width, height: 900 })
+      await page.waitForTimeout(200)
+      return list.evaluate((el) => getComputedStyle(el).gridTemplateColumns.split(' ').length)
+    }
+
+    expect(await columnsAt(375)).toBe(1)
+    expect(await columnsAt(768)).toBe(2)
+    expect(await columnsAt(1280)).toBe(4)
+  })
+
+  test('D-HIST /historical lists the five archived sections', async ({ page }) => {
+    await page.goto('/#/historical')
+    await expect(page.getByRole('heading', { level: 1, name: 'Historical Archive' })).toBeVisible()
+    for (const href of ['#/aharietiam', '#/magic', '#/chronology', '#/mind-map', '#/about']) {
+      await expect(page.locator(`main a[href="${href}"]`).first()).toHaveCount(1)
+    }
+  })
+
+  test('the More slot in the bottom bar resolves', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 800 })
+    await page.goto('/')
+    const more = page.getByRole('link', { name: 'More' })
+    await more.click()
+    await expect(page.getByRole('heading', { level: 1, name: 'Historical Archive' })).toBeVisible()
+  })
+})
 
 test('an unknown route shows the archive 404', async ({ page }) => {
   await page.goto('/#/no-such-page')

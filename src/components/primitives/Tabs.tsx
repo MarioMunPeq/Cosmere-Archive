@@ -99,7 +99,7 @@ export default function Tabs({
       aria-label={label}
       onKeyDown={handleKeyDown}
       className={[
-        'flex items-center gap-[var(--space-3xs)] overflow-x-auto',
+        'flex items-center gap-3xs overflow-x-auto',
         paper
           ? 'rounded-[var(--radius-md)] border border-[var(--border-subtle-on-page)] bg-[var(--surface-page-raised)] p-1'
           : 'rounded-[var(--radius-md)] border border-[var(--border-subtle)] bg-[var(--surface-inset)] p-1',
@@ -121,14 +121,14 @@ export default function Tabs({
             disabled={item.disabled}
             onClick={() => onChange(item.id)}
             className={[
-              'inline-flex shrink-0 items-center gap-[var(--space-2xs)] rounded-[var(--radius-sm)] whitespace-nowrap',
+              'inline-flex shrink-0 items-center gap-2xs rounded-[var(--radius-sm)] whitespace-nowrap',
               'cursor-pointer font-[var(--fw-medium)] tracking-[var(--ls-ui)]',
               'transition-[background-color,color] duration-[var(--dur-fast)] ease-[var(--ease-standard)]',
               'focus-visible:outline-none',
               paper
                 ? 'focus-visible:[box-shadow:var(--focus-ring-on-page)]'
                 : 'focus-visible:[box-shadow:var(--focus-ring)]',
-              size === 'sm' ? 'h-8 px-2.5 text-[var(--text-meta)]' : 'h-11 px-3.5 text-[var(--text-ui)]',
+              size === 'sm' ? 'h-8 px-2.5 text-meta' : 'h-11 px-3.5 text-ui',
               selected
                 ? paper
                   ? 'bg-[var(--surface-page)] text-[var(--text-on-page-primary)] shadow-[var(--shadow-1)]'

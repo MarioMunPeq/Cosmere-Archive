@@ -46,17 +46,17 @@ export default function PageHeader({
   return (
     <header
       className={[
-        'shrink-0 border-b px-[var(--gutter-md)] py-[var(--space-lg)] max-md:px-[var(--gutter)]',
+        'shrink-0 border-b px-[var(--gutter-md)] py-lg max-md:px-[var(--gutter)]',
         paper ? 'border-[var(--border-subtle-on-page)]' : 'border-[var(--border-subtle)]',
         className,
       ].join(' ')}
     >
-      <div className="mx-auto flex max-w-[var(--page-max)] flex-col gap-[var(--space-2xs)] lg:flex-row lg:items-end lg:justify-between lg:gap-[var(--space-lg)]">
+      <div className="mx-auto flex max-w-page flex-col gap-2xs lg:flex-row lg:items-end lg:justify-between lg:gap-lg">
         <div className="min-w-0">
           {eyebrow && (
             <p
               className={[
-                'mb-1 text-[var(--text-nano)] tracking-[var(--ls-caps-wide)] uppercase',
+                'mb-1 text-nano tracking-[var(--ls-caps-wide)] uppercase',
                 paper ? 'text-[var(--text-on-page-tertiary)]' : 'text-[var(--text-tertiary)]',
               ].join(' ')}
             >
@@ -68,10 +68,10 @@ export default function PageHeader({
             tabIndex={-1}
             data-page-title
             className={[
-              'font-[var(--font-display)] font-[var(--fw-semibold)]',
+              'font-display font-[var(--fw-semibold)]',
               'tracking-[var(--ls-display)] focus:outline-none',
               // 36px below 1024px, 48px from there up (§5.2).
-              'text-[var(--text-h1)] lg:text-[var(--text-display)]',
+              'text-h1 lg:text-display',
               'leading-[var(--lh-display)]',
               paper ? 'text-[var(--text-on-page-primary)]' : 'text-[var(--text-primary)]',
             ].join(' ')}
@@ -82,7 +82,7 @@ export default function PageHeader({
           {description && (
             <p
               className={[
-                'mt-2 max-w-[var(--measure)] text-[var(--text-lead)] leading-[var(--lh-body)]',
+                'mt-2 max-w-[var(--measure)] text-lead leading-[var(--lh-body)]',
                 paper ? 'text-[var(--text-on-page-secondary)]' : 'text-[var(--text-secondary)]',
               ].join(' ')}
             >
@@ -91,7 +91,7 @@ export default function PageHeader({
           )}
         </div>
 
-        {actions && <div className="flex shrink-0 flex-wrap items-center gap-[var(--space-sm)] lg:pb-1">{actions}</div>}
+        {actions && <div className="flex shrink-0 flex-wrap items-center gap-sm lg:pb-1">{actions}</div>}
       </div>
 
       {children}

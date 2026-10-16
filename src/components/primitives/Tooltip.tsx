@@ -76,7 +76,7 @@ export default function Tooltip({ content, children, placement = 'top', delay = 
             'pointer-events-auto absolute z-[var(--z-toast)] w-max max-w-[260px]',
             'rounded-[var(--radius-md)] border border-[var(--border-interactive)]',
             'bg-[var(--surface-overlay)] px-2.5 py-1.5',
-            'text-[var(--text-micro)] leading-[var(--lh-ui)] text-[var(--text-primary)]',
+            'text-micro leading-[var(--lh-ui)] text-[var(--text-primary)]',
             'shadow-[var(--shadow-2)]',
             POS[placement],
           ].join(' ')}

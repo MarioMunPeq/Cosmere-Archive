@@ -18,7 +18,7 @@
  */
 
 import { useEffect, useRef, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { CORE_DESTINATIONS, HISTORICAL_DESTINATIONS, isDestinationActive } from '@/navigation'
 import DestinationIcon from './DestinationIcon'
 import VisuallyHidden from '@/components/primitives/VisuallyHidden'
@@ -70,21 +70,21 @@ export default function NavBar({ onSearch }: Props) {
         WebkitBackdropFilter: 'blur(12px)',
       }}
     >
-      <div className="mx-auto flex h-full max-w-[var(--page-max)] items-center gap-1 px-[var(--gutter-md)] max-md:px-[var(--gutter)]">
+      <div className="mx-auto flex h-full max-w-page items-center gap-1 px-[var(--gutter-md)] max-md:px-[var(--gutter)]">
         {/* Wordmark — a real anchor, 44px tall so it meets the touch target. */}
-        <a
-          href="/"
+        <Link
+          to="/"
           aria-label="Cosmere Archive — home"
           className={[
             'flex h-[var(--target-min)] shrink-0 items-center gap-2 rounded-[var(--radius-md)] pr-3',
-            'font-[var(--font-display)] text-[16px] tracking-[var(--ls-wordmark)] text-[var(--text-primary)]',
+            'font-display text-[16px] tracking-[var(--ls-wordmark)] text-[var(--text-primary)]',
             'transition-opacity duration-[var(--dur-fast)] hover:opacity-75',
             'focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)]',
           ].join(' ')}
         >
           <DestinationIcon name="shard" size={18} className="text-[var(--text-accent)]" />
           <span className="hidden sm:inline">COSMERE ARCHIVE</span>
-        </a>
+        </Link>
 
         {/* The four core destinations. Hidden below 768px, where the bottom bar takes
             over. `md:flex` is required: `max-md:hidden` only narrows, and a bare
@@ -109,7 +109,7 @@ export default function NavBar({ onSearch }: Props) {
               aria-controls="historical-menu"
               className={[
                 'flex h-[var(--target-min)] items-center gap-1.5 rounded-[var(--radius-md)] px-3',
-                'text-[var(--text-ui)] font-[var(--fw-medium)] tracking-[var(--ls-ui)]',
+                'text-ui font-[var(--fw-medium)] tracking-[var(--ls-ui)]',
                 'transition-colors duration-[var(--dur-fast)] ease-[var(--ease-standard)]',
                 'focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)]',
                 menuOpen
@@ -144,7 +144,7 @@ export default function NavBar({ onSearch }: Props) {
               onClick={onSearch}
               className={[
                 'flex h-[var(--target-min)] min-w-[44px] items-center gap-2 rounded-[var(--radius-md)] px-3',
-                'text-[var(--text-ui)] text-[var(--text-secondary)]',
+                'text-ui text-[var(--text-secondary)]',
                 'transition-colors duration-[var(--dur-fast)] ease-[var(--ease-standard)]',
                 'hover:bg-[var(--surface-inset)] hover:text-[var(--text-primary)]',
                 'focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)]',
@@ -173,12 +173,12 @@ export default function NavBar({ onSearch }: Props) {
 function NavLinkItem({ dest, pathname }: { dest: (typeof CORE_DESTINATIONS)[number]; pathname: string }) {
   const active = isDestinationActive(dest, pathname)
   return (
-    <a
-      href={dest.to}
+    <Link
+      to={dest.to}
       aria-current={active ? 'page' : undefined}
       className={[
         'relative flex h-full items-center px-3',
-        'text-[var(--text-ui)] font-[var(--fw-medium)] tracking-[var(--ls-ui)]',
+        'text-ui font-[var(--fw-medium)] tracking-[var(--ls-ui)]',
         'transition-colors duration-[var(--dur-fast)] ease-[var(--ease-standard)]',
         'focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)]',
         active ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]',
@@ -188,6 +188,6 @@ function NavLinkItem({ dest, pathname }: { dest: (typeof CORE_DESTINATIONS)[numb
       {active && (
         <span aria-hidden className="absolute inset-x-2 bottom-0 h-0.5 rounded-t-full bg-[var(--text-accent)]" />
       )}
-    </a>
+    </Link>
   )
 }

@@ -34,9 +34,9 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 const SIZE: Record<ButtonSize, string> = {
   // Height is the 44px target on md and lg; sm is the one deliberate exception
   // and is only for dense toolbars, never a primary action.
-  sm: 'h-8 px-2.5 text-[var(--text-meta)]',
-  md: 'h-11 px-4 text-[var(--text-ui)]',
-  lg: 'h-12 px-6 text-[var(--text-body)]',
+  sm: 'h-8 px-2.5 text-meta',
+  md: 'h-11 px-4 text-ui',
+  lg: 'h-12 px-6 text-body',
 }
 
 function variantClass(variant: ButtonVariant, tone: ButtonTone): string {
@@ -89,7 +89,7 @@ const Button = forwardRef<HTMLButtonElement, Props>(function Button(
       // never becomes an unlabelled button.
       aria-busy={loading || undefined}
       className={[
-        'inline-flex items-center justify-center gap-[var(--space-2xs)] rounded-[var(--radius-md)]',
+        'inline-flex items-center justify-center gap-2xs rounded-[var(--radius-md)]',
         'font-[var(--fw-medium)] tracking-[var(--ls-ui)]',
         'transition-[background-color,border-color,color,opacity] duration-[var(--dur-fast)] ease-[var(--ease-standard)]',
         'focus-visible:outline-none',

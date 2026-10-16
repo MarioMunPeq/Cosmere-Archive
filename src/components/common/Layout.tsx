@@ -57,10 +57,10 @@ export default function Layout() {
       <a
         href="#main-content"
         className={[
-          'sr-only focus:not-sr-only focus:fixed focus:left-[var(--space-md)] focus:top-[var(--space-md)]',
+          'sr-only focus:not-sr-only focus:fixed focus:left-md focus:top-md',
           'focus:z-[var(--z-skip-link)] focus:rounded-[var(--radius-md)]',
           'focus:bg-[var(--surface-raised)] focus:px-3 focus:py-2',
-          'focus:text-[var(--text-ui)] focus:text-[var(--text-primary)]',
+          'focus:text-ui focus:text-[var(--text-primary)]',
           'focus:shadow-[var(--shadow-3)] focus:outline-none',
           'focus:[box-shadow:var(--focus-ring)]',
         ].join(' ')}
@@ -70,10 +70,10 @@ export default function Layout() {
       <a
         href="#nav-bar"
         className={[
-          'sr-only focus:not-sr-only focus:fixed focus:left-[var(--space-md)] focus:top-[calc(var(--space-md)+48px)]',
+          'sr-only focus:not-sr-only focus:fixed focus:left-md focus:top-[calc(var(--space-md)+48px)]',
           'focus:z-[var(--z-skip-link)] focus:rounded-[var(--radius-md)]',
           'focus:bg-[var(--surface-raised)] focus:px-3 focus:py-2',
-          'focus:text-[var(--text-ui)] focus:text-[var(--text-primary)]',
+          'focus:text-ui focus:text-[var(--text-primary)]',
           'focus:shadow-[var(--shadow-3)] focus:outline-none',
           'focus:[box-shadow:var(--focus-ring)]',
         ].join(' ')}

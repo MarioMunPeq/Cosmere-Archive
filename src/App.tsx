@@ -33,6 +33,7 @@ const ComparePage = lazy(() => import('@/pages/ComparePage'))
 const MindMapPage = lazy(() => import('@/pages/MindMapPage'))
 const ShadesmarPage = lazy(() => import('@/pages/ShadesmarPage'))
 const NotFound = lazy(() => import('@/pages/NotFound'))
+const HistoricalPage = lazy(() => import('@/pages/HistoricalPage'))
 
 /** Wraps a page element in its loading and error boundaries. */
 const page = (element: ReactElement): ReactElement => <RouteFallback>{element}</RouteFallback>
@@ -52,6 +53,8 @@ const ROUTES = [
   { path: '/shadesmar', element: page(<ShadesmarPage />) },
   { path: '/compare', element: page(<ComparePage />) },
   { path: '/mind-map', element: page(<MindMapPage />) },
+  // D-HIST: one index route for the archived sections, not five loose ones.
+  { path: '/historical', element: page(<HistoricalPage />) },
 ] as const
 
 export default function App() {

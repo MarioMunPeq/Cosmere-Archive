@@ -93,7 +93,7 @@ export default function Link({
       ].join(' ')}
     >
       {({ isActive }) => (
-        <span aria-current={isActive ? 'page' : undefined} className="inline-flex items-center gap-[var(--space-2xs)]">
+        <span aria-current={isActive ? 'page' : undefined} className="inline-flex items-center gap-2xs">
           {children}
         </span>
       )}

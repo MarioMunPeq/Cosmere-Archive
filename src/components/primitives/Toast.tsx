@@ -69,7 +69,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     <ToastContext.Provider value={api}>
       {children}
       <div
-        className="pointer-events-none fixed bottom-[calc(var(--bottom-nav-h)+var(--space-md))] right-[var(--space-md)] z-[var(--z-toast)] flex w-[min(360px,calc(100vw-2rem))] flex-col gap-[var(--space-2xs)] md:bottom-[var(--space-md)]"
+        className="pointer-events-none fixed bottom-[calc(var(--bottom-nav-h)+var(--space-md))] right-md z-[var(--z-toast)] flex w-[min(360px,calc(100vw-2rem))] flex-col gap-2xs md:bottom-md"
         // Polite region for status, assertive only for errors, which are also
         // rendered with role="alert" below.
         aria-live="polite"
@@ -80,9 +80,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             key={t.id}
             role={t.tone === 'error' ? 'alert' : 'status'}
             className={[
-              'pointer-events-auto flex items-start gap-[var(--space-sm)] rounded-[var(--radius-md)]',
+              'pointer-events-auto flex items-start gap-sm rounded-[var(--radius-md)]',
               'border bg-[var(--surface-overlay)] px-3.5 py-3 shadow-[var(--shadow-3)]',
-              'text-[var(--text-meta)] leading-[var(--lh-ui)]',
+              'text-meta leading-[var(--lh-ui)]',
               t.tone === 'error'
                 ? 'border-[var(--shard-odium)] text-[var(--text-primary)]'
                 : t.tone === 'warning'

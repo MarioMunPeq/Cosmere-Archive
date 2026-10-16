@@ -74,7 +74,7 @@ export default function SegmentedControl({
         }
       }}
       className={[
-        'inline-flex items-center gap-[var(--space-3xs)] rounded-[var(--radius-md)] border p-1',
+        'inline-flex items-center gap-3xs rounded-[var(--radius-md)] border p-1',
         paper
           ? 'border-[var(--border-subtle-on-page)] bg-[var(--surface-page-raised)]'
           : 'border-[var(--border-subtle)] bg-[var(--surface-inset)]',
@@ -95,14 +95,14 @@ export default function SegmentedControl({
             disabled={s.disabled}
             onClick={() => onChange(s.value)}
             className={[
-              'inline-flex shrink-0 items-center gap-[var(--space-2xs)] rounded-[var(--radius-sm)] whitespace-nowrap',
+              'inline-flex shrink-0 items-center gap-2xs rounded-[var(--radius-sm)] whitespace-nowrap',
               'cursor-pointer font-[var(--fw-medium)] tracking-[var(--ls-ui)]',
               'transition-[background-color,color] duration-[var(--dur-fast)] ease-[var(--ease-standard)]',
               'focus-visible:outline-none',
               paper
                 ? 'focus-visible:[box-shadow:var(--focus-ring-on-page)]'
                 : 'focus-visible:[box-shadow:var(--focus-ring)]',
-              size === 'sm' ? 'h-8 px-2.5 text-[var(--text-meta)]' : 'h-11 px-3.5 text-[var(--text-ui)]',
+              size === 'sm' ? 'h-8 px-2.5 text-meta' : 'h-11 px-3.5 text-ui',
               checked
                 ? paper
                   ? 'bg-[var(--surface-page)] text-[var(--text-on-page-primary)] shadow-[var(--shadow-1)]'

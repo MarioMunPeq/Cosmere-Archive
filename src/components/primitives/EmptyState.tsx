@@ -49,7 +49,7 @@ export default function EmptyState({
     <div
       className={[
         'flex w-full flex-col items-center justify-center text-center',
-        size === 'sm' ? 'gap-[var(--space-xs)] py-[var(--space-lg)]' : 'gap-[var(--space-sm)] py-[var(--space-2xl)]',
+        size === 'sm' ? 'gap-xs py-lg' : 'gap-sm py-2xl',
         paper ? 'text-[var(--text-on-page-secondary)]' : 'text-[var(--text-secondary)]',
         className,
       ].join(' ')}
@@ -64,7 +64,7 @@ export default function EmptyState({
         className={[
           'font-[var(--fw-medium)] leading-[var(--lh-heading)]',
           paper ? 'text-[var(--text-on-page-primary)]' : 'text-[var(--text-primary)]',
-          size === 'sm' ? 'text-[var(--text-ui)]' : 'text-[var(--text-h4)]',
+          size === 'sm' ? 'text-ui' : 'text-h4',
         ].join(' ')}
       >
         {title}
@@ -73,7 +73,7 @@ export default function EmptyState({
       {description && (
         <p
           className={[
-            'max-w-[46ch] text-[var(--text-meta)] leading-[var(--lh-body)]',
+            'max-w-[46ch] text-meta leading-[var(--lh-body)]',
             paper ? 'text-[var(--text-on-page-secondary)]' : 'text-[var(--text-tertiary)]',
           ].join(' ')}
         >
@@ -82,7 +82,7 @@ export default function EmptyState({
       )}
 
       {(action || secondaryAction) && (
-        <div className="mt-[var(--space-2xs)] flex flex-wrap items-center justify-center gap-[var(--space-sm)]">
+        <div className="mt-2xs flex flex-wrap items-center justify-center gap-sm">
           {action}
           {secondaryAction}
         </div>

@@ -10,7 +10,7 @@
  * "open in new tab" work here too.
  */
 
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { CORE_DESTINATIONS, isDestinationActive } from '@/navigation'
 import type { IconName } from '@/navigation'
 import DestinationIcon from './DestinationIcon'
@@ -84,8 +84,8 @@ interface ItemProps {
 function BarItem({ to, icon, label, active }: ItemProps) {
   return (
     <li className="min-w-0">
-      <a
-        href={to}
+      <Link
+        to={to}
         aria-label={label}
         aria-current={active ? 'page' : undefined}
         className={[
@@ -100,7 +100,7 @@ function BarItem({ to, icon, label, active }: ItemProps) {
             under every icon. It stays in the accessibility tree so the link is
             not announced as an unlabelled target. */}
         <span className="sr-only">{label}</span>
-      </a>
+      </Link>
     </li>
   )
 }

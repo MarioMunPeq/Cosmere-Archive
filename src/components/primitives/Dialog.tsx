@@ -101,19 +101,19 @@ export default function Dialog({
         className,
       ].join(' ')}
     >
-      <div className="flex items-start gap-[var(--space-md)] border-b border-[var(--border-subtle)] px-[var(--space-lg)] py-[var(--space-md)]">
+      <div className="flex items-start gap-md border-b border-[var(--border-subtle)] px-lg py-md">
         <div className="min-w-0 flex-1">
           <h2
             id={titleId}
             className={[
-              'text-[var(--text-h4)] font-[var(--fw-semibold)] leading-[var(--lh-heading)]',
+              'text-h4 font-[var(--fw-semibold)] leading-[var(--lh-heading)]',
               hideTitle ? 'sr-only' : '',
             ].join(' ')}
           >
             {title}
           </h2>
           {description && (
-            <p id={`${titleId}-desc`} className="mt-1 text-[var(--text-meta)] text-[var(--text-secondary)]">
+            <p id={`${titleId}-desc`} className="mt-1 text-meta text-[var(--text-secondary)]">
               {description}
             </p>
           )}
@@ -134,12 +134,10 @@ export default function Dialog({
         </button>
       </div>
 
-      <div className="max-h-[60vh] overflow-y-auto overscroll-contain px-[var(--space-lg)] py-[var(--space-md)]">
-        {children}
-      </div>
+      <div className="max-h-[60vh] overflow-y-auto overscroll-contain px-lg py-md">{children}</div>
 
       {footer && (
-        <div className="flex items-center justify-end gap-[var(--space-sm)] border-t border-[var(--border-subtle)] px-[var(--space-lg)] py-[var(--space-md)]">
+        <div className="flex items-center justify-end gap-sm border-t border-[var(--border-subtle)] px-lg py-md">
           {footer}
         </div>
       )}

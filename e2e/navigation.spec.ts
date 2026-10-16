@@ -65,13 +65,48 @@ test.describe('M2.2 navigation', () => {
     await page.getByRole('navigation', { name: 'Main' }).waitFor()
   })
 
+  /**
+   * The app uses HashRouter, so an internal link must be `#/route`, not
+   * `/route`. A plain `<a href="/library">` looks correct in review and in the
+   * unit tests — the href attribute is exactly what you expect — but clicking it
+   * leaves the router and requests a server path that does not exist.
+   */
+  test('every internal link uses a fragment href', async ({ page }) => {
+    const bad: string[] = []
+    for (const route of ['/', '/#/library', '/#/characters', '/#/historical', '/#/about']) {
+      await page.goto(route)
+      await page.waitForTimeout(300)
+      const offenders = await page.locator('a[href]').evaluateAll((els) =>
+        els
+          .map((e) => e.getAttribute('href') ?? '')
+          // Skip in-page anchors (#main-content) and external links.
+          .filter((h) => h.startsWith('/') && !h.startsWith('//'))
+          .map((h) => `${h}`),
+      )
+      for (const href of offenders) bad.push(`${route} -> ${href}`)
+    }
+    expect(bad, `internal links must be fragments under HashRouter: ${bad.join(', ')}`).toHaveLength(0)
+  })
+
+  test('clicking a door navigates without leaving the router', async ({ page }) => {
+    await page.goto('/')
+    await page
+      .getByRole('link', { name: /^Records/ })
+      .first()
+      .click()
+    await page.waitForTimeout(600)
+    expect(page.url()).toContain('#/characters')
+    // A full page load would have produced a 404 from the preview server.
+    await expect(page.getByRole('navigation', { name: 'Main' })).toBeVisible()
+  })
+
   test('N.1 the core destinations are real links', async ({ page }) => {
     const nav = page.getByRole('navigation', { name: 'Main' })
     for (const label of ['Library', 'Records', 'Shadesmar', 'Taravangian Diagram']) {
       const link = nav.getByRole('link', { name: label, exact: true })
       await expect(link).toBeVisible()
       const href = await link.getAttribute('href')
-      expect(href, `${label} must be a real href`).toMatch(/^\/[a-z-]+$/)
+      expect(href, `${label} must be a fragment href under HashRouter`).toMatch(/^#\/[a-z-]+$/)
     }
     // Historical is a real button controlling a real panel.
     await expect(nav.getByRole('button', { name: 'Historical' })).toBeVisible()
@@ -83,7 +118,7 @@ test.describe('M2.2 navigation', () => {
     const nav = page.getByRole('navigation', { name: 'Main' })
     const current = nav.locator('[aria-current="page"]')
     await expect(current).toHaveCount(1)
-    await expect(current).toHaveAttribute('href', '/library')
+    await expect(current).toHaveAttribute('href', '#/library')
   })
 
   test('N.1 everything is reachable by keyboard from /', async ({ page }) => {

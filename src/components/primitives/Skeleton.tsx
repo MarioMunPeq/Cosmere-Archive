@@ -89,7 +89,7 @@ export function SkeletonGrid({
   return (
     <div
       aria-hidden
-      className="grid gap-[var(--space-md)]"
+      className="grid gap-md"
       style={{ gridTemplateColumns: `repeat(auto-fill, minmax(${minTrack}px, 1fr))` }}
     >
       {Array.from({ length: count }, (_, i) => (
@@ -118,7 +118,7 @@ export function SkeletonGrid({
  */
 export function SkeletonPage({ label = 'Loading', children }: { label?: string; children?: ReactNode }) {
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-[var(--space-lg)] p-[var(--space-xl)]">
+    <div className="flex min-h-0 flex-1 flex-col gap-lg p-xl">
       <span role="status" aria-live="polite" className="sr-only">
         {label}
       </span>

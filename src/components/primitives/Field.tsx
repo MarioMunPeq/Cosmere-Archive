@@ -63,7 +63,7 @@ export default function Field({
       aria-invalid={error ? true : undefined}
       aria-describedby={[hintId, errorId].filter(Boolean).join(' ') || undefined}
       className={[
-        'h-11 w-full min-w-0 bg-transparent text-[var(--text-body)]',
+        'h-11 w-full min-w-0 bg-transparent text-body',
         'placeholder:text-[var(--text-tertiary)]',
         'focus:outline-none',
         icon ? 'pl-10' : 'pl-3',
@@ -75,11 +75,11 @@ export default function Field({
   )
 
   return (
-    <div className="flex w-full flex-col gap-[var(--space-2xs)]">
+    <div className="flex w-full flex-col gap-2xs">
       <label
         htmlFor={inputId}
         className={[
-          'text-[var(--text-meta)] font-[var(--fw-medium)] tracking-[var(--ls-caps)] uppercase',
+          'text-meta font-[var(--fw-medium)] tracking-[var(--ls-caps)] uppercase',
           hideLabel ? 'sr-only' : '',
           paper ? 'text-[var(--text-on-page-secondary)]' : 'text-[var(--text-secondary)]',
         ].join(' ')}
@@ -129,13 +129,13 @@ export default function Field({
       </div>
 
       {hint && !error && (
-        <p id={hintId} className="text-[var(--text-micro)] text-[var(--text-tertiary)]">
+        <p id={hintId} className="text-micro text-[var(--text-tertiary)]">
           {hint}
         </p>
       )}
 
       {error && (
-        <p id={errorId} className="text-[var(--text-micro)] text-[var(--shard-odium)]">
+        <p id={errorId} className="text-micro text-[var(--shard-odium)]">
           {error}
         </p>
       )}

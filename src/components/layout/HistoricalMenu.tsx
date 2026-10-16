@@ -13,6 +13,7 @@
  */
 
 import { useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import type { Destination } from '@/navigation'
 import { isDestinationActive } from '@/navigation'
 import DestinationIcon from './DestinationIcon'
@@ -76,7 +77,7 @@ export default function HistoricalMenu({ id, items, pathname, onNavigate, trigge
         'bg-[var(--surface-raised)] p-2 shadow-[var(--shadow-3)]',
       ].join(' ')}
     >
-      <p className="px-3 pt-1.5 pb-2 text-[var(--text-nano)] tracking-[var(--ls-caps-wide)] text-[var(--text-tertiary)] uppercase">
+      <p className="px-3 pt-1.5 pb-2 text-nano tracking-[var(--ls-caps-wide)] text-[var(--text-tertiary)] uppercase">
         Historical Archive
       </p>
 
@@ -85,8 +86,8 @@ export default function HistoricalMenu({ id, items, pathname, onNavigate, trigge
           const active = isDestinationActive(dest, pathname)
           return (
             <li key={dest.id}>
-              <a
-                href={dest.to}
+              <Link
+                to={dest.to}
                 onClick={onNavigate}
                 aria-current={active ? 'page' : undefined}
                 className={[
@@ -104,14 +105,12 @@ export default function HistoricalMenu({ id, items, pathname, onNavigate, trigge
                   className={active ? 'mt-0.5 text-[var(--text-accent)]' : 'mt-0.5 text-[var(--text-tertiary)]'}
                 />
                 <span className="min-w-0">
-                  <span className="block text-[var(--text-ui)] font-[var(--fw-medium)] tracking-[var(--ls-ui)]">
-                    {dest.label}
-                  </span>
-                  <span className="mt-0.5 block text-[var(--text-micro)] leading-[var(--lh-ui)] text-[var(--text-tertiary)]">
+                  <span className="block text-ui font-[var(--fw-medium)] tracking-[var(--ls-ui)]">{dest.label}</span>
+                  <span className="mt-0.5 block text-micro leading-[var(--lh-ui)] text-[var(--text-tertiary)]">
                     {dest.description}
                   </span>
                 </span>
-              </a>
+              </Link>
             </li>
           )
         })}
