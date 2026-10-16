@@ -1,633 +1,288 @@
-import { useState, memo, useMemo } from 'react'
+/**
+ * BookSpine — one volume on a shelf. M3 · block 2.
+ *
+ * Replaces a 633-line component whose fallback drew "a circle and four
+ * ornaments", which is what seventeen of the twenty-two books showed. The cover
+ * images existed the whole time, at 46 KB to 883 KB each, and were only used on
+ * the book page.
+ *
+ * ## The layers
+ *
+ *   1. cloth     four gradients reduced from the old ten (§5.3.2)
+ *   2. cover     the real cover, filling the spine, cropped per series
+ *   3. scrim     the series ink laid over it. This is what the title is read
+ *                against, and the reason the title clears 4.5:1 over a
+ *                photograph rather than over a flat colour.
+ *   4. type      the title in the series foil, plus the volume number
+ *
+ * ## On colour
+ *
+ * An earlier pass treated the cover as patina: desaturated, luminosity-blended,
+ * at 26%. The reasoning was that the cover's own lettering would compete with
+ * the title. The result was twenty-two grey spines, which threw away the only
+ * thing the covers contribute — the Stormlight blue against the Mistborn red,
+ * which tells you which world a book is in before you can read a word of it.
+ *
+ * So the colour now comes from the image itself at full strength, with the ink
+ * scrim doing the work of holding the title down. The scrim is a *dark version
+ * of the series colour*, so what comes through it is still that colour, dimmed —
+ * the same way a book looks on a shelf under a warm lamp rather than in a
+ * lightbox.
+ *
+ * ## The organic part, which is what makes a shelf read as a shelf
+ *
+ *   - every book leans by a small deterministic angle and sits at a slightly
+ *     different height, so the row is not a picket fence. The variation is
+ *     seeded from the book id, so it is stable across renders and reloads.
+ *   - on hover the book lifts, leans towards the reader, and its immediate
+ *     neighbours ease apart — the way a hand takes a book out of a run.
+ */
+
+import { memo } from 'react'
+import type { CSSProperties } from 'react'
+import { spineMaterial } from '@/navigation'
+import type { SpineMaterial } from '@/navigation'
 import type { Book } from '@/types'
-import CoverFrame from './CoverFrame'
-
-interface MaterialConfig {
-  leather: { base: string; dark: string; light: string; highlight: string }
-  foil: string
-  foilShine: string
-  headband: [string, string]
-  pageEdge: string
-  isLight: boolean
-}
-
-const MATERIALS: Record<string, MaterialConfig> = {
-  stormlight: {
-    leather: { base: '#0c1220', dark: '#060a12', light: '#1a2640', highlight: '#2a3a5a' },
-    foil: '#c0c8d4',
-    foilShine: '#e8ecf4',
-    headband: ['#1a3050', '#c0c8d4'],
-    pageEdge: '#e8e0d0',
-    isLight: false,
-  },
-  'mistborn-era-1': {
-    leather: { base: '#120a06', dark: '#0a0502', light: '#20140e', highlight: '#2e1c14' },
-    foil: '#b87333',
-    foilShine: '#d4a060',
-    headband: ['#802020', '#b87333'],
-    pageEdge: '#e4dcc8',
-    isLight: false,
-  },
-  'mistborn-era-2': {
-    leather: { base: '#0c1624', dark: '#060c14', light: '#14263a', highlight: '#203850' },
-    foil: '#b8860b',
-    foilShine: '#e8c840',
-    headband: ['#1a3040', '#b8860b'],
-    pageEdge: '#e8e0d4',
-    isLight: false,
-  },
-  elantris: {
-    leather: { base: '#e8e4e0', dark: '#d0cbc6', light: '#f5f0eb', highlight: '#ffffff' },
-    foil: '#a0a0a8',
-    foilShine: '#d4d4dc',
-    headband: ['#c8c0b8', '#a0a0a8'],
-    pageEdge: '#f0ece6',
-    isLight: true,
-  },
-  warbreaker: {
-    leather: { base: '#1a0a1e', dark: '#0e0410', light: '#2d1035', highlight: '#401848' },
-    foil: '#d4af37',
-    foilShine: '#f0e6a0',
-    headband: ['#401030', '#d4af37'],
-    pageEdge: '#e4dcc8',
-    isLight: false,
-  },
-  'white-sand': {
-    leather: { base: '#2a1e14', dark: '#1a120a', light: '#3d2c1e', highlight: '#4e3828' },
-    foil: '#b87333',
-    foilShine: '#daa060',
-    headband: ['#4a3020', '#b87333'],
-    pageEdge: '#e8e0d0',
-    isLight: false,
-  },
-  'secret-projects': {
-    leather: { base: '#0a0a18', dark: '#04040e', light: '#1a1a2e', highlight: '#282848' },
-    foil: '#e2e8f0',
-    foilShine: '#ffffff',
-    headband: ['#181828', '#e2e8f0'],
-    pageEdge: '#e8e0d4',
-    isLight: false,
-  },
-  'arcanum-unbounded': {
-    leather: { base: '#1a0a2e', dark: '#0e0418', light: '#2a1040', highlight: '#3a1a52' },
-    foil: '#a0a0c0',
-    foilShine: '#d0d0e0',
-    headband: ['#20103a', '#a0a0c0'],
-    pageEdge: '#e8e0d0',
-    isLight: false,
-  },
-}
-
-const FALLBACK_MATERIAL: MaterialConfig = {
-  leather: { base: '#1a1428', dark: '#0e0a18', light: '#2a1e3e', highlight: '#3a2a52' },
-  foil: '#9ca3af',
-  foilShine: '#d1d5db',
-  headband: ['#1a1028', '#9ca3af'],
-  pageEdge: '#e8e0d0',
-  isLight: false,
-}
-
-const MINOR_WORDS = new Set([
-  'the',
-  'a',
-  'an',
-  'of',
-  'in',
-  'on',
-  'at',
-  'to',
-  'for',
-  'and',
-  'or',
-  'but',
-  'by',
-  'with',
-  'from',
-  'into',
-  'upon',
-  'its',
-  'his',
-  'her',
-  'their',
-  'our',
-  'your',
-  'my',
-  'is',
-])
-
-function getMaterial(sagaId: string): MaterialConfig {
-  return MATERIALS[sagaId] ?? FALLBACK_MATERIAL
-}
-
-function getInitials(title: string): string {
-  const words = title.split(' ')
-  if (words.length === 1 && words[0]) return words[0].slice(0, 2).toUpperCase()
-  return words
-    .filter((w) => w.length > 0)
-    .map((w) => w[0]!)
-    .join('')
-    .toUpperCase()
-    .slice(0, 4)
-}
-
-type TextMode = 'initialism' | 'stacked' | 'wrapped' | 'flowing'
-
-function getTextMode(w: number): TextMode {
-  if (w < 38) return 'initialism'
-  if (w < 52) return 'stacked'
-  if (w < 74) return 'wrapped'
-  return 'flowing'
-}
-
-function splitWord(w: string): string[] {
-  if (w.length <= 4) return [w.toUpperCase()]
-  const mid = Math.ceil(w.length / 2)
-  const a = w.slice(0, mid)
-  const b = w.slice(mid)
-  if (a.length <= 2) return [w.toUpperCase()]
-  return [a.toUpperCase(), b.toUpperCase()]
-}
-
-interface WordPiece {
-  text: string
-  isKey: boolean
-}
-
-function getWordPieces(title: string): WordPiece[] {
-  return title.split(' ').map((w) => ({ text: w, isKey: !MINOR_WORDS.has(w.toLowerCase()) }))
-}
-
-interface TitleLine {
-  pieces: WordPiece[]
-}
-
-function getTitleLayout(title: string, mode: TextMode): TitleLine[] {
-  const pieces = getWordPieces(title)
-  if (mode === 'initialism') return [{ pieces: [{ text: getInitials(title), isKey: true }] }]
-  if (mode === 'stacked') {
-    if (pieces.length === 1) {
-      const p = pieces[0]!
-      return splitWord(p.text).map((t) => ({ pieces: [{ text: t, isKey: true }] }))
-    }
-    if (pieces.length <= 3 && title.length <= 18) return pieces.map((p) => ({ pieces: [p] }))
-    return [{ pieces: [{ text: getInitials(title), isKey: true }] }]
-  }
-  if (mode === 'wrapped') {
-    const groups: TitleLine[] = []
-    let current: WordPiece[] = []
-    for (const p of pieces) {
-      const lineLen = [...current, p].reduce((s, x) => s + x.text.length + 1, 0)
-      if (current.length > 0 && lineLen > 18) {
-        groups.push({ pieces: current })
-        current = [p]
-      } else {
-        current.push(p)
-      }
-    }
-    if (current.length > 0) groups.push({ pieces: current })
-    return groups.length > 0 ? groups : [{ pieces }]
-  }
-  if (mode === 'flowing') return pieces.map((p) => ({ pieces: [p] }))
-  return [{ pieces }]
-}
-
-function imperfection(id: string) {
-  let s = 0
-  for (let i = 0; i < id.length; i++) {
-    s = (s << 5) - s + id.charCodeAt(i)
-    s |= 0
-  }
-  const n = () => {
-    s = (s * 1103515245 + 12345) | 0
-    return (s >>> 0) / 0xffffffff
-  }
-  return {
-    heightOffset: Math.floor(n() * 6) - 2,
-    shiftX: Math.floor(n() * 7) - 3,
-    shiftY: Math.floor(n() * 5) - 2,
-    rotate: (Math.floor(n() * 9) - 4) * 0.1,
-    depthOffset: Math.floor(n() * 5) - 2,
-    cornerWear: Math.floor(n() * 3),
-  }
-}
-
-const EMBLEM_BASE = import.meta.env.BASE_URL + 'images/emblems/'
-
-const BookEmblem = memo(function BookEmblem({
-  emblem,
-  foil,
-  foilShine,
-  bookHeight,
-}: {
-  emblem?: string
-  foil: string
-  foilShine: string
-  bookHeight: number
-}) {
-  const [failed, setFailed] = useState(false)
-  const ringSize = Math.round(bookHeight * 0.18)
-  const emblemSize = Math.round(ringSize * 0.65)
-  const rivetSize = Math.max(2, Math.round(ringSize * 0.07))
-
-  if (!emblem || failed) {
-    return (
-      <div style={{ position: 'relative', width: ringSize, height: ringSize }}>
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            borderRadius: '50%',
-            border: `1.5px solid ${foil}66`,
-            boxShadow: [`inset 0 1px 3px rgba(0,0,0,0.12)`, `0 0 6px ${foilShine}22`].join(', '),
-            pointerEvents: 'none',
-            zIndex: 0,
-          }}
-        />
-        {(
-          [
-            [0, -1],
-            [1, 0],
-            [0, 1],
-            [-1, 0],
-          ] as const
-        ).map(([dx, dy], i) => (
-          <div
-            key={i}
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              width: rivetSize,
-              height: rivetSize,
-              borderRadius: '50%',
-              background: `radial-gradient(circle at 35% 30%, ${foilShine}, ${foil})`,
-              boxShadow: `inset 0 ${-rivetSize * 0.15}px ${rivetSize * 0.3}px rgba(0,0,0,0.2)`,
-              transform: `translate(calc(-50% + ${dx * (ringSize / 2 - rivetSize)}px), calc(-50% + ${dy * (ringSize / 2 - rivetSize)}px))`,
-              zIndex: 2,
-            }}
-          />
-        ))}
-        <div
-          style={{
-            width: emblemSize * 0.5,
-            height: emblemSize * 0.5,
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            borderRadius: '50%',
-            background: `radial-gradient(circle at 35% 35%, ${foilShine}, ${foil})`,
-            boxShadow: `inset 0 ${-ringSize * 0.02}px ${ringSize * 0.04}px rgba(0,0,0,0.15)`,
-            zIndex: 1,
-          }}
-        />
-      </div>
-    )
-  }
-
-  return (
-    <div style={{ position: 'relative', width: ringSize, height: ringSize }}>
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          borderRadius: '50%',
-          border: `1.5px solid ${foil}66`,
-          boxShadow: [`inset 0 1px 3px rgba(0,0,0,0.12)`, `0 0 6px ${foilShine}22`].join(', '),
-          pointerEvents: 'none',
-          zIndex: 0,
-        }}
-      />
-      {(
-        [
-          [0, -1],
-          [1, 0],
-          [0, 1],
-          [-1, 0],
-        ] as const
-      ).map(([dx, dy], i) => (
-        <div
-          key={i}
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            width: rivetSize,
-            height: rivetSize,
-            borderRadius: '50%',
-            background: `radial-gradient(circle at 35% 30%, ${foilShine}, ${foil})`,
-            boxShadow: `inset 0 ${-rivetSize * 0.15}px ${rivetSize * 0.3}px rgba(0,0,0,0.2)`,
-            transform: `translate(calc(-50% + ${dx * (ringSize / 2 - rivetSize)}px), calc(-50% + ${dy * (ringSize / 2 - rivetSize)}px))`,
-            zIndex: 2,
-          }}
-        />
-      ))}
-      <div
-        style={{
-          position: 'absolute',
-          inset: Math.round(ringSize * 0.18),
-          zIndex: 1,
-          filter:
-            'brightness(1.08) drop-shadow(0 0.5px 0 rgba(255,255,255,0.08)) drop-shadow(0 -0.5px 0 rgba(0,0,0,0.12))',
-        }}
-      >
-        <img
-          src={EMBLEM_BASE + emblem}
-          alt=""
-          className="h-full w-full object-contain"
-          onError={() => setFailed(true)}
-        />
-      </div>
-    </div>
-  )
-})
 
 interface Props {
   book: Book
-  onOpen: (id: string, rect: DOMRect) => void
+  seriesLabel: string
+  /** Position within its series, for the aria-label. */
+  index: number
+  total: number
   width: number
   height: number
-  fontSize: number
+  /** Set when this book is the one being pointed at. */
+  active: boolean
+  onOpen: (book: Book) => void
+  onFocusBook: (book: Book) => void
+  onBlurBook: () => void
+  /** Arrow keys, Home and End within the run. Handled by the shelf. */
+  onKeyDown: (e: React.KeyboardEvent) => void
+  registerRef: (el: HTMLButtonElement | null) => void
 }
 
-export default function BookSpine({ book, onOpen, width, height, fontSize }: Props) {
-  const material = getMaterial(book.saga)
-  const imp = useMemo(() => imperfection(book.id), [book.id])
+/**
+ * Deterministic per-book variation.
+ *
+ * `Math.random()` in a render is both wrong and visibly wrong: it would give a
+ * different lean on every re-render. A hash of the id gives a stable one that
+ * looks hand-placed.
+ */
+function hash(seed: string): number {
+  let h = 2166136261
+  for (let i = 0; i < seed.length; i++) {
+    h ^= seed.charCodeAt(i)
+    h = Math.imul(h, 16777619)
+  }
+  return (h >>> 0) / 4294967295
+}
 
-  const actualHeight = height + imp.heightOffset
-  const isLight = material.isLight
-  const lightBoost = 1 + (imp.depthOffset ?? 0) * 0.06
-  const shadowBoost = 1 + (imp.depthOffset ?? 0) * 0.05
+/** Four gradients: base cloth, curvature, grain, edge. Section 5.3.2. */
+function material(m: SpineMaterial): CSSProperties {
+  return {
+    backgroundImage: [
+      // curvature — the light that says "round"
+      'linear-gradient(90deg, rgb(0 0 0 / .60) 0%, rgb(0 0 0 / 0) 15%, rgb(255 255 255 / .06) 30%, rgb(0 0 0 / 0) 54%, rgb(255 255 255 / .02) 74%, rgb(0 0 0 / .52) 100%)',
+      // grain — cloth weave
+      'repeating-linear-gradient(88deg, rgb(255 255 255 / .016) 0 .5px, rgb(0 0 0 / .016) .5px 1px)',
+      // base cloth
+      `linear-gradient(180deg, color-mix(in srgb, ${m.ink} 82%, #000) 0%, ${m.ink} 42%, color-mix(in srgb, ${m.ink} 88%, #000) 100%)`,
+    ].join(','),
+  }
+}
 
-  const textMode = getTextMode(width)
-  const titleLayout = getTitleLayout(book.title, textMode)
+/**
+ * Cover URLs.
+ *
+ * `<picture>` rather than a background-image so the browser can choose AVIF,
+ * which is about 35% smaller than the WebP at the same quality.
+ */
+function coverSrc(base: string, id: string) {
+  return {
+    avif: `${base}images/covers/${id}.avif`,
+    webp: `${base}images/covers/${id}.webp`,
+  }
+}
 
-  const { base, dark, light, highlight } = material.leather
-  const { foil, foilShine } = material
+function BookSpineImpl({
+  book,
+  seriesLabel,
+  index,
+  total,
+  width,
+  height,
+  active,
+  onOpen,
+  onFocusBook,
+  onBlurBook,
+  onKeyDown,
+  registerRef,
+}: Props) {
+  const m = spineMaterial(book.saga)
+  const lean = (hash(book.id) - 0.5) * 1.2 // ±0.6deg
+  const settle = (hash(`${book.id}:y`) - 0.5) * 4 // ±2px
+  const lift = active ? -11 : 0
 
-  const spineRadius = Math.round(width * 0.035)
-  const borderRadius = `${spineRadius}px`
+  const { avif, webp } = coverSrc(import.meta.env.BASE_URL, book.id)
 
-  // ── Leather base — warm gradient with vertical variation ──
-  const leatherBase = [
-    `linear-gradient(180deg,`,
-    `${light} 0%,`,
-    `${highlight}${isLight ? '22' : ''} 8%,`,
-    `${base} 25%,`,
-    `${dark} 50%,`,
-    `${base} 75%,`,
-    `${light} 88%,`,
-    `${base} 100%`,
-    `)`,
-  ].join(' ')
+  const label = `${book.title} — ${seriesLabel}, volume ${index + 1} of ${total}`
 
-  // ── Spine curvature — 3D cylinder illusion ──
-  const specStrength = isLight ? 0.02 : 0.045
-  const curvature = [
-    `linear-gradient(90deg,`,
-    `rgba(0,0,0,0.55) 0%,`,
-    `rgba(0,0,0,0.32) 4%,`,
-    `rgba(0,0,0,0.12) 9%,`,
-    `rgba(255,255,255,${specStrength}) 17%,`,
-    `rgba(255,255,255,${(specStrength * 0.7).toFixed(3)}) 20%,`,
-    `rgba(255,255,255,${(specStrength * 0.3).toFixed(3)}) 24%,`,
-    `transparent 30%,`,
-    `transparent 70%,`,
-    `rgba(0,0,0,0.03) 78%,`,
-    `rgba(0,0,0,0.10) 88%,`,
-    `rgba(0,0,0,0.20) 94%,`,
-    `rgba(0,0,0,0.50) 100%`,
-    `)`,
-  ].join(' ')
-
-  // ── Leather grain — porous texture at multiple scales ──
-  const grainFine = `repeating-linear-gradient(87deg, transparent, rgba(255,255,255,0.003) 0.8px, transparent 1.6px)`
-  const grainFine2 = `repeating-linear-gradient(-83deg, transparent, rgba(0,0,0,0.002) 0.6px, transparent 1.4px)`
-  const grainMed = `repeating-linear-gradient(92deg, transparent 0, rgba(255,255,255,0.002) 2px, transparent 4px, rgba(0,0,0,0.0015) 6px, transparent 8px)`
-  const grainLarge = `repeating-linear-gradient(0deg, rgba(255,255,255,0.002) 0, transparent 1px, transparent 5px, rgba(0,0,0,0.0015) 6px, transparent 8px)`
-
-  // ── Wrinkle/stretch lines — very subtle ──
-  const wrinkles = [
-    `linear-gradient(90deg, transparent 10%, rgba(255,255,255,0.002) 12%, transparent 14%)`,
-    `linear-gradient(90deg, transparent 45%, rgba(0,0,0,0.002) 47%, transparent 49%)`,
-    `linear-gradient(90deg, transparent 72%, rgba(255,255,255,0.0015) 74%, transparent 76%)`,
-  ].join(', ')
-
-  const bgLayers = [grainFine, grainFine2, grainMed, grainLarge, wrinkles, leatherBase, curvature].join(', ')
-
-  const borderColor = isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.03)'
-  const bevelShadow = [
-    `inset 0.5px 0 0 rgba(255,255,255,0.02)`,
-    `inset -0.5px 0 0 rgba(0,0,0,0.04)`,
-    `inset 0 0.5px 0 rgba(255,255,255,0.015)`,
-    `inset 0 -0.5px 0 rgba(0,0,0,0.05)`,
-  ].join(', ')
-
-  const medallionPad = Math.round(actualHeight * 0.025)
-  const authorBotPad = Math.round(actualHeight * 0.035)
-  const innerFontSize = textMode === 'initialism' ? Math.max(fontSize + 3, 18) : fontSize
-
-  // ── Embossed text shadow ──
-  const embossShadow = isLight
-    ? [`0 -0.5px 0 rgba(255,255,255,0.15)`, `0 0.5px 1px rgba(0,0,0,0.08)`].join(', ')
-    : [`0 0.5px 0 ${foilShine}44`, `0 -0.5px 1px rgba(0,0,0,0.2)`, `0 -1px 2px rgba(0,0,0,0.08)`].join(', ')
-
-  const keyColor = isLight ? base : foil
-  const minorColor = isLight ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.35)'
-
-  const frameKey =
-    book.id === 'tress_of_the_emerald_sea' ? 'tress' : book.id === 'yumi_and_the_nightmare_painter' ? 'yumi' : book.saga
+  const titleSize = Math.max(11, Math.min(17, width * 0.155))
 
   return (
-    <div className="group relative shrink-0" style={{ width }}>
-      <div
-        className="relative cursor-pointer select-none transition-all duration-[350ms] ease-out group-hover:translate-y-[-8px] group-hover:scale-[1.02]"
+    <button
+      ref={registerRef}
+      type="button"
+      onClick={() => onOpen(book)}
+      onFocus={() => onFocusBook(book)}
+      onBlur={onBlurBook}
+      onKeyDown={onKeyDown}
+      onMouseEnter={() => onFocusBook(book)}
+      onMouseLeave={onBlurBook}
+      aria-label={label}
+      title={label}
+      data-book-id={book.id}
+      data-series={book.saga}
+      data-active={active}
+      className={[
+        'group relative shrink-0 cursor-pointer overflow-hidden rounded-[2px]',
+        'transition-[transform,box-shadow] duration-[var(--dur-fast)] ease-[var(--ease-standard)]',
+        'focus-visible:z-20 focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)]',
+      ].join(' ')}
+      style={{
+        width,
+        // A few pixels taller than the nominal height so the head and tail read.
+        height: height + 6,
+        transform: `translate3d(0, ${settle + lift}px, 0) rotate(${active ? lean * 2.4 : lean}deg)`,
+        boxShadow: active
+          ? '0 14px 26px -8px rgb(0 0 0 / .8), inset 0 1px 0 rgb(255 255 255 / .08)'
+          : '0 4px 9px -4px rgb(0 0 0 / .6), inset 0 1px 0 rgb(255 255 255 / .05)',
+        zIndex: active ? 10 : 1,
+      }}
+    >
+      {/* 1. cloth */}
+      <span aria-hidden className="absolute inset-0" style={material(m)} />
+
+      {/* 2. the cover, filling the spine */}
+      <picture>
+        <source srcSet={avif} type="image/avif" />
+        <img
+          src={webp}
+          alt=""
+          aria-hidden
+          draggable={false}
+          data-cover
+          className="absolute inset-0 h-full w-full select-none object-cover"
+          style={{
+            // `object-position`, not `background-position`: the plan's per-series
+            // crop was written for a `background-image`, and on an <img> with
+            // object-fit it silently does nothing. Every spine was showing the
+            // middle of its cover — the band of 60px title lettering — which is
+            // why the spines read as posters.
+            objectPosition: m.crop,
+            // A touch over 1 so the visible strip is a little wider than the box
+            // and the crop never shows an edge.
+            transform: 'scale(1.08)',
+            opacity: 1,
+          }}
+        />
+      </picture>
+
+      {/* 3. the scrim: the series ink, which is what the title is read against */}
+      <span
+        aria-hidden
+        className="absolute inset-0"
         style={{
-          perspective: `${Math.round(width * 12)}px`,
-          transform: `rotate(${imp.rotate}deg)`,
-          height: actualHeight,
+          backgroundImage: `linear-gradient(180deg,
+            color-mix(in srgb, ${m.ink} ${Math.round(m.scrimTop * 100)}%, transparent) 0%,
+            color-mix(in srgb, ${m.ink} ${Math.round(((m.scrimTop + m.scrimBottom) / 2) * 100)}%, transparent) 44%,
+            color-mix(in srgb, ${m.ink} ${Math.round(m.scrimBottom * 100)}%, transparent) 100%)`,
         }}
-        onClick={(e) => {
-          const rect = e.currentTarget.getBoundingClientRect()
-          onOpen(book.id, rect)
+      />
+      {/* A soft band behind the title only. The scrim holds the whole spine
+          down; this holds just the title down, so the artwork above and below
+          it stays at full colour while the words stay crisp. Feathered at both
+          edges so there is no visible band, just a place where the light dips. */}
+      <span
+        aria-hidden
+        className="absolute inset-x-0"
+        style={{
+          top: Math.round(height * 0.2),
+          bottom: Math.round(height * 0.16),
+          backgroundImage: `linear-gradient(180deg,
+            transparent 0%,
+            color-mix(in srgb, ${m.ink} 30%, transparent) 18%,
+            color-mix(in srgb, ${m.ink} 62%, transparent) 50%,
+            color-mix(in srgb, ${m.ink} 30%, transparent) 82%,
+            transparent 100%)`,
+        }}
+      />
+      {/* The curved edge of a round spine, over the image. */}
+      <span
+        aria-hidden
+        className="absolute inset-0"
+        style={{
+          backgroundImage:
+            'linear-gradient(90deg, rgb(0 0 0 / .58) 0%, rgb(0 0 0 / 0) 16%, rgb(255 255 255 / .07) 31%, rgb(0 0 0 / 0) 56%, rgb(255 255 255 / .02) 76%, rgb(0 0 0 / .5) 100%)',
+        }}
+      />
+
+      {/* head cap */}
+      <span
+        aria-hidden
+        className="absolute inset-x-0 top-0 h-[8px]"
+        style={{
+          background: `linear-gradient(180deg, color-mix(in srgb, ${m.foil} 30%, transparent), transparent)`,
+        }}
+      />
+      {/* The stamped volume number, drawn by `.spine-volume` in index.css.
+          Generated content rather than a text node: see the note there. */}
+      <span
+        aria-hidden
+        className="spine-volume"
+        data-volume={index + 1}
+        style={{ color: m.foil, ['--spine-volume-size' as string]: `${Math.max(9, Math.min(12, width * 0.12))}px` }}
+      />
+
+      {/* 4. the title */}
+      <span
+        aria-hidden
+        data-spine-title
+        className={[
+          'absolute inset-x-0 flex flex-col items-center',
+          'px-[5px] text-center font-[var(--font-display)] leading-[1.12]',
+        ].join(' ')}
+        style={{
+          top: Math.round(height * 0.2),
+          bottom: Math.round(height * 0.16),
+          overflow: 'hidden',
+          justifyContent: 'center',
+          color: m.foil,
+          fontSize: titleSize,
+          // A two-sided shadow: a tight one for legibility against the image and
+          // a soft one for the sense that the letters are stamped into the cloth.
+          textShadow: '0 1px 2px rgb(0 0 0 / .9), 0 2px 10px rgb(0 0 0 / .55)',
+          hyphens: 'auto',
+          overflowWrap: 'break-word',
         }}
       >
-        {/* ── Spine body ── */}
-        <div
-          className="relative flex flex-col items-center overflow-hidden"
-          style={{
-            width,
-            height: actualHeight,
-            borderRadius,
-            background: bgLayers,
-            border: `0.5px solid ${borderColor}`,
-            left: imp.shiftX,
-            top: imp.shiftY,
-            boxShadow: [
-              `0 ${Math.round(5 * shadowBoost)}px ${Math.round(10 * shadowBoost)}px rgba(0,0,0,${Math.min(0.45, 0.35 * shadowBoost).toFixed(2)})`,
-              `0 ${Math.round(2 * shadowBoost)}px ${Math.round(4 * shadowBoost)}px rgba(0,0,0,0.2)`,
-              `inset 0 0 0 0.5px rgba(255,255,255,${isLight ? 0.02 : 0.01})`,
-              bevelShadow,
-            ].join(', '),
-          }}
-        >
-          <CoverFrame saga={frameKey} width={width} height={actualHeight} foil={foil} />
+        {book.title}
+      </span>
 
-          {/* Spine hinge grooves */}
-          <div
-            className="pointer-events-none absolute top-[2%] bottom-[2%]"
-            style={{
-              left: '4%',
-              width: 1.5,
-              background: `linear-gradient(180deg, transparent, rgba(0,0,0,0.08) 15%, rgba(0,0,0,0.05) 50%, rgba(0,0,0,0.08) 85%, transparent)`,
-            }}
-          />
-          <div
-            className="pointer-events-none absolute top-[2%] bottom-[2%]"
-            style={{
-              right: '4%',
-              width: 1.5,
-              background: `linear-gradient(180deg, transparent, rgba(0,0,0,0.08) 15%, rgba(0,0,0,0.05) 50%, rgba(0,0,0,0.08) 85%, transparent)`,
-            }}
-          />
-
-          {/* Warm top light */}
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{
-              borderRadius,
-              background: `linear-gradient(180deg, rgba(255,220,190,${((isLight ? 0.02 : 0.035) * lightBoost).toFixed(4)}) 0%, transparent 30%)`,
-              mixBlendMode: 'overlay',
-            }}
-          />
-
-          {/* Aged leather sheen */}
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{
-              borderRadius,
-              background: `linear-gradient(180deg, rgba(255,220,190,${((isLight ? 0 : 0.01) * lightBoost).toFixed(4)}) 0%, transparent 5%, transparent 95%, rgba(0,0,0,0.02) 100%)`,
-              mixBlendMode: 'soft-light',
-            }}
-          />
-
-          {/* Hover reflection */}
-          <div
-            className="pointer-events-none absolute inset-0 rounded transition-opacity duration-[350ms] opacity-0 group-hover:opacity-100"
-            style={{
-              background: `linear-gradient(180deg, rgba(255,255,255,${isLight ? 0.03 : 0.06}) 0%, transparent 50%)`,
-              mixBlendMode: 'overlay',
-            }}
-          />
-
-          {/* Medallion / emblem */}
-          <div
-            className="flex shrink-0 items-center justify-center"
-            style={{ paddingTop: medallionPad, paddingBottom: medallionPad }}
-          >
-            <BookEmblem emblem={book.emblem} foil={foil} foilShine={foilShine} bookHeight={actualHeight} />
-          </div>
-
-          {/* ── Title ── */}
-          <div
-            className="flex w-full flex-1 flex-col items-center justify-center"
-            style={{
-              padding: `0 ${Math.max(6, Math.round(width * 0.12))}px`,
-              fontFamily: "'Cormorant Garamond', 'Playfair Display', 'Georgia', serif",
-            }}
-          >
-            {titleLayout.map((line, li) => (
-              <div key={li} className="flex flex-wrap items-baseline justify-center gap-x-[0.25em] leading-none">
-                {line.pieces.map((piece, pi) => (
-                  <span
-                    key={pi}
-                    className="text-center"
-                    style={{
-                      fontSize: piece.isKey ? `${innerFontSize}px` : `${Math.round(innerFontSize * 0.65)}px`,
-                      fontWeight: piece.isKey ? 700 : 400,
-                      color: piece.isKey ? keyColor : minorColor,
-                      letterSpacing: piece.isKey ? '0.1em' : '0.04em',
-                      textShadow: piece.isKey ? embossShadow : 'none',
-                      lineHeight: 1.25,
-                      fontVariant: 'all-small-caps',
-                    }}
-                  >
-                    {piece.text.toUpperCase()}
-                  </span>
-                ))}
-              </div>
-            ))}
-          </div>
-
-          {/* Author */}
-          <div
-            className="shrink-0"
-            style={{
-              paddingBottom: authorBotPad,
-              fontFamily: "'Playfair Display', 'Georgia', 'Times New Roman', serif",
-            }}
-          >
-            <span
-              className="block text-center font-normal italic tracking-[0.18em]"
-              style={{
-                fontSize: `${Math.round(fontSize * 0.45)}px`,
-                color: minorColor,
-                opacity: 0.25,
-                lineHeight: 1,
-                textShadow: isLight ? 'none' : `0 0.3px 0 ${foilShine}22`,
-              }}
-            >
-              Brandon Sanderson
-            </span>
-          </div>
-
-          {/* Edge wear — top */}
-          <div
-            className="pointer-events-none absolute left-[3%] right-[3%] top-0 h-[0.5px]"
-            style={{
-              background: `linear-gradient(90deg, transparent, ${isLight ? 'rgba(0,0,0,0.03)' : 'rgba(255,255,255,0.035)'}, transparent)`,
-            }}
-          />
-
-          {/* Edge wear — bottom */}
-          <div
-            className="pointer-events-none absolute bottom-0 left-[3%] right-[3%] h-[0.5px]"
-            style={{
-              background: 'linear-gradient(90deg, transparent, rgba(0,0,0,0.05), transparent)',
-            }}
-          />
-
-          {/* Contact shadow */}
-          <div
-            className="pointer-events-none absolute bottom-0 left-0 right-0 h-1"
-            style={{
-              background: 'linear-gradient(180deg, rgba(0,0,0,0.18) 0%, transparent 100%)',
-              borderRadius: '50%',
-              transform: 'scaleX(0.92)',
-              transformOrigin: 'bottom center',
-            }}
-          />
-
-          {/* Inter-book shadow */}
-          <div
-            className="pointer-events-none absolute right-0 top-0 h-full w-[3px]"
-            style={{
-              background: 'linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.08) 30%, rgba(0,0,0,0.02) 100%)',
-              borderRadius: `0 ${spineRadius}px ${spineRadius}px 0`,
-            }}
-          />
-        </div>
-      </div>
-
-      {/* Tooltip for initialism mode */}
-      {textMode === 'initialism' && (
-        <div
-          className="pointer-events-none absolute left-1/2 z-20 -translate-x-1/2 whitespace-nowrap rounded border border-gray-600 bg-gray-900 px-2 py-1 text-xs text-white shadow-lg opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-          style={{ bottom: '105%' }}
-        >
-          {book.title}
-        </div>
-      )}
-    </div>
+      {/* tail: the board the pages are bound into */}
+      <span
+        aria-hidden
+        className="absolute inset-x-0 bottom-0 h-[9px]"
+        style={{
+          background: `linear-gradient(0deg, color-mix(in srgb, ${m.ink} 60%, #000), ${m.ink})`,
+        }}
+      />
+      {/* fore-edge highlight, so the spine reads as round */}
+      <span aria-hidden className="absolute inset-y-0 right-0 w-px" style={{ background: 'rgb(255 255 255 / .08)' }} />
+      <span aria-hidden className="absolute inset-y-0 left-0 w-px" style={{ background: 'rgb(0 0 0 / .45)' }} />
+    </button>
   )
 }
+
+export default memo(BookSpineImpl)

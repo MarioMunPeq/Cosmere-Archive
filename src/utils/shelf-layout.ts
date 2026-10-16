@@ -1,54 +1,90 @@
-export interface BookLayout {
-  width: number
-  height: number
-  fontSize: number
-}
+/**
+ * shelf-layout — the geometry of a row of books.
+ *
+ * M3 · block 3. The rule here is that the function never returns a layout that
+ * does not fit. The old one did, and the overflow was not a rounding error: it
+ * was 192 px, which is exactly the horizontal padding, which is how the bug
+ * survived review for as long as it did.
+ *
+ * Root cause, from the old CosmereLibrary:
+ *
+ *   availableWidth = containerWidth - 100
+ *
+ * against a container padded `px-24` (96 on each side = 192) plus two side
+ * columns of 84. So the books were laid out in 100px more than the space they
+ * had, and the row silently ran off the right edge, taking Dawnshard with it.
+ * The number 100 does not correspond to anything on the page.
+ *
+ * Everything here is derived from one measured width. Nothing is assumed.
+ */
+
+/** Widest a spine may be, so a single volume never fills a shelf. */
+export const MAX_SPINE = 92
+/** Narrowest. Below 24px the title cannot be read (criterion B.5). */
+export const MIN_SPINE = 24
+/** Space between spines. */
+export const GAP = 2
 
 export interface ShelfLayout {
-  books: BookLayout[]
-  gap: number
-  sidePadding: number
+  /** Width of every spine in the row. */
+  spineWidth: number
+  /** Total width of the row, including gaps. */
   totalWidth: number
+  /** Spines that fit on one row. */
+  perRow: number
+  /** Number of rows. */
+  rows: number
+  /** Spine height for this width. */
+  height: number
 }
 
-const WORD_MIN = 0
-const WORD_MAX = 500_000
-const SPINE_MIN = 28
-const SPINE_MAX = 130
-
-function lerp(a: number, b: number, t: number): number {
-  return a + (b - a) * Math.max(0, Math.min(1, t))
+export interface FitOptions {
+  /** The width actually available for spines, measured on the real element. */
+  availableWidth: number
+  /** How many books the row holds in total. */
+  count: number
+  /** Base height before scaling. */
+  baseHeight: number
 }
 
-function spineWidth(wc: number): number {
-  const t = (Math.max(WORD_MIN, Math.min(WORD_MAX, wc)) - WORD_MIN) / (WORD_MAX - WORD_MIN)
-  return lerp(SPINE_MIN, SPINE_MAX, t)
-}
+/**
+ * Fits `count` spines into `availableWidth`, and never returns a layout that
+ * does not fit.
+ *
+ * The rule is one sentence: **when there is not enough room, add a row.** Never
+ * narrow a spine below MIN_SPINE to avoid a second row, and never drop a book.
+ * An earlier version clamped the width after clamping the rows, which at 120px
+ * produced 10px spines for twenty-two books — unreadable, and eleven of them
+ * still off the edge.
+ *
+ * Two steps, both provable:
+ *
+ *   1. How many spines fit at MIN_SPINE? That fixes the row length.
+ *   2. Widen them into whatever space is left, up to MAX_SPINE.
+ */
+export function fitShelf({ availableWidth, count, baseHeight }: FitOptions): ShelfLayout {
+  if (count <= 0 || availableWidth <= 0) {
+    return { spineWidth: MIN_SPINE, totalWidth: 0, perRow: count, rows: 0, height: baseHeight }
+  }
 
-export function calcShelfLayout(wordCounts: number[], availableWidth: number): ShelfLayout {
-  const n = wordCounts.length
-  if (n === 0) return { books: [], gap: 0, sidePadding: 0, totalWidth: 0 }
+  // Step 1: the row holds as many spines as MIN_SPINE allows.
+  const perRow = Math.max(1, Math.min(count, Math.floor((availableWidth + GAP) / (MIN_SPINE + GAP))))
+  const rows = Math.ceil(count / perRow)
 
-  const rawWidths = wordCounts.map((w) => spineWidth(w ?? 50000))
-  const rawTotal = rawWidths.reduce((a, b) => a + b, 0)
+  // Step 2: widen into the remaining space, never past MAX_SPINE and never
+  // past what the row can actually hold.
+  const usable = (availableWidth - GAP * (perRow - 1)) / perRow
+  const spineWidth = Math.round(Math.min(MAX_SPINE, Math.max(MIN_SPINE, usable)) * 100) / 100
 
-  const gap = Math.max(10, Math.min(36, Math.round(220 / n)))
-  const sidePadding = Math.max(24, Math.min(64, Math.round(300 / n)))
-  const fixedWidth = (n - 1) * gap + 2 * sidePadding
-  const usableWidth = Math.max(300, availableWidth - fixedWidth)
+  const widest = Math.min(count, perRow)
+  const totalWidth = spineWidth * widest + GAP * (widest - 1)
 
-  const scale = usableWidth / rawTotal
-  const scaledWidths = rawWidths.map((w) => Math.max(SPINE_MIN, Math.round(w * scale)))
-
-  const avgWidth = scaledWidths.reduce((a, b) => a + b, 0) / n
-  const height = Math.max(340, Math.min(760, Math.round(avgWidth * 4.6)))
-
-  const books: BookLayout[] = scaledWidths.map((w) => {
-    const fontSize = Math.round(Math.max(12, Math.min(18, w * 0.14)))
-    return { width: w, height, fontSize }
-  })
-
-  const totalWidth = scaledWidths.reduce((a, b) => a + b, 0) + fixedWidth
-
-  return { books, gap, sidePadding, totalWidth }
+  return {
+    spineWidth,
+    totalWidth,
+    perRow,
+    rows,
+    // Height tracks the width so a shelf is never a row of tall thin slivers.
+    height: Math.round(baseHeight * (0.78 + 0.22 * Math.min(1, spineWidth / MAX_SPINE))),
+  }
 }

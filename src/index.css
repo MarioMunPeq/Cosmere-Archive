@@ -947,3 +947,37 @@ html {
     transform: translateY(0);
   }
 }
+
+/**
+ * The keyboard-shortcut hint on the search button.
+ *
+ * Generated from `data-hint` so it is painted but not read. As a text node it
+ * joined the button's visible label — "Search ⌘K" — while the accessible name
+ * was "Search", which is a WCAG 2.5.3 Label in Name failure in the opposite
+ * direction to the spine number above.
+ */
+.search-hint::after {
+  content: attr(data-hint);
+}
+
+/**
+ * The stamped volume number on a library spine.
+ *
+ * Generated content, not a text node. The number is stamped on the board next to
+ * the title, and as a real element the button's visible text became
+ * "1The Way of Kings" while its accessible name was "The Way of Kings — …,
+ * volume 1 of 6" — which fails WCAG 2.5.3 Label in Name, because the visible
+ * string is not contained in the name. A pseudo-element is not part of the
+ * label, and the number is already in the accessible name.
+ */
+.spine-volume::after {
+  content: attr(data-volume);
+  position: absolute;
+  inset-inline: 0;
+  top: 10px;
+  text-align: center;
+  font-size: var(--spine-volume-size, 10px);
+  letter-spacing: 0.08em;
+  opacity: 0.8;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.85);
+}

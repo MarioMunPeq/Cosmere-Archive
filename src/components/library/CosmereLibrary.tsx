@@ -1,411 +1,177 @@
-import { useState, useMemo, useRef, useEffect, useCallback } from 'react'
+/**
+ * CosmereLibrary — the archive hall. M3 · block 3.
+ *
+ * Replaces a 411-line component whose layout was driven by four hard-coded
+ * constants that did not agree with each other. Everything here is measured.
+ *
+ * Structure:
+ *
+ *   LibraryPage        the shell, the header and the Shelves/List switch
+ *   CosmereLibrary     the hall: room, shelves, dust, keyboard across shelves
+ *   Shelf              one series, measured and fitted
+ *   BookSpine          one volume
+ *   ShelfPlank         the board
+ *   Dust               the motes
+ *   BookReader         the 2D opening (block 4)
+ *   ListView           the table (block 5)
+ *
+ * Section 5.9's responsive table, applied: the bottom bar takes the navigation
+ * below 768px, the shelves are one row on tablet and wrap to two on a phone,
+ * and no spine text is ever below 11px.
+ */
+
+import { useCallback, useMemo, useRef, useState } from 'react'
+import Shelf from './Shelf'
+import type { ShelfApi } from './Shelf'
+import Dust from './Dust'
+import { woodTexture } from './wood'
+import { SHELF_GROUPS, booksForGroup } from './shelf-groups'
+import { spineMaterial } from '@/navigation'
 import type { Book } from '@/types'
-import { BOOKS } from '@/data/static'
-import { calcShelfLayout } from '@/utils/shelf-layout'
-import BookSpine from './BookSpine'
-import BookCanvas from './BookCanvas'
 
-const WOOD_TEXTURE = `url('${import.meta.env.BASE_URL}images/decorations/wood-pattern.png')`
-
-interface ShelfDef {
-  id: string
-  title: string
-  bookIds: string[]
-  saga: string
+interface Props {
+  onOpen: (book: Book) => void
 }
 
-const SHELVES: ShelfDef[] = [
-  {
-    id: 'stormlight',
-    title: 'THE STORMLIGHT ARCHIVE',
-    saga: 'stormlight',
-    bookIds: ['the_way_of_kings', 'words_of_radiance', 'oathbringer', 'dawnshard', 'rhythm_of_war', 'wind_and_truth'],
-  },
-  {
-    id: 'mistborn',
-    title: 'MISTBORN',
-    saga: 'mistborn',
-    bookIds: [
-      'the_final_empire',
-      'the_well_of_ascension',
-      'the_hero_of_ages',
-      'the_alloy_of_law',
-      'shadows_of_self',
-      'the_bands_of_mourning',
-      'the_lost_metal',
-    ],
-  },
-  {
-    id: 'cosmere',
-    title: 'THE COSMERE COLLECTION',
-    saga: 'arcanum',
-    bookIds: [
-      'elantris',
-      'warbreaker',
-      'white_sand_vol_1',
-      'white_sand_vol_2',
-      'white_sand_vol_3',
-      'arcanum_unbounded',
-      'tress_of_the_emerald_sea',
-      'yumi_and_the_nightmare_painter',
-      'the_sunlit_man',
-    ],
-  },
-]
+export default function CosmereLibrary({ onOpen }: Props) {
+  const [active, setActive] = useState<Book | null>(null)
+  const shelfApis = useRef(new Map<number, ShelfApi>())
 
-function useContainerWidth(): [React.RefObject<HTMLDivElement | null>, number] {
-  const ref = useRef<HTMLDivElement | null>(null)
-  const [width, setWidth] = useState(1200)
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const ro = new ResizeObserver((entries) => {
-      for (const entry of entries) setWidth(entry.contentRect.width)
-    })
-    ro.observe(el)
-    return () => ro.disconnect()
-  }, [])
-  return [ref, width]
-}
-
-function ShelfPlank({ height }: { height: number }) {
-  const h = Math.max(16, height)
-  const bevelPx = Math.max(1, Math.round(h * 0.12))
-  const shadowPx = Math.max(2, Math.round(h * 0.18))
-  const textureScale = Math.max(200, Math.round(h * 8))
-
-  // CSS grain streaks — visible even if the PNG fails to load
-  const cssGrain = [
-    'repeating-linear-gradient(90deg,',
-    'transparent 0, transparent 7px,',
-    'rgba(160,120,80,0.06) 7px, transparent 8px,',
-    'transparent 15px, rgba(100,70,40,0.07) 15px, transparent 17px,',
-    'transparent 24px, rgba(180,140,100,0.05) 24px, transparent 26px,',
-    'transparent 33px, rgba(80,50,30,0.10) 33px, transparent 35px,',
-    'transparent 42px, rgba(160,120,80,0.04) 42px, transparent 44px,',
-    'transparent 51px, rgba(60,40,20,0.09) 51px, transparent 53px,',
-    'transparent 60px, rgba(200,160,120,0.035) 60px, transparent 62px,',
-    'transparent 69px, rgba(90,60,35,0.08) 69px, transparent 71px,',
-    'transparent 78px, rgba(140,100,65,0.05) 78px, transparent 80px,',
-    'transparent 87px, rgba(70,45,25,0.09) 87px, transparent 89px,',
-    'transparent 96px, rgba(170,130,90,0.035) 96px, transparent 98px,',
-    'transparent 105px, rgba(50,35,20,0.11) 105px, transparent 107px,',
-    'transparent 114px, rgba(130,95,60,0.06) 114px, transparent 116px,',
-    'transparent 123px, rgba(80,55,30,0.08) 123px, transparent 125px,',
-    'transparent 132px, rgba(190,150,110,0.03) 132px, transparent 134px,',
-    'transparent 141px, rgba(60,40,25,0.10) 141px, transparent 143px,',
-    'transparent 150px',
-    ')',
-  ].join(' ')
-
-  return (
-    <div
-      className="w-full shrink-0"
-      style={{
-        height: h,
-        position: 'relative',
-        background: [
-          // Knots
-          'radial-gradient(ellipse 24px 6px at 15% 38%, rgba(40,25,15,0.12) 0%, rgba(80,50,30,0.04) 60%, transparent 100%)',
-          'radial-gradient(ellipse 14px 4px at 68% 55%, rgba(35,20,10,0.1) 0%, rgba(60,40,25,0.03) 60%, transparent 100%)',
-          'radial-gradient(ellipse 10px 3px at 42% 22%, rgba(30,18,8,0.08) 0%, transparent 100%)',
-          'radial-gradient(ellipse 18px 5px at 88% 75%, rgba(40,25,15,0.09) 0%, rgba(60,40,25,0.03) 60%, transparent 100%)',
-          // Subtle warm wash
-          'linear-gradient(180deg, rgba(200,170,130,0.025) 0%, transparent 20%, rgba(200,170,130,0.015) 50%, transparent 80%)',
-          // Bottom shadow
-          `linear-gradient(0deg, rgba(0,0,0,0.18) 0%, transparent ${shadowPx}px)`,
-          // Top bevel highlight
-          `linear-gradient(180deg, rgba(255,220,180,0.12) 0%, rgba(255,210,170,0.04) ${bevelPx}px, transparent ${Math.round(h * 0.14)}px)`,
-          // Real wood grain overlay (transparent PNG)
-          `${WOOD_TEXTURE} repeat 0 0 / ${textureScale}px 100%`,
-          // CSS grain streaks (visible fallback + primary grain detail)
-          cssGrain,
-          // Sapwood streaks — wider lighter bands
-          'linear-gradient(180deg, transparent 0%, rgba(200,170,130,0.04) 15%, transparent 30%)',
-          'linear-gradient(180deg, transparent 60%, rgba(180,145,105,0.03) 75%, transparent 90%)',
-          // Base gradient — warm walnut
-          'linear-gradient(180deg, #4a3220 0%, #3d2817 10%, #543820 30%, #3a2212 45%, #4a3020 65%, #2d1a0e 80%, #1f1008 100%)',
-        ].join(', '),
-        boxShadow: [
-          'inset 0 1px 0 rgba(255,220,180,0.08)',
-          'inset 0 -1px 0 rgba(0,0,0,0.1)',
-          '0 2px 6px rgba(0,0,0,0.2)',
-          '0 8px 14px rgba(0,0,0,0.1)',
-        ].join(', '),
-        borderRadius: `0 0 ${Math.round(h * 0.18)}px ${Math.round(h * 0.18)}px`,
-      }}
-    />
-  )
-}
-
-// ── Side column — architectural carved inscription ────────────
-function sideSubtitle(id: string): string | null {
-  switch (id) {
-    case 'stormlight':
-      return 'ROSHAR'
-    case 'mistborn':
-      return 'SCADRIAL'
-    default:
-      return null
-  }
-}
-
-function SideColumn({
-  side,
-  width,
-  title,
-  subtitle,
-}: {
-  side: 'left' | 'right'
-  width: number
-  title: string
-  subtitle: string | null
-}) {
-  if (side === 'right') {
-    return (
-      <div
-        className="shrink-0"
-        style={{
-          width,
-          borderLeft: '0.5px solid rgba(0,0,0,0.08)',
-        }}
-      >
-        {/* Vertical decorative groove */}
-        <div
-          className="mx-auto"
-          style={{
-            width: 1,
-            height: '62%',
-            marginTop: '19%',
-            background: 'linear-gradient(180deg, transparent, rgba(0,0,0,0.04), transparent)',
-          }}
-        />
-      </div>
-    )
-  }
-
-  const words = title.split(' ')
-  const fontSize = Math.max(7, Math.min(13, Math.round(width * 0.28)))
-  const carveShadow = ['-1px -1px 0.5px rgba(0,0,0,0.12)', '0 0.5px 0 rgba(200,160,120,0.04)'].join(', ')
-  const ornSize = Math.max(6, Math.round(width * 0.4))
-
-  return (
-    <div
-      className="shrink-0"
-      style={{
-        width,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRight: '0.5px solid rgba(0,0,0,0.08)',
-        gap: Math.round(fontSize * 0.3),
-      }}
-    >
-      {/* Top ornament — Vorin diamond */}
-      <svg width={ornSize} height={ornSize} viewBox="0 0 20 20" style={{ opacity: 0.12, marginBottom: fontSize * 0.2 }}>
-        <path d="M10 2 L18 10 L10 18 L2 10 Z" fill="none" stroke="#8a7050" strokeWidth="0.5" />
-        <circle cx="10" cy="10" r="1.5" fill="#8a7050" opacity="0.3" />
-      </svg>
-
-      {/* Words stacked vertically */}
-      {words.map((word, i) => (
-        <span
-          key={i}
-          style={{
-            fontFamily: "'Cormorant Garamond', 'Georgia', serif",
-            fontSize,
-            fontWeight: 500,
-            textTransform: 'uppercase',
-            letterSpacing: Math.round(fontSize * 0.12),
-            color: '#0d0703',
-            textShadow: carveShadow,
-            lineHeight: 1.08,
-            textAlign: 'center',
-            display: 'block',
-            maxWidth: width - 4,
-            wordBreak: 'break-word',
-          }}
-        >
-          {word}
-        </span>
-      ))}
-
-      {/* Subtitle */}
-      {subtitle && (
-        <>
-          <div
-            style={{
-              width: ornSize * 0.6,
-              height: 0.5,
-              background: 'rgba(140,110,80,0.08)',
-              marginTop: fontSize * 0.1,
-            }}
-          />
-          <span
-            style={{
-              fontFamily: "'Cormorant Garamond', 'Georgia', serif",
-              fontSize: Math.round(fontSize * 0.75),
-              fontWeight: 400,
-              textTransform: 'uppercase',
-              letterSpacing: Math.round(fontSize * 0.2),
-              color: '#0d0703',
-              textShadow: carveShadow,
-              lineHeight: 1.1,
-              textAlign: 'center',
-              opacity: 0.7,
-            }}
-          >
-            {subtitle}
-          </span>
-        </>
-      )}
-
-      {/* Bottom ornament */}
-      <svg width={ornSize} height={ornSize} viewBox="0 0 20 20" style={{ opacity: 0.12, marginTop: fontSize * 0.2 }}>
-        <path d="M10 2 L18 10 L10 18 L2 10 Z" fill="none" stroke="#8a7050" strokeWidth="0.5" />
-        <circle cx="10" cy="10" r="1.5" fill="#8a7050" opacity="0.3" />
-      </svg>
-    </div>
-  )
-}
-
-export default function CosmereLibrary() {
-  const [activeBookId, setActiveBookId] = useState<string | null>(null)
-  const [spineRect, setSpineRect] = useState<{ x: number; y: number; w: number; h: number } | null>(null)
-  const [containerRefObj, containerWidth] = useContainerWidth()
-
-  const handleOpen = useCallback((id: string, rect: DOMRect) => {
-    setActiveBookId(id)
-    setSpineRect({ x: rect.x, y: rect.y, w: rect.width, h: rect.height })
-  }, [])
-
-  const handleClose = useCallback(() => {
-    setActiveBookId(null)
-    setSpineRect(null)
-  }, [])
-
-  const shelvesWithBooks = useMemo(
+  const shelves = useMemo(
     () =>
-      SHELVES.map((shelf) => ({
-        ...shelf,
-        books: shelf.bookIds.map((id) => BOOKS.find((b) => b.id === id)).filter((b): b is Book => !!b),
-      })),
+      SHELF_GROUPS.map((group) => ({
+        id: group.id,
+        label: group.label,
+        note: group.note,
+        books: booksForGroup(group),
+      })).filter((s) => s.books.length > 0),
     [],
   )
 
-  const outerPad = 100
-  const availableWidth = Math.max(400, containerWidth - outerPad)
-  const columnWidth = Math.max(26, Math.min(42, Math.round(availableWidth * 0.04)))
-  const innerWidth = Math.max(300, availableWidth - 2 * columnWidth)
+  const registerShelf = useCallback((index: number, api: ShelfApi | null) => {
+    if (api) shelfApis.current.set(index, api)
+    else shelfApis.current.delete(index)
+  }, [])
 
-  const shelfLayouts = useMemo(
-    () =>
-      shelvesWithBooks.map((shelf) => {
-        const wordCounts = shelf.books.map((b) => b.wordCount ?? 50000)
-        return calcShelfLayout(wordCounts, innerWidth)
-      }),
-    [shelvesWithBooks, innerWidth],
-  )
+  /** Up and down move between shelves, keeping the column. */
+  const onShelfKey = useCallback((e: React.KeyboardEvent, shelfIndex: number, spineIndex: number) => {
+    if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return
+    e.preventDefault()
+    const next = shelfIndex + (e.key === 'ArrowDown' ? 1 : -1)
+    const api = shelfApis.current.get(next)
+    if (!api) return
+    api.focusSpine(spineIndex)
+    document
+      .querySelector<HTMLElement>(`[data-shelf] [data-book-id]`)
+      ?.closest('[data-shelf]')
+      ?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+  }, [])
 
-  const plankHeight = Math.max(16, Math.round(availableWidth * 0.01))
-
-  const activeBook = activeBookId
-    ? (shelvesWithBooks.flatMap((s) => s.books).find((b) => b.id === activeBookId) ?? null)
-    : null
+  const activeMaterial = active ? spineMaterial(active.saga) : null
 
   return (
-    <>
+    <div
+      className="relative min-h-0 flex-1 overflow-y-auto overflow-x-hidden"
+      style={{ background: 'radial-gradient(ellipse 130% 90% at 45% 8%, #0b0d12 0%, #06070a 70%)' }}
+    >
+      {/* The wall behind the cabinet. */}
       <div
-        ref={containerRefObj}
-        className="relative flex min-h-0 flex-1 flex-col gap-36 overflow-y-auto px-24 pb-20 pt-16"
-      >
-        {shelvesWithBooks.map((shelf, si) => {
-          const layout = shelfLayouts[si]!
-          const h = layout.books[0]!.height
-          const spacing = Math.max(6, Math.round(layout.gap * 1.4))
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: 'radial-gradient(ellipse 60% 40% at 50% 0%, rgb(200 169 106 / .055) 0%, transparent 60%)',
+        }}
+      />
+      <Dust count={24} />
 
-          return (
+      <div className="relative z-10 mx-auto w-full max-w-[1440px] px-5 pt-6 pb-24">
+        {/*
+          The cabinet. A warm inner glow at the top and a hard floor shadow are
+          what make the shelves read as recessed into a room rather than
+          floating on a page.
+        */}
+        <div
+          className="relative rounded-t-[6px] px-1 pt-4 pb-2"
+          style={{
+            // The cabinet: procedural oak under a light that falls off toward
+            // the floor, so the wall behind is dark and the wood is not.
+            //
+            // Stretched to fill rather than tiled: a 512px tile across a 1400px
+            // cabinet repeats three times, and the vertical joins were visible
+            // as seams in the screenshot. Grain lines run horizontally, so
+            // stretching costs almost nothing.
+            backgroundImage: [
+              woodTexture(),
+              'linear-gradient(180deg, rgb(255 235 205 / .07) 0%, rgb(14 10 6 / .34) 30%, rgb(5 4 2 / .72) 100%)',
+            ].join(','),
+            backgroundSize: '100% 100%, 100% 100%',
+            boxShadow: 'inset 0 1px 0 rgb(255 225 180 / .10), 0 -2px 0 rgb(0 0 0 / .5)',
+          }}
+        >
+          {shelves.map((shelf, i) => (
             <div
               key={shelf.id}
-              className="flex flex-col items-start"
-              style={{
-                // Cabinet body wood with warm overhead light falloff
-                background: [
-                  `linear-gradient(180deg, rgba(255,210,170,${(0.025 * Math.max(0.25, 1 - si * 0.3)).toFixed(4)}) 0%, transparent 45%)`,
-                  `${WOOD_TEXTURE} repeat 0 0 / ${Math.round(plankHeight * 15)}px 100%`,
-                  // Very dark wood base for cabinet body
-                  'linear-gradient(180deg, #1a0e08 0%, #0f0804 100%)',
-                ].join(', '),
-                // Cabinet cast shadow (wide + close) separates the shelf unit from the wall
-                boxShadow: [
-                  '0 20px 60px rgba(0,0,0,0.08)',
-                  '0 4px 24px rgba(0,0,0,0.3)',
-                  '0 2px 8px rgba(0,0,0,0.15)',
-                ].join(', '),
-                borderRadius: '4px',
+              // 48px between shelves (M3.6). The spacing tokens live in the
+              // `@theme` `spacing-*` namespace, so the utility is `mb-2xl`.
+              // `mb-[var(--space-2xl)]` was silently invalid — that variable
+              // does not exist — which made the gap 0 and every shelf touch.
+              className="mb-2xl"
+              onKeyDown={(e) => {
+                const target = e.target as HTMLElement
+                const bookEl = target.closest<HTMLElement>('[data-book-id]')
+                if (!bookEl) return
+                const spineIndex = Number(
+                  Array.from(bookEl.parentElement?.children ?? []).indexOf(bookEl.parentElement!),
+                )
+                onShelfKey(e, i, Math.max(0, spineIndex))
               }}
             >
-              {/* Content row: columns + books */}
-              <div className="flex" style={{ width: layout.totalWidth + 2 * columnWidth }}>
-                {/* Left column — carved inscription */}
-                <SideColumn side="left" width={columnWidth} title={shelf.title} subtitle={sideSubtitle(shelf.id)} />
-
-                {/* Book area */}
-                <div className="flex flex-1 flex-col">
-                  <div
-                    className="flex items-end"
-                    style={{
-                      gap: spacing,
-                      padding: `${Math.round(h * 0.24)}px ${layout.sidePadding}px 0`,
-                      minHeight: h + Math.round(h * 0.2),
-                      background: [
-                        // Floor shadow
-                        'radial-gradient(ellipse 80% 25% at 50% 90%, rgba(0,0,0,0.15) 0%, transparent 100%)',
-                        // Side wall shadows
-                        `linear-gradient(90deg, rgba(0,0,0,0.18) 0%, transparent 6%, transparent 94%, rgba(0,0,0,0.18) 100%)`,
-                        'linear-gradient(90deg, rgba(0,0,0,0.05) 0%, transparent 4%, transparent 96%, rgba(0,0,0,0.05) 100%)',
-                        // Top shelf shadow
-                        `linear-gradient(180deg, rgba(0,0,0,0.28) 0%, transparent ${Math.round(h * 0.1)}%, transparent 100%)`,
-                        // Wood grain on back panel
-                        `${WOOD_TEXTURE} repeat 0 0 / ${Math.round(plankHeight * 15)}px 100%`,
-                        // Recessed back wall base
-                        'linear-gradient(180deg, #1a0e08 0%, #0f0804 45%, #080402 100%)',
-                      ].join(', '),
-                      boxShadow: [
-                        `inset 0 0 ${Math.round(availableWidth * 0.06)}px rgba(0,0,0,0.5)`,
-                        'inset 0 1px 0 rgba(255,255,255,0.015)',
-                      ].join(', '),
-                      borderTopLeftRadius: Math.round(plankHeight * 0.3),
-                      borderTopRightRadius: Math.round(plankHeight * 0.3),
-                    }}
-                  >
-                    {shelf.books.map((book, bi) => {
-                      const bl = layout.books[bi]!
-                      return (
-                        <BookSpine
-                          key={book.id}
-                          book={book}
-                          onOpen={handleOpen}
-                          width={bl.width}
-                          height={bl.height}
-                          fontSize={bl.fontSize}
-                        />
-                      )
-                    })}
-                  </div>
-                </div>
-
-                {/* Right column — structural */}
-                <SideColumn side="right" width={columnWidth} title="" subtitle={null} />
-              </div>
-              <ShelfPlank height={plankHeight} />
+              <Shelf
+                id={shelf.id}
+                label={shelf.label}
+                note={shelf.note}
+                books={shelf.books}
+                baseHeight={380}
+                shadowed={i > 0}
+                shelfIndex={i}
+                onOpen={onOpen}
+                onActiveChange={setActive}
+                registerShelf={registerShelf}
+              />
             </div>
-          )
-        })}
+          ))}
+
+          {/* Floor shadow under the last shelf. */}
+          <div
+            aria-hidden
+            className="h-16 w-full"
+            style={{ background: 'linear-gradient(0deg, rgb(0 0 0 / .5), transparent)' }}
+          />
+        </div>
       </div>
 
-      {activeBook && spineRect && <BookCanvas book={activeBook} rect={spineRect} onClose={handleClose} />}
-    </>
+      {/*
+        A quiet status line for the pointed-at book. It is aria-live because
+        hover-and-focus both change it and a keyboard user needs to hear what
+        they just landed on.
+      */}
+      <p
+        role="status"
+        aria-live="polite"
+        className="pointer-events-none fixed bottom-[calc(var(--bottom-nav-h)+var(--spacing-sm))] left-1/2 z-20 -translate-x-1/2 rounded-[var(--radius-pill)] border px-4 py-2 text-[var(--text-ui)] opacity-0 transition-opacity duration-[var(--dur-fast)] max-md:bottom-[var(--spacing-sm)]"
+        style={{
+          left: '50%',
+          opacity: active ? 1 : 0,
+          borderColor: activeMaterial ? `${activeMaterial.foil}33` : 'transparent',
+          background: 'color-mix(in srgb, var(--surface-raised) 92%, transparent)',
+          color: activeMaterial?.foil ?? 'var(--text-primary)',
+          backdropFilter: 'blur(12px)',
+        }}
+      >
+        {active
+          ? `${active.title} · ${active.year ?? '—'} · ${active.wordCount?.toLocaleString('es') ?? '—'} palabras`
+          : ''}
+      </p>
+    </div>
   )
 }

@@ -99,6 +99,72 @@ export const CORE_DESTINATIONS: Destination[] = [
 ]
 
 /**
+ * Spine material and crop per series — M3 · block 2.
+ *
+ * Three values decide how a spine looks, and all three are here rather than in
+ * the component because they are content decisions, not code:
+ *
+ *   ink    the colour the cover image is veiled with. This is what guarantees
+ *          the spine title clears 4.5:1 *over the photograph*, rather than over
+ *          a flat colour. A dark ink over a light cover and a light ink over a
+ *          dark one is the whole job.
+ *   foil   the title colour on top of the ink.
+ *   crop   which part of the cover the spine strip shows. Every cover has its
+ *          title in a different place, so the strip is cropped per series to
+ *          land on it.
+ *
+ * `scrim` is how far the ink is laid over the image. It exists because ink
+ * alone is not enough: two of the covers are pale across the whole upper third,
+ * and a title on those needs a heavier veil to read. The values were calibrated
+ * against the rendered spines by sampling real pixels, not estimated — see
+ * e2e/library.spec.ts, criterion B.2, which fails if any title drops below
+ * 4.5:1.
+ */
+export interface SpineMaterial {
+  /** Veil colour over the cover strip. */
+  ink: string
+  /** Title colour on the ink. */
+  foil: string
+  /** `background-position` for the strip, as `X% Y%`. */
+  crop: string
+  /** Ink opacity at the top of the veil, 0–1. */
+  scrimTop: number
+  /** Ink opacity at the bottom of the veil, 0–1. */
+  scrimBottom: number
+}
+
+/**
+ * Calibrated against the shipped covers. `scrimBottom` is the value that
+ * actually carries the title: the spine title sits in the lower two thirds, so
+ * the bottom of the veil is what decides the ratio.
+ */
+export const SPINE_MATERIAL: Record<string, SpineMaterial> = {
+  stormlight: { ink: '#0b1418', foil: '#f2e6c4', crop: '50% 26%', scrimTop: 0.46, scrimBottom: 0.74 },
+  'mistborn-era-1': { ink: '#1a0d0c', foil: '#f6e2c4', crop: '50% 30%', scrimTop: 0.42, scrimBottom: 0.7 },
+  'mistborn-era-2': { ink: '#101318', foil: '#e8eef2', crop: '50% 28%', scrimTop: 0.46, scrimBottom: 0.74 },
+  warbreaker: { ink: '#140f0a', foil: '#f6e9cc', crop: '50% 32%', scrimTop: 0.42, scrimBottom: 0.7 },
+  elantris: { ink: '#0d1210', foil: '#eaf2e8', crop: '50% 22%', scrimTop: 0.46, scrimBottom: 0.74 },
+  'white-sand': { ink: '#14161a', foil: '#f7f3ea', crop: '50% 24%', scrimTop: 0.54, scrimBottom: 0.8 },
+  'secret-projects': { ink: '#120d16', foil: '#eee2f4', crop: '50% 34%', scrimTop: 0.42, scrimBottom: 0.68 },
+  'arcanum-unbounded': { ink: '#0f1318', foil: '#eaf0f6', crop: '50% 28%', scrimTop: 0.46, scrimBottom: 0.74 },
+  tress: { ink: '#08161a', foil: '#dcf2ec', crop: '50% 28%', scrimTop: 0.42, scrimBottom: 0.7 },
+  yumi: { ink: '#150c14', foil: '#f5e2ee', crop: '50% 28%', scrimTop: 0.44, scrimBottom: 0.72 },
+}
+
+/** Used for any series without an entry, so a new series is never unstyled. */
+export const FALLBACK_MATERIAL: SpineMaterial = {
+  ink: '#0e1116',
+  foil: '#eceae5',
+  crop: '50% 28%',
+  scrimTop: 0.46,
+  scrimBottom: 0.74,
+}
+
+export function spineMaterial(seriesId: string): SpineMaterial {
+  return SPINE_MATERIAL[seriesId] ?? FALLBACK_MATERIAL
+}
+
+/**
  * The Historical Archive (D-HIST). One route with an index, not five loose
  * routes. Each keeps its current implementation; only the container changes.
  */
