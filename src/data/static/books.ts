@@ -147,7 +147,9 @@ export const BOOKS: Book[] = [
     title: 'Rhythm of War',
     saga: 'stormlight',
     emblem: 'stormlight.webp',
-    order: 4,
+    // Fifth, not fourth: Dawnshard sits between Oathbringer and this one. It
+    // used to carry order 0, which sorted it to the front of the shelf.
+    order: 5,
     year: 2020,
     wordCount: 467000,
     description:
@@ -158,7 +160,7 @@ export const BOOKS: Book[] = [
     title: 'Wind and Truth',
     saga: 'stormlight',
     emblem: 'stormlight.webp',
-    order: 5,
+    order: 6,
     year: 2024,
     wordCount: 492000,
     description:
@@ -169,7 +171,10 @@ export const BOOKS: Book[] = [
     title: 'Dawnshard',
     saga: 'stormlight',
     emblem: 'stormlight.webp',
-    order: 0,
+    // The novella published between Oathbringer and Rhythm of War. It carried
+    // order 0, which is not a reading position and sorted it to the front of
+    // the shelf as volume one.
+    order: 4,
     year: 2020,
     wordCount: 50000,
     description:
