@@ -8,7 +8,10 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: process.env.CI ? 'http://localhost:4173' : 'http://localhost:4173',
+    // The app is deployed under /Cosmere-Archive/ (vite base), so the test
+    // baseURL has to carry that prefix or every page.goto('/') 404s against the
+    // preview server.
+    baseURL: 'http://localhost:4173/Cosmere-Archive/',
     trace: 'on-first-retry',
   },
   projects: [

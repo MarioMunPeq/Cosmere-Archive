@@ -1,39 +1,36 @@
-import { useEffect, useRef, useState } from 'react'
+/**
+ * Layout — the route frame.
+ *
+ * M2 · Block 2. This used to own the parchment cover bar, the hamburger drawer
+ * and the whole of global navigation. Navigation now lives in
+ * `src/navigation.ts` (data) and `components/layout/` (the frame), so this file
+ * is only the glue between the router and the shell.
+ *
+ * Search is still the ⌘K palette here; M2 block 4 replaces it with the
+ * minisearch dialog. It is kept wired so the ⌘K affordance in NavBar is not a
+ * dead button in the meantime.
+ */
+
+import { useEffect, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import CommandPalette from '@/components/ui/CommandPalette'
 import KeyboardShortcutsHelp from '@/components/ui/KeyboardShortcutsHelp'
 import Breadcrumbs from '@/components/ui/Breadcrumbs'
-import BackToTop from '@/components/ui/BackToTop'
-import TransitionLink from '@/components/ui/TransitionLink'
-import ParchmentMenu from '@/components/common/ParchmentMenu'
-
+import AppShell from '@/components/layout/AppShell'
 import { useKeyboardShortcut } from '@/hooks/useKeyboardShortcut'
-import { useViewTransitionNavigate } from '@/hooks/useViewTransition'
-
-const NAV_SHORTCUTS: [string, string][] = [
-  ['1', '/about'],
-  ['2', '/characters?tab=connections'],
-  ['3', '/magic'],
-  ['4', '/characters?tab=bloodlines'],
-  ['5', '/aharietiam'],
-  ['6', '/celestial-charts'],
-  ['7', '/books'],
-  ['8', '/characters'],
-  ['9', '/celestial-charts?tab=shards'],
-  ['0', '/stats'],
-  ['s', '/shadesmar'],
-]
+import VisuallyHidden from '@/components/primitives/VisuallyHidden'
+import { ALL_DESTINATIONS } from '@/navigation'
 
 export default function Layout() {
-  const location = useLocation()
-  const navigate = useViewTransitionNavigate()
-  const [cmdOpen, setCmdOpen] = useState(false)
+  const { pathname } = useLocation()
+  const [paletteOpen, setPaletteOpen] = useState(false)
   const [shortcutsOpen, setShortcutsOpen] = useState(false)
-  const [drawerOpen, setDrawerOpen] = useState(false)
-  const navRef = useRef<HTMLElement | null>(null)
+
+  // Each route starts at the top. Without this, scrolling a long record and
+  // then opening the next one lands you halfway down it.
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [location.pathname])
+    document.getElementById('main-content')?.scrollTo({ top: 0 })
+  }, [pathname])
 
   useKeyboardShortcut(
     [
@@ -41,139 +38,65 @@ export default function Layout() {
       { key: 'k', ctrl: true },
     ],
     (e) => {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
+      if (isTextEntry(e.target)) return
       e.preventDefault()
-      setCmdOpen((o) => !o)
+      setPaletteOpen((o) => !o)
     },
   )
 
-  useKeyboardShortcut([{ key: '/' }], (e) => {
-    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
-    e.preventDefault()
-    document.getElementById('cosmere-search')?.focus()
-  })
-
   useKeyboardShortcut([{ key: '?' }], (e) => {
-    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
+    if (isTextEntry(e.target)) return
     e.preventDefault()
     setShortcutsOpen((o) => !o)
   })
 
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return
-      if (!e.altKey) return
-      for (const [num, path] of NAV_SHORTCUTS) {
-        if (e.key === num) {
-          e.preventDefault()
-          navigate(path)
-          return
-        }
-      }
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [navigate])
-
   return (
     <>
-      {cmdOpen && <CommandPalette onClose={() => setCmdOpen(false)} />}
+      {/* Bypass blocks (WCAG 2.4.1). Hidden until focused, then pinned to the
+          viewport corner so the reader can actually see where focus went. */}
+      <a
+        href="#main-content"
+        className={[
+          'sr-only focus:not-sr-only focus:fixed focus:left-[var(--space-md)] focus:top-[var(--space-md)]',
+          'focus:z-[var(--z-skip-link)] focus:rounded-[var(--radius-md)]',
+          'focus:bg-[var(--surface-raised)] focus:px-3 focus:py-2',
+          'focus:text-[var(--text-ui)] focus:text-[var(--text-primary)]',
+          'focus:shadow-[var(--shadow-3)] focus:outline-none',
+          'focus:[box-shadow:var(--focus-ring)]',
+        ].join(' ')}
+      >
+        Skip to content
+      </a>
+      <a
+        href="#nav-bar"
+        className={[
+          'sr-only focus:not-sr-only focus:fixed focus:left-[var(--space-md)] focus:top-[calc(var(--space-md)+48px)]',
+          'focus:z-[var(--z-skip-link)] focus:rounded-[var(--radius-md)]',
+          'focus:bg-[var(--surface-raised)] focus:px-3 focus:py-2',
+          'focus:text-[var(--text-ui)] focus:text-[var(--text-primary)]',
+          'focus:shadow-[var(--shadow-3)] focus:outline-none',
+          'focus:[box-shadow:var(--focus-ring)]',
+        ].join(' ')}
+      >
+        Skip to navigation
+      </a>
+
+      {paletteOpen && <CommandPalette onClose={() => setPaletteOpen(false)} />}
       {shortcutsOpen && <KeyboardShortcutsHelp onClose={() => setShortcutsOpen(false)} />}
-      <div className="flex h-screen flex-col" style={{ backgroundColor: 'var(--bg-page)', color: 'var(--text-main)' }}>
-        <a
-          href="#main-content"
-          className="skip-link sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-amber-800 focus:px-3 focus:py-2 focus:text-sm focus:text-amber-100"
-        >
-          Skip to content
-        </a>
-        <a
-          href="#nav-bar"
-          className="skip-link sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-12 focus:z-50 focus:rounded focus:bg-amber-800 focus:px-3 focus:py-2 focus:text-sm focus:text-amber-100"
-        >
-          Skip to navigation
-        </a>
 
-        <nav
-          id="nav-bar"
-          ref={navRef}
-          className="sticky top-0 z-10 shrink-0"
-          style={{ backgroundColor: 'transparent' }}
-        >
-          <div className="pt-0">
-            {/* ── Book cover bar ── */}
-            <div
-              className="flex h-8 items-center gap-3 px-4 sm:px-5"
-              style={{
-                background: 'linear-gradient(180deg, #d4c4b2 0%, #c8b8a4 100%)',
-                boxShadow:
-                  '0 1px 3px rgba(0,0,0,0.10), 0 0 0 0.5px rgba(120,110,100,0.15), inset 0 0 0 0.5px rgba(255,255,255,0.3)',
-                borderRadius: '0 0 2px 2px',
-              }}
-            >
-              <button
-                onClick={() => setDrawerOpen((o) => !o)}
-                className="group flex h-6 w-6 items-center justify-center rounded-sm transition-colors hover:bg-[rgba(120,110,100,0.08)]"
-                aria-label={drawerOpen ? 'Close navigation menu' : 'Open navigation menu'}
-              >
-                <div className="flex flex-col items-center gap-[3px]">
-                  <span
-                    className="block h-[2px] w-[2px] rounded-full transition-all duration-300"
-                    style={{ backgroundColor: '#8a7a6a' }}
-                  />
-                  <span
-                    className="block h-[2px] w-[2px] rounded-full transition-all duration-300"
-                    style={{ backgroundColor: '#8a7a6a' }}
-                  />
-                  <span
-                    className="block h-[2px] w-[2px] rounded-full transition-all duration-300"
-                    style={{ backgroundColor: '#8a7a6a' }}
-                  />
-                </div>
-              </button>
+      <AppShell onSearch={() => setPaletteOpen(true)} header={<Breadcrumbs />}>
+        <Outlet />
+      </AppShell>
 
-              <TransitionLink
-                to="/"
-                className="font-serif text-sm tracking-[0.2em] transition-opacity hover:opacity-70 sm:text-base"
-                style={{ color: '#3a2a1a' }}
-              >
-                COSMERE ARCHIVE
-              </TransitionLink>
-
-              <TransitionLink
-                to="/about"
-                className="ml-auto hidden font-serif text-[10px] tracking-[0.06em] transition-opacity hover:opacity-70 sm:inline"
-                style={{ color: '#8a7a6a' }}
-              >
-                About
-              </TransitionLink>
-            </div>
-          </div>
-        </nav>
-
-        {/* ── Parchment menu (portal to body, above everything) ── */}
-        <ParchmentMenu open={drawerOpen} onClose={() => setDrawerOpen(false)} navRef={navRef} />
-
-        {/* ── Backdrop (renders above page, below nav) ── */}
-        <div
-          className={`fixed inset-0 transition-opacity duration-500 ${
-            drawerOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
-          }`}
-          style={{ backgroundColor: 'rgba(0,0,0,0.45)', zIndex: 5 }}
-          onClick={() => setDrawerOpen(false)}
-        />
-
-        <main id="main-content" className="flex min-h-0 flex-1 flex-col">
-          <Breadcrumbs />
-          <div
-            key={location.pathname}
-            className="contents animate-page-enter"
-            style={{ viewTransitionName: 'page-content' }}
-          >
-            <Outlet />
-          </div>
-        </main>
-        <BackToTop />
-      </div>
+      <VisuallyHidden as="p">{ALL_DESTINATIONS.length} destinations in this archive.</VisuallyHidden>
     </>
   )
+}
+
+/** Shortcuts must not fire while someone is typing a search query. */
+function isTextEntry(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) return false
+  if (target.isContentEditable) return true
+  const tag = target.tagName
+  return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT'
 }
