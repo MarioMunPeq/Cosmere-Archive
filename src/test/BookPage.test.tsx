@@ -24,9 +24,11 @@ describe('BookPage', () => {
     expect(await screen.findByText(/Vin, a young street urchin/)).toBeInTheDocument()
   })
 
-  it('shows 404 for unknown book id', async () => {
+  it('shows the record-not-found state for an unknown book id', async () => {
     renderAt('/books/nonexistent')
-    expect(await screen.findByText('DOCUMENT NOT FOUND')).toBeInTheDocument()
+    // The shared /404 wording, so the two failure states do not look like two
+    // different products.
+    expect(await screen.findByText(/no entry under that designation/i)).toBeInTheDocument()
   })
 
   it('provides previous/next navigation within the saga', async () => {

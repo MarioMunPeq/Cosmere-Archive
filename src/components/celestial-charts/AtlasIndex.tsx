@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { PLANETS } from '@/data/static'
 import { CHARACTER_SPANS } from '@/data/static/timeline'
+import EmptyState from '@/components/primitives/EmptyState'
 import ShardsLegend from './ShardsLegend'
 import WorldhopperLog from './WorldhopperLog'
 
@@ -201,9 +202,12 @@ export default function AtlasIndex({ onSelectPlanet, onInkRoute, selectedPlanetI
         {activeTab === 'index' && (
           <div className="space-y-[1px]">
             {filteredPlanets.length === 0 ? (
-              <p className="font-serif italic" style={{ color: INK.subtle, fontSize: '11px' }}>
-                No records match.
-              </p>
+              <EmptyState
+                size="sm"
+                toneMode="paper"
+                title="No worlds in the charts"
+                description="The archive charts eleven worlds. A shattered world may be listed under the Shard that broke it."
+              />
             ) : (
               filteredPlanets.map((p) => {
                 const charCount = CHARACTER_SPANS.filter((c) => c.planet.toLowerCase() === p.id.toLowerCase()).length

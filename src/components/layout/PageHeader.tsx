@@ -16,7 +16,6 @@
  */
 
 import type { ReactNode } from 'react'
-import VisuallyHidden from '@/components/primitives/VisuallyHidden'
 
 interface Props {
   title: string
@@ -95,11 +94,6 @@ export default function PageHeader({
       </div>
 
       {children}
-
-      <VisuallyHidden>
-        {title}
-        {description ? `. ${description}` : ''}
-      </VisuallyHidden>
     </header>
   )
 }

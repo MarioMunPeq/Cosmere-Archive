@@ -1,6 +1,8 @@
 import { useState, useMemo, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
+import EmptyState from '@/components/primitives/EmptyState'
+import Button from '@/components/primitives/Button'
 import { useViewTransitionNavigate } from '@/hooks/useViewTransition'
 import { ALL_CHARACTERS, getPlanetById } from '@/data/static'
 import { MAGIC_SYSTEMS } from '@/data/static/magic-systems'
@@ -169,9 +171,17 @@ export default function BiographicalArchivesPage() {
           {/* Letter-section index */}
           <div className="flex-1 overflow-y-auto manuscript-scrollbar">
             {sortedLetters.length === 0 ? (
-              <p className="font-serif text-[12px] italic" style={{ color: 'rgba(80,60,40,0.3)' }}>
-                No entries match your query.
-              </p>
+              <EmptyState
+                size="sm"
+                toneMode="paper"
+                title="No entries match your query"
+                description="The index lists every name in the archive. Try a surname, a title, or a world."
+                action={
+                  <Button tone="paper" size="sm" onClick={() => setSearchQuery('')}>
+                    Clear search
+                  </Button>
+                }
+              />
             ) : (
               sortedLetters.map(([letter, chars]) => (
                 <div key={letter} className="mb-5">
@@ -413,14 +423,16 @@ export default function BiographicalArchivesPage() {
     if (chapter === 'records') {
       if (!filteredCharacters.length) {
         return (
-          <div className="flex flex-col items-center justify-center text-center h-full">
-            <p
-              className="font-serif italic"
-              style={{ color: 'rgba(80,60,40,0.35)', fontSize: 'clamp(10px, 0.85vw, 12px)' }}
-            >
-              No records match your query.
-            </p>
-          </div>
+          <EmptyState
+            toneMode="paper"
+            title="No records match your query"
+            description="No character in the archive matches that. Records unlock as you read, so a name may not be indexed yet."
+            action={
+              <Button tone="paper" size="sm" onClick={() => setSearchQuery('')}>
+                Clear search
+              </Button>
+            }
+          />
         )
       }
 

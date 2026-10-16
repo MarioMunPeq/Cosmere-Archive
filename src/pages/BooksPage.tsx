@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import TransitionLink from '@/components/ui/TransitionLink'
-import EmptyState from '@/components/ui/EmptyState'
+import EmptyState from '@/components/primitives/EmptyState'
+import Button from '@/components/primitives/Button'
 import { BOOKS, SAGAS, SAGA_NAME_COLORS } from '@/data/static'
 import { IconSearch, CloseIcon } from '@/components/common/icons'
 import BookCover from '@/components/common/BookCover'
@@ -127,9 +128,16 @@ export default function BooksPage() {
         </div>
 
         {filtered.length === 0 && (
-          <div className="mt-16">
-            <EmptyState message="No books match your search." />
-          </div>
+          <EmptyState
+            toneMode="paper"
+            title="No volumes match that filter"
+            description="Every book in the archive is listed here. Clear the filter to see all twenty-two."
+            action={
+              <Button tone="paper" size="sm" variant="secondary" onClick={() => setQuery('')}>
+                Clear filter
+              </Button>
+            }
+          />
         )}
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

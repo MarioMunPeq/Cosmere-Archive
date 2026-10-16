@@ -1,0 +1,156 @@
+<!doctype html>
+<!--
+  M2 · Block 5 — GitHub Pages 404.
+
+  GitHub Pages serves this file for any path that does not exist, and it is the
+  only way to return a real HTTP 404 with a useful body. Two things follow from
+  that and are easy to get wrong:
+
+    1. The status code is set by the server, not by this document. It has to
+       live under the site root, which for this project is /Cosmere-Archive/,
+       so a file at 404.html inside src/ would never be served.
+
+    2. The app uses HashRouter, so there are no client-side routes to restore
+       here: the path that 404'd is genuinely not part of the site. This page
+       therefore links into the fragment routes by hand.
+
+  It is deliberately standalone — no bundle, no stylesheet, about 4 KB — so it
+  renders even if the JavaScript never loads.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Record not found — Cosmere Archive</title>
+    <meta
+      name="description"
+      content="That page is not part of the Cosmere Archive. Return to the index, or search the archive."
+    />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="/Cosmere-Archive/favicon.svg" type="image/svg+xml" />
+    <style>
+      :root {
+        --surface-void: #07090f;
+        --surface-base: #0d1119;
+        --border-subtle: #1f2833;
+        --border-interactive: #5a6880;
+        --text-primary: #e9e7e2;
+        --text-secondary: #b4bccb;
+        --text-tertiary: #8c97a8;
+        --text-accent: #c8a96a;
+        --focus-color: #7cc4e8;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 24px;
+        padding: 32px 20px;
+        background: var(--surface-void);
+        color: var(--text-primary);
+        font-family: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
+        text-align: center;
+      }
+      .mark {
+        font-family: 'EB Garamond', Georgia, serif;
+        font-size: 15px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--text-tertiary);
+        text-decoration: none;
+      }
+      .mark:hover {
+        color: var(--text-primary);
+      }
+      .rule {
+        width: 56px;
+        height: 1px;
+        background: var(--border-subtle);
+      }
+      .code {
+        font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+        font-size: 48px;
+        letter-spacing: 0.02em;
+        color: var(--text-accent);
+        margin: 0;
+      }
+      h1 {
+        font-family: 'EB Garamond', Georgia, serif;
+        font-size: clamp(28px, 5vw, 40px);
+        font-weight: 600;
+        line-height: 1.15;
+        margin: 0;
+      }
+      p {
+        max-width: 52ch;
+        margin: 0;
+        font-size: 15px;
+        line-height: 1.65;
+        color: var(--text-secondary);
+      }
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        margin-top: 4px;
+      }
+      nav a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 0 16px;
+        border: 1px solid var(--border-interactive);
+        border-radius: 4px;
+        color: var(--text-primary);
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+      }
+      nav a.primary {
+        background: var(--text-accent);
+        border-color: var(--text-accent);
+        color: var(--surface-void);
+      }
+      nav a:hover {
+        border-color: var(--text-tertiary);
+      }
+      :focus-visible {
+        outline: 2px solid var(--focus-color);
+        outline-offset: 2px;
+        border-radius: 4px;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="mark" href="/Cosmere-Archive/#/">Cosmere Archive</a>
+    <div class="rule"></div>
+
+    <p class="code" aria-hidden="true">404</p>
+    <h1>Record not found</h1>
+    <p>
+      No entry under that designation. It may have been filed elsewhere, or never recorded.
+    </p>
+
+    <nav aria-label="Recover">
+      <a class="primary" href="/Cosmere-Archive/#/">Back to the archive</a>
+      <a href="/Cosmere-Archive/#/characters">Records</a>
+      <a href="/Cosmere-Archive/#/library">Library</a>
+      <a href="/Cosmere-Archive/#/historical">Historical index</a>
+    </nav>
+  </body>
+</html>

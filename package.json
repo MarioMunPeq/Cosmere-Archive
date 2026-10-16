@@ -65,6 +65,7 @@
     "@types/three": "^0.185.0",
     "@vitejs/plugin-react": "^6.0.1",
     "@vitest/coverage-v8": "4.1.9",
+    "axe-core": "^4.14.0",
     "eslint": "^10.3.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "husky": "^9.1.7",

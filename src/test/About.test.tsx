@@ -27,6 +27,11 @@ describe('About', () => {
     expect(screen.getAllByText('Mario Muñoz Pequeño').length).toBeGreaterThanOrEqual(1)
   })
 
+  it('has exactly one h1', () => {
+    renderPage()
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1)
+  })
+
   it('renders Sources and Thanks sections', () => {
     renderPage()
     expect(screen.getByText('Sources')).toBeInTheDocument()
