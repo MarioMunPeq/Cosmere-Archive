@@ -5,9 +5,6 @@ export { default as CharacterAvatar } from './CharacterAvatar'
 export { default as CloseButton } from './CloseButton'
 export { default as CompareCharacterPanel } from './CompareCharacterPanel'
 export { default as ColorDot } from './ColorDot'
-export { default as CommandPalette } from './CommandPalette'
-
-export { default as EmptyState } from './EmptyState'
 export { default as InfoSection } from './InfoSection'
 export { default as FloatingTogglePanel } from './FloatingTogglePanel'
 export { default as KeyboardShortcutsHelp } from './KeyboardShortcutsHelp'
@@ -18,3 +15,8 @@ export { default as RouteFallback } from './RouteFallback'
 export { CelestialChartsSkeleton, BooksPageSkeleton, CharactersPageSkeleton } from './Skeleton'
 export { default as ThemeToggle } from './ThemeToggle'
 export { default as TransitionLink } from './TransitionLink'
+
+// Deleted in M2 block 4 and not replaced here:
+//   CommandPalette  — superseded by components/search/SearchDialog
+//   EmptyState      — superseded by components/primitives/EmptyState, which
+//                     also takes an action and a description

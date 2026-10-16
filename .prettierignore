@@ -7,3 +7,9 @@ test-results
 playwright-report
 blob-report
 .playwright
+
+# Generated artefacts (M2 · Block 4). Rewriting these would only make the
+# next `pnpm content:migrate` or `pnpm search:index` produce a different diff.
+content/
+src/data/generated/
+src/data/search-index.json

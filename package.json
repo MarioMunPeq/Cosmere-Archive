@@ -6,7 +6,8 @@
   "packageManager": "pnpm@11.8.0",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "search:index": "tsx scripts/generate-search-index.ts",
+    "build": "pnpm search:index && tsc -b && vite build",
     "typecheck": "tsc -b",
     "lint": "eslint . --max-warnings 0",
     "format": "prettier --write \"**/*.{ts,tsx,css,json,md,yml,yaml}\"",
@@ -32,6 +33,7 @@
     "@react-three/fiber": "^9.6.1",
     "d3-force": "^3.0.0",
     "gsap": "^3.15.0",
+    "minisearch": "^7.2.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-router-dom": "^7.18.0",

@@ -13,7 +13,7 @@
 
 import { useEffect, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
-import CommandPalette from '@/components/ui/CommandPalette'
+import SearchDialog from '@/components/search/SearchDialog'
 import KeyboardShortcutsHelp from '@/components/ui/KeyboardShortcutsHelp'
 import Breadcrumbs from '@/components/ui/Breadcrumbs'
 import AppShell from '@/components/layout/AppShell'
@@ -23,7 +23,7 @@ import { ALL_DESTINATIONS } from '@/navigation'
 
 export default function Layout() {
   const { pathname } = useLocation()
-  const [paletteOpen, setPaletteOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
   const [shortcutsOpen, setShortcutsOpen] = useState(false)
 
   // Each route starts at the top. Without this, scrolling a long record and
@@ -40,9 +40,16 @@ export default function Layout() {
     (e) => {
       if (isTextEntry(e.target)) return
       e.preventDefault()
-      setPaletteOpen((o) => !o)
+      setSearchOpen((o) => !o)
     },
   )
+
+  // "/" opens the search, as long as the reader is not already typing.
+  useKeyboardShortcut([{ key: '/' }], (e) => {
+    if (isTextEntry(e.target)) return
+    e.preventDefault()
+    setSearchOpen(true)
+  })
 
   useKeyboardShortcut([{ key: '?' }], (e) => {
     if (isTextEntry(e.target)) return
@@ -81,10 +88,10 @@ export default function Layout() {
         Skip to navigation
       </a>
 
-      {paletteOpen && <CommandPalette onClose={() => setPaletteOpen(false)} />}
+      {searchOpen && <SearchDialog open onClose={() => setSearchOpen(false)} />}
       {shortcutsOpen && <KeyboardShortcutsHelp onClose={() => setShortcutsOpen(false)} />}
 
-      <AppShell onSearch={() => setPaletteOpen(true)} header={<Breadcrumbs />}>
+      <AppShell onSearch={() => setSearchOpen(true)} header={<Breadcrumbs />}>
         <Outlet />
       </AppShell>
 
