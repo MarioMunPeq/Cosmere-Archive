@@ -161,3 +161,39 @@ with the real book covers.
 - [ ] Confirm the icons are the project's own work.
 - [ ] Check the Bluesky trademark terms for `icons.svg`.
 - [ ] Once filled in, set every `Status` to `VERIFIED` and delete this warning banner.
+
+<!-- M3 covers:generated - do not edit, regenerate with `pnpm covers:build` -->
+
+## Cover variants (M3, block 1)
+
+Every shipped cover is re-encoded at 640px from the pristine files in
+`assets/covers-source/`, which are not published. Re-encoding is lossy; the
+dimensions below are what the archive received.
+
+| Cover | Source | Shipped webp | Shipped avif |
+| ----- | ------ | ------------ | ------------ |
+| `arcanum_unbounded` | 658x1000, 116 KB | 62 KB | 39 KB |
+| `dawnshard` | 1542x2428, 353 KB | 63 KB | 39 KB |
+| `elantris` | 600x876, 46 KB | 28 KB | 21 KB |
+| `oathbringer` | 394x599, 60 KB | 47 KB | 25 KB |
+| `rhythm_of_war` | 394x600, 64 KB | 51 KB | 29 KB |
+| `shadows_of_self` | 1000x1510, 324 KB | 51 KB | 35 KB |
+| `the_alloy_of_law` | 387x600, 48 KB | 35 KB | 21 KB |
+| `the_bands_of_mourning` | 1000x1510, 399 KB | 65 KB | 39 KB |
+| `the_final_empire` | 900x1357, 308 KB | 69 KB | 46 KB |
+| `the_hero_of_ages` | 900x1357, 437 KB | 99 KB | 61 KB |
+| `the_lost_metal` | 397x600, 50 KB | 37 KB | 23 KB |
+| `the_sunlit_man` | 1080x1920, 883 KB | 67 KB | 37 KB |
+| `the_way_of_kings` | 1400x2100, 394 KB | 63 KB | 43 KB |
+| `the_well_of_ascension` | 397x599, 62 KB | 49 KB | 27 KB |
+| `tress_of_the_emerald_sea` | 1600x2487, 208 KB | 57 KB | 37 KB |
+| `warbreaker` | 663x1000, 100 KB | 60 KB | 39 KB |
+| `white_sand_vol_1` | 600x900, 169 KB | 152 KB | 88 KB |
+| `white_sand_vol_2` | 1200x1875, 427 KB | 128 KB | 79 KB |
+| `white_sand_vol_3` | 1200x1800, 260 KB | 95 KB | 60 KB |
+| `wind_and_truth` | 1327x2048, 307 KB | 68 KB | 44 KB |
+| `words_of_radiance` | 1400x2162, 350 KB | 70 KB | 44 KB |
+| `yumi_and_the_nightmare_painter` | 1604x2493, 264 KB | 65 KB | 48 KB |
+
+No shipped file exceeds 220 KB (criterion B.9). AVIF is preferred where
+the browser supports it; WebP is the universal fallback.
