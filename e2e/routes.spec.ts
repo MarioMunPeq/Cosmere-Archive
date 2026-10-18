@@ -19,7 +19,9 @@ import { test, expect } from '@playwright/test'
 const ROUTES: { hash: string; name: string; heading: RegExp }[] = [
   { hash: '/', name: 'home', heading: /cosmere archive/i },
   { hash: '/library', name: 'library', heading: /cosmere collection|library/i },
-  { hash: '/characters', name: 'records', heading: /contents|character records/i },
+  // M4: the page now has a real <h1>. It used to render a table-of-contents
+  // screen whose first heading was "Contents", which is a section, not a title.
+  { hash: '/characters', name: 'records', heading: /biographical archives/i },
   { hash: '/shadesmar', name: 'shadesmar', heading: /shadesmar|souls/i },
   { hash: '/stats', name: 'diagram', heading: /diagram|taravangian|statistics/i },
   { hash: '/aharietiam', name: 'aharietiam', heading: /aharietiam|honorblade/i },

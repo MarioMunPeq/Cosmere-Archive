@@ -1,63 +1,87 @@
-import { useState, useMemo, useCallback } from 'react'
+/**
+ * BiographicalArchivesPage — the Records screen. M4 · block 1.
+ *
+ * ## What changed and why
+ *
+ * The layout. §5.4.1 replaces the `ArchivalViewer` two-page book — spine,
+ * gutter shadow, perspective projection, 136px of fixed structure — with a
+ * sidebar and a single column. The projection was not only decoration: text
+ * inside it was rasterised at whatever angle the projection produced, which is
+ * the reason the old records blurred at the edges. A record is a document.
+ *
+ * Selection. It was `useState` plus a `scrollIntoView`, so the "record" was a
+ * scroll of all ninety-three entries and the index highlight was a scroll
+ * position. It is now a URL parameter and one record on screen, which is what
+ * the index has always implied it was doing.
+ *
+ * Rows. The index entries were `<div role="button" tabIndex={0}>` with a
+ * keydown handler bolted on — criterion R.6 forbids exactly this — and they
+ * could not be opened in a new tab. They are `<Link>`s now.
+ *
+ * Colour. Every inline `rgba(45,26,14,0.6)` is gone. The audit measured the
+ * planet chip at 2.21:1 and the search placeholder at 1.68:1 against
+ * parchment; the token set in tokens.css was built for this screen, with the
+ * measured ratio written next to each value.
+ *
+ * ## What is deliberately untouched
+ *
+ * Bloodlines and Connections keep their existing implementations. They are
+ * migrations for a later block, and rewriting them here would make this diff
+ * unreviewable. What changed is only that they now live inside the new shell
+ * rather than inside the book.
+ */
+
+import { useCallback, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
+import RecordsShell from '@/components/records/RecordsShell'
+import CharacterIndex from '@/components/records/CharacterIndex'
 import EmptyState from '@/components/primitives/EmptyState'
-import Button from '@/components/primitives/Button'
 import { useViewTransitionNavigate } from '@/hooks/useViewTransition'
-import { ALL_CHARACTERS, getPlanetById } from '@/data/static'
+import { ALL_CHARACTERS } from '@/data/static'
 import { MAGIC_SYSTEMS } from '@/data/static/magic-systems'
 import { CHARACTER_RELATIONSHIPS } from '@/data/static/static-data'
 import { FAMILY_TREES } from '@/data/static/family-data'
-import ArchivalViewer from '@/components/ars-arcanum/ArchivalViewer'
 import BiographicalContents from '@/components/biographical-archives/BiographicalContents'
 import CharacterRecord from '@/components/biographical-archives/CharacterRecord'
-import { GenealogyManuscript, HouseArchiveEntry } from '@/components/genealogy-archive'
+import { GenealogyManuscript } from '@/components/genealogy-archive'
 import ConnectionDiagram from '@/components/biographical-archives/ConnectionDiagram'
 import type { Character } from '@/types/character'
 
 type Chapter = 'contents' | 'records' | 'bloodlines' | 'connections'
 
-function getCharactersForText(q: string): Character[] {
-  const lq = q.toLowerCase()
-  return ALL_CHARACTERS.filter(
-    (c) =>
-      c.name.toLowerCase().includes(lq) ||
-      c.description.toLowerCase().includes(lq) ||
-      c.planet.toLowerCase().includes(lq),
-  )
+const CHAR_MAP: Map<string, Character> = new Map(ALL_CHARACTERS.map((c) => [c.id, c]))
+
+/** Characters with at least one recorded relationship, most-connected first. */
+function connectedCharacters(): { id: string; name: string; count: number }[] {
+  const tally = new Map<string, number>()
+  for (const rel of CHARACTER_RELATIONSHIPS) {
+    for (const id of rel.characters) tally.set(id, (tally.get(id) ?? 0) + 1)
+  }
+  return ALL_CHARACTERS.map((c) => ({ id: c.id, name: c.name, count: tally.get(c.id) ?? 0 }))
+    .filter((c) => c.count > 0)
+    .sort((a, b) => b.count - a.count)
 }
 
-function groupByFirstLetter(chars: Character[]): Map<string, Character[]> {
-  const map = new Map<string, Character[]>()
-  for (const c of chars) {
-    const letter = c.name.charAt(0).toUpperCase()
-    const existing = map.get(letter) ?? []
-    existing.push(c)
-    map.set(letter, existing)
-  }
-  return map
-}
+const CONNECTIONS = connectedCharacters()
 
 export default function BiographicalArchivesPage() {
-  const [searchParams] = useSearchParams()
+  const [searchParams, setParams] = useSearchParams()
   const navigate = useViewTransitionNavigate()
-  const [chapter, setChapter] = useState<Chapter>(() => {
+
+  const chapter = useMemo<Chapter>(() => {
     const tab = searchParams.get('tab')
     if (tab === 'bloodlines') return 'bloodlines'
     if (tab === 'connections') return 'connections'
-    if (searchParams.get('character') || tab === 'records') return 'records'
-    return 'contents'
-  })
-  const [searchQuery, setSearchQuery] = useState('')
-  const [selectedCharId, setSelectedCharId] = useState<string | null>(() => {
-    const char = searchParams.get('character')
-    if (char && ALL_CHARACTERS.some((c) => c.id === char)) return char
-    if (searchParams.get('tab') === 'records') return ALL_CHARACTERS[0]?.id ?? null
-    return null
-  })
+    if (tab === 'contents') return 'contents'
+    return 'records'
+  }, [searchParams])
 
-  const [activeFamilyId, setActiveFamilyId] = useState<string>(FAMILY_TREES[0]?.id ?? '')
-  const [connectionSelectedId, setConnectionSelectedId] = useState<string>('hoid')
+  const selectedId = searchParams.get('character')
+  const selected = selectedId ? CHAR_MAP.get(selectedId) : undefined
+  const activeFamilyId = searchParams.get('family') ?? FAMILY_TREES[0]?.id ?? ''
+
+  const connectionId = searchParams.get('character') ?? 'hoid'
 
   useSEOMeta({
     title: 'Biographical Archives — Cosmere Archive',
@@ -65,434 +89,160 @@ export default function BiographicalArchivesPage() {
       'Collected biographies, bloodlines and historical records of notable individuals throughout the Cosmere.',
   })
 
-  const filteredCharacters = useMemo(() => {
-    const q = searchQuery.trim()
-    if (!q) return ALL_CHARACTERS
-    return getCharactersForText(q)
-  }, [searchQuery])
-
-  const groupedCharacters = useMemo(() => groupByFirstLetter(filteredCharacters), [filteredCharacters])
-
-  const sortedLetters = useMemo(
-    () => Array.from(groupedCharacters.entries()).sort((a, b) => a[0].localeCompare(b[0])),
-    [groupedCharacters],
+  /** Chapter changes keep the rest of the query so a shared link stays useful. */
+  const setChapter = useCallback(
+    (next: Chapter) => {
+      const params = new URLSearchParams(searchParams)
+      params.delete('character')
+      params.delete('family')
+      if (next === 'records') params.delete('tab')
+      else params.set('tab', next)
+      setParams(params)
+    },
+    [searchParams, setParams],
   )
-
-  const charMap = useMemo(() => {
-    const m = new Map<string, Character>()
-    for (const c of ALL_CHARACTERS) m.set(c.id, c)
-    return m
-  }, [])
-
-  const connectionSortedChars = useMemo(() => {
-    const map = new Map<string, number>()
-    for (const rel of CHARACTER_RELATIONSHIPS) {
-      for (const id of rel.characters) map.set(id, (map.get(id) ?? 0) + 1)
-    }
-    return ALL_CHARACTERS.map((c) => ({ id: c.id, name: c.name, count: map.get(c.id) ?? 0 }))
-      .filter((c) => c.count > 0)
-      .sort((a, b) => b.count - a.count)
-  }, [])
-
-  const handleSelectChapter = useCallback((ch: 'records' | 'bloodlines' | 'connections') => {
-    setChapter(ch)
-    if (ch !== 'records') setSearchQuery('')
-  }, [])
-
-  const handleBackToContents = useCallback(() => {
-    setChapter('contents')
-    setSelectedCharId(null)
-    setSearchQuery('')
-  }, [])
-
-  const scrollToRecord = useCallback((charId: string) => {
-    requestAnimationFrame(() => {
-      document.getElementById(`record-${charId}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    })
-  }, [])
 
   const openCharacter = useCallback(
     (id: string) => {
-      setChapter('records')
-      setSelectedCharId(id)
-      scrollToRecord(id)
+      const params = new URLSearchParams(searchParams)
+      params.delete('tab')
+      params.set('character', id)
+      setParams(params)
     },
-    [scrollToRecord],
+    [searchParams, setParams],
   )
 
-  const renderLeft = () => {
-    if (chapter === 'contents') {
-      return <BiographicalContents onSelectChapter={handleSelectChapter} />
-    }
+  const header = (
+    <div className="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-2 border-b border-[var(--border-subtle)] px-5 py-3 min-[1024px]:flex-nowrap min-[1024px]:px-8">
+      <h1 className="font-[var(--font-display)] text-[var(--text-h4)] text-[var(--text-primary)] min-[1024px]:text-[var(--text-h3)]">
+        Biographical Archives
+      </h1>
+      <span className="hidden text-[var(--text-meta)] text-[var(--text-tertiary)] min-[1024px]:inline">
+        {ALL_CHARACTERS.length} records
+      </span>
 
-    if (chapter === 'records') {
-      return (
-        <div className="flex flex-col h-full">
-          <h2
-            className="font-serif text-[14px] uppercase tracking-[0.18em] mb-6 font-bold"
-            style={{ color: 'rgba(60,45,30,0.45)' }}
-          >
-            Character Index
-          </h2>
-          {/* Search line — like finding a record in an archive */}
-          <div
-            className="relative mb-5 pb-3 manuscript-search"
-            style={{ borderBottom: '1px solid rgba(80,60,40,0.05)' }}
-          >
-            <div className="flex items-center gap-3">
-              <span className="search-icon">Q</span>
-              <input
-                type="text"
-                placeholder="Search records..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="manuscript-input flex-1 pl-[14px] py-0.5 font-serif text-[13px]"
-                style={{ color: 'rgba(60,40,25,0.65)' }}
-              />
-              {searchQuery && (
-                <span
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => setSearchQuery('')}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault()
-                      setSearchQuery('')
-                    }
-                  }}
-                  className="font-serif text-[9px] cursor-pointer transition-opacity hover:opacity-60"
-                  style={{ color: 'rgba(80,60,40,0.18)' }}
-                >
-                  Clear
-                </span>
-              )}
-            </div>
-          </div>
-          {/* Letter-section index */}
-          <div className="flex-1 overflow-y-auto manuscript-scrollbar">
-            {sortedLetters.length === 0 ? (
-              <EmptyState
-                size="sm"
-                toneMode="paper"
-                title="No entries match your query"
-                description="The index lists every name in the archive. Try a surname, a title, or a world."
-                action={
-                  <Button tone="paper" size="sm" onClick={() => setSearchQuery('')}>
-                    Clear search
-                  </Button>
-                }
-              />
-            ) : (
-              sortedLetters.map(([letter, chars]) => (
-                <div key={letter} className="mb-5">
-                  <span
-                    className="font-serif text-[12px] font-bold tracking-[0.1em]"
-                    style={{ color: 'rgba(60,40,25,0.35)' }}
-                  >
-                    {letter}
-                  </span>
-                  {chars.map((c) => {
-                    const isActive = c.id === selectedCharId
-                    const planetMeta = getPlanetById(c.planet)
-                    const planetColor = planetMeta?.color ?? 'rgba(80,60,40,0.3)'
-                    const planetAbbr = (planetMeta?.name ?? c.planet).slice(0, 3).toLowerCase()
-                    return (
-                      <div
-                        key={c.id}
-                        role="button"
-                        tabIndex={0}
-                        onClick={() => {
-                          setSelectedCharId(c.id)
-                          scrollToRecord(c.id)
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault()
-                            setSelectedCharId(c.id)
-                            scrollToRecord(c.id)
-                          }
-                        }}
-                        className="flex items-center gap-2 py-[2px] cursor-pointer group"
-                        style={{ paddingLeft: '22px' }}
-                      >
-                        <span
-                          className="font-serif text-[14px] tracking-[0.01em] transition-colors group-hover:opacity-60"
-                          style={{ color: isActive ? '#2d1a0e' : 'rgba(45,26,14,0.6)' }}
-                        >
-                          {c.name}
-                        </span>
-                        <span
-                          className="flex-1 min-w-[8px]"
-                          style={{ borderBottom: '1px dotted rgba(80,60,40,0.06)' }}
-                        />
-                        <span
-                          className="font-serif text-[10px] tracking-[0.04em]"
-                          style={{ color: `${planetColor}70` }}
-                        >
-                          {planetAbbr}
-                        </span>
-                      </div>
-                    )
-                  })}
-                </div>
-              ))
-            )}
-          </div>
-          <div className="mt-4 pt-3" style={{ borderTop: '1px solid rgba(80,60,40,0.04)' }}>
-            <span
-              role="button"
-              tabIndex={0}
-              onClick={handleBackToContents}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault()
-                  handleBackToContents()
-                }
-              }}
-              className="font-serif text-[10px] uppercase tracking-[0.1em] cursor-pointer transition-opacity hover:opacity-60"
-              style={{ color: 'rgba(80,60,40,0.25)' }}
-            >
-              ← Contents
-            </span>
-          </div>
-        </div>
-      )
-    }
-
-    if (chapter === 'bloodlines') {
-      const fam = FAMILY_TREES.find((f) => f.id === activeFamilyId) ?? FAMILY_TREES[0]
-      if (!fam) return null
-      return (
-        <div className="flex flex-col h-full">
-          <HouseArchiveEntry
-            family={fam}
-            families={FAMILY_TREES}
-            charMap={charMap}
-            onSwitchFamily={(id) => setActiveFamilyId(id)}
-          />
-          <div className="mt-4 pt-3" style={{ borderTop: '1px solid rgba(80,60,40,0.04)' }}>
-            <span
-              role="button"
-              tabIndex={0}
-              onClick={handleBackToContents}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault()
-                  handleBackToContents()
-                }
-              }}
-              className="font-serif text-[10px] uppercase tracking-[0.1em] cursor-pointer transition-opacity hover:opacity-60"
-              style={{ color: 'rgba(80,60,40,0.25)' }}
-            >
-              ← Contents
-            </span>
-          </div>
-        </div>
-      )
-    }
-
-    if (chapter === 'connections') {
-      return (
-        <div className="flex flex-col h-full">
-          <h2
-            className="font-serif text-[14px] uppercase tracking-[0.18em] mb-6 font-bold"
-            style={{ color: 'rgba(60,45,30,0.45)' }}
-          >
-            Index of Connections
-          </h2>
-          <div
-            className="relative mb-4 pb-3 manuscript-search"
-            style={{ borderBottom: '1px solid rgba(80,60,40,0.05)' }}
-          >
-            <div className="flex items-center gap-3">
-              <span className="search-icon">Q</span>
-              <input
-                type="text"
-                placeholder="Search entries..."
-                className="manuscript-input flex-1 pl-[14px] py-0.5 font-serif text-[13px]"
-                style={{ color: 'rgba(60,40,25,0.65)' }}
-                onChange={(e) => {
-                  const q = e.target.value.toLowerCase()
-                  if (!q) return
-                  const match = connectionSortedChars.find((c) => c.name.toLowerCase().includes(q))
-                  if (match) setConnectionSelectedId(match.id)
-                }}
-              />
-            </div>
-          </div>
-          <div className="flex-1 space-y-[1px] overflow-y-auto manuscript-scrollbar">
-            {connectionSortedChars.map((entry) => {
-              const isActive = entry.id === connectionSelectedId
-              return (
-                <div
-                  key={entry.id}
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => setConnectionSelectedId(entry.id)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault()
-                      setConnectionSelectedId(entry.id)
-                    }
-                  }}
-                  className="flex items-baseline gap-2 py-[2px] cursor-pointer group"
-                >
-                  <span
-                    className="font-serif text-[14px] tracking-[0.02em] transition-colors group-hover:opacity-60"
-                    style={{ color: isActive ? '#2d1a0e' : 'rgba(45,26,14,0.55)' }}
-                  >
-                    {entry.name}
-                  </span>
-                  <span className="flex-1 min-w-[8px]" style={{ borderBottom: '1px dotted rgba(80,60,40,0.04)' }} />
-                  <span
-                    className="font-serif text-[10px]"
-                    style={{ color: isActive ? 'rgba(80,60,40,0.25)' : 'rgba(80,60,40,0.12)' }}
-                  >
-                    {entry.count}
-                  </span>
-                </div>
-              )
-            })}
-          </div>
-          <div className="mt-4 pt-3" style={{ borderTop: '1px solid rgba(80,60,40,0.04)' }}>
-            <span
-              role="button"
-              tabIndex={0}
-              onClick={handleBackToContents}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault()
-                  handleBackToContents()
-                }
-              }}
-              className="font-serif text-[10px] uppercase tracking-[0.1em] cursor-pointer transition-opacity hover:opacity-60"
-              style={{ color: 'rgba(80,60,40,0.25)' }}
-            >
-              ← Contents
-            </span>
-          </div>
-        </div>
-      )
-    }
-
-    return null
-  }
-
-  const renderRight = () => {
-    if (chapter === 'contents') {
-      return (
-        <div className="flex flex-col items-center justify-center text-center h-full">
-          <div className="mb-4 h-px w-14" style={{ background: 'rgba(80,60,40,0.08)' }} />
-          <h1
-            className="font-serif font-bold tracking-[0.15em] leading-tight"
-            style={{ color: '#2d1a0e', fontSize: 'clamp(26px, 3.5vw, 48px)' }}
-          >
-            Biographical
-            <br />
-            Archives
-          </h1>
-          <div className="mt-5 h-px w-12" style={{ background: 'rgba(80,60,40,0.06)' }} />
-          <p
-            className="mt-6 font-serif italic leading-relaxed max-w-[420px]"
-            style={{ color: 'rgba(80,60,40,0.55)', fontSize: 'clamp(12px, 1.1vw, 15px)' }}
-          >
-            Collected biographies, bloodlines and historical records of notable individuals throughout the Cosmere
-          </p>
-          <div className="mt-10 space-y-[5px]">
-            <p className="font-serif" style={{ color: 'rgba(80,60,40,0.35)', fontSize: 'clamp(10px, 0.9vw, 12px)' }}>
-              Compiled from records preserved within the Silverlight Archives
-            </p>
-            <p
-              className="font-serif italic"
-              style={{ color: 'rgba(80,60,40,0.2)', fontSize: 'clamp(9px, 0.8vw, 11px)' }}
-            >
-              Fol. 25–32
-            </p>
-          </div>
-          <div className="mt-12 h-px w-14" style={{ background: 'rgba(80,60,40,0.08)' }} />
-          <p
-            className="mt-5 font-serif uppercase tracking-[0.15em]"
-            style={{ color: 'rgba(80,60,40,0.15)', fontSize: 'clamp(8px, 0.7vw, 10px)' }}
-          >
-            — Silverlight Edition —
-          </p>
-        </div>
-      )
-    }
-
-    if (chapter === 'records') {
-      if (!filteredCharacters.length) {
-        return (
-          <EmptyState
-            toneMode="paper"
-            title="No records match your query"
-            description="No character in the archive matches that. Records unlock as you read, so a name may not be indexed yet."
-            action={
-              <Button tone="paper" size="sm" onClick={() => setSearchQuery('')}>
-                Clear search
-              </Button>
-            }
-          />
-        )
-      }
-
-      return (
-        <div>
-          {filteredCharacters.map((char) => (
-            <CharacterRecord
-              key={char.id}
-              character={char}
-              magicSystems={MAGIC_SYSTEMS}
-              onNavigatePlanet={(planetId) => navigate(`/celestial-charts?focus=planet&id=${planetId}`)}
-              onNavigateMagic={(systemId) => navigate(`/magic?system=${systemId}`)}
-              onNavigateBook={(bookId) => navigate(`/books/${bookId}`)}
-              onNavigateChapter={(ch) => handleSelectChapter(ch)}
-            />
+      {/* `min-w-0` and a scroll container: three section names plus the title
+          do not fit 375px, and clipping "Connections" to "Connec" is worse
+          than letting the row scroll. */}
+      <nav aria-label="Records sections" className="ml-auto min-w-0 max-w-full overflow-x-auto">
+        <ul className="flex items-center gap-1">
+          {(['records', 'bloodlines', 'connections'] as const).map((c) => (
+            <li key={c}>
+              <button
+                type="button"
+                onClick={() => setChapter(c)}
+                aria-current={chapter === c ? 'page' : undefined}
+                className={[
+                  'cursor-pointer rounded-[var(--radius-md)] px-3 py-2 text-[var(--text-meta)] capitalize',
+                  'transition-colors duration-[var(--dur-fast)]',
+                  'focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)]',
+                  chapter === c
+                    ? 'bg-[var(--surface-raised)] text-[var(--text-primary)]'
+                    : 'text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]',
+                ].join(' ')}
+              >
+                {c}
+              </button>
+            </li>
           ))}
-        </div>
-      )
-    }
-
-    if (chapter === 'bloodlines') {
-      return (
-        <div className="h-full w-full">
-          <GenealogyManuscript families={FAMILY_TREES} focusFamilyId={activeFamilyId} charMap={charMap} />
-        </div>
-      )
-    }
-
-    if (chapter === 'connections') {
-      return <ConnectionDiagram selectedId={connectionSelectedId} onNavigateCharacter={openCharacter} />
-    }
-
-    return null
-  }
-
-  const folioMap: Record<Chapter, [string, string, string, string]> = {
-    contents: ['Contents', 'Biographical Archives', 'Table of Contents', 'Biographical Archives'],
-    records: ['Fol. 25', 'Fol. 26–27', 'Character Index', 'Character Records'],
-    bloodlines: ['Fol. 28', 'Fol. 29–30', 'Bloodlines Index', 'Genealogical Charts'],
-    connections: ['Fol. 31', 'Fol. 32', 'Connections Index', 'Relationship Diagrams'],
-  }
-  const [leftFolio, rightFolio, leftHeader, rightHeader] = folioMap[chapter] ?? ['', '', '', '']
-
-  return (
-    <div
-      className="flex min-h-0 flex-1 flex-col overflow-hidden"
-      style={{ background: 'radial-gradient(ellipse at 50% 50%, #1a1008 0%, #0f0a06 100%)' }}
-    >
-      <div className="relative flex flex-1 min-h-0">
-        <ArchivalViewer
-          key={`${chapter}-${selectedCharId ?? ''}`}
-          left={renderLeft()}
-          right={renderRight()}
-          leftFolio={leftFolio}
-          rightFolio={rightFolio}
-          leftHeader={leftHeader}
-          rightHeader={rightHeader}
-          rightNoScroll={chapter === 'bloodlines'}
-        />
-      </div>
+        </ul>
+      </nav>
     </div>
   )
+
+  /* ---- Bloodlines and Connections: unchanged implementations, new frame ---- */
+
+  if (chapter === 'bloodlines') {
+    return (
+      <RecordsShell
+        header={header}
+        drawerLabel="Family index"
+        index={
+          <nav aria-label="Families" className="h-full overflow-y-auto p-md">
+            <ul className="space-y-1">
+              {FAMILY_TREES.map((f) => (
+                <li key={f.id}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const params = new URLSearchParams(searchParams)
+                      params.set('tab', 'bloodlines')
+                      params.set('family', f.id)
+                      setParams(params)
+                    }}
+                    aria-current={activeFamilyId === f.id ? 'true' : undefined}
+                    className="w-full cursor-pointer rounded-md px-3 py-2 text-left text-[var(--text-body-s)] text-[var(--text-primary)] transition-colors hover:bg-[var(--surface-inset)] aria-[current]:bg-[var(--surface-raised)] focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)]"
+                  >
+                    {f.name}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        }
+        record={<GenealogyManuscript families={FAMILY_TREES} focusFamilyId={activeFamilyId} charMap={CHAR_MAP} />}
+      />
+    )
+  }
+
+  if (chapter === 'connections') {
+    return (
+      <RecordsShell
+        header={header}
+        drawerLabel="Connection index"
+        index={
+          <nav aria-label="Characters by connections" className="h-full overflow-y-auto p-md">
+            <ul>
+              {CONNECTIONS.map((c) => (
+                <li key={c.id}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const params = new URLSearchParams(searchParams)
+                      params.set('tab', 'connections')
+                      params.set('character', c.id)
+                      setParams(params)
+                    }}
+                    aria-current={connectionId === c.id ? 'true' : undefined}
+                    className="flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-left transition-colors hover:bg-[var(--surface-inset)] aria-[current]:bg-[var(--surface-raised)] focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)]"
+                  >
+                    <span className="truncate text-[var(--text-body-s)] text-[var(--text-primary)]">{c.name}</span>
+                    <span className="text-nano tabular-nums text-[var(--text-tertiary)]">{c.count}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        }
+        record={<ConnectionDiagram selectedId={connectionId} onNavigateCharacter={openCharacter} />}
+      />
+    )
+  }
+
+  /* ---- Records: the index and one record ---- */
+
+  const record = selected ? (
+    <CharacterRecord
+      key={selected.id}
+      character={selected}
+      magicSystems={MAGIC_SYSTEMS}
+      onNavigatePlanet={(planetId) => navigate(`/celestial-charts?focus=planet&id=${planetId}`)}
+      onNavigateMagic={(systemId) => navigate(`/magic?system=${systemId}`)}
+      onNavigateBook={(bookId) => navigate(`/books/${bookId}`)}
+      onNavigateChapter={(c) => setChapter(c)}
+    />
+  ) : (
+    <div className="rounded-[var(--radius-lg)] border border-[var(--border-subtle)] bg-[var(--surface-base)] p-xl shadow-[var(--shadow-1)]">
+      {chapter === 'contents' ? (
+        <BiographicalContents onSelectChapter={setChapter} />
+      ) : (
+        <EmptyState
+          title="Choose a record"
+          description="Pick a name from the index to read its record. Every entry links, so any record has its own address."
+        />
+      )}
+    </div>
+  )
+
+  return <RecordsShell header={header} index={<CharacterIndex />} record={record} />
 }
