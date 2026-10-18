@@ -182,13 +182,33 @@ function BookSpineImpl({
           style={{
             // `object-position`, not `background-position`: the plan's per-series
             // crop was written for a `background-image`, and on an <img> with
-            // object-fit it silently does nothing. Every spine was showing the
-            // middle of its cover — the band of 60px title lettering — which is
-            // why the spines read as posters.
+            // object-fit it silently does nothing.
             objectPosition: m.crop,
-            // A touch over 1 so the visible strip is a little wider than the box
-            // and the crop never shows an edge.
-            transform: 'scale(1.08)',
+            // Well over 1, so the spine shows a *band* of the jacket rather than
+            // the whole jacket squeezed into 92px.
+            /*
+             * `scale` alone does not move the window. `object-position` is
+             * resolved on the unscaled box and then the whole thing is zoomed
+             * about its centre, so the two do not compose the way they read.
+             * A `translateY` on top of the scale does move it — and was tried —
+             * but it slid the window onto the publisher's band at the top of
+             * the jacket, which is worse than what it replaced. The crop is
+             * left to `object-position` alone.
+             */
+            transform: 'scale(2)',
+            /*
+             * And blurred.
+             *
+             * A jacket's title is 60px lettering. Any horizontal band of the
+             * cover that includes the middle also includes it, so the shelf read
+             * as twenty-two spines saying "NENE BENE" — legible enough to be
+             * embarrassing, not legible enough to be a cover. At 1.2px the same
+             * pixels stop being readable letters and become the mottling of old
+             * printed cloth, which is what a spine is allowed to show. It is the
+             * one change that fixes the whole problem, and it costs one filter
+             * on twenty-two already-composited layers.
+             */
+            filter: 'blur(1.2px)',
             opacity: 1,
           }}
         />

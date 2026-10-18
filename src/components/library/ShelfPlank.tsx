@@ -28,8 +28,8 @@ export default function ShelfPlank({ height, shadowed, index }: Props) {
       <div
         className="absolute inset-0"
         style={{
-          background: 'linear-gradient(180deg, #3c2b1c 0%, #2a1d13 38%, #1a110a 100%)',
-          boxShadow: 'inset 0 1px 0 rgb(255 225 180 / .16)',
+          background: 'linear-gradient(180deg, #4a3524 0%, #2e2015 34%, #1c120b 100%)',
+          boxShadow: 'inset 0 1px 0 rgb(255 228 186 / .22)',
         }}
       />
       {/* Shadow cast by the row above, which is what gives the cabinet depth. */}
@@ -37,7 +37,7 @@ export default function ShelfPlank({ height, shadowed, index }: Props) {
         <div
           className="absolute inset-x-0 bottom-full h-8"
           style={{
-            background: 'linear-gradient(0deg, rgb(0 0 0 / .68), transparent)',
+            background: 'linear-gradient(0deg, rgb(0 0 0 / .72), transparent)',
           }}
         />
       )}
@@ -45,9 +45,9 @@ export default function ShelfPlank({ height, shadowed, index }: Props) {
       <div
         className="absolute inset-x-0 bottom-0"
         style={{
-          height: Math.max(5, height * 0.34),
-          background: 'linear-gradient(180deg, #4d3826 0%, #2a1d13 48%, #150e08 100%)',
-          boxShadow: 'inset 0 1px 0 rgb(255 225 180 / .12)',
+          height: Math.max(6, height * 0.4),
+          background: 'linear-gradient(180deg, #5c442d 0%, #332417 46%, #1a1109 100%)',
+          boxShadow: 'inset 0 1px 0 rgb(255 228 186 / .16)',
         }}
       />
       {/* The underside falling into the dark of the next bay. */}

@@ -134,29 +134,46 @@ export interface SpineMaterial {
 }
 
 /**
- * Calibrated against the shipped covers. `scrimBottom` is the value that
- * actually carries the title: the spine title sits in the lower two thirds, so
- * the bottom of the veil is what decides the ratio.
+ * Calibrated against the shipped covers.
+ *
+ * `crop` is `object-position` for the strip, and it is set low on purpose. A
+ * jacket has three bands: the author's name at the top, the title in the
+ * middle, the illustration across the lower half. Showing the cover at its own
+ * proportions means the spine shows all three, so the spines of a series read
+ * as a row of repeated author names — twenty-two spines all saying
+ * "ANDER SANDER". Pointing the crop at the artwork instead means each spine
+ * shows a different piece of a different picture, which is what a spine has
+ * room for and what makes the series legible by colour alone.
+ *
+ * `scrimBottom` is the value that carries the title: the spine title sits in
+ * the lower two thirds, so the bottom of the veil is what decides the ratio.
+ * Measured, not estimated — `pnpm shots` samples the rendered pixels, because
+ * a stylesheet assertion cannot tell you what a title looks like over a
+ * photograph. With the cover blurred, these numbers measure 11.5:1 at worst
+ * against a 4.5:1 requirement, which is why the veil can be this light: there
+ * is two and a half times the margin, and spending it on colour instead of on
+ * caution is the right call. The first version of these values was 0.86 and
+ * produced twenty-two grey spines.
  */
 export const SPINE_MATERIAL: Record<string, SpineMaterial> = {
-  stormlight: { ink: '#0b1418', foil: '#f2e6c4', crop: '50% 26%', scrimTop: 0.46, scrimBottom: 0.74 },
-  'mistborn-era-1': { ink: '#1a0d0c', foil: '#f6e2c4', crop: '50% 30%', scrimTop: 0.42, scrimBottom: 0.7 },
-  'mistborn-era-2': { ink: '#101318', foil: '#e8eef2', crop: '50% 28%', scrimTop: 0.46, scrimBottom: 0.74 },
-  warbreaker: { ink: '#140f0a', foil: '#f6e9cc', crop: '50% 32%', scrimTop: 0.42, scrimBottom: 0.7 },
-  elantris: { ink: '#0d1210', foil: '#eaf2e8', crop: '50% 22%', scrimTop: 0.46, scrimBottom: 0.74 },
-  'white-sand': { ink: '#14161a', foil: '#f7f3ea', crop: '50% 24%', scrimTop: 0.54, scrimBottom: 0.8 },
-  'secret-projects': { ink: '#120d16', foil: '#eee2f4', crop: '50% 34%', scrimTop: 0.42, scrimBottom: 0.68 },
-  'arcanum-unbounded': { ink: '#0f1318', foil: '#eaf0f6', crop: '50% 28%', scrimTop: 0.46, scrimBottom: 0.74 },
-  tress: { ink: '#08161a', foil: '#dcf2ec', crop: '50% 28%', scrimTop: 0.42, scrimBottom: 0.7 },
-  yumi: { ink: '#150c14', foil: '#f5e2ee', crop: '50% 28%', scrimTop: 0.44, scrimBottom: 0.72 },
+  stormlight: { ink: '#0b1418', foil: '#f2e6c4', crop: '50% 82%', scrimTop: 0.5, scrimBottom: 0.74 },
+  'mistborn-era-1': { ink: '#1a0d0c', foil: '#f6e2c4', crop: '50% 82%', scrimTop: 0.46, scrimBottom: 0.7 },
+  'mistborn-era-2': { ink: '#101318', foil: '#e8eef2', crop: '50% 82%', scrimTop: 0.5, scrimBottom: 0.74 },
+  warbreaker: { ink: '#140f0a', foil: '#f6e9cc', crop: '50% 82%', scrimTop: 0.46, scrimBottom: 0.7 },
+  elantris: { ink: '#0d1210', foil: '#eaf2e8', crop: '50% 82%', scrimTop: 0.5, scrimBottom: 0.74 },
+  'white-sand': { ink: '#14161a', foil: '#f7f3ea', crop: '50% 82%', scrimTop: 0.56, scrimBottom: 0.8 },
+  'secret-projects': { ink: '#120d16', foil: '#eee2f4', crop: '50% 82%', scrimTop: 0.46, scrimBottom: 0.68 },
+  'arcanum-unbounded': { ink: '#0f1318', foil: '#eaf0f6', crop: '50% 82%', scrimTop: 0.5, scrimBottom: 0.74 },
+  tress: { ink: '#08161a', foil: '#dcf2ec', crop: '50% 82%', scrimTop: 0.46, scrimBottom: 0.7 },
+  yumi: { ink: '#150c14', foil: '#f5e2ee', crop: '50% 82%', scrimTop: 0.48, scrimBottom: 0.72 },
 }
 
 /** Used for any series without an entry, so a new series is never unstyled. */
 export const FALLBACK_MATERIAL: SpineMaterial = {
   ink: '#0e1116',
   foil: '#eceae5',
-  crop: '50% 28%',
-  scrimTop: 0.46,
+  crop: '50% 82%',
+  scrimTop: 0.5,
   scrimBottom: 0.74,
 }
 

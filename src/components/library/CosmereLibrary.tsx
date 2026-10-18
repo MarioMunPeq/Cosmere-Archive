@@ -93,19 +93,28 @@ export default function CosmereLibrary({ onOpen }: Props) {
         <div
           className="relative rounded-t-[6px] px-1 pt-4 pb-2"
           style={{
-            // The cabinet: procedural oak under a light that falls off toward
-            // the floor, so the wall behind is dark and the wood is not.
+            // The cabinet: procedural oak under a light that falls off toward the
+            // floor, so the wood recedes and the books come forward.
             //
             // Stretched to fill rather than tiled: a 512px tile across a 1400px
-            // cabinet repeats three times, and the vertical joins were visible
-            // as seams in the screenshot. Grain lines run horizontally, so
-            // stretching costs almost nothing.
+            // cabinet repeats three times, and the vertical joins were visible as
+            // seams in the screenshot. Grain lines run horizontally, so stretching
+            // costs almost nothing.
+            //
+            // The last layer is the important one. Twenty-two books on three shelves
+            // leaves roughly 900px of bare board beside the shorter runs, and any
+            // surface at all fills that space with itself. Two vignettes — one down
+            // the empty right side, one into the corners — put the empty board back
+            // into shadow, so it reads as the unlit end of a cabinet rather than as
+            // a wall of brown.
             backgroundImage: [
+              'linear-gradient(90deg, transparent 42%, rgb(4 5 8 / .55) 100%)',
+              'radial-gradient(120% 100% at 50% 0%, transparent 40%, rgb(3 4 6 / .5) 100%)',
               woodTexture(),
-              'linear-gradient(180deg, rgb(255 235 205 / .07) 0%, rgb(14 10 6 / .34) 30%, rgb(5 4 2 / .72) 100%)',
+              'linear-gradient(180deg, rgb(255 235 205 / .05) 0%, rgb(10 8 5 / .42) 26%, rgb(4 3 2 / .78) 100%)',
             ].join(','),
-            backgroundSize: '100% 100%, 100% 100%',
-            boxShadow: 'inset 0 1px 0 rgb(255 225 180 / .10), 0 -2px 0 rgb(0 0 0 / .5)',
+            backgroundSize: '100% 100%, 100% 100%, 100% 100%, 100% 100%',
+            boxShadow: 'inset 0 1px 0 rgb(255 225 180 / .08), 0 -2px 0 rgb(0 0 0 / .5)',
           }}
         >
           {shelves.map((shelf, i) => (

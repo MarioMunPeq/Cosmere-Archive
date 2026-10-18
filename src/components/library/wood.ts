@@ -20,10 +20,13 @@
  * One thing the first version got wrong, and which is worth recording: the wood
  * was drawn at its natural value. Walnut is #2a1c11 and that is *already* the
  * value of a lit board — on a #07090f page at full strength it read as an orange
- * fence and became the loudest thing in the room. Everything here is darkened
- * toward the page background so the wood is felt rather than seen. The grain
- * survives because grain is a difference between neighbours, and that survives
- * being dark.
+ * fence, and a cabinet with twenty-two books and eight hundred pixels of empty
+ * board beside them read as a brown wall.
+ *
+ * So the tile is not just darkened, it is scaled up and pulled down further:
+ * the grain is carried by the *difference* between neighbouring pixels, and
+ * that difference survives being dark, while the overall value disappears. The
+ * cabinet should be felt. The books are the subject.
  *
  * Built once at module load and cached: encoding ~4 KB is not free per render.
  */
@@ -59,17 +62,17 @@ function build(): string {
     // Anisotropic turbulence: tight across the grain, stretched along it.
     `<filter id="g" x="0" y="0" width="100%" height="100%">` +
     `<feTurbulence type="fractalNoise" baseFrequency="0.012 0.09" numOctaves="5" seed="7" result="n"/>` +
-    `<feColorMatrix in="n" type="matrix" values="0 0 0 0 0.09  0 0 0 0 0.062  0 0 0 0 0.042  1.1 0.4 0 0 -0.34"/>` +
+    `<feColorMatrix in="n" type="matrix" values="0 0 0 0 0.055  0 0 0 0 0.038  0 0 0 0 0.026  1.3 0.5 0 0 -0.42"/>` +
     `</filter>` +
     // A second, coarser pass so the plank has broad tonal bands as well as grain.
     `<filter id="b" x="0" y="0" width="100%" height="100%">` +
     `<feTurbulence type="fractalNoise" baseFrequency="0.004 0.02" numOctaves="2" seed="19"/>` +
-    `<feColorMatrix type="matrix" values="0 0 0 0 0.075  0 0 0 0 0.05  0 0 0 0 0.03  0.9 0 0 0 -0.24"/>` +
+    `<feColorMatrix type="matrix" values="0 0 0 0 0.045  0 0 0 0 0.03  0 0 0 0 0.019  1.1 0 0 0 -0.32"/>` +
     `</filter>` +
     `</defs>` +
-    `<rect width="512" height="512" fill="#15100b"/>` +
-    `<rect width="512" height="512" filter="url(#b)" opacity="0.7"/>` +
-    `<rect width="512" height="512" filter="url(#g)" opacity="0.6"/>` +
+    `<rect width="512" height="512" fill="#0d0a07"/>` +
+    `<rect width="512" height="512" filter="url(#b)" opacity="0.55"/>` +
+    `<rect width="512" height="512" filter="url(#g)" opacity="0.7"/>` +
     veins.join('') +
     `</svg>`
 

@@ -176,6 +176,9 @@ export default function PageSurface({ page, folio, runningHead, series, side }: 
         ))}
       </div>
 
+      {/* the last line dissolves into the paper instead of being guillotined */}
+      <span className="pg-fade" aria-hidden />
+
       {/* folio */}
       <footer className="pg-folio">{folio}</footer>
 

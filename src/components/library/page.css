@@ -85,8 +85,16 @@
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: clamp(1.4em, 4%, 2.2em) clamp(1.1em, 4%, 2.1em) 0.5em;
-  scrollbar-width: thin;
-  scrollbar-color: rgb(120 100 70 / 0.3) transparent;
+  /*
+   * No scrollbar. A printed page has no scrollbar, and on a cream spread a
+   * thin grey track down the gutter is the one thing that still reads as a web
+   * page. Discoverability is not lost: the page fades out towards the foot, so
+   * a page with more to give says so by being visibly cut off.
+   */
+  scrollbar-width: none;
+}
+.pg-body-scroll::-webkit-scrollbar {
+  display: none;
 }
 
 /* The measure. A page of a book is 60–70 characters; past that the eye loses
@@ -292,4 +300,28 @@
   inset-block: 0;
   width: 4px;
   pointer-events: none;
+}
+
+/*
+ * The foot fade: the page's last line of text dissolves into the paper instead
+ * of being guillotined by the folio. It is what replaces the scrollbar as the
+ * signal that there is more below.
+ */
+.pg-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 30px;
+  height: 72px;
+  pointer-events: none;
+  /* Three stops, not two. With a two-stop ramp the top of the fade landed on a
+     visible horizontal edge, because the page's own background is a radial
+     gradient and a flat --surface-page does not match it at that height. */
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(in srgb, var(--surface-page) 45%, transparent) 38%,
+    color-mix(in srgb, var(--surface-page) 88%, transparent) 72%,
+    var(--surface-page) 100%
+  );
 }

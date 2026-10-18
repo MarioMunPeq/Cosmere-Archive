@@ -67,19 +67,16 @@ const FLIP_MS = 720
 const COVER_MS = 940
 const SHUT_MS = 620
 
-/** The curl in the corner of a page: the oldest page-turn affordance there is. */
-function CornerCurl({ side }: { side: 'left' | 'right' }) {
-  return (
-    <svg aria-hidden className={`page-curl page-curl--${side}`} viewBox="0 0 100 100" fill="none">
-      {/* the sheet lifting off the block */}
-      <path d="M100 100 C 62 100 34 74 30 30 L 30 100 Z" fill="currentColor" opacity="0.14" />
-      <path d="M100 100 C 62 100 34 74 30 30" stroke="currentColor" strokeWidth="1.1" />
-      {/* the lines of paper in the curl */}
-      <path d="M94 100 C 60 99 38 76 34 36" stroke="currentColor" strokeWidth="0.7" opacity="0.5" />
-      <path d="M86 100 C 57 98 41 78 38 44" stroke="currentColor" strokeWidth="0.7" opacity="0.35" />
-    </svg>
-  )
-}
+/**
+ * The dog-ear, and why it is not an SVG.
+ *
+ * The first version drew the curl inline. On cream paper it read as a stray
+ * light triangle rather than as a folded corner: the fill was a brown at 14%
+ * opacity, which over `#f4efe4` came out *lighter* than the page it sat on, so
+ * it looked like a rendering artefact in the corner — which is exactly what it
+ * was. A folded corner is a lit triangle with a shadow line under it, so that
+ * is what it is now, in CSS, keyed to hover.
+ */
 
 export default function BookReader({ book, onClose }: Props) {
   const pages = useMemo(() => generatePages(book), [book])
@@ -261,7 +258,7 @@ export default function BookReader({ book, onClose }: Props) {
                 series={book.saga}
                 side="left"
               />
-              <CornerCurl side="left" />
+              <span className="page-dogear page-dogear--left" aria-hidden />
             </div>
 
             {/* right page */}
@@ -281,7 +278,7 @@ export default function BookReader({ book, onClose }: Props) {
                   </span>
                 </div>
               )}
-              <CornerCurl side="right" />
+              <span className="page-dogear page-dogear--right" aria-hidden />
             </div>
 
             <span className="book-gutter" aria-hidden />

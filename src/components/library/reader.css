@@ -536,30 +536,45 @@
   border-radius: 3px;
 }
 
-/* The corner curl: the oldest page-turn affordance there is, and the reason a
-   printed book does not need a button. */
-.page-curl {
+/*
+ * The dog-ear.
+ *
+ * A folded corner is a lit triangle with a shadow line under it. The previous
+ * version was a filled path in a brown at 14% opacity, which over cream paper
+ * computed to something *lighter* than the page, so it read as a stray triangle
+ * in the corner rather than as a fold.
+ *
+ * It only appears on hover. A printed page does not carry a permanent dog-ear,
+ * and a permanent one either suggests the page is already turned or becomes
+ * part of the page furniture.
+ */
+.page-dogear {
   position: absolute;
   bottom: 0;
-  width: 78px;
-  height: 78px;
+  width: 58px;
+  height: 58px;
   pointer-events: none;
   z-index: 4;
-  color: rgb(120 96 62 / 0.5);
-  transition:
-    color var(--dur-base) var(--ease-standard),
-    opacity var(--dur-base) var(--ease-standard);
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease-standard);
 }
-.page-curl--right {
+.page:hover .page-dogear,
+.page:focus-within .page-dogear {
+  opacity: 1;
+}
+.page-dogear--right {
   right: 0;
+  background: linear-gradient(225deg, transparent 0 44%, rgb(255 252 246) 45%, rgb(198 183 156) 100%);
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  /* the shadow the lifted corner throws onto the page below it */
+  filter: drop-shadow(-2px -2px 4px rgb(84 64 38 / 0.32));
 }
-.page-curl--left {
+.page-dogear--left {
   left: 0;
   scale: -1 1;
-}
-.page:hover .page-curl,
-.page-curl:hover {
-  color: rgb(150 118 70 / 0.8);
+  background: linear-gradient(225deg, transparent 0 44%, rgb(255 252 246) 45%, rgb(198 183 156) 100%);
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  filter: drop-shadow(2px -2px 4px rgb(84 64 38 / 0.32));
 }
 
 /* --------------------------------------------------------------- motions */
