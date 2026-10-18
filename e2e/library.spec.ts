@@ -43,19 +43,41 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('M3.1 every volume paints a real cover, none 404s', async ({ page }) => {
+  // Covers are `loading="lazy"`, so a spine that has never scrolled into view
+  // legitimately has `complete === false`. Waiting for them is the only way to
+  // tell "not requested yet" apart from "requested and failed".
+  await page.waitForFunction(
+    () => {
+      const imgs = Array.from(document.querySelectorAll<HTMLImageElement>('img[data-cover]'))
+      return imgs.length > 0 && imgs.every((i) => i.complete)
+    },
+    undefined,
+    { timeout: 15_000 },
+  )
+
   const report = await page.evaluate(() => {
     const spines = Array.from(document.querySelectorAll<HTMLElement>('[data-book-id]'))
     const imgs = spines.map((s) => s.querySelector('img[data-cover]') as HTMLImageElement | null)
     return {
       spines: spines.length,
       missing: imgs.filter((i) => !i).length,
-      broken: imgs.filter((i) => i && (!i.complete || i.naturalWidth === 0)).map((i) => i.src),
+      broken: imgs.filter((i) => i && i.naturalWidth === 0).map((i) => i.src),
     }
   })
 
   expect(report.spines, 'the shelf should hold all 22 volumes').toBe(22)
   expect(report.missing, 'every spine needs a cover element').toBe(0)
   expect(report.broken, 'covers that failed to load').toEqual([])
+})
+
+test('covers below the fold are not fetched', async ({ page }) => {
+  // The lazy attribute is only worth anything if it is actually on the images.
+  const eager = await page.evaluate(() =>
+    Array.from(document.querySelectorAll<HTMLImageElement>('img[data-cover]'))
+      .filter((i) => i.loading !== 'lazy')
+      .map((i) => i.src),
+  )
+  expect(eager, 'spine covers must be lazy-loaded').toEqual([])
 })
 
 test('M3.1 the 22 covers are distinct files, not one shared fallback', async ({ page }) => {
@@ -93,18 +115,21 @@ for (const width of [375, 768, 1440, 2560]) {
 
     const overflow = await page.evaluate(() => {
       const doc = document.documentElement
-      // The widest offender, so the failure names the element rather than just
-      // the number.
-      const widest = Array.from(document.querySelectorAll<HTMLElement>('[data-book-id]'))
-        .map((el) => ({ id: el.dataset.bookId ?? '', right: Math.round(el.getBoundingClientRect().right) }))
-        .sort((a, b) => b.right - a.right)[0]
-      return {
-        doc: doc.scrollWidth - doc.clientWidth,
-        widest,
-      }
+      // Per-row as well as per-document. A row can overflow its own container
+      // by a few pixels and the document still reports zero, because the
+      // container clips it — which is how a spine gets sliced without anything
+      // failing. Six pixels of it was a padding the measurement counted twice.
+      const rows = Array.from(document.querySelectorAll<HTMLElement>('[data-shelf] .flex.items-end'))
+        .map((row) => ({
+          shelf: row.closest('[data-shelf]')?.getAttribute('data-shelf') ?? '',
+          over: row.scrollWidth - row.clientWidth,
+        }))
+        .filter((r) => r.over > 0)
+      return { doc: doc.scrollWidth - doc.clientWidth, rows }
     })
 
     expect(overflow.doc, `document overflows by ${overflow.doc}px`).toBeLessThanOrEqual(0)
+    expect(overflow.rows, `rows overflow their shelf: ${JSON.stringify(overflow.rows)}`).toEqual([])
   })
 }
 
@@ -217,15 +242,94 @@ test('the shelves are reachable with the keyboard alone', async ({ page }) => {
   await expect(page.locator(':focus')).toHaveAttribute('data-book-id', 'the_way_of_kings')
 })
 
+/**
+ * Measure a transient piece of the reader without racing it.
+ *
+ * Both the front board and the turning leaf exist for under a second, so a test
+ * that has to find one in the DOM and then read its box loses whenever the
+ * suite's four workers saturate the CPU. This drops a probe with the same
+ * classes into the live book, with the animation cancelled, and measures that.
+ * The probe is static, the geometry is the same, and the test stops depending
+ * on how fast the machine is.
+ */
+async function probeGeometry(
+  page: import('@playwright/test').Page,
+  className: string,
+): Promise<{ leftFromSpine: number; rightFromSpine: number; width: number; pageWidth: number }> {
+  return page.evaluate((cls) => {
+    const book = document.querySelector<HTMLElement>('[data-book-spread]')!
+    const leftPage = book.querySelector<HTMLElement>('.page--left')!
+
+    const probe = document.createElement('div')
+    probe.className = cls
+    probe.style.animation = 'none'
+    probe.style.transition = 'none'
+    probe.style.transform = 'none'
+    book.append(probe)
+
+    const spine = book.getBoundingClientRect().left + book.getBoundingClientRect().width / 2
+    const box = probe.getBoundingClientRect()
+    const page = leftPage.getBoundingClientRect()
+    probe.remove()
+
+    return {
+      leftFromSpine: box.left - spine,
+      rightFromSpine: box.right - spine,
+      width: box.width,
+      pageWidth: page.width,
+    }
+  }, className)
+}
+
+test('the book opens by swinging its front board on the spine', async ({ page }) => {
+  await page.locator('[data-book-id="the_way_of_kings"]').click()
+  await expect(page.getByRole('dialog')).toBeVisible()
+
+  // The cover is a real element hinged at the spine, and it is gone once the
+  // swing has landed — it must be, or it would sit on the title page forever.
+  const cover = page.locator('[data-book-cover]')
+  await expect(cover).toBeHidden({ timeout: 6000 })
+
+  // Hinged on its left edge, which is the spine: it starts closed over the
+  // right half and lands flat on the left.
+  const geo = await probeGeometry(page, 'book-cover')
+  expect(Math.abs(geo.leftFromSpine), 'the front board must hinge on the spine').toBeLessThan(2)
+  expect(geo.width, 'the front board is half the spread').toBeGreaterThan(100)
+})
+
+test('a turning leaf is hinged on the spine and one page wide', async ({ page }) => {
+  await page.locator('[data-book-id="the_way_of_kings"]').click()
+  await expect(page.getByRole('dialog')).toBeVisible()
+
+  /*
+   * The leaf used to be positioned at `left: calc(50% + 13px)`, so at the end
+   * of the swing it landed 13px to the right of the page it was replacing —
+   * a sliver of the old page stayed visible along the gutter on every turn.
+   * These numbers are the regression.
+   */
+  const forward = await probeGeometry(page, 'leaf leaf--forward')
+  expect(Math.abs(forward.leftFromSpine), 'a forward leaf hinges on the spine').toBeLessThan(2)
+  expect(Math.abs(forward.width - forward.pageWidth), 'a forward leaf must be exactly one page wide').toBeLessThan(2)
+
+  // Mirrored: a backward leaf hinges on its right edge.
+  const back = await probeGeometry(page, 'leaf leaf--back')
+  expect(Math.abs(back.rightFromSpine), 'a backward leaf hinges on the spine').toBeLessThan(2)
+  expect(Math.abs(back.width - back.pageWidth)).toBeLessThan(2)
+})
+
 test('a page turn keeps the book open and advances the folio', async ({ page }) => {
   await page.locator('[data-book-id="the_way_of_kings"]').click()
   const dialog = page.getByRole('dialog')
   await expect(dialog).toBeVisible()
 
-  const before = await dialog.getByRole('button', { name: 'Previous page' })
-  await expect(before).toBeDisabled()
+  // The book has to finish opening before it can be turned. Otherwise the
+  // button looks live and does nothing.
+  const next = dialog.getByRole('button', { name: 'Next page' })
+  await expect(next).toBeEnabled()
 
-  await dialog.getByRole('button', { name: 'Next page' }).click()
+  await expect(dialog.getByRole('button', { name: 'Previous page' })).toBeDisabled()
+
+  await next.click()
   await expect(dialog.locator('[data-page-surface]')).toHaveCount(2)
   await expect(dialog.getByRole('button', { name: 'Previous page' })).toBeEnabled()
 })

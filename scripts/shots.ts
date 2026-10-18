@@ -166,7 +166,7 @@ for (const [name, width, height] of [
     return {
       shelves: document.querySelectorAll('[data-shelf]').length,
       spines: spines.length,
-      brokenCovers: imgs.filter((i) => !i || !i.complete || i.naturalWidth === 0).length,
+      brokenCovers: imgs.filter((i) => !i || (i.complete && i.naturalWidth === 0)).length,
       tinyText: tiny.slice(0, 4),
       rowOverflowX: holder ? holder.scrollWidth - holder.clientWidth : null,
       docOverflowX: document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -184,13 +184,27 @@ const open = await browser.newPage({ viewport: { width: 1440, height: 900 } })
 await open.goto(`${BASE}#/library`, { waitUntil: 'networkidle' })
 await open.waitForSelector('[data-book-id]')
 await open.click('[data-book-id="the_way_of_kings"]')
-await open.waitForSelector('[data-book-spread]')
-await open.waitForTimeout(1100)
-await open.screenshot({ path: `${OUT}/library-open.png` })
-await open.click('button[aria-label="Next page"]')
+// Mid-swing: the cover is on its way over. This frame decides whether the
+// opening reads as a book being opened or as a fade.
+await open.waitForSelector('[data-book-cover]')
+await open.waitForTimeout(320)
+await open.screenshot({ path: `${OUT}/reader-opening.png` })
+await open.waitForTimeout(220)
+await open.screenshot({ path: `${OUT}/reader-opening-b.png` })
 await open.waitForTimeout(1200)
-await open.screenshot({ path: `${OUT}/library-open-2.png` })
+await open.screenshot({ path: `${OUT}/reader-open.png` })
+await open.click('button[aria-label="Next page"]')
+// Three points across the swing. The middle one is the interesting frame: past
+// the spine the back face must be showing, un-mirrored.
+await open.waitForTimeout(120)
+await open.screenshot({ path: `${OUT}/reader-turning-a.png` })
+await open.waitForTimeout(200)
+await open.screenshot({ path: `${OUT}/reader-turning.png` })
+await open.waitForTimeout(500)
+await open.screenshot({ path: `${OUT}/reader-open-2.png` })
 await open.locator('body').press('Escape')
+await open.waitForTimeout(260)
+await open.screenshot({ path: `${OUT}/reader-closing.png` })
 await open.waitForTimeout(600)
 
 // the list view

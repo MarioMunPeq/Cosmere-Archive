@@ -30,6 +30,34 @@ async function openSearch(page: import('@playwright/test').Page) {
 }
 
 test.describe('M2.4 search', () => {
+  /*
+   * A longer timeout for this file only.
+   *
+   * Q.3 loads the app, runs eight queries and navigates to the first result of
+   * each — eight full page loads inside one test. It takes about 26 seconds on
+   * an idle machine, so the 5s default leaves no margin at all and it fails
+   * whenever the suite runs its four workers in parallel. Nothing here asserts
+   * less than before; the tests just get the time they were already taking.
+   */
+  test.describe.configure({ timeout: 60_000 })
+
+  /*
+   * And a longer wait on each assertion, for the same reason one level down.
+   *
+   * The search index is a lazily-imported chunk (`loadIndex` in
+   * useGlobalSearch), so the dialog opens, accepts a query and shows an empty
+   * state before it can answer anything. Waiting for a listbox therefore has to
+   * allow for the index arriving. Playwright's default of 5s is enough on an
+   * idle machine and not enough when four workers are competing for the CPU —
+   * where the failure reads as "search returns no results", which is the very
+   * regression these tests exist to catch.
+   *
+   * Raising the wait is the fix rather than a readiness handshake in the
+   * dialog: nothing about what is asserted changes, and the honest long-term
+   * fix is a loading state in the dialog itself (see the notes for M7).
+   */
+  expect.configure({ timeout: 15_000 })
+
   test('Q.7 Ctrl+K opens it and the roles are wired', async ({ page }) => {
     const input = await openSearch(page)
     await expect(input).toHaveAttribute('aria-expanded', 'false')
