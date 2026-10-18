@@ -48,6 +48,17 @@ export interface FitOptions {
 }
 
 /**
+ * Slack between the measured width and the width the row is laid out against.
+ *
+ * `clientWidth` is an integer, and the content box it rounds from is not: a
+ * container 326.4px wide reports 326. Laying out to 326 exactly then reads as
+ * a 1px overflow in the DOM while fitting perfectly on screen, and the e2e
+ * check for "no spine is clipped" fails on a rounding artefact. One pixel of
+ * slack costs nothing and makes the invariant true in both senses.
+ */
+const SAFETY = 1
+
+/**
  * Fits `count` spines into `availableWidth`, and never returns a layout that
  * does not fit.
  *
@@ -67,13 +78,15 @@ export function fitShelf({ availableWidth, count, baseHeight }: FitOptions): She
     return { spineWidth: MIN_SPINE, totalWidth: 0, perRow: count, rows: 0, height: baseHeight }
   }
 
+  const budget = Math.max(MIN_SPINE, availableWidth - SAFETY)
+
   // Step 1: the row holds as many spines as MIN_SPINE allows.
-  const perRow = Math.max(1, Math.min(count, Math.floor((availableWidth + GAP) / (MIN_SPINE + GAP))))
+  const perRow = Math.max(1, Math.min(count, Math.floor((budget + GAP) / (MIN_SPINE + GAP))))
   const rows = Math.ceil(count / perRow)
 
   // Step 2: widen into the remaining space, never past MAX_SPINE and never
   // past what the row can actually hold.
-  const usable = (availableWidth - GAP * (perRow - 1)) / perRow
+  const usable = (budget - GAP * (perRow - 1)) / perRow
   const spineWidth = Math.round(Math.min(MAX_SPINE, Math.max(MIN_SPINE, usable)) * 100) / 100
 
   const widest = Math.min(count, perRow)

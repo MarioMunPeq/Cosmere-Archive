@@ -11,8 +11,8 @@ describe('fitShelf', () => {
         const rowWidth = layout.spineWidth * widest + GAP * (widest - 1)
         expect(
           rowWidth,
-          `${count} books in ${available}px produced a ${rowWidth.toFixed(0)}px row`,
-        ).toBeLessThanOrEqual(available + 0.5)
+          `${count} books in ${available}px produced a ${rowWidth.toFixed(2)}px row`,
+        ).toBeLessThanOrEqual(available)
       }
     }
   })
