@@ -164,7 +164,10 @@ function BookSpineImpl({
       {/* 1. cloth */}
       <span aria-hidden className="absolute inset-0" style={material(m)} />
 
-      {/* 2. the cover, filling the spine */}
+      {/* 2. the cover, filling the spine.
+          `loading="lazy"`: twenty-two covers is 1.45 MB, and on a 900px screen
+          at most a dozen are ever on screen. Without it the library route
+          fetches the whole shelf before it can paint the top of it. */}
       <picture>
         <source srcSet={avif} type="image/avif" />
         <img
@@ -172,6 +175,8 @@ function BookSpineImpl({
           alt=""
           aria-hidden
           draggable={false}
+          loading="lazy"
+          decoding="async"
           data-cover
           className="absolute inset-0 h-full w-full select-none object-cover"
           style={{

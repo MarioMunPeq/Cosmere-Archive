@@ -175,7 +175,11 @@ export default function Shelf({
         </span>
       </div>
 
-      <div className="min-w-0">
+      {/* The 3px inset lives here, not on the row. `clientWidth` includes an
+          element's own padding, so a padded row measured 6px wider than the
+          space its spines actually had and the last one hung off the edge —
+          the same class of bug as the original 192px overflow, 6px smaller. */}
+      <div className="min-w-0 px-[3px]">
         {/* Below 1024px there is no side column, so the name comes here. */}
         <h2
           id={`shelf-${id}`}
@@ -187,7 +191,7 @@ export default function Shelf({
         <div ref={containerRef} className="w-full min-w-0">
           {rows.map((row, rowIndex) => (
             <div key={rowIndex} className="relative">
-              <div className="flex items-end" style={{ gap: 2, minHeight: layout.height + 10, paddingInline: 3 }}>
+              <div className="flex items-end" style={{ gap: 2, minHeight: layout.height + 10 }}>
                 {row.map((book) => {
                   const globalIndex = books.indexOf(book)
                   const isHovered = hovered === globalIndex

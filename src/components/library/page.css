@@ -1,0 +1,295 @@
+/**
+ * page.css — how a page is set.
+ *
+ * Companion to reader.css, and separate from it on purpose: reader.css is the
+ * room and the motion, this is the paper. The two are read together but they
+ * are about different things.
+ *
+ * Everything is sized in `em` off a single `--pg-size` on `.pg`, so the page
+ * scales as one object when the book is resized — which matters, because the
+ * book is a fixed aspect ratio and the pages inside it are not.
+ */
+
+.pg {
+  --pg-size: clamp(14px, 0.95vw + 8px, 18px);
+  position: relative;
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--text-on-page-primary);
+  font-family: var(--font-display);
+  font-size: var(--pg-size);
+  /* Optical sizing and old-style figures are what make a Garamond page look
+     like a Garamond page rather than a serif UI font. */
+  font-feature-settings:
+    'onum' 1,
+    'kern' 1,
+    'liga' 1;
+  line-height: 1.62;
+}
+
+/* the gutter shadow, on the bound side */
+.pg-gutter {
+  position: absolute;
+  inset-block: 0;
+  width: 34px;
+  pointer-events: none;
+}
+
+/* running head: small caps, wide tracking, the way a printer would set it */
+.pg-running {
+  display: flex;
+  flex-shrink: 0;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5em;
+  padding: clamp(0.9em, 2.6%, 1.5em) clamp(1.1em, 4%, 2.1em) 0.35em;
+  font-family: var(--font-ui);
+  font-size: 0.6em;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-on-page-tertiary);
+}
+.pg-running__book {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pg-running__here {
+  flex-shrink: 0;
+}
+.pg-running::after {
+  /* the hairline under the running head */
+  content: '';
+  position: absolute;
+  left: clamp(1.1em, 4%, 2.1em);
+  right: clamp(1.1em, 4%, 2.1em);
+  top: calc(clamp(0.9em, 2.6%, 1.5em) + 1.5em);
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--border-interactive-on-page) 18%,
+    var(--border-interactive-on-page) 82%,
+    transparent
+  );
+  opacity: 0.55;
+}
+
+.pg-body-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: clamp(1.4em, 4%, 2.2em) clamp(1.1em, 4%, 2.1em) 0.5em;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(120 100 70 / 0.3) transparent;
+}
+
+/* The measure. A page of a book is 60–70 characters; past that the eye loses
+   the return sweep, under it the page looks like a form. */
+.pg-body,
+.pg-list,
+.pg-hero,
+.pg-subtitle,
+.pg-entries,
+.pg-grid,
+.pg-h,
+.pg-sh {
+  max-width: var(--measure, 72ch);
+  margin-inline: auto;
+}
+
+/* --------------------------------------------------------------- headings */
+
+.pg-hero {
+  font-size: 2.15em;
+  line-height: 1.04;
+  font-weight: 500;
+  letter-spacing: -0.012em;
+  color: var(--text-on-page-primary);
+  text-wrap: balance;
+}
+
+.pg-subtitle {
+  margin-top: 0.35em;
+  font-family: var(--font-ui);
+  font-size: 0.66em;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-on-page-secondary);
+}
+
+.pg-h {
+  margin-top: 0;
+  font-size: 1.28em;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  color: var(--text-on-page-primary);
+}
+
+/* A printer's section rule: full width in the middle, tapering out. */
+.pg-rule {
+  height: 1px;
+  margin: 0.5em 0 0.85em;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--border-interactive-on-page) 15%,
+    var(--border-interactive-on-page) 85%,
+    transparent
+  );
+  opacity: 0.7;
+}
+
+.pg-sh {
+  margin: 1.5em 0 0.35em;
+  font-family: var(--font-ui);
+  font-size: 0.66em;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-on-page-secondary);
+}
+
+/* ------------------------------------------------------------------- body */
+
+.pg-body {
+  margin-top: 0;
+  margin-bottom: 0.85em;
+  hanging-punctuation: first;
+}
+
+.pg-list {
+  margin: 0.4em 0 0.9em;
+  padding-left: 1.3em;
+}
+.pg-list li {
+  margin-bottom: 0.3em;
+}
+
+/* The drop cap: three lines, in the red ink a printer would use for it,
+   with the following letters set in small caps the way a book actually does
+   it rather than leaving a gap. */
+.pg-dropcap {
+  margin-top: 0.2em;
+}
+.pg-cap {
+  float: left;
+  margin: 0.06em 0.12em -0.02em 0;
+  font-size: 3.1em;
+  line-height: 0.82;
+  font-weight: 500;
+  color: var(--text-on-page-accent);
+}
+
+/* --------------------------------------------------------- reference data */
+
+.pg-entries {
+  margin: 0.3em 0 1em;
+}
+.pg-entry {
+  display: grid;
+  grid-template-columns: minmax(6.5em, 0.9fr) 2.1fr;
+  gap: 0 1.1em;
+  padding: 0.42em 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--border-interactive-on-page) 34%, transparent);
+}
+.pg-entry:last-child {
+  border-bottom: 0;
+}
+.pg-entry dt {
+  font-family: var(--font-ui);
+  font-size: 0.7em;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-on-page-secondary);
+  padding-top: 0.22em;
+}
+.pg-entry dd {
+  margin: 0;
+}
+
+.pg-grid {
+  margin: 0.3em 0 1em;
+}
+.pg-grid > div {
+  padding: 0.5em 0 0.6em;
+  border-bottom: 1px solid color-mix(in srgb, var(--border-interactive-on-page) 26%, transparent);
+}
+.pg-grid > div:last-child {
+  border-bottom: 0;
+}
+.pg-grid dt {
+  font-size: 1.02em;
+  font-weight: 600;
+  color: var(--text-on-page-accent);
+}
+.pg-grid dd {
+  margin: 0.12em 0 0;
+  color: var(--text-on-page-secondary);
+}
+
+/* -------------------------------------------------------------- ornaments */
+
+/* A printer's ornament: two rules and a lozenge. Three elements in a row is a
+   divider; this is a stop. */
+.pg-ornament {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  margin: 1.15em auto;
+  max-width: 14em;
+}
+.pg-ornament__line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-interactive-on-page));
+  opacity: 0.8;
+}
+.pg-ornament__line:last-child {
+  background: linear-gradient(270deg, transparent, var(--border-interactive-on-page));
+}
+.pg-ornament__mark {
+  width: 0.4em;
+  height: 0.4em;
+  rotate: 45deg;
+  flex-shrink: 0;
+}
+
+.pg-archive-head {
+  margin: 0 0 1em;
+  font-family: var(--font-ui);
+  font-size: 0.62em;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-on-page-tertiary);
+}
+
+/* ------------------------------------------------------------------ folio */
+
+.pg-folio {
+  flex-shrink: 0;
+  padding: 0.3em clamp(1.1em, 4%, 2.1em) clamp(0.7em, 2%, 1.15em);
+  text-align: center;
+  font-family: var(--font-ui);
+  font-size: 0.62em;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-on-page-tertiary);
+}
+
+/* the fore-edge */
+.pg-edge {
+  position: absolute;
+  inset-block: 0;
+  width: 4px;
+  pointer-events: none;
+}
