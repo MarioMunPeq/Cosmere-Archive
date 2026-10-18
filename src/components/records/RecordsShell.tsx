@@ -68,7 +68,11 @@ export default function RecordsShell({ index, record, header, drawerLabel = 'Cha
           aria-label={drawerLabel}
           data-records-index
           className={[
-            'min-h-0 w-[232px] shrink-0 border-r border-[var(--border-subtle)] bg-[var(--surface-base)]',
+            'min-h-0 shrink-0 border-r border-[var(--border-subtle)] bg-[var(--surface-base)]',
+            // §5.4.1's widths. The 232px-only version truncated names in the
+            // index at 1440px — "Adolin Kh…", "Blushweav…" — because the column
+            // was a third narrower than the table budgets for.
+            'w-[232px] min-[1024px]:w-[264px] min-[1440px]:w-[288px]',
             'max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-30 max-md:w-[288px] max-md:shadow-2xl',
             'max-md:transition-transform max-md:duration-[var(--dur-base)] max-md:ease-[var(--ease-standard)]',
             drawerOpen ? 'max-md:translate-x-0' : 'max-md:-translate-x-full',

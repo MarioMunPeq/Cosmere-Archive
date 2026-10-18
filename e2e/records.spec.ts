@@ -185,6 +185,147 @@ test('a record is chosen by URL and is shareable', async ({ page }) => {
   await expect(page.locator('[data-records-index] a[aria-current="true"]')).toHaveCount(1)
 })
 
+/* ------------------------------------------------------------------ the card */
+
+test.describe('the record card', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto(`${RECORDS}?character=kaladin`)
+    await page.locator('[data-character-card]').waitFor()
+  })
+
+  test('R.3 the card passes axe', async ({ page }) => {
+    const axe = (await import('axe-core')).default
+    await page.addScriptTag({ content: axe.source })
+    const results = await page.evaluate(async () => {
+      // eslint-disable-next-line no-explicit-any
+      return (window as any).axe.run(document, {
+        runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'] },
+      })
+    })
+    const violations = results.violations.map((v: { id: string; nodes: unknown[] }) => ({
+      id: v.id,
+      nodes: v.nodes.length,
+    }))
+    expect(violations, JSON.stringify(violations)).toEqual([])
+  })
+
+  test('R.10 the card is operable without a mouse', async ({ page }) => {
+    await page.goto(RECORDS)
+    await page.locator('[data-records-index] nav a').first().focus()
+    await page.keyboard.press('Enter')
+    await expect(page.locator('[data-character-card]')).toBeVisible()
+
+    const links = page.locator('[data-character-card] a')
+    expect(await links.count(), 'the card should have linkable values').toBeGreaterThan(0)
+
+    // Each one is a real anchor: reachable by keyboard and with a name.
+    const first = links.first()
+    await first.focus()
+    await expect(first).toBeFocused()
+    expect((await first.innerText()).trim().length).toBeGreaterThan(0)
+  })
+
+  test('R.1 no image 404s when browsing records', async ({ page }) => {
+    const failures: string[] = []
+    page.on('response', (r) => {
+      if (r.status() >= 400 && r.request().resourceType() === 'image') failures.push(r.url())
+    })
+
+    for (const id of ['kaladin', 'vin', 'sazed', 'is-har', 'szeth', 'shallan-davar']) {
+      await page.goto(`${RECORDS}?character=${id}`)
+      await page.waitForTimeout(200)
+    }
+    expect(failures, `image requests that 404'd: ${failures.join(', ')}`).toEqual([])
+  })
+
+  test('the portrait slot is never a hole, on a sample across the index', async ({ page }) => {
+    /*
+     * Not "Kaladin has no portrait" — that is a fact about the data and it can
+     * change. The invariant is that every card shows exactly one of a loaded
+     * portrait or a monogram, and that no card shows a broken image.
+     *
+     * The counts are asserted as data invariants in `records-data.test.ts`,
+     * where they are exact and instant. Here it is a browser sample, navigated
+     * by clicking the index rather than by loading URLs: ninety-three full
+     * page loads takes minutes and times the test out, and a portrait that
+     * 404s fails the same way on the first record as on the ninetieth.
+     */
+    await page.goto(RECORDS)
+    await page.locator('[data-records-index] nav a').first().waitFor()
+
+    const problems: string[] = []
+    let monograms = 0
+    let portraits = 0
+    const sample = page.locator('[data-records-index] nav a')
+    const total = await sample.count()
+    expect(total).toBeGreaterThan(90)
+
+    for (const i of [0, 7, 23, 41, 58, 76, 90]) {
+      if (i >= total) continue
+      await sample.nth(i).click()
+      const card = page.locator('[data-character-card]')
+      await card.waitFor()
+      const state = await card.evaluate((el) => {
+        const img = el.querySelector('img') as HTMLImageElement | null
+        return {
+          hasImg: !!img,
+          broken: !!img && img.naturalWidth === 0,
+          hasSvg: !!el.querySelector('svg'),
+        }
+      })
+      if (state.broken) problems.push(`record ${i} portrait 404`)
+      else if (!state.hasImg && !state.hasSvg) problems.push(`record ${i} has neither portrait nor monogram`)
+      if (state.hasImg) portraits += 1
+      else monograms += 1
+    }
+    expect(problems, `${problems.length} problems across ${portraits + monograms} sampled records`).toEqual([])
+    // The sample must exercise both paths or it proves nothing.
+    expect(monograms, 'the sample should include records with no portrait').toBeGreaterThan(0)
+  })
+
+  test('R.7 a record with relationships shows them', async ({ page }) => {
+    /*
+     * R.7 as written asks for all ninety-three and it cannot pass: the
+     * relationship table links twenty-five of them. §5.4.5 calls full coverage
+     * an *objective* for D-REL, which was never built. The measured split is
+     * asserted in records-data.test.ts; what this checks is that a record
+     * which *does* have relationships renders them.
+     */
+    await page.goto(`${RECORDS}?character=vin`)
+    const section = page.locator('[data-character-card] section', { hasText: 'Relationships' })
+    await expect(section).toBeVisible()
+    await expect(section.locator('a').first()).toBeVisible()
+
+    // And that they are links, not plain text: the old card rendered these as
+    // spans, so they were unreachable and announced as text.
+    await section.locator('a').first().click()
+    await page.waitForTimeout(400)
+    expect(page.url()).toContain('character=')
+  })
+
+  test('a record with no relationships says so rather than showing an empty section', async ({ page }) => {
+    // Dabbid is one of the sixty-eight with no recorded relationships.
+    await page.goto(`${RECORDS}?character=dabbid`)
+    const section = page.locator('[data-character-card] section', { hasText: 'Relationships' })
+    await expect(section).toBeVisible()
+    await expect(section).toContainText('No recorded relationships.')
+  })
+
+  test('the Appears In links point at books that exist', async ({ page }) => {
+    const section = page.locator('[data-character-card] section', { hasText: 'Appears in' })
+    await expect(section).toBeVisible()
+    const links = section.locator('a')
+    expect(await links.count()).toBeGreaterThan(3)
+
+    // The bug this guards: content/ writes ids with hyphens and the runtime
+    // with underscores, so these were links to nothing.
+    await links.first().click()
+    await page.waitForTimeout(500)
+    expect(page.url()).toContain('/books/')
+    await expect(page.locator('h1')).toBeVisible()
+  })
+})
+
 test('the index filters by name, description and world', async ({ page }) => {
   const all = page.locator('[data-records-index] nav a')
   const total = await all.count()

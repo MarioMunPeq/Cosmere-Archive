@@ -36,14 +36,13 @@ import { useSearchParams } from 'react-router-dom'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
 import RecordsShell from '@/components/records/RecordsShell'
 import CharacterIndex from '@/components/records/CharacterIndex'
+import CharacterCard from '@/components/records/CharacterCard'
 import EmptyState from '@/components/primitives/EmptyState'
 import { useViewTransitionNavigate } from '@/hooks/useViewTransition'
 import { ALL_CHARACTERS } from '@/data/static'
-import { MAGIC_SYSTEMS } from '@/data/static/magic-systems'
 import { CHARACTER_RELATIONSHIPS } from '@/data/static/static-data'
 import { FAMILY_TREES } from '@/data/static/family-data'
 import BiographicalContents from '@/components/biographical-archives/BiographicalContents'
-import CharacterRecord from '@/components/biographical-archives/CharacterRecord'
 import { GenealogyManuscript } from '@/components/genealogy-archive'
 import ConnectionDiagram from '@/components/biographical-archives/ConnectionDiagram'
 import type { Character } from '@/types/character'
@@ -64,6 +63,34 @@ function connectedCharacters(): { id: string; name: string; count: number }[] {
 }
 
 const CONNECTIONS = connectedCharacters()
+
+/**
+ * Relationships for one record, as the card's rows.
+ *
+ * The relationship table stores each link once as a pair of ids plus a type.
+ * A card needs the other end's *name* and the type rendered as prose, so this
+ * is the join, and it is done here rather than in the card so the card stays a
+ * pure presentation component.
+ *
+ * A name the archive does not have is dropped rather than shown as a raw id:
+ * an entry that says "telsin-ladrian" where a reader expects "Telsin Ladrian"
+ * is worse than no entry.
+ */
+function relationshipsFor(id: string): { otherId: string; otherName: string; kind: string }[] {
+  const rows: { otherId: string; otherName: string; kind: string }[] = []
+  for (const rel of CHARACTER_RELATIONSHIPS) {
+    if (!rel.characters.includes(id)) continue
+    for (const otherId of rel.characters) {
+      if (otherId === id) continue
+      const other = CHAR_MAP.get(otherId)
+      if (!other) continue
+      // `label` is the display string the table already carries ("Mentor",
+      // "Husband"). `type` is the machine key. Prefer the former.
+      rows.push({ otherId, otherName: other.name, kind: rel.label ?? rel.type })
+    }
+  }
+  return rows
+}
 
 export default function BiographicalArchivesPage() {
   const [searchParams, setParams] = useSearchParams()
@@ -222,14 +249,13 @@ export default function BiographicalArchivesPage() {
   /* ---- Records: the index and one record ---- */
 
   const record = selected ? (
-    <CharacterRecord
+    <CharacterCard
       key={selected.id}
       character={selected}
-      magicSystems={MAGIC_SYSTEMS}
-      onNavigatePlanet={(planetId) => navigate(`/celestial-charts?focus=planet&id=${planetId}`)}
-      onNavigateMagic={(systemId) => navigate(`/magic?system=${systemId}`)}
-      onNavigateBook={(bookId) => navigate(`/books/${bookId}`)}
-      onNavigateChapter={(c) => setChapter(c)}
+      relationships={relationshipsFor(selected.id)}
+      onOpenCharacter={openCharacter}
+      onOpenBook={(id) => navigate(`/books/${id}`)}
+      onOpenPlanet={(id) => navigate(`/celestial-charts?focus=planet&id=${id}`)}
     />
   ) : (
     <div className="rounded-[var(--radius-lg)] border border-[var(--border-subtle)] bg-[var(--surface-base)] p-xl shadow-[var(--shadow-1)]">
