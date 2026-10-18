@@ -71,7 +71,7 @@ export default function About() {
       />
 
       <div className="min-h-0 flex-1 overflow-y-auto bg-[var(--surface-page)]">
-        <article className="mx-auto max-w-[var(--reading-max)] px-[var(--gutter-md)] py-[var(--space-2xl)] text-[var(--text-on-page-primary)] max-md:px-[var(--gutter)]">
+        <article className="mx-auto max-w-[var(--reading-max)] px-[var(--gutter-md)] py-[var(--spacing-2xl)] text-[var(--text-on-page-primary)] max-md:px-[var(--gutter)]">
           {/* Opening */}
           <div className="max-w-[var(--measure)] space-y-md text-[var(--text-on-page-secondary)]">
             <p className="text-lead leading-[var(--lh-body)]">
@@ -90,11 +90,11 @@ export default function About() {
           </div>
 
           {/* Facts */}
-          <section className="mt-[var(--space-2xl)]">
+          <section className="mt-[var(--spacing-2xl)]">
             <h2 className="text-nano tracking-[var(--ls-caps-wide)] text-[var(--text-on-page-tertiary)] uppercase">
               At a glance
             </h2>
-            <dl className="mt-md grid grid-cols-1 gap-x-[var(--space-xl)] gap-y-[var(--space-sm)] sm:grid-cols-2">
+            <dl className="mt-md grid grid-cols-1 gap-x-[var(--spacing-xl)] gap-y-[var(--spacing-sm)] sm:grid-cols-2">
               {FACTS.map(([term, value]) => (
                 <div
                   key={term}
@@ -110,7 +110,7 @@ export default function About() {
           </section>
 
           {/* Sources */}
-          <section className="mt-[var(--space-2xl)]">
+          <section className="mt-[var(--spacing-2xl)]">
             <h2 className="text-nano tracking-[var(--ls-caps-wide)] text-[var(--text-on-page-tertiary)] uppercase">
               Sources
             </h2>
@@ -132,7 +132,7 @@ export default function About() {
           </section>
 
           {/* Rights */}
-          <section className="mt-[var(--space-2xl)]">
+          <section className="mt-[var(--spacing-2xl)]">
             <h2 className="text-nano tracking-[var(--ls-caps-wide)] text-[var(--text-on-page-tertiary)] uppercase">
               Rights
             </h2>
@@ -143,7 +143,7 @@ export default function About() {
           </section>
 
           {/* Thanks */}
-          <section className="mt-[var(--space-2xl)]">
+          <section className="mt-[var(--spacing-2xl)]">
             <h2 className="text-nano tracking-[var(--ls-caps-wide)] text-[var(--text-on-page-tertiary)] uppercase">
               Thanks
             </h2>
@@ -154,7 +154,7 @@ export default function About() {
           </section>
 
           {/* Contact */}
-          <section className="mt-[var(--space-2xl)]">
+          <section className="mt-[var(--spacing-2xl)]">
             <h2 className="text-nano tracking-[var(--ls-caps-wide)] text-[var(--text-on-page-tertiary)] uppercase">
               Contact
             </h2>

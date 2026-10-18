@@ -30,10 +30,10 @@ export default function NotFound() {
         description="No entry under that designation. It may have been filed elsewhere, or never recorded. Search reaches every record in the archive."
       />
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-[var(--gutter-md)] py-[var(--space-2xl)] max-md:px-[var(--gutter)]">
-        <div className="mx-auto flex max-w-[var(--page-max)] flex-col gap-[var(--space-2xl)]">
+      <div className="min-h-0 flex-1 overflow-y-auto px-[var(--gutter-md)] py-[var(--spacing-2xl)] max-md:px-[var(--gutter)]">
+        <div className="mx-auto flex max-w-[var(--page-max)] flex-col gap-[var(--spacing-2xl)]">
           {/* The way out, before the list of everything else. */}
-          <div className="flex flex-wrap items-center gap-[var(--space-sm)]">
+          <div className="flex flex-wrap items-center gap-[var(--spacing-sm)]">
             <Link to="/">
               <Button variant="primary">Back to the archive</Button>
             </Link>
@@ -57,7 +57,7 @@ export default function NotFound() {
             <h2 className="mb-md text-nano tracking-[var(--ls-caps-wide)] text-[var(--text-tertiary)] uppercase">
               Core sections
             </h2>
-            <ul className="grid grid-cols-1 gap-[var(--space-sm)] sm:grid-cols-2 lg:grid-cols-4">
+            <ul className="grid grid-cols-1 gap-[var(--spacing-sm)] sm:grid-cols-2 lg:grid-cols-4">
               {CORE_DESTINATIONS.map((dest) => (
                 <li key={dest.id}>
                   <Link
@@ -76,7 +76,7 @@ export default function NotFound() {
             <h2 className="mb-md text-nano tracking-[var(--ls-caps-wide)] text-[var(--text-tertiary)] uppercase">
               Archived sections
             </h2>
-            <ul className="flex flex-wrap gap-[var(--space-xs)]">
+            <ul className="flex flex-wrap gap-[var(--spacing-xs)]">
               {HISTORICAL_DESTINATIONS.map((dest) => (
                 <li key={dest.id}>
                   <Link

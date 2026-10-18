@@ -162,7 +162,7 @@ export default function SearchDialog({ open, onClose }: Props) {
         'backdrop:bg-[color-mix(in_srgb,var(--surface-void)_78%,transparent)] backdrop:backdrop-blur-[3px]',
       ].join(' ')}
     >
-      <div className="flex items-center gap-[var(--space-sm)] border-b border-[var(--border-subtle)] px-[var(--space-md)]">
+      <div className="flex items-center gap-[var(--spacing-sm)] border-b border-[var(--border-subtle)] px-[var(--spacing-md)]">
         <span aria-hidden className="shrink-0 text-[var(--text-tertiary)]">
           <DestinationIcon name="search" size={20} />
         </span>
@@ -215,7 +215,7 @@ export default function SearchDialog({ open, onClose }: Props) {
             <li key={group.type} role="presentation">
               <p
                 role="presentation"
-                className="px-[var(--space-md)] pt-2 pb-1 text-nano tracking-[var(--ls-caps-wide)] text-[var(--text-tertiary)] uppercase"
+                className="px-[var(--spacing-md)] pt-2 pb-1 text-nano tracking-[var(--ls-caps-wide)] text-[var(--text-tertiary)] uppercase"
               >
                 {group.label}
               </p>
@@ -239,7 +239,7 @@ export default function SearchDialog({ open, onClose }: Props) {
                         // would re-render the list continuously.
                         onMouseEnter={() => highlight(index)}
                         className={[
-                          'flex cursor-pointer items-center gap-3 px-[var(--space-md)] py-2.5',
+                          'flex cursor-pointer items-center gap-3 px-[var(--spacing-md)] py-2.5',
                           'text-[var(--text-body)]',
                           selected
                             ? 'bg-[var(--surface-base)] text-[var(--text-primary)]'
@@ -276,7 +276,7 @@ export default function SearchDialog({ open, onClose }: Props) {
               description="Try a character, a world, a volume or an era."
             />
           ) : (
-            <p className="px-[var(--space-md)] py-[var(--space-lg)] text-meta text-[var(--text-tertiary)]">
+            <p className="px-[var(--spacing-md)] py-[var(--spacing-lg)] text-meta text-[var(--text-tertiary)]">
               Search {CATEGORY_LABEL.character.toLowerCase()}, worlds, volumes, magic and events. Press
               <kbd className="mx-1 rounded-[var(--radius-sm)] border border-[var(--border-subtle)] px-1.5 py-0.5 font-[var(--font-mono)] text-[11px]">
                 Esc

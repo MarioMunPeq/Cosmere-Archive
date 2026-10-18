@@ -69,7 +69,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     <ToastContext.Provider value={api}>
       {children}
       <div
-        className="pointer-events-none fixed bottom-[calc(var(--bottom-nav-h)+var(--space-md))] right-md z-[var(--z-toast)] flex w-[min(360px,calc(100vw-2rem))] flex-col gap-2xs md:bottom-md"
+        className="pointer-events-none fixed bottom-[calc(var(--bottom-nav-h)+var(--spacing-md))] right-md z-[var(--z-toast)] flex w-[min(360px,calc(100vw-2rem))] flex-col gap-2xs md:bottom-md"
         // Polite region for status, assertive only for errors, which are also
         // rendered with role="alert" below.
         aria-live="polite"

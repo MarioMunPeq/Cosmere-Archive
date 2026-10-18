@@ -77,7 +77,7 @@ export default function Layout() {
       <a
         href="#nav-bar"
         className={[
-          'sr-only focus:not-sr-only focus:fixed focus:left-md focus:top-[calc(var(--space-md)+48px)]',
+          'sr-only focus:not-sr-only focus:fixed focus:left-md focus:top-[calc(var(--spacing-md)+48px)]',
           'focus:z-[var(--z-skip-link)] focus:rounded-[var(--radius-md)]',
           'focus:bg-[var(--surface-raised)] focus:px-3 focus:py-2',
           'focus:text-ui focus:text-[var(--text-primary)]',
