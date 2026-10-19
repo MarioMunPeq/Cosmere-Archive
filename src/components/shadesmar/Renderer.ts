@@ -1,7 +1,7 @@
 import type { Soul } from './types'
 import type { SelectionState } from './types'
 import type { CameraController } from './Camera'
-import { FOG_PARTICLES, CLUSTERS, LABEL_FADE_ZOOM } from './types'
+import { FOG_PARTICLES } from './types'
 import { getSoulTexture } from './TextureCache'
 
 interface FogDot {
@@ -13,21 +13,51 @@ interface FogDot {
   opacity: number
 }
 
+/**
+ * The fog, and the only randomness left in the render path.
+ *
+ * §5.5.4 asks for `mulberry32(0x5A4E)` and regeneration on resize, and S.7
+ * asks for no `Math.random()` in the render loop. Both, for the same reason: the
+ * ocean looked different on every visit, so a screenshot in a commit message
+ * could not be reproduced and a rendering regression could not be told apart
+ * from the noise.
+ *
+ * Regenerating on resize is not only about size. A fog particle placed once for
+ * a 1440-wide window and then stretched across a 2560 one is denser on the left
+ * than the right — the layout does not know the window changed, because a
+ * module-level boolean told it not to look.
+ */
+const FOG_SEED = 0x5a4e
+
+function mulberry32(seed: number): () => number {
+  let a = seed >>> 0
+  return () => {
+    a = (a + 0x6d2b79f5) | 0
+    let t = Math.imul(a ^ (a >>> 15), 1 | a)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
+
 const fogDots: FogDot[] = []
-let fogInit = false
+let fogFor: { w: number; h: number } | null = null
 const screenPos = new Map<string, { x: number; y: number }>()
 
 function initFog(w: number, h: number): void {
-  if (fogInit) return
-  fogInit = true
+  // Regenerated whenever the viewport changes shape, so the fog is always
+  // distributed over the window that is actually being drawn.
+  if (fogFor && fogFor.w === w && fogFor.h === h) return
+  fogFor = { w, h }
+  fogDots.length = 0
+  const rand = mulberry32(FOG_SEED)
   for (let i = 0; i < FOG_PARTICLES; i++) {
     fogDots.push({
-      x: Math.random() * w,
-      y: Math.random() * h,
-      vx: (Math.random() - 0.5) * 0.06,
-      vy: (Math.random() - 0.5) * 0.06,
-      size: 0.5 + Math.random() * 1.5,
-      opacity: 0.012 + Math.random() * 0.02,
+      x: rand() * w,
+      y: rand() * h,
+      vx: (rand() - 0.5) * 0.06,
+      vy: (rand() - 0.5) * 0.06,
+      size: 0.5 + rand() * 1.5,
+      opacity: 0.012 + rand() * 0.02,
     })
   }
 }
@@ -154,120 +184,6 @@ export function drawSouls(
 
 export function getScreenPos(id: string): { x: number; y: number } | undefined {
   return screenPos.get(id)
-}
-
-export function drawHoverLabel(ctx: CanvasRenderingContext2D, soul: Soul | null, opacity: number): void {
-  if (!soul || !soul.name || opacity < 0.01) return
-  const p = screenPos.get(soul.id)
-  if (!p) return
-
-  ctx.globalAlpha = opacity * 0.85
-  ctx.font = '400 11px "Inter", "system-ui", sans-serif'
-  ctx.textAlign = 'center'
-  ctx.textBaseline = 'bottom'
-  ctx.fillStyle = 'rgba(200, 210, 225, 1)'
-  ctx.fillText(soul.name, p.x, p.y - soul.radius * soul.scale - 8)
-}
-
-export function drawClusterLabels(
-  ctx: CanvasRenderingContext2D,
-  camera: CameraController,
-  w: number,
-  h: number,
-  hoveredCluster: string | null,
-): void {
-  if (camera.zoom < LABEL_FADE_ZOOM * 0.5) return
-
-  const labelAlpha = Math.min(1, (camera.zoom - LABEL_FADE_ZOOM * 0.5) / (LABEL_FADE_ZOOM * 0.5))
-
-  for (const cluster of CLUSTERS) {
-    if (cluster.planetRadius === 0) continue
-    const sp = camera.worldToScreen(cluster.cx, cluster.cy, w, h)
-    if (sp.x < -50 || sp.x > w + 50 || sp.y < -50 || sp.y > h + 50) continue
-
-    const isHovered = hoveredCluster === cluster.id
-    const a = labelAlpha * (isHovered ? 1 : 0.6)
-    const glowA = isHovered ? 0.08 : 0
-    const glowR = cluster.radius * Math.min(w, h) * camera.zoom * 0.6
-
-    if (glowA > 0.001) {
-      const grad = ctx.createRadialGradient(sp.x, sp.y, 0, sp.x, sp.y, glowR)
-      grad.addColorStop(0, `rgba(${cluster.color}, ${glowA})`)
-      grad.addColorStop(1, `rgba(${cluster.color}, 0)`)
-      ctx.fillStyle = grad
-      ctx.beginPath()
-      ctx.arc(sp.x, sp.y, glowR, 0, Math.PI * 2)
-      ctx.fill()
-    }
-
-    const labelY = sp.y - cluster.planetRadius * Math.min(w, h) * camera.zoom - 6
-
-    ctx.globalAlpha = a
-    ctx.font = '400 13px "EB Garamond", "Georgia", serif'
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'bottom'
-    ctx.fillStyle = `rgba(220, 225, 235, ${a})`
-    ctx.shadowColor = `rgba(${cluster.color}, ${a * 0.3})`
-    ctx.shadowBlur = isHovered ? 8 : 4
-    ctx.fillText(cluster.name, sp.x, labelY)
-  }
-}
-
-export function drawSelectionInfo(ctx: CanvasRenderingContext2D, state: SelectionState, soul: Soul | null): void {
-  if (!soul) return
-  const p = screenPos.get(soul.id)
-  if (!p) return
-
-  const px = p.x
-  const py = p.y
-
-  for (const sp of state.particles) {
-    const sx = px + Math.cos(sp.angle) * sp.radius
-    const sy = py + Math.sin(sp.angle) * sp.radius
-    ctx.beginPath()
-    ctx.arc(sx, sy, sp.size, 0, Math.PI * 2)
-    ctx.fillStyle = `rgba(${soul.color}, ${sp.opacity * 0.35})`
-    ctx.fill()
-  }
-
-  if (state.phase === 'revealing' || state.phase === 'displaying') {
-    const titleAlpha = Math.max(0, Math.min(1, (state.progress - 0.15) * 3))
-    if (titleAlpha > 0) {
-      ctx.globalAlpha = titleAlpha
-
-      const topY = py - soul.radius * soul.scale - 16
-      ctx.font = '500 17px "EB Garamond", "Georgia", serif'
-      ctx.textAlign = 'center'
-      ctx.textBaseline = 'bottom'
-      ctx.fillStyle = `rgba(220, 225, 235, ${titleAlpha})`
-      ctx.fillText(soul.name ?? '', px, topY)
-
-      if (soul.description) {
-        ctx.font = '400 11px "Inter", "system-ui", sans-serif'
-        ctx.fillStyle = `rgba(180, 190, 205, ${titleAlpha * 0.75})`
-        const maxWidth = 260
-        const words = soul.description.split(' ')
-        const lines: string[] = []
-        let current = ''
-        for (const wd of words) {
-          const test = current ? current + ' ' + wd : wd
-          if (ctx.measureText(test).width > maxWidth) {
-            lines.push(current)
-            current = wd
-          } else {
-            current = test
-          }
-        }
-        if (current) lines.push(current)
-
-        const lineH = 15
-        const startY = py + soul.radius * soul.scale + 6
-        for (let i = 0; i < lines.length; i++) {
-          ctx.fillText(lines[i]!, px, startY + i * lineH)
-        }
-      }
-    }
-  }
 }
 
 export function drawConnectionLines(

@@ -22,13 +22,32 @@ export class SelectionSystem {
     this.state.particles = []
     this.state.connections = []
 
+    /*
+     * A seeded generator, not `Math.random`.
+     *
+     * The sixteen sparks are the same sixteen every time the same soul is
+     * selected: a selection that reshuffled its particles on each visit made the
+     * screenshot in the commit message unreproducible, and it is the same
+     * reason criterion S.7 exists. Seeded from the soul's own id, so two
+     * different souls do not get the same burst.
+     */
+    let seed = 0
+    for (let i = 0; i < soul.id.length; i++) {
+      seed = (seed << 5) - seed + soul.id.charCodeAt(i)
+      seed |= 0
+    }
+    const rand = () => {
+      seed = (seed * 0x9e3779b9) | 0
+      return ((seed >>> 8) & 0xffff) / 0xffff
+    }
+
     for (let i = 0; i < 16; i++) {
-      const angle = (i / 16) * Math.PI * 2 + (Math.random() - 0.5) * 0.3
+      const angle = (i / 16) * Math.PI * 2 + (rand() - 0.5) * 0.3
       this.state.particles.push({
         angle,
         radius: soul.radius * 2,
-        speed: 0.3 + Math.random() * 0.3,
-        size: 1.5 + Math.random() * 2.5,
+        speed: 0.3 + rand() * 0.3,
+        size: 1.5 + rand() * 2.5,
         opacity: 0,
       })
     }
@@ -47,11 +66,19 @@ export class SelectionSystem {
     }
   }
 
+  /**
+   * Close the inspector.
+   *
+   * From any phase, not just `displaying`. The selection takes 1.1s to reach
+   * it — 0.6s to grow, 0.5s to reveal — and the reader's Close button is live
+   * from the first frame they can see the panel. Only a click on the canvas
+   * waited for `displaying`, because there the click was being read as a second
+   * press rather than as a dismissal.
+   */
   deselect(): void {
-    if (this.state.phase === 'displaying') {
-      this.state.phase = 'hiding'
-      this.state.progress = 0
-    }
+    if (this.state.phase === 'idle' || this.state.phase === 'hiding') return
+    this.state.phase = 'hiding'
+    this.state.progress = 0
   }
 
   private getSoulMap(souls: Soul[]): Map<string, Soul> {

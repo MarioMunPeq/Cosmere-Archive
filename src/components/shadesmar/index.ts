@@ -6,14 +6,7 @@ export { InteractionModel } from './InteractionModel'
 export { SelectionSystem } from './SelectionSystem'
 export { PhysicsSystem } from './PhysicsSystem'
 export { getSoulTexture, clearTextureCache, prewarmTextures } from './TextureCache'
-export {
-  drawBackground,
-  drawSouls,
-  drawHoverLabel,
-  drawSelectionInfo,
-  drawConnectionLines,
-  drawClusterLabels,
-} from './Renderer'
+export { drawBackground, drawSouls, drawConnectionLines } from './Renderer'
 export { buildEntityCatalog } from './entity-catalog'
 export type { SoulDef } from './entity-catalog'
 export type {
@@ -47,3 +40,6 @@ export {
   FOCUS_FLY_DURATION,
   FOCUS_EXIT_DURATION,
 } from './types'
+export { default as ShadesmarOverlay } from './ShadesmarOverlay'
+export { default as ShadesmarHud } from './ShadesmarHud'
+export * from './store'

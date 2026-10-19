@@ -61,7 +61,12 @@ for (const { hash, name, heading } of ROUTES) {
  * fails the run the moment one of them is fixed, which is the prompt to move
  * the entry into the loop above.
  */
-const PAGES_WITHOUT_A_TITLE: string[] = ['/shadesmar', '/stats', '/aharietiam', '/mind-map']
+/*
+ * `/shadesmar` left this list in M5 block 3: §5.5.3 puts a real `<h1>` in the
+ * overlay header, so the page finally has a heading of its own. The other three
+ * still have none.
+ */
+const PAGES_WITHOUT_A_TITLE: string[] = ['/stats', '/aharietiam', '/mind-map']
 
 for (const { hash, name, heading } of ROUTES) {
   if (PAGES_WITHOUT_A_TITLE.includes(hash)) {

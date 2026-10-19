@@ -8,20 +8,18 @@ import { PhysicsSystem } from './PhysicsSystem'
 import { CameraController } from './Camera'
 import { createPointerTracker } from './Pointers'
 import ShadesmarHud from './ShadesmarHud'
-import {
-  drawBackground,
-  drawSouls,
-  drawHoverLabel,
-  drawSelectionInfo,
-  drawConnectionLines,
-  drawClusterLabels,
-} from './Renderer'
+import ShadesmarOverlay from './ShadesmarOverlay'
+import { drawBackground, drawSouls, drawConnectionLines, getScreenPos } from './Renderer'
+import { shadesmarStore, describeSoul, registerRealms } from './store'
+import type { SoulInfo } from './store'
 import { CLUSTERS, CLUSTER_RADIUS, PINCH_ZOOM_MIN_STEP, WHEEL_ZOOM_IN, WHEEL_ZOOM_OUT } from './types'
 import type { Soul } from './types'
 import ALL_CHARACTERS from '@/data/generated/characters.json'
 
 /** Souls that have a `/characters` record to open. */
 const HAS_RECORD = new Set(ALL_CHARACTERS.map((c) => c.id))
+
+const hasRecord = (id: string) => HAS_RECORD.has(id)
 
 export function Canvas() {
   const navigate = useNavigate()
@@ -62,11 +60,19 @@ export function Canvas() {
    */
   const hudZoomRef = useRef<(factor: number) => void>(() => {})
 
-  const clusterHoverRef = useRef<string | null>(null)
+  /**
+   * Every soul as the DOM describes it, built once.
+   *
+   * The soul list (S.3) needs all 95 with their names, realms and descriptions.
+   * Building it from the same `Soul` objects the canvas draws means the list and
+   * the ocean can never disagree about who exists.
+   */
+  const [soulList, setSoulList] = useState<SoulInfo[]>([])
 
   function setFocusMode(clusterId: string | null) {
     const model = modelRef.current
     const camera = cameraRef.current
+    shadesmarStore.setFocusedRealm(clusterId)
     if (clusterId) {
       model.enterFocus(clusterId)
       const { w, h } = sizeRef.current
@@ -89,6 +95,8 @@ export function Canvas() {
     soulsRef.current = generateSoulField()
     gridRef.current.rebuild(soulsRef.current)
     cameraRef.current.resetToOverview()
+    registerRealms(CLUSTERS)
+    setSoulList(soulsRef.current.filter((s) => s.name).map((s) => describeSoul(s, hasRecord)))
 
     let running = true
 
@@ -136,6 +144,14 @@ export function Canvas() {
       screenToWorld: (sx: number, sy: number) => {
         const { w, h } = sizeRef.current
         return cameraRef.current.screenToWorld(sx, sy, w, h)
+      },
+      /* Where the selected bead is, canvas-relative. S.6 measures the gap from
+       * this and not from the click: the click lands near a bead, not on the
+       * one that was selected, and the difference is larger than the 28px being
+       * checked. */
+      selectedScreen: () => {
+        const id = selectionRef.current.state.soulId
+        return id ? (getScreenPos(id) ?? null) : null
       },
       /* Which realm a screen point falls in, for S.5's tap-to-focus. */
       realmAt: (sx: number, sy: number) => {
@@ -214,8 +230,6 @@ export function Canvas() {
 
       selection.tick(dt, souls)
 
-      clusterHoverRef.current = model.hoveredCluster
-
       camera.tick(dt, w, h)
 
       // Render
@@ -225,21 +239,29 @@ export function Canvas() {
 
       drawBackground(ctx, w, h, selection.state.bgDim, time)
       drawSouls(ctx, souls, camera, w, h, time, dt, selection.state.soulId, model.hoveredId, 0)
-      drawClusterLabels(ctx, camera, w, h, clusterHoverRef.current)
       drawConnectionLines(ctx, selection.state, souls, time)
 
-      const selectedSoul = selection.getSelectedSoul(souls)
-      if (
-        selection.state.phase === 'displaying' ||
-        selection.state.phase === 'revealing' ||
-        selection.state.phase === 'growing'
-      ) {
-        drawSelectionInfo(ctx, selection.state, selectedSoul)
-      }
-
-      if (!selectedSoul || selection.state.phase === 'idle') {
-        drawHoverLabel(ctx, model.hoveredSoul, model.hoverLabelOpacity)
-      }
+      /*
+       * Publish to the DOM.
+       *
+       * This is the seam §5.5.3 draws: the canvas has finished drawing its
+       * light, `getScreenPos` now knows where every visible soul landed this
+       * frame, and the words about them belong in the document.
+       *
+       * Both updates are cheap and mostly no-ops. `setHovered` compares ids, and
+       * `setSelected` only notifies when the selection changes rather than when
+       * the bead drifts — a selection that re-rendered at 60Hz would remount its
+       * own "View record" link sixty times a second.
+       */
+      const liveSelection = selection.state.soulId ? selection.getSelectedSoul(souls) : null
+      shadesmarStore.setHovered(
+        model.hoveredSoul && model.hoverLabelOpacity > 0.05 ? describeSoul(model.hoveredSoul, hasRecord) : null,
+      )
+      shadesmarStore.setSelected(
+        liveSelection && liveSelection.name
+          ? { ...describeSoul(liveSelection, hasRecord), ...(getScreenPos(liveSelection.id) ?? { x: 0, y: 0 }) }
+          : null,
+      )
 
       ctx.restore()
 
@@ -253,6 +275,10 @@ export function Canvas() {
       window.removeEventListener('keydown', onKeyDown)
       cancelAnimationFrame(rAFRef.current)
       delete (window as unknown as { __shadesmar?: unknown }).__shadesmar
+      // The store is a module singleton. Leaving the route without clearing it
+      // would leave the next visit showing the last soul you looked at, with
+      // screen coordinates from a window that no longer exists.
+      shadesmarStore.reset()
     }
   }, [])
 
@@ -267,23 +293,33 @@ export function Canvas() {
 
     const worldMouse = camera.screenToWorld(mx, my, w, h)
 
-    // A realm's name is the target §5.5.2 asks for, but the hit box is the
-    // constellation rather than the drawn label: the label is a rectangle of
-    // pixels that changes size with zoom, and a reader aims at the cluster of
-    // lights, not at the word above it. Tapping inside a realm's radius focuses
-    // it, on mouse and on touch alike.
-    //
-    // `realmAtWorld`, not `realmAt`: `worldMouse` is already in world units, and
-    // the screen-space wrapper would take it as pixels and look somewhere else
-    // entirely — which is why the probe answered "roshar" for the point while
-    // the handler focused nothing.
+    /*
+     * The order matters, and getting it wrong is invisible until you try it.
+     *
+     * A realm's name is the target §5.5.2 asks for, but the hit box is the
+     * constellation rather than the drawn label: the label is a rectangle of
+     * pixels whose size changes with zoom, and a reader aims at the cluster of
+     * lights. `realmAtWorld`, not a screen-space wrapper — `worldMouse` is
+     * already in world units.
+     */
     const realm = realmAtWorld(worldMouse.x, worldMouse.y)
+    const clicked = findNearestSoul(grid, worldMouse.x, worldMouse.y)
+
+    // Already inside the realm you are in? Then this is not "leave the realm" —
+    // it is a click on one of its souls. The previous order exited focus here,
+    // so the second click inside a realm could never open its inspector.
     if (realm && model.focusPlanet !== realm.id) {
       setFocusMode(realm.id)
       return
     }
 
-    // Empty space while focused — leave, and restore the overview.
+    if (clicked) {
+      shadesmarStore.setSelected(null)
+      selection.select(clicked, souls)
+      return
+    }
+
+    // Nothing under the pointer: empty space. While focused, that means leave.
     if (focusActiveRef.current) {
       setFocusMode(null)
       return
@@ -291,12 +327,9 @@ export function Canvas() {
 
     if (selection.state.phase === 'displaying') {
       selection.deselect()
+      shadesmarStore.setSelected(null)
       return
     }
-    if (selection.state.phase !== 'idle') return
-
-    const clicked = findNearestSoul(grid, worldMouse.x, worldMouse.y)
-    if (clicked) selection.select(clicked, souls)
   }
 
   /**
@@ -444,10 +477,14 @@ export function Canvas() {
     modelRef.current.exitFocus()
     focusActiveRef.current = false
     setFocusedRealm(null)
+    shadesmarStore.setFocusedRealm(null)
     cameraRef.current.resetToOverview()
   }, [])
 
   const leaveFocus = useCallback(() => setFocusMode(null), [])
+
+  /** The legend's `flyToFit`, and its own way back out. */
+  const focusRealm = useCallback((id: string | null) => setFocusMode(id), [])
 
   return (
     <>
@@ -468,6 +505,14 @@ export function Canvas() {
         onOverview={goToOverview}
         onBack={leaveFocus}
         focusedRealm={focusedRealm}
+      />
+      <ShadesmarOverlay
+        souls={soulList}
+        onFocusRealm={focusRealm}
+        onCloseInspector={() => {
+          selectionRef.current.deselect()
+          shadesmarStore.setSelected(null)
+        }}
       />
     </>
   )

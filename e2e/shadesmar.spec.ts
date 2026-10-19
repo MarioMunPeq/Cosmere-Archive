@@ -7,6 +7,8 @@
  * realm grid.
  */
 
+import { readFileSync, readdirSync } from 'node:fs'
+import { join } from 'node:path'
 import { expect, test, type Page } from '@playwright/test'
 
 const SHADESMAR = '/Cosmere-Archive/#/shadesmar'
@@ -263,6 +265,225 @@ test.describe('the HUD and the mobile navigation', () => {
     const hud = (await page.getByRole('navigation', { name: 'Shadesmar view controls' }).boundingBox())!
     // Sits 16px off the bottom edge, not 16px above where the nav used to be.
     expect(hud.y + hud.height).toBeCloseTo(1440 - 16, 0)
+  })
+})
+
+/* --------------------------------------------------- S.2 / S.7 source greps */
+
+/*
+ * These two are greps, not browser tests, and they live here because the
+ * criterion numbers are §5.5's. A test that measures a running page cannot tell
+ * you that a function exists and is never called; a grep can, and costs
+ * nothing to run.
+ */
+test.describe('S.2 and S.7 — the source', () => {
+  const dir = join(process.cwd(), 'src', 'components', 'shadesmar')
+  const files = readdirSync(dir).filter((f) => f.endsWith('.ts') || f.endsWith('.tsx'))
+
+  test('S.2 — zero fillText and strokeText', () => {
+    const offenders: string[] = []
+    for (const file of files) {
+      const src = readFileSync(join(dir, file), 'utf8')
+        .replace(/\/\*[\s\S]*?\*\//g, '')
+        .replace(/^\s*\/\/.*$/gm, '')
+      if (/\.fillText\b|\.strokeText\b/.test(src)) offenders.push(file)
+    }
+    // Text in a canvas is a picture of text: unselectable, unreachable by a
+    // screen reader, and fixed at whatever size the code asked for rather than
+    // the size the reader set. All of it is in the DOM now.
+    expect(offenders, 'canvas text calls in the shadesmar feature').toEqual([])
+  })
+
+  test('S.7 — zero Math.random in the render path', () => {
+    const offenders: string[] = []
+    for (const file of files) {
+      const src = readFileSync(join(dir, file), 'utf8')
+        .replace(/\/\*[\s\S]*?\*\//g, '')
+        .replace(/^\s*\/\/.*$/gm, '')
+      if (/Math\.random\s*\(/.test(src)) offenders.push(file)
+    }
+    expect(offenders, 'Math.random in the shadesmar feature').toEqual([])
+  })
+})
+
+/* ------------------------------------------------------- S.3 / S.6 / S.10 DOM */
+
+test.describe('S.3, S.6, S.10 — the DOM layer', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto(SHADESMAR)
+    await page.waitForFunction(() => Boolean((window as unknown as { __shadesmar?: unknown }).__shadesmar))
+    await page.waitForTimeout(200)
+  })
+
+  test('S.2 — the page carries real words, not a canvas', async ({ page }) => {
+    // The heading is the proof that something on this page is text. It was on
+    // the no-heading list until this block.
+    await expect(page.getByRole('heading', { level: 1, name: 'Shadesmar' })).toBeVisible()
+  })
+
+  test('the header counts what actually exists', async ({ page }) => {
+    const header = page.locator('[data-shadesmar-header]')
+    // Measured, not the plan's 103/12: 95 is the deduplicated soul count and 11
+    // is the number of worlds `planets.ts` defines.
+    await expect(header).toContainText('95 souls')
+    await expect(header).toContainText('11 realms')
+  })
+
+  test('S.3 — the soul list exposes every soul, grouped by realm', async ({ page }) => {
+    const details = page.locator('details').first()
+    await expect(details).not.toHaveAttribute('open', '')
+    await details.locator('summary').click()
+
+    const souls = await probe(page)
+    const entries = details.locator('li')
+    // Every soul is a row; the ones with a record are links and the ones
+    // without are not, and the total is the catalogue's.
+    expect(await entries.count()).toBe(souls.souls)
+
+    // Grouped: a heading per realm, and the realms are the grid's.
+    const headings = details.locator('h3')
+    expect(await headings.count()).toBeGreaterThanOrEqual(9)
+
+    // And every name in the list is text a reader can select.
+    await expect(details.locator('li').first()).not.toBeEmpty()
+  })
+
+  test('S.3 — a soul with no record is listed but is not a dead link', async ({ page }) => {
+    await page.locator('details').first().locator('summary').click()
+    const links = page.locator('details').first().locator('li a')
+    const rows = page.locator('details').first().locator('li')
+    const linked = await links.count()
+    const all = await rows.count()
+    expect(linked).toBeLessThan(all)
+
+    // Every link points at a record that exists.
+    const href = await links.first().getAttribute('href')
+    expect(href).toContain('/characters?character=')
+  })
+
+  test('S.10 — the eleven realms are keyboard-navigable', async ({ page }) => {
+    const legend = page.getByRole('navigation', { name: 'Perpendicularities' })
+    const realms = legend.getByRole('button')
+    expect(await realms.count()).toBe(11)
+
+    for (let i = 0; i < 11; i++) {
+      await realms.nth(i).focus()
+      await expect(realms.nth(i)).toBeFocused()
+    }
+
+    // Enter focuses the realm, and the legend marks which.
+    await realms.first().press('Enter')
+    await page.waitForTimeout(500)
+    await expect(realms.first()).toHaveAttribute('aria-current', 'true')
+    expect((await probe(page)).focused).toBe(true)
+
+    // Escape leaves it, and the mark goes with it.
+    await page.keyboard.press('Escape')
+    await page.waitForTimeout(400)
+    expect((await probe(page)).focused).toBe(false)
+  })
+
+  test('S.10 — every realm in the legend can be flown to', async ({ page }) => {
+    const legend = page.getByRole('navigation', { name: 'Perpendicularities' })
+    const realms = legend.getByRole('button')
+    const count = await realms.count()
+    for (let i = 0; i < count; i++) {
+      const name = await realms.nth(i).innerText()
+      await realms.nth(i).click()
+      await page.waitForTimeout(250)
+      expect((await probe(page)).focused, name).toBe(true)
+      await realms.nth(i).click()
+      await page.waitForTimeout(150)
+    }
+  })
+
+  test('S.6 — the inspector opens clear of the bead it describes', async ({ page }) => {
+    // Focus Roshar, then click its brightest centre.
+    await page.getByRole('navigation', { name: 'Perpendicularities' }).getByRole('button').first().click()
+    await page.waitForTimeout(1300)
+
+    const canvas = (await page.locator('canvas').first().boundingBox())!
+    await page.mouse.click(canvas.x + canvas.width / 2, canvas.y + canvas.height / 2)
+    await page.waitForTimeout(700)
+
+    const inspector = page.locator('[data-shadesmar-inspector]')
+    await expect(inspector).toBeVisible()
+
+    // The panel is text, so it has a width, and that width comes from the
+    // stylesheet rather than from the measurement — S.6's 28px is about the gap
+    // to the bead, and the bead is where the click landed.
+    const box = (await inspector.boundingBox())!
+    const bead = await page.evaluate(() => {
+      const s = (
+        window as unknown as {
+          __shadesmar: {
+            selectedScreen: () => { x: number; y: number } | null
+            viewport: () => { w: number; h: number }
+          }
+        }
+      ).__shadesmar
+      return s.selectedScreen()
+    })
+    expect(bead, 'the selected bead should be on screen').not.toBeNull()
+
+    // The probe reports canvas-relative pixels; the bounding box is page pixels.
+    const canvasBox = (await page.locator('canvas').first().boundingBox())!
+    const beadX = canvasBox.x + bead!.x
+    const gap = Math.min(Math.abs(box.x - beadX), Math.abs(box.x + box.width - beadX))
+    expect(gap, 'inspector should start 28px clear of the bead').toBeGreaterThanOrEqual(24)
+
+    // And it stays inside the viewport.
+    expect(box.x).toBeGreaterThanOrEqual(0)
+    expect(box.x + box.width).toBeLessThanOrEqual(1440)
+  })
+
+  test('the inspector links to the record, and only when there is one', async ({ page }) => {
+    await page.getByRole('navigation', { name: 'Perpendicularities' }).getByRole('button').first().click()
+    await page.waitForTimeout(1300)
+    const canvas = (await page.locator('canvas').first().boundingBox())!
+    await page.mouse.click(canvas.x + canvas.width / 2, canvas.y + canvas.height / 2)
+    await page.waitForTimeout(700)
+
+    const inspector = page.locator('[data-shadesmar-inspector]')
+    // Chanarach is a Herald and does have a record; a link is offered because
+    // there is somewhere to go.
+    const link = inspector.getByRole('link', { name: /View record/ })
+    if ((await link.count()) > 0) {
+      expect(await link.getAttribute('href')).toContain('/characters?character=')
+    } else {
+      // And when the soul has no record there is no link at all, rather than one
+      // that would land on a 404.
+      expect(await inspector.getByRole('link').count()).toBe(0)
+    }
+  })
+
+  test('the inspector closes', async ({ page }) => {
+    await page.getByRole('navigation', { name: 'Perpendicularities' }).getByRole('button').first().click()
+    await page.waitForTimeout(1300)
+    const canvas = (await page.locator('canvas').first().boundingBox())!
+    await page.mouse.click(canvas.x + canvas.width / 2, canvas.y + canvas.height / 2)
+    await page.waitForTimeout(700)
+
+    const inspector = page.locator('[data-shadesmar-inspector]')
+    await expect(inspector).toBeVisible()
+    await inspector.getByRole('button', { name: 'Close' }).click()
+    await page.waitForTimeout(600)
+    await expect(inspector).toHaveCount(0)
+  })
+
+  test('clicking a soul inside the realm you are already in selects it', async ({ page }) => {
+    // The regression this block fixed: a second click inside a focused realm
+    // used to read as "empty space" and leave the realm, so its inspector could
+    // never be opened.
+    await page.getByRole('navigation', { name: 'Perpendicularities' }).getByRole('button').first().click()
+    await page.waitForTimeout(1300)
+
+    const canvas = (await page.locator('canvas').first().boundingBox())!
+    await page.mouse.click(canvas.x + canvas.width / 2, canvas.y + canvas.height / 2)
+    await page.waitForTimeout(700)
+
+    expect((await probe(page)).focused).toBe(true)
+    await expect(page.locator('[data-shadesmar-inspector]')).toBeVisible()
   })
 })
 
