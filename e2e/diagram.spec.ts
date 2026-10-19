@@ -157,6 +157,69 @@ test.describe('D.8 — deterministic', () => {
   })
 })
 
+/**
+ * The wall is framed to the space it is actually in.
+ *
+ * This exists because the mural was `fixed inset-0` and measured
+ * `window.innerWidth` while sitting in a 1080px column beside a 360px panel. It
+ * was fitted to a viewport it did not have, and the screenshot showed a quarter
+ * of a page of wall followed by a wall of black.
+ */
+test.describe('the frame', () => {
+  test('the mural fills its column, leaving no void', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 })
+    await page.goto(DIAGRAM)
+    await page.locator('[data-diagram-panel]').waitFor()
+    await page.waitForTimeout(250)
+
+    const mural = (await page.locator('[data-taravangian] > main').boundingBox())!
+    const sheets = await page.locator('[data-diagram-sheet]').evaluateAll((els) =>
+      els.map((e) => {
+        const b = (e as HTMLElement).getBoundingClientRect()
+        return { x: b.x, y: b.y, r: b.right, b: b.bottom }
+      }),
+    )
+    const minX = Math.min(...sheets.map((s) => s.x))
+    const maxX = Math.max(...sheets.map((s) => s.r))
+    const minY = Math.min(...sheets.map((s) => s.y))
+    const maxY = Math.max(...sheets.map((s) => s.b))
+
+    // Every sheet inside the mural's box.
+    expect(minX).toBeGreaterThanOrEqual(mural.x - 1)
+    expect(maxX).toBeLessThanOrEqual(mural.x + mural.width + 1)
+    expect(minY).toBeGreaterThanOrEqual(mural.y - 1)
+    expect(maxY).toBeLessThanOrEqual(mural.y + mural.height + 1)
+
+    // And it uses the space: the wall is not squeezed into a corner with
+    // two-thirds of the column left empty.
+    //
+    // 0.85, not 0.95: the fit is computed over `CONTENT_BOUNDS`, which carries
+    // a deliberate 260-unit margin so no sheet sits against the edge of the
+    // view. Measured, that leaves the *sheets* at ~88% of the column. The
+    // remaining 12% is the margin, and a wall with no air around it looks like
+    // a contact sheet rather than a wall.
+    const usedWidth = (maxX - minX) / mural.width
+    const usedHeight = (maxY - minY) / mural.height
+    expect(Math.max(usedWidth, usedHeight)).toBeGreaterThan(0.85)
+    // And it is centred in the axis it is *not* limited by.
+    const slack = usedWidth > usedHeight ? 1 : 0
+    if (slack) {
+      expect(Math.abs(minX - mural.x) - (mural.x + mural.width - maxX)).toBeLessThan(40)
+    }
+  })
+
+  test('the mural is not fixed to the window', async ({ page }) => {
+    await page.goto(DIAGRAM)
+    const cls = await page
+      .locator('[data-taravangian] > main > div')
+      .first()
+      .evaluate((el) => getComputedStyle(el).position)
+    // `fixed` would take it out of the layout and pin it to the viewport, which
+    // is how it came to measure 1440px wide inside a 1080px column.
+    expect(cls).not.toBe('fixed')
+  })
+})
+
 test.describe('the old address still works', () => {
   test('/stats redirects to /taravangian', async ({ page }) => {
     await page.goto('/Cosmere-Archive/#/stats')

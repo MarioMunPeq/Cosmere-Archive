@@ -16,38 +16,40 @@ interface Props {
   maxScale?: number
 }
 
-const DOC_MIN_X = 300
-const DOC_MAX_X = 4100
-const DOC_CX = (DOC_MIN_X + DOC_MAX_X) / 2
-const DOC_CY = 2550
-
-function getViewport() {
+/**
+ * Measure the element that actually holds the wall.
+ *
+ * `window.innerWidth` was used, and that is the whole bug: the mural sits in a
+ * column beside a 360px reading panel, so it was being framed for the whole
+ * window while occupying 75% of it. The wall was fitted to a viewport it did
+ * not have, landed off-centre, and `clampView` then pushed it flush to the left
+ * edge — which is the black half of the screen in the screenshot.
+ */
+function measure(el: HTMLElement | null): { w: number; h: number } {
+  if (el) {
+    const r = el.getBoundingClientRect()
+    if (r.width > 0 && r.height > 0) return { w: r.width, h: r.height }
+  }
   return { w: window.innerWidth, h: window.innerHeight }
 }
 
 /**
- * The scale that frames the whole wall.
+ * Frame the whole wall inside a viewport of this size.
  *
- * `Math.min`, not `Math.max`, and over `CONTENT_BOUNDS`, not over the canvas.
+ * `Math.min` over `CONTENT_BOUNDS` — a *contain* fit, so every sheet is on
+ * screen at once. The previous cover fit (`Math.max` over the 5000x5000 canvas)
+ * cropped four of the nine sheets off the edge on arrival.
  *
- * The previous version was `Math.max(w / WALL_W, h / WALL_H) * 1.08` — a cover
- * fit against the 5000x5000 sheet. Cover means *some* of the content is cropped,
- * and here it meant the outermost notes were cropped: opening the Diagram put
- * four of the nine sheets off-screen, one of them permanently unclickable.
- *
- * The sheets hang between 400 and 3900 x 800 and 4400. Fitting that box, with
- * `Math.min`, means every sheet is on screen at once — which is the whole
- * claim of a wall used as an index. You arrive and you can see what there is.
+ * Centred on the **sheets' own bounds**, not on the canvas centre. The mount
+ * effect used to recentre on `DOC_CX`/`DOC_CY`, which is the middle of the
+ * drawing surface and roughly 300 units away from where the notes actually
+ * hang, so the fit and the centring disagreed with each other and the wall sat
+ * off to one side.
  */
-function getFitScale() {
-  const { w, h } = getViewport()
-  return Math.min(w / CONTENT_BOUNDS.w, h / CONTENT_BOUNDS.h) * 1.08
-}
-
-/** The top-left of the framed wall, so the fit centres the *sheets*. */
-function getFitOrigin(scale: number) {
-  const { w, h } = getViewport()
+function frame(w: number, h: number) {
+  const scale = Math.min(w / CONTENT_BOUNDS.w, h / CONTENT_BOUNDS.h)
   return {
+    scale,
     x: (w - CONTENT_BOUNDS.w * scale) / 2 - CONTENT_BOUNDS.x * scale,
     y: (h - CONTENT_BOUNDS.h * scale) / 2 - CONTENT_BOUNDS.y * scale,
   }
@@ -75,8 +77,9 @@ function lerp(a: number, b: number, t: number) {
 export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale = 0.18, maxScale = 5.0 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
-  const [fitScale] = useState(getFitScale)
-  const tr = useRef({ ...getFitOrigin(fitScale), scale: fitScale })
+
+  const viewport = useRef({ w: 0, h: 0 })
+  const tr = useRef({ x: 0, y: 0, scale: 1 })
   const isPanning = useRef(false)
   const start = useRef({ x: 0, y: 0 })
   const startTr = useRef({ x: 0, y: 0 })
@@ -84,11 +87,12 @@ export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale =
   const lastMove = useRef(0)
   const raf = useRef<number>(undefined)
   const [showOverview, setShowOverview] = useState(false)
-  const viewport = useRef(getViewport())
   const isAnimating = useRef(false)
   const prevFocusRef = useRef<FocusAnchor | null>(null)
+  /** True once the reader has moved or zoomed, so a resize stops refitting. */
+  const touched = useRef(false)
 
-  const initialView = useRef({ x: 0, y: 0, scale: fitScale })
+  const initialView = useRef({ x: 0, y: 0, scale: 1 })
 
   function apply() {
     const t = tr.current
@@ -103,30 +107,42 @@ export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale =
     return clampView(tx ?? x, ty ?? y, ts ?? scale, w, h)
   }, [])
 
-  useEffect(() => {
-    viewport.current = getViewport()
-    const clamped = getClamped(
-      viewport.current.w / 2 - DOC_CX * fitScale,
-      viewport.current.h / 2 - DOC_CY * fitScale,
-      fitScale,
-    )
-    tr.current = { x: clamped.x, y: clamped.y, scale: fitScale }
+  /** Measure, frame, and adopt — unless the reader has taken over. */
+  const refit = useCallback(() => {
+    const size = measure(containerRef.current)
+    viewport.current = size
+    if (touched.current) {
+      // Keep what they were looking at; only re-clamp to the new bounds.
+      const clamped = getClamped()
+      tr.current = { x: clamped.x, y: clamped.y, scale: tr.current.scale }
+      apply()
+      return
+    }
+    const f = frame(size.w, size.h)
+    tr.current = { x: f.x, y: f.y, scale: f.scale }
     initialView.current = { ...tr.current }
     apply()
-  }, [fitScale, getClamped])
+  }, [getClamped])
+
+  useEffect(() => {
+    refit()
+    const el = containerRef.current
+    if (!el || typeof ResizeObserver === 'undefined') return
+    // A ResizeObserver, not `window.resize`: the mural's box changes when the
+    // reading panel appears and when the viewport changes, and only the first of
+    // those fires a window resize.
+    const ro = new ResizeObserver(() => refit())
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [refit])
 
   useEffect(() => {
     function onResize() {
-      viewport.current = getViewport()
-      const t = tr.current
-      const clamped = getClamped(t.x, t.y, t.scale)
-      t.x = clamped.x
-      t.y = clamped.y
-      apply()
+      refit()
     }
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
-  }, [getClamped])
+  }, [refit])
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -315,7 +331,16 @@ export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale =
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 overflow-hidden"
+      /*
+       * `absolute inset-0`, not `fixed inset-0`.
+       *
+       * Fixed took the mural out of the page's layout entirely and pinned it to
+       * the window, so it kept measuring 1440x900 while the reading panel took
+       * 360px of that — the wall was framed for a viewport it did not have and
+       * the leftover rendered as black. Absolute keeps it inside `main`, which
+       * is what every measurement downstream expects.
+       */
+      className="absolute inset-0 overflow-hidden"
       style={{
         background: '#140e0a',
         cursor: 'grab',
