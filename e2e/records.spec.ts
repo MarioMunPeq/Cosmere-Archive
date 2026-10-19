@@ -169,7 +169,13 @@ test('R.6 no div-onclick anywhere in the records feature', async () => {
   const files = readdirSync(dir).filter((f) => f.endsWith('.tsx'))
   const offenders: string[] = []
   for (const file of files) {
+    // Comments are stripped first. The criterion is about code, and the
+    // component's own doc comment explains that it replaced a `<div onClick>`,
+    // which the regex was then matching — a test that fails on its own
+    // documentation is a test nobody will keep.
     const src = readFileSync(join(dir, file), 'utf8')
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/^\s*\/\/.*$/gm, '')
     if (/<div[^>]*\sonClick/i.test(src)) offenders.push(`${dir}/${file}`)
   }
   expect(offenders, 'divs with onClick in the records feature').toEqual([])
@@ -401,6 +407,144 @@ test.describe('the record card', () => {
     await page.waitForTimeout(500)
     expect(page.url()).toContain('/books/')
     await expect(page.locator('h1')).toBeVisible()
+  })
+})
+
+/* ------------------------------------------------- bloodlines & connections */
+
+test.describe('bloodlines', () => {
+  test('renders a family tree with keyboard-navigable nodes', async ({ page }) => {
+    await page.goto(`${RECORDS}?tab=bloodlines`)
+    await page.locator('[data-bloodlines]').waitFor()
+
+    // Nodes are focusable controls, not shapes with a click handler.
+    const nodes = page.locator('[data-bloodlines] g[role="button"]')
+    expect(await nodes.count()).toBeGreaterThan(5)
+
+    const first = nodes.first()
+    await first.focus()
+    await expect(first).toBeFocused()
+    await expect(first).toHaveAttribute('aria-label', /.+/)
+  })
+
+  test('arrow keys move along a generation', async ({ page }) => {
+    await page.goto(`${RECORDS}?tab=bloodlines`)
+    await page.locator('[data-bloodlines]').waitFor()
+
+    /*
+     * Start from a node that has a right-hand neighbour. The first generation
+     * of a family is often a single founder, and "nothing happens" is the
+     * correct behaviour for the arrow key there — so a test that always starts
+     * at node 0 tests nothing when the family begins with one person.
+     */
+    const start = await page.evaluate(() => {
+      const nodes = Array.from(document.querySelectorAll<HTMLElement>('[data-bloodlines] g[role="button"]'))
+      const byRow = new Map<number, HTMLElement[]>()
+      for (const n of nodes) {
+        const y = n.getAttribute('transform')!.match(/,\s*([\d.]+)\)/)?.[1]
+        const row = Number(y)
+        const list = byRow.get(row) ?? []
+        list.push(n)
+        byRow.set(row, list)
+      }
+      for (const [, row] of byRow) {
+        if (row.length > 1) return row[0]!.id
+      }
+      return null
+    })
+    expect(start, 'some generation should have more than one member').toBeTruthy()
+
+    await page.locator(`[id="${start}"]`).focus()
+    const before = await page.evaluate(() => document.activeElement?.id)
+
+    await page.keyboard.press('ArrowRight')
+    const after = await page.evaluate(() => document.activeElement?.id)
+    expect(after).not.toBe(before)
+
+    await page.keyboard.press('ArrowLeft')
+    expect(await page.evaluate(() => document.activeElement?.id)).toBe(before)
+  })
+
+  test('search highlights a lineage without moving the chart', async ({ page }) => {
+    await page.goto(`${RECORDS}?tab=bloodlines`)
+    await page.locator('[data-bloodlines]').waitFor()
+
+    // Search for a name that is actually in the chart on screen. Hardcoding
+    // "Navani" assumed a default family she belongs to, and the default is
+    // whatever FAMILY_TREES[0] happens to be.
+    const aMember = await page.locator('[data-bloodlines] g[role="button"]').first().getAttribute('aria-label')
+    const term = (aMember ?? '').split(',')[0]!.split(' ')[0]!
+    expect(term.length).toBeGreaterThan(2)
+
+    const geometryBefore = await page.locator('[data-bloodlines] g[role="button"]').first().getAttribute('transform')
+
+    await page.getByPlaceholder('Find a member').fill(term)
+    await page.waitForTimeout(250)
+
+    // Positions are unchanged: a chart that reflows under a query cannot be
+    // read while you search it.
+    const geometryAfter = await page.locator('[data-bloodlines] g[role="button"]').first().getAttribute('transform')
+    expect(geometryAfter).toBe(geometryBefore)
+
+    // And something is now dimmed. The opacity is an attribute on the <g>,
+    // not an inline style, so read the attribute.
+    const dimmed = await page.evaluate(
+      () =>
+        Array.from(document.querySelectorAll('[data-bloodlines] g[role="button"]')).filter(
+          (el) => Number(el.getAttribute('opacity') ?? '1') < 1,
+        ).length,
+    )
+    expect(dimmed).toBeGreaterThan(0)
+  })
+
+  test('every family in the index opens', async ({ page }) => {
+    await page.goto(`${RECORDS}?tab=bloodlines`)
+    await page.locator('[data-bloodlines]').waitFor()
+    const families = page.getByRole('navigation', { name: 'Families' }).getByRole('button')
+    const count = await families.count()
+    expect(count).toBeGreaterThan(3)
+
+    for (let i = 0; i < count; i++) {
+      await families.nth(i).click()
+      await expect(page.locator('[data-bloodlines]')).toBeVisible()
+      const label = await page.locator('[data-bloodlines]').getAttribute('data-bloodlines')
+      expect(label).toBeTruthy()
+    }
+  })
+})
+
+test.describe('connections', () => {
+  test('lists a character relationships as links, not a mural', async ({ page }) => {
+    await page.goto(`${RECORDS}?tab=connections&character=vin`)
+    await page.locator('[data-connections]').waitFor()
+
+    const links = page.locator('[data-connections] ul a')
+    expect(await links.count()).toBeGreaterThan(1)
+
+    // Every row is an anchor that points at another record.
+    const href = await links.first().getAttribute('href')
+    expect(href).toContain('character=')
+
+    await links.first().click()
+    await page.waitForTimeout(400)
+    expect(page.url()).toContain('tab=connections')
+    await expect(page.locator('[data-connections]')).toBeVisible()
+  })
+
+  test('a character with no recorded links says so', async ({ page }) => {
+    await page.goto(`${RECORDS}?tab=connections&character=dabbid`)
+    await page.locator('[data-connections]').waitFor()
+    await expect(page.locator('[data-connections]')).toContainText('No recorded relationships.')
+    await expect(page.locator('[data-connections] ul')).toHaveCount(0)
+  })
+
+  test('the connection index keeps the subject in the URL', async ({ page }) => {
+    await page.goto(`${RECORDS}?tab=connections`)
+    await page.locator('[data-connections], [data-records-main]').first().waitFor()
+    const entries = page.getByRole('navigation', { name: 'Characters by connections' }).getByRole('button')
+    await entries.first().click()
+    await expect(page).toHaveURL(/tab=connections/)
+    await expect(page).toHaveURL(/character=/)
   })
 })
 

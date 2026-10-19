@@ -31,12 +31,15 @@
  * rather than inside the book.
  */
 
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
 import RecordsShell from '@/components/records/RecordsShell'
 import CharacterIndex from '@/components/records/CharacterIndex'
 import CharacterCard from '@/components/records/CharacterCard'
+import BloodlinesView from '@/components/records/BloodlinesView'
+import ConnectionsView from '@/components/records/ConnectionsView'
+import { FamilyIndex, ConnectedIndex } from '@/components/records/RecordIndexes'
 import EmptyState from '@/components/primitives/EmptyState'
 import Button from '@/components/primitives/Button'
 import SpoilerControl from '@/components/records/SpoilerControl'
@@ -45,24 +48,33 @@ import { useViewTransitionNavigate } from '@/hooks/useViewTransition'
 import { ALL_CHARACTERS } from '@/data/static'
 import { CHARACTER_RELATIONSHIPS } from '@/data/static/static-data'
 import { FAMILY_TREES } from '@/data/static/family-data'
-import BiographicalContents from '@/components/biographical-archives/BiographicalContents'
-import { GenealogyManuscript } from '@/components/genealogy-archive'
-import ConnectionDiagram from '@/components/biographical-archives/ConnectionDiagram'
 import type { Character } from '@/types/character'
 
-type Chapter = 'contents' | 'records' | 'bloodlines' | 'connections'
+type Chapter = 'records' | 'bloodlines' | 'connections'
 
 const CHAR_MAP: Map<string, Character> = new Map(ALL_CHARACTERS.map((c) => [c.id, c]))
 
-/** Characters with at least one recorded relationship, most-connected first. */
+/**
+ * Characters with at least one recorded relationship, most-connected first.
+ *
+ * The count is of *distinct other people*, not of table rows. Vin appears in
+ * six rows and is connected to four people — Kelsier twice, as mentor and as
+ * spouse — so counting rows made the index say "6" next to a view that lists
+ * four links, which reads as a bug in one of them. The view dedupes, so the
+ * index has to as well.
+ */
 function connectedCharacters(): { id: string; name: string; count: number }[] {
-  const tally = new Map<string, number>()
+  const others = new Map<string, Set<string>>()
   for (const rel of CHARACTER_RELATIONSHIPS) {
-    for (const id of rel.characters) tally.set(id, (tally.get(id) ?? 0) + 1)
+    for (const id of rel.characters) {
+      const set = others.get(id) ?? new Set<string>()
+      for (const other of rel.characters) if (other !== id) set.add(other)
+      others.set(id, set)
+    }
   }
-  return ALL_CHARACTERS.map((c) => ({ id: c.id, name: c.name, count: tally.get(c.id) ?? 0 }))
+  return ALL_CHARACTERS.map((c) => ({ id: c.id, name: c.name, count: others.get(c.id)?.size ?? 0 }))
     .filter((c) => c.count > 0)
-    .sort((a, b) => b.count - a.count)
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
 }
 
 const CONNECTIONS = connectedCharacters()
@@ -103,7 +115,6 @@ export default function BiographicalArchivesPage() {
     const tab = searchParams.get('tab')
     if (tab === 'bloodlines') return 'bloodlines'
     if (tab === 'connections') return 'connections'
-    if (tab === 'contents') return 'contents'
     return 'records'
   }, [searchParams])
 
@@ -112,6 +123,26 @@ export default function BiographicalArchivesPage() {
   const activeFamilyId = searchParams.get('family') ?? FAMILY_TREES[0]?.id ?? ''
 
   const connectionId = searchParams.get('character') ?? 'hoid'
+
+  /*
+   * The lineage search is local state, not a URL parameter.
+   *
+   * It is a lens on the chart, not a navigation: putting it in the query would
+   * make the address bar change on every keystroke and give the reader a dozen
+   * links back through their own typing. The family *choice* is in the URL,
+   * because that is a destination.
+   */
+  const [familyQuery, setFamilyQuery] = useState('')
+
+  const pickFamily = useCallback(
+    (id: string) => {
+      const params = new URLSearchParams(searchParams)
+      params.set('tab', 'bloodlines')
+      params.set('family', id)
+      setParams(params)
+    },
+    [searchParams, setParams],
+  )
 
   // §5.4.6 / R.8. The hook existed since M1 with no caller.
   const spoiler = useSpoilerMode()
@@ -188,70 +219,66 @@ export default function BiographicalArchivesPage() {
   )
 
   /* ---- Bloodlines and Connections: unchanged implementations, new frame ---- */
+  /* ---- Bloodlines and Connections: migrated to the shell (M4 · block 4) ---- */
 
   if (chapter === 'bloodlines') {
+    const family = FAMILY_TREES.find((f) => f.id === activeFamilyId) ?? FAMILY_TREES[0]
     return (
       <RecordsShell
         header={header}
         drawerLabel="Family index"
         index={
-          <nav aria-label="Families" className="h-full overflow-y-auto p-md">
-            <ul className="space-y-1">
-              {FAMILY_TREES.map((f) => (
-                <li key={f.id}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const params = new URLSearchParams(searchParams)
-                      params.set('tab', 'bloodlines')
-                      params.set('family', f.id)
-                      setParams(params)
-                    }}
-                    aria-current={activeFamilyId === f.id ? 'true' : undefined}
-                    className="w-full cursor-pointer rounded-md px-3 py-2 text-left text-[var(--text-body-s)] text-[var(--text-primary)] transition-colors hover:bg-[var(--surface-inset)] aria-[current]:bg-[var(--surface-raised)] focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)]"
-                  >
-                    {f.name}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          <FamilyIndex
+            families={FAMILY_TREES}
+            activeId={family?.id ?? ''}
+            onPick={pickFamily}
+            search={familyQuery}
+            onSearch={setFamilyQuery}
+          />
         }
-        record={<GenealogyManuscript families={FAMILY_TREES} focusFamilyId={activeFamilyId} charMap={CHAR_MAP} />}
+        record={family ? <BloodlinesView family={family} search={familyQuery} onOpenCharacter={openCharacter} /> : null}
       />
     )
   }
 
   if (chapter === 'connections') {
+    const subject = CHAR_MAP.get(connectionId)
     return (
       <RecordsShell
         header={header}
         drawerLabel="Connection index"
         index={
-          <nav aria-label="Characters by connections" className="h-full overflow-y-auto p-md">
-            <ul>
-              {CONNECTIONS.map((c) => (
-                <li key={c.id}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const params = new URLSearchParams(searchParams)
-                      params.set('tab', 'connections')
-                      params.set('character', c.id)
-                      setParams(params)
-                    }}
-                    aria-current={connectionId === c.id ? 'true' : undefined}
-                    className="flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-left transition-colors hover:bg-[var(--surface-inset)] aria-[current]:bg-[var(--surface-raised)] focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)]"
-                  >
-                    <span className="truncate text-[var(--text-body-s)] text-[var(--text-primary)]">{c.name}</span>
-                    <span className="text-nano tabular-nums text-[var(--text-tertiary)]">{c.count}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          <ConnectedIndex
+            entries={CONNECTIONS}
+            activeId={connectionId}
+            onPick={(id) => {
+              const params = new URLSearchParams(searchParams)
+              params.set('tab', 'connections')
+              params.set('character', id)
+              setParams(params)
+            }}
+          />
         }
-        record={<ConnectionDiagram selectedId={connectionId} onNavigateCharacter={openCharacter} />}
+        record={
+          subject ? (
+            <ConnectionsView
+              character={subject}
+              buildHref={(id) => {
+                const params = new URLSearchParams(searchParams)
+                params.set('tab', 'connections')
+                params.set('character', id)
+                return `?${params.toString()}`
+              }}
+            />
+          ) : (
+            <div className="rounded-[var(--radius-lg)] border border-[var(--border-subtle)] bg-[var(--surface-base)] p-xl shadow-[var(--shadow-1)]">
+              <EmptyState
+                title="Choose a character"
+                description="Pick someone from the list to see who they are recorded with."
+              />
+            </div>
+          )
+        }
       />
     )
   }
@@ -286,14 +313,10 @@ export default function BiographicalArchivesPage() {
     </div>
   ) : (
     <div className="rounded-[var(--radius-lg)] border border-[var(--border-subtle)] bg-[var(--surface-base)] p-xl shadow-[var(--shadow-1)]">
-      {chapter === 'contents' ? (
-        <BiographicalContents onSelectChapter={setChapter} />
-      ) : (
-        <EmptyState
-          title="Choose a record"
-          description="Pick a name from the index to read its record. Every entry links, so any record has its own address."
-        />
-      )}
+      <EmptyState
+        title="Choose a record"
+        description="Pick a name from the index to read its record. Every entry links, so any record has its own address."
+      />
     </div>
   )
 
