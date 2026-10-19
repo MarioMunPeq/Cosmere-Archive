@@ -8,7 +8,7 @@
     "dev": "vite",
     "search:index": "tsx scripts/generate-search-index.ts",
     "covers:build": "tsx scripts/generate-cover-variants.ts",
-    "data:build": "tsx scripts/generate-characters.ts && tsx scripts/generate-books.ts",
+    "data:build": "tsx scripts/generate-characters.ts && tsx scripts/generate-books.ts && tsx --tsconfig tsconfig.scripts.json scripts/generate-taxonomies.ts",
     "build": "pnpm search:index && pnpm data:build && tsc -b && vite build",
     "typecheck": "tsc -b",
     "lint": "eslint . --max-warnings 0",

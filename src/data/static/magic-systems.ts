@@ -24,168 +24,17 @@ export interface MagicSystem {
   academicNote?: string
 }
 
-export const ALLOMANTIC_METALS: AllomanticMetal[] = [
-  {
-    id: 'iron',
-    name: 'Iron',
-    alloy: 'Steel',
-    group: 'physical',
-    allomanticPower: 'Pull on nearby metals',
-    feruchemicalPower: 'Store physical weight',
-    hemalurgicProperty: 'Steals strength',
-    color: '#6b7280',
-  },
-  {
-    id: 'steel',
-    name: 'Steel',
-    alloy: 'Iron',
-    group: 'physical',
-    allomanticPower: 'Push on nearby metals',
-    feruchemicalPower: 'Store physical speed',
-    hemalurgicProperty: 'Steals Allomantic power',
-    color: '#9ca3af',
-  },
-  {
-    id: 'tin',
-    name: 'Tin',
-    alloy: 'Pewter',
-    group: 'physical',
-    allomanticPower: 'Enhance senses',
-    feruchemicalPower: 'Store senses',
-    hemalurgicProperty: 'Steals senses',
-    color: '#fbbf24',
-  },
-  {
-    id: 'pewter',
-    name: 'Pewter',
-    alloy: 'Tin',
-    group: 'physical',
-    allomanticPower: 'Enhance physical abilities',
-    feruchemicalPower: 'Store physical strength',
-    hemalurgicProperty: 'Steals Feruchemical power',
-    color: '#d97706',
-  },
-  {
-    id: 'zinc',
-    name: 'Zinc',
-    alloy: 'Brass',
-    group: 'mental',
-    allomanticPower: 'Riot emotions (enflame)',
-    feruchemicalPower: 'Store mental speed',
-    hemalurgicProperty: 'Steals emotional fortitude',
-    color: '#10b981',
-  },
-  {
-    id: 'brass',
-    name: 'Brass',
-    alloy: 'Zinc',
-    group: 'mental',
-    allomanticPower: 'Soothe emotions (calm)',
-    feruchemicalPower: 'Store warmth',
-    hemalurgicProperty: 'Steals cognitive function',
-    color: '#059669',
-  },
-  {
-    id: 'copper',
-    name: 'Copper',
-    alloy: 'Bronze',
-    group: 'mental',
-    allomanticPower: 'Hide Allomantic pulses',
-    feruchemicalPower: 'Store memories',
-    hemalurgicProperty: 'Steals intelligence',
-    color: '#f97316',
-  },
-  {
-    id: 'bronze',
-    name: 'Bronze',
-    alloy: 'Copper',
-    group: 'mental',
-    allomanticPower: 'Detect Allomantic pulses',
-    feruchemicalPower: 'Store wakefulness',
-    hemalurgicProperty: 'Steals Allomantic detection',
-    color: '#ea580c',
-  },
-  {
-    id: 'cadmium',
-    name: 'Cadmium',
-    alloy: 'Bendalloy',
-    group: 'temporal',
-    allomanticPower: 'Slow time bubble',
-    feruchemicalPower: 'Store breath',
-    hemalurgicProperty: 'Steals temporal power',
-    color: '#8b5cf6',
-  },
-  {
-    id: 'bendalloy',
-    name: 'Bendalloy',
-    alloy: 'Cadmium',
-    group: 'temporal',
-    allomanticPower: 'Speed time bubble',
-    feruchemicalPower: 'Store energy',
-    hemalurgicProperty: 'Steals investiture',
-    color: '#7c3aed',
-  },
-  {
-    id: 'gold',
-    name: 'Gold',
-    alloy: 'Electrum',
-    group: 'temporal',
-    allomanticPower: 'See your past self',
-    feruchemicalPower: 'Store health',
-    hemalurgicProperty: 'Steals healing',
-    color: '#f59e0b',
-  },
-  {
-    id: 'electrum',
-    name: 'Electrum',
-    alloy: 'Gold',
-    group: 'temporal',
-    allomanticPower: 'See your future',
-    feruchemicalPower: 'Store determination',
-    hemalurgicProperty: 'Steals future sight',
-    color: '#d97706',
-  },
-  {
-    id: 'aluminum',
-    name: 'Aluminum',
-    alloy: 'Duralumin',
-    group: 'enhancement',
-    allomanticPower: 'Wipe internal Allomantic reserves',
-    feruchemicalPower: 'Store identity',
-    hemalurgicProperty: 'Steals spiritual connection',
-    color: '#e5e7eb',
-  },
-  {
-    id: 'duralumin',
-    name: 'Duralumin',
-    alloy: 'Aluminum',
-    group: 'enhancement',
-    allomanticPower: 'Burn next metal instantly for massive burst',
-    feruchemicalPower: 'Store connection',
-    hemalurgicProperty: 'Steals Connection',
-    color: '#9ca3af',
-  },
-  {
-    id: 'chromium',
-    name: 'Chromium',
-    alloy: 'Nicrosil',
-    group: 'enhancement',
-    allomanticPower: 'Wipe external Allomantic reserves',
-    feruchemicalPower: 'Store fortune',
-    hemalurgicProperty: 'Steals destiny',
-    color: '#22d3ee',
-  },
-  {
-    id: 'nicrosil',
-    name: 'Nicrosil',
-    alloy: 'Chromium',
-    group: 'enhancement',
-    allomanticPower: "Enhance next Allomancer's burst",
-    feruchemicalPower: 'Store investiture',
-    hemalurgicProperty: 'Steals investiture type',
-    color: '#06b6d4',
-  },
-]
+import metalsData from '@/data/generated/allomantic-metals.json'
+
+/**
+ * The sixteen metals, generated from content/allomantic-metals/.
+ *
+ * They were hardcoded here as well as authored there, and the two copies
+ * held the same sixteen with the same powers — a duplicate that could
+ * never disagree about what Iron does and would have disagreed the day
+ * somebody edited one of them.
+ */
+export const ALLOMANTIC_METALS: AllomanticMetal[] = metalsData as AllomanticMetal[]
 
 export const MAGIC_SYSTEMS: MagicSystem[] = [
   {

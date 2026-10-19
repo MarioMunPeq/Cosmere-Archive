@@ -45,6 +45,7 @@ function run(command: string, args: string[]): void {
 
 run('npx', ['tsx', 'scripts/generate-characters.ts'])
 run('npx', ['tsx', 'scripts/generate-books.ts'])
+run('npx', ['tsx', '--tsconfig', 'tsconfig.scripts.json', 'scripts/generate-taxonomies.ts'])
 
 /* ---- 2. and they must not have moved anything ---- */
 
