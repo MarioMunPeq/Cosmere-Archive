@@ -23,7 +23,7 @@ const ROUTES: { hash: string; name: string; heading: RegExp }[] = [
   // screen whose first heading was "Contents", which is a section, not a title.
   { hash: '/characters', name: 'records', heading: /biographical archives/i },
   { hash: '/shadesmar', name: 'shadesmar', heading: /shadesmar|souls/i },
-  { hash: '/stats', name: 'diagram', heading: /diagram|taravangian|statistics/i },
+  { hash: '/taravangian', name: 'diagram', heading: /diagram|taravangian/i },
   { hash: '/aharietiam', name: 'aharietiam', heading: /aharietiam|honorblade/i },
   { hash: '/magic', name: 'ars arcanum', heading: /contents/i },
   { hash: '/chronology', name: 'chronology', heading: /chronology|history/i },
@@ -66,7 +66,7 @@ for (const { hash, name, heading } of ROUTES) {
  * overlay header, so the page finally has a heading of its own. The other three
  * still have none.
  */
-const PAGES_WITHOUT_A_TITLE: string[] = ['/stats', '/aharietiam', '/mind-map']
+const PAGES_WITHOUT_A_TITLE: string[] = ['/aharietiam', '/mind-map']
 
 for (const { hash, name, heading } of ROUTES) {
   if (PAGES_WITHOUT_A_TITLE.includes(hash)) {
@@ -95,7 +95,7 @@ test.describe('M2.3 landing', () => {
     // Every door must be an anchor, not a button.
     expect(await doors.locator('button').count()).toBe(0)
 
-    for (const href of ['#/library', '#/characters', '#/shadesmar', '#/stats']) {
+    for (const href of ['#/library', '#/characters', '#/shadesmar', '#/taravangian']) {
       await expect(doors.locator(`a[href="${href}"]`)).toHaveCount(1)
     }
 

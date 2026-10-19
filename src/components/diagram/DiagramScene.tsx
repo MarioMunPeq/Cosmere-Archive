@@ -5,33 +5,13 @@ import { DiagramBackground } from './DiagramBackground'
 import { DiagramWritings } from './DiagramWritings'
 import { BOOKS, PLANETS, SHARD_COLORS, SAGA_NAME_COLORS } from '@/data/static'
 import { HONORBLADES } from '@/data/static/aharietiam'
+import { noteFor } from '@/data/static/diagram-notes'
+import { WALL_DOCS } from './wall-docs'
 import type { ReactNode } from 'react'
 
 const SHARD_COUNT = Object.keys(SHARD_COLORS).length
 const CX = 2500
 const CY = 2500
-
-interface WallDoc {
-  id: string
-  x: number
-  y: number
-  w: number
-  h: number
-  rot: number
-  z: number
-}
-
-const WALL_DOCS: WallDoc[] = [
-  { id: 'catalogue', x: 400, y: 900, w: 440, h: 280, rot: -8, z: 3 },
-  { id: 'volumes', x: 3400, y: 800, w: 480, h: 330, rot: 6, z: 4 },
-  { id: 'wordcount', x: 1200, y: 2200, w: 400, h: 280, rot: 11, z: 2 },
-  { id: 'population', x: 3600, y: 2200, w: 440, h: 320, rot: -14, z: 5 },
-  { id: 'worlds', x: 600, y: 3400, w: 480, h: 360, rot: 5, z: 3 },
-  { id: 'shards', x: 3000, y: 3500, w: 420, h: 300, rot: -18, z: 4 },
-  { id: 'connections', x: 1800, y: 1300, w: 560, h: 400, rot: -4, z: 1 },
-  { id: 'chronology', x: 1800, y: 3900, w: 500, h: 320, rot: 22, z: 6 },
-  { id: 'heralds', x: 3600, y: 4100, w: 440, h: 290, rot: -7, z: 2 },
-]
 
 const CONNECTOR_LINES: { x1: number; y1: number; x2: number; y2: number }[] = [
   { x1: 2060, y1: 1500, x2: 620, y2: 900 },
@@ -66,20 +46,56 @@ function CosmereSymbol() {
   )
 }
 
+/**
+ * How far a sheet may be crooked.
+ *
+ * §5.6.2 asks for -6° to +6°, down from -18° to +22°. The old range was readable
+ * as *scenery* — a scatter effect — rather than as *a note somebody pinned up*,
+ * and at eight degrees off, a page of handwriting stops being a page.
+ */
+const MAX_ROTATION = 6
+
+function clampRotation(deg: number): number {
+  return Math.max(-MAX_ROTATION, Math.min(MAX_ROTATION, deg))
+}
+
+/**
+ * A sheet on the wall.
+ *
+ * A `<button>`, not a `div` with a click handler.
+ *
+ * D.1 asks for nine documents reachable by keyboard with an `aria-label`, and a
+ * `<div onClick>` is neither: it cannot be tabbed to, Enter does nothing, and a
+ * screen reader announces nothing at all. On a page whose entire argument is
+ * that this wall exists, nine unlabelled divs is the one thing it cannot be.
+ *
+ * The focus ring is drawn *outside* the paper, so it reads as the sheet being
+ * lifted off the wall rather than as a UI highlight drawn on it.
+ */
 function PaperDoc({
   id,
   w,
   h,
   rotation,
+  label,
   children,
   onClick,
+  onMouseEnter,
+  onMouseLeave,
+  onFocus,
+  onBlur,
 }: {
   id: string
   w: number
   h: number
   rotation?: number
+  label: string
   children: ReactNode
   onClick?: () => void
+  onMouseEnter?: () => void
+  onMouseLeave?: () => void
+  onFocus?: () => void
+  onBlur?: () => void
 }) {
   const borderColor = useMemo(() => {
     const colors = ['rgba(120,100,80,0.08)', 'rgba(100,80,60,0.06)', 'rgba(140,120,100,0.07)']
@@ -87,9 +103,20 @@ function PaperDoc({
   }, [id])
 
   return (
-    <div
+    <button
+      type="button"
+      aria-label={label}
+      data-diagram-sheet={id}
       onClick={onClick}
-      className="absolute overflow-hidden"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onFocus={onFocus}
+      onBlur={onBlur}
+      className={[
+        'absolute overflow-hidden text-left',
+        'cursor-pointer focus-visible:outline-none',
+        'focus-visible:[box-shadow:0_0_0_3px_#e8c89a,0_0_0_5px_rgba(20,26,36,0.85)]',
+      ].join(' ')}
       style={{
         left: 0,
         top: 0,
@@ -100,12 +127,11 @@ function PaperDoc({
         borderRadius: 2,
         border: `1px solid ${borderColor}`,
         boxShadow: `${((id.charCodeAt(0) % 5) - 2) * 2}px ${((id.charCodeAt(1) % 5) - 2) * 2}px ${6 + (id.charCodeAt(2) % 8)}px rgba(0,0,0,0.4)`,
-        cursor: onClick ? 'pointer' : 'default',
         transition: 'box-shadow 0.3s ease, transform 0.3s ease',
       }}
     >
-      <div className="w-full h-full">{children}</div>
-    </div>
+      <span className="block w-full h-full">{children}</span>
+    </button>
   )
 }
 
@@ -410,6 +436,12 @@ export function DiagramScene(props: {
   pubYears: number[]
   pubMin: number
   pubMax: number
+  /** Which sheet is being read, if any. */
+  activeDoc?: string | null
+  /** The wall chooses, the page listens. D-1/D-5. */
+  onSelect?: (id: string) => void
+  /** Hover previews a title without changing the selection. */
+  onHover?: (id: string | null) => void
   maxSagaCount: number
 }) {
   const {
@@ -426,6 +458,9 @@ export function DiagramScene(props: {
     pubMin,
     pubMax,
     maxSagaCount,
+    activeDoc = null,
+    onSelect,
+    onHover,
   } = props
   const [focusedDoc, setFocusedDoc] = useState<string | null>(null)
   const [focusAnchor, setFocusAnchor] = useState<{ x: number; y: number; w: number; h: number } | null>(null)
@@ -542,7 +577,10 @@ export function DiagramScene(props: {
 
         {/* Scattered documents */}
         {WALL_DOCS.map((d) => {
-          const isFocused = focusedDoc === d.id
+          const current = activeDoc ?? focusedDoc
+          const isFocused = current === d.id
+          const dimmed = current !== null && !isFocused
+          const note = noteFor(d.id)
           return (
             <div
               key={d.id}
@@ -552,11 +590,25 @@ export function DiagramScene(props: {
                 top: d.y,
                 zIndex: isFocused ? 20 : d.z,
                 transition: 'all 0.4s ease',
-                filter: focusedDoc && !isFocused ? 'grayscale(0.7) opacity(0.4)' : undefined,
-                transform: isFocused ? 'scale(1.05)' : undefined,
+                filter: dimmed ? 'grayscale(0.7) opacity(0.4)' : undefined,
+                transform: isFocused ? 'translateY(-6px)' : undefined,
               }}
             >
-              <PaperDoc id={d.id} w={d.w} h={d.h} rotation={d.rot} onClick={() => handleDocClick(d.id)}>
+              <PaperDoc
+                id={d.id}
+                w={d.w}
+                h={d.h}
+                rotation={clampRotation(d.rot)}
+                label={`Sheet ${note.numeral}: ${note.title}`}
+                onClick={() => {
+                  handleDocClick(d.id)
+                  onSelect?.(d.id)
+                }}
+                onMouseEnter={() => onHover?.(d.id)}
+                onMouseLeave={() => onHover?.(null)}
+                onFocus={() => onHover?.(d.id)}
+                onBlur={() => onHover?.(null)}
+              >
                 {getContent(d.id, ctx)}
               </PaperDoc>
             </div>

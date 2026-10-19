@@ -1,4 +1,5 @@
 import { useRef, useCallback, useEffect, useState, type ReactNode } from 'react'
+import { WALL_W, WALL_H, CONTENT_BOUNDS } from './wall-docs'
 
 interface FocusAnchor {
   x: number
@@ -15,9 +16,6 @@ interface Props {
   maxScale?: number
 }
 
-const WALL_W = 5000
-const WALL_H = 5000
-
 const DOC_MIN_X = 300
 const DOC_MAX_X = 4100
 const DOC_CX = (DOC_MIN_X + DOC_MAX_X) / 2
@@ -27,9 +25,32 @@ function getViewport() {
   return { w: window.innerWidth, h: window.innerHeight }
 }
 
+/**
+ * The scale that frames the whole wall.
+ *
+ * `Math.min`, not `Math.max`, and over `CONTENT_BOUNDS`, not over the canvas.
+ *
+ * The previous version was `Math.max(w / WALL_W, h / WALL_H) * 1.08` — a cover
+ * fit against the 5000x5000 sheet. Cover means *some* of the content is cropped,
+ * and here it meant the outermost notes were cropped: opening the Diagram put
+ * four of the nine sheets off-screen, one of them permanently unclickable.
+ *
+ * The sheets hang between 400 and 3900 x 800 and 4400. Fitting that box, with
+ * `Math.min`, means every sheet is on screen at once — which is the whole
+ * claim of a wall used as an index. You arrive and you can see what there is.
+ */
 function getFitScale() {
   const { w, h } = getViewport()
-  return Math.max(w / WALL_W, h / WALL_H) * 1.08
+  return Math.min(w / CONTENT_BOUNDS.w, h / CONTENT_BOUNDS.h) * 1.08
+}
+
+/** The top-left of the framed wall, so the fit centres the *sheets*. */
+function getFitOrigin(scale: number) {
+  const { w, h } = getViewport()
+  return {
+    x: (w - CONTENT_BOUNDS.w * scale) / 2 - CONTENT_BOUNDS.x * scale,
+    y: (h - CONTENT_BOUNDS.h * scale) / 2 - CONTENT_BOUNDS.y * scale,
+  }
 }
 
 function clampView(x: number, y: number, s: number, w: number, h: number) {
@@ -55,7 +76,7 @@ export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale =
   const containerRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
   const [fitScale] = useState(getFitScale)
-  const tr = useRef({ x: 0, y: 0, scale: fitScale })
+  const tr = useRef({ ...getFitOrigin(fitScale), scale: fitScale })
   const isPanning = useRef(false)
   const start = useRef({ x: 0, y: 0 })
   const startTr = useRef({ x: 0, y: 0 })

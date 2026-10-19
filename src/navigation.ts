@@ -93,7 +93,7 @@ export const CORE_DESTINATIONS: Destination[] = [
     id: 'diagram',
     label: 'Taravangian Diagram',
     description: 'The shapes the Thirteenth Shard left behind.',
-    to: '/stats',
+    to: '/taravangian',
     icon: 'shard',
   },
 ]

@@ -13,7 +13,7 @@
 
 import { lazy } from 'react'
 import type { ReactElement } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import Layout from '@/components/common/Layout'
 import ErrorBoundary from '@/components/common/ErrorBoundary'
 import RouteFallback from '@/components/ui/RouteFallback'
@@ -28,7 +28,7 @@ const StandaloneBooksPage = lazy(() => import('@/pages/StandaloneBooksPage'))
 const BiographicalArchivesPage = lazy(() => import('@/pages/BiographicalArchivesPage'))
 const StandaloneChronologyPage = lazy(() => import('@/pages/StandaloneChronologyPage'))
 const LibraryPage = lazy(() => import('@/pages/LibraryPage'))
-const StatsPage = lazy(() => import('@/pages/StatsPage'))
+const TaravangianPage = lazy(() => import('@/pages/TaravangianPage'))
 const ComparePage = lazy(() => import('@/pages/ComparePage'))
 const MindMapPage = lazy(() => import('@/pages/MindMapPage'))
 const ShadesmarPage = lazy(() => import('@/pages/ShadesmarPage'))
@@ -47,7 +47,11 @@ const ROUTES = [
   { path: '/books/:id', element: page(<BookPage />) },
   { path: '/books', element: page(<StandaloneBooksPage />) },
   { path: '/characters', element: page(<BiographicalArchivesPage />) },
-  { path: '/stats', element: page(<StatsPage />) },
+  { path: '/taravangian', element: page(<TaravangianPage />) },
+  /* The Diagram had no route of its own; the nav called it " and pointed at
+     /stats. The old address keeps working rather than 404-ing, because it has
+     been published. */
+  { path: '/stats', element: <Navigate to={'/taravangian'} replace /> },
   { path: '/chronology', element: page(<StandaloneChronologyPage />) },
   { path: '/library', element: page(<LibraryPage />) },
   { path: '/shadesmar', element: page(<ShadesmarPage />) },

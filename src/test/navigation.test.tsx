@@ -42,6 +42,7 @@ const ROUTED = [
   '/aharietiam',
   '/books',
   '/characters',
+  '/taravangian',
   '/stats',
   '/chronology',
   '/library',

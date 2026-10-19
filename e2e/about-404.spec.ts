@@ -54,7 +54,8 @@ test('M2.7 the 404 page has one h1 and a named navigation landmark', async ({ pa
 
 test('the /404 page reaches every core destination', async ({ page }) => {
   await page.goto('/#/no-such-page')
-  for (const href of ['#/library', '#/characters', '#/shadesmar', '#/stats']) {
+  // #/stats moved to #/taravangian; the redirect is asserted in diagram.spec.ts.
+  for (const href of ['#/library', '#/characters', '#/shadesmar', '#/taravangian']) {
     await expect(page.locator(`main a[href="${href}"]`).first()).toHaveCount(1)
   }
 })
