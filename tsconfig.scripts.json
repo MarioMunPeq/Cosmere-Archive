@@ -1,0 +1,12 @@
+{
+  "//": "tsx resolves the `@/` alias from here. The alias lives in tsconfig.app.json, which includes only `src`, so a script outside it would otherwise fail to import the components it measures.",
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["node"],
+    "allowImportingTsExtensions": true
+  },
+  "include": ["scripts", "src"]
+}

@@ -34,6 +34,12 @@ export interface Soul {
 
   lodReveal: number
   parent: string | null
+
+  /** 
+gba() for the one-pixel detail level, built once. */
+  dotFill: string
+  /** Stroke colour for the fresnel rim, built once. */
+  rimStroke: string
 }
 
 export interface SelectionParticle {
@@ -263,7 +269,35 @@ export const FOCUS_EXPANSION_AMPLITUDE = 0.8
 /** Fraction of the viewport's short side a focused realm fills. */
 export const FOCUS_VIEWPORT_FRACTION = 0.62
 
-/* ---- §5.5.2 gestures ---- */
+/* ---- §5.5.4 detail levels ---- */
+
+/**
+ * Three levels of detail, as §5.5.4 sets them.
+ *
+ * `lodReveal` on a soul decides whether it exists at all; these decide how much
+ * is drawn once it does. Conflating the two is what made the ocean empty at the
+ * overview in block 1 — one number was doing two jobs.
+ *
+ * - **below `dot`** — a single `fillRect` of one pixel. No texture, no scaling,
+ *   no smoothing. At this range a bead is smaller than the reader's ability to
+ *   tell beads apart, so anything more is spent on nothing.
+ * - **`dot` to `bead`** — the cached sprite, no rim.
+ * - **above `bead`** — the sprite plus a fresnel rim, which is the only thing
+ *   that makes a sphere read as a sphere rather than as a dot.
+ */
+export const LOD_DOT = 0.4
+export const LOD_BEAD = 1.2
+
+/**
+ * The 6x-radius glow pass is the most expensive thing in the draw loop.
+ *
+ * It runs only for a soul that is actually glowing — hovered or selected, which
+ * is at most a handful — and only while the scene is small enough for the extra
+ * overdraw to be affordable. With a thousand souls on screen, dropping the
+ * glow on a hovered bead is invisible; dropping it on all of them is not.
+ */
+export const GLOW_MIN = 0.5
+export const GLOW_MAX_VISIBLE = 900
 
 /** Travel, in CSS pixels, past which a press is a drag rather than a tap. */
 export const DRAG_THRESHOLD_PX = 4

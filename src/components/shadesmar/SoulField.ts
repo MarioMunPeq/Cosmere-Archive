@@ -89,7 +89,27 @@ function createSoul(def: SoulDef, x: number, y: number): Soul {
     planet: def.cluster,
     lodReveal: lodForKind(def.kind),
     parent: def.cluster,
+    /*
+     * Built once, here, rather than per frame in the draw loop. §5.5.4's
+     * one-pixel level sets `fillStyle` from these; assembling ninety-five
+     * `rgba()` strings on every frame to express values that never change is
+     * ninety-five allocations a frame buying nothing.
+     */
+    dotFill: `rgba(${ev.core}, 0.9)`,
+    rimStroke: `rgba(${ev.glow}, 0.55)`,
   }
+}
+
+/**
+ * Every soul, ordered by depth layer.
+ *
+ * §5.5.4 asks for the sort to happen once rather than every frame. The draw
+ * order is a property of the souls — a herald is always behind an ordinary
+ * character — and filtering a sorted array preserves it, so the renderer can
+ * cull by viewport and LOD and still draw back to front without sorting.
+ */
+function byLayer(a: Soul, b: Soul): number {
+  return a.layer - b.layer
 }
 
 export function generateSoulField(): Soul[] {
@@ -142,12 +162,34 @@ export function generateSoulField(): Soul[] {
     }
   }
 
-  return souls
+  return souls.sort(byLayer)
 }
 
+/**
+ * A uniform grid over the souls, for "who is near this point" queries.
+ *
+ * ## Why this is not rebuilt every frame
+ *
+ * The renderer used to call `rebuild(souls)` on every animation frame, which
+ * cleared and refilled the whole structure sixty times a second to answer a
+ * question about a world where ninety-five beads breathe by millimetres.
+ *
+ * `update()` now checks one number per soul — the cell it was last indexed at —
+ * and only rebuilds when one of them has actually changed cell. A soul that has
+ * drifted inside its cell cannot have changed any query's answer that matters,
+ * because the query walks whole cells.
+ *
+ * The threshold is `cellSize / 4` rather than "any movement", because a soul
+ * sitting exactly on a cell boundary would otherwise flip cells on every frame
+ * from noise alone and rebuild forever.
+ */
 export class SpatialGrid {
   private cellSize: number
   private cells = new Map<number, Map<number, Soul[]>>()
+  /** id → the position it was filed at, for the laziness check. */
+  private indexed = new Map<string, { x: number; y: number }>()
+  /** Rebuilds performed, so a test can assert the grid is actually lazy. */
+  rebuilds = 0
 
   constructor(cellSize: number) {
     this.cellSize = cellSize
@@ -155,13 +197,57 @@ export class SpatialGrid {
 
   rebuild(souls: Soul[]): void {
     this.cells.clear()
+    this.indexed.clear()
+    this.rebuilds++
     for (const s of souls) {
       const cx = Math.floor(s.x / this.cellSize)
       const cy = Math.floor(s.y / this.cellSize)
-      if (!this.cells.has(cx)) this.cells.set(cx, new Map())
-      if (!this.cells.get(cx)!.has(cy)) this.cells.get(cx)!.set(cy, [])
-      this.cells.get(cx)!.get(cy)!.push(s)
+      let col = this.cells.get(cx)
+      if (!col) {
+        col = new Map()
+        this.cells.set(cx, col)
+      }
+      let cell = col.get(cy)
+      if (!cell) {
+        cell = []
+        col.set(cy, cell)
+      }
+      cell.push(s)
+      this.indexed.set(s.id, { x: s.x, y: s.y })
     }
+  }
+
+  /**
+   * Rebuild only if a soul has actually travelled.
+   *
+   * The threshold is `cellSize / 4`, measured as **distance since the soul was
+   * last indexed** — not as a difference of cell numbers. Comparing cell indices
+   * looks equivalent and is not: a soul sitting a hair on the wrong side of a
+   * boundary differs by one whole cell, so it rebuilt on every frame it sat
+   * there. The test for "stays quiet for motion smaller than a quarter of a
+   * cell" is what caught it.
+   *
+   * Rebuilding re-indexes everyone at their current position, so the distance
+   * resets and a drifting world costs one rebuild per quarter-cell of travel
+   * rather than one per frame.
+   *
+   * Returns true when it rebuilt, so the caller and the tests can see.
+   */
+  update(souls: Soul[]): boolean {
+    const slackSq = (this.cellSize / 4) ** 2
+    for (const s of souls) {
+      const at = this.indexed.get(s.id)
+      if (!at) {
+        this.rebuild(souls)
+        return true
+      }
+      const dx = s.x - at.x
+      const dy = s.y - at.y
+      if (dx * dx + dy * dy < slackSq) continue
+      this.rebuild(souls)
+      return true
+    }
+    return false
   }
 
   query(x: number, y: number, range: number): Soul[] {

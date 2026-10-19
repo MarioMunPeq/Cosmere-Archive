@@ -214,7 +214,12 @@ export function Canvas() {
       const frozenSet = model.focusPlanet ? new Set([model.focusPlanet]) : new Set<string>()
       physics.tick(dt, souls, worldMouse.x, worldMouse.y, grid, time, frozenSet)
 
-      grid.rebuild(souls)
+      /*
+       * §5.5.4: the grid is rebuilt only when a soul has actually changed cell,
+       * not sixty times a second. `update` returns whether it rebuilt, which is
+       * what the perf test in `scripts/perf-shadesmar.ts` reads.
+       */
+      grid.update(souls)
 
       if (hasMouse) {
         model.updateHoveredCluster(worldMouse.x, worldMouse.y)

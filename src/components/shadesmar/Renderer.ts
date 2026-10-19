@@ -1,7 +1,7 @@
 import type { Soul } from './types'
 import type { SelectionState } from './types'
 import type { CameraController } from './Camera'
-import { FOG_PARTICLES } from './types'
+import { FOG_PARTICLES, LOD_DOT, LOD_BEAD, GLOW_MIN, GLOW_MAX_VISIBLE } from './types'
 import { getSoulTexture } from './TextureCache'
 
 interface FogDot {
@@ -132,7 +132,20 @@ export function drawSouls(
     visible.push(s)
   }
 
-  visible.sort((a, b) => a.layer - b.layer)
+  /*
+   * No sort.
+   *
+   * §5.5.4 asks for the draw order to be decided once, at generation, and it
+   * was previously an `Array.sort` on every frame over every visible soul —
+   * ninety-five comparisons a frame to produce an order that had not changed
+   * since the souls were created. `generateSoulField` now sorts by layer once,
+   * and the loop above preserves order, so `visible` is already correct.
+   */
+
+  /* One decision for the whole frame rather than per soul. */
+  const asDots = camera.zoom < LOD_DOT
+  const withRim = camera.zoom >= LOD_BEAD
+  const glowAffordable = visible.length < GLOW_MAX_VISIBLE
 
   for (const s of visible) {
     const p = screenPos.get(s.id)!
@@ -148,23 +161,54 @@ export function drawSouls(
     const alpha = s.opacity * (1 + s.glow * 0.2)
     if (alpha < 0.005) continue
 
+    const selected = s.id === selectedId
+    const hovered = s.id === hoveredId
+
+    /*
+     * Level one: a single pixel.
+     *
+     * At this zoom a bead is smaller than anything the reader can tell it from,
+     * so the sprite, its scaling and its resampling are all spent on a result
+     * identical to `fillRect`. The colour string is cached on the soul: building
+     * an `rgba()` string per soul per frame is ninety-five string allocations a
+     * frame to express a value that never changes.
+     */
+    if (asDots && !selected && !hovered) {
+      ctx.globalAlpha = Math.min(1, alpha)
+      ctx.fillStyle = s.dotFill
+      ctx.fillRect(px - 0.5, py - 0.5, 1.4, 1.4)
+      continue
+    }
+
     const tex = getSoulTexture(s.kind, Math.round(displayR))
 
-    if (s.id === selectedId) {
+    if (selected) {
       ctx.globalAlpha = Math.min(1, alpha)
       ctx.drawImage(tex, px - displayR * 1.3, py - displayR * 1.3, displayR * 2.6, displayR * 2.6)
-      if (s.glow > 0.5) {
-        ctx.globalAlpha = 0.08 * s.glow
-        ctx.drawImage(tex, px - displayR * 3, py - displayR * 3, displayR * 6, displayR * 6)
-      }
-    } else if (s.id === hoveredId) {
+    } else if (hovered) {
       ctx.globalAlpha = Math.min(1, alpha)
       ctx.drawImage(tex, px - displayR * 1.15, py - displayR * 1.15, displayR * 2.3, displayR * 2.3)
-      ctx.globalAlpha = 0.05
-      ctx.drawImage(tex, px - displayR * 3, py - displayR * 3, displayR * 6, displayR * 6)
     } else {
       ctx.globalAlpha = Math.min(1, alpha)
       ctx.drawImage(tex, px - displayR, py - displayR, displayR * 2, displayR * 2)
+      /* Level three: the fresnel rim. */
+      if (withRim) {
+        ctx.globalAlpha = Math.min(1, alpha) * 0.5
+        ctx.strokeStyle = s.rimStroke
+        ctx.lineWidth = 1
+        ctx.beginPath()
+        ctx.arc(px, py, displayR * 0.86, 0, Math.PI * 2)
+        ctx.stroke()
+      }
+    }
+
+    /*
+     * The 6x glow, once. §5.5.4's own conditions: the bead has to be glowing,
+     * and the scene has to be small enough that the overdraw is affordable.
+     */
+    if ((selected || hovered) && s.glow > GLOW_MIN && glowAffordable) {
+      ctx.globalAlpha = (selected ? 0.08 : 0.05) * s.glow
+      ctx.drawImage(tex, px - displayR * 3, py - displayR * 3, displayR * 6, displayR * 6)
     }
   }
 

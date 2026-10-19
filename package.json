@@ -22,6 +22,7 @@
     "test:coverage": "vitest run --coverage",
     "test:contrast": "tsx scripts/check-contrast.ts",
     "test:budget": "tsx scripts/check-budget.ts",
+    "test:perf": "tsx --tsconfig tsconfig.scripts.json scripts/perf-shadesmar.ts",
     "test:assets": "tsx scripts/check-assets.ts",
     "test:e2e": "playwright test",
     "content:migrate": "tsx scripts/generate-content.ts",
