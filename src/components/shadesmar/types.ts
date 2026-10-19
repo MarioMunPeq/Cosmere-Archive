@@ -262,6 +262,27 @@ export const MAX_VELOCITY = 0.00005
 export const FOCUS_EXPANSION_AMPLITUDE = 0.8
 /** Fraction of the viewport's short side a focused realm fills. */
 export const FOCUS_VIEWPORT_FRACTION = 0.62
+
+/* ---- §5.5.2 gestures ---- */
+
+/** Travel, in CSS pixels, past which a press is a drag rather than a tap. */
+export const DRAG_THRESHOLD_PX = 4
+
+/**
+ * Smallest pinch ratio applied.
+ *
+ * A pinch whose spread changes by 0.1% is a finger resting on glass, not a
+ * gesture, and multiplying the zoom by 1.001 sixty times a second walks the
+ * camera somewhere nobody asked it to go.
+ */
+export const PINCH_ZOOM_MIN_STEP = 1.01
+
+/** Wheel steps, per §5.5.2. */
+export const WHEEL_ZOOM_IN = 1.08
+export const WHEEL_ZOOM_OUT = 0.92
+
+/** The HUD's touch targets. Criterion S.9 requires exactly this, not "about". */
+export const HUD_BUTTON_SIZE = 44
 export const SMART_HOVER_RADIUS = 0.08
 export const HOVER_STABILITY_THRESHOLD = 0.006
 export const FOCUS_FLY_DURATION = 0.8

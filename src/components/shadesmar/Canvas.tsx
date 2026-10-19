@@ -1,10 +1,13 @@
-import { useRef, useEffect, useCallback } from 'react'
+import { useRef, useEffect, useCallback, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { generateSoulField, SpatialGrid } from './SoulField'
 import { InteractionSystem } from './InteractionSystem'
 import { InteractionModel } from './InteractionModel'
 import { SelectionSystem } from './SelectionSystem'
 import { PhysicsSystem } from './PhysicsSystem'
 import { CameraController } from './Camera'
+import { createPointerTracker } from './Pointers'
+import ShadesmarHud from './ShadesmarHud'
 import {
   drawBackground,
   drawSouls,
@@ -13,13 +16,15 @@ import {
   drawConnectionLines,
   drawClusterLabels,
 } from './Renderer'
-import { CLUSTERS, LABEL_FADE_ZOOM } from './types'
+import { CLUSTERS, CLUSTER_RADIUS, PINCH_ZOOM_MIN_STEP, WHEEL_ZOOM_IN, WHEEL_ZOOM_OUT } from './types'
 import type { Soul } from './types'
+import ALL_CHARACTERS from '@/data/generated/characters.json'
 
-const CLICK_DRAG_THRESHOLD = 4
-const DBLCLICK_TIME = 400
+/** Souls that have a `/characters` record to open. */
+const HAS_RECORD = new Set(ALL_CHARACTERS.map((c) => c.id))
 
 export function Canvas() {
+  const navigate = useNavigate()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const soulsRef = useRef<Soul[]>([])
   const gridRef = useRef(new SpatialGrid(0.02))
@@ -35,18 +40,27 @@ export function Canvas() {
   const lastTimeRef = useRef(0)
   const sizeRef = useRef({ w: 0, h: 0 })
 
-  const dragStateRef = useRef<{
-    active: boolean
-    startX: number
-    startY: number
-    moved: boolean
-  }>({ active: false, startX: 0, startY: 0, moved: false })
+  /* ------------------------------------------------------------------ input */
 
-  const clickStateRef = useRef<{
-    lastClickTime: number
-    lastClickX: number
-    lastClickY: number
-  }>({ lastClickTime: 0, lastClickX: 0, lastClickY: 0 })
+  const pointersRef = useRef(createPointerTracker())
+  /**
+   * The pinch midpoint on the previous move.
+   *
+   * A pinch zooms *and* travels: the fingers can come apart without moving and
+   * can move without separating, and the camera has to follow both. The
+   * midpoint's travel is measured against the last frame's, because by the
+   * time a second finger lands the world may already have panned under it.
+   */
+  const pinchMidRef = useRef<{ x: number; y: number } | null>(null)
+  const [focusedRealm, setFocusedRealm] = useState<string | null>(null)
+
+  /**
+   * Zoom about the canvas centre, for the HUD and the keyboard.
+   *
+   * A ref because the keydown listener is installed once, with `[]`, and would
+   * otherwise close over the first render's props.
+   */
+  const hudZoomRef = useRef<(factor: number) => void>(() => {})
 
   const clusterHoverRef = useRef<string | null>(null)
 
@@ -58,10 +72,12 @@ export function Canvas() {
       const { w, h } = sizeRef.current
       if (w > 0 && h > 0) camera.flyToFit(soulsRef.current, clusterId, w, h)
       focusActiveRef.current = true
+      setFocusedRealm(clusterId)
     } else {
       model.exitFocus()
       camera.restoreState()
       focusActiveRef.current = false
+      setFocusedRealm(null)
     }
   }
 
@@ -113,6 +129,7 @@ export function Canvas() {
       zoom: () => cameraRef.current.zoom,
       souls: () => soulsRef.current.length,
       clusters: () => CLUSTERS.map((c) => ({ id: c.id, cx: c.cx, cy: c.cy, radius: c.radius })),
+      worldToScreen: (wx: number, wy: number, w: number, h: number) => cameraRef.current.worldToScreen(wx, wy, w, h),
       viewport: () => ({ ...sizeRef.current }),
       /* A zoom must hold the point under the cursor still, so the test needs to
        * ask where that point is in world terms before and after. */
@@ -120,13 +137,27 @@ export function Canvas() {
         const { w, h } = sizeRef.current
         return cameraRef.current.screenToWorld(sx, sy, w, h)
       },
+      /* Which realm a screen point falls in, for S.5's tap-to-focus. */
+      realmAt: (sx: number, sy: number) => {
+        const { w, h } = sizeRef.current
+        if (w === 0 || h === 0) return null
+        const world = cameraRef.current.screenToWorld(sx, sy, w, h)
+        return realmAtWorld(world.x, world.y)?.id ?? null
+      },
+      focused: () => focusActiveRef.current,
     }
     ;(window as unknown as { __shadesmar: typeof probe }).__shadesmar = probe
 
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && focusActiveRef.current) {
+      // `+`, `-`, `0` as well as Escape: a keyboard is a third input device and
+      // the HUD is its mouse equivalent.
+      if (focusActiveRef.current && e.key === 'Escape') {
         setFocusMode(null)
+        return
       }
+      if (e.key === '+' || e.key === '=') hudZoomRef.current(WHEEL_ZOOM_IN)
+      if (e.key === '-' || e.key === '_') hudZoomRef.current(WHEEL_ZOOM_OUT)
+      if (e.key === '0') cameraRef.current.resetToOverview()
     }
     window.addEventListener('keydown', onKeyDown)
 
@@ -236,22 +267,23 @@ export function Canvas() {
 
     const worldMouse = camera.screenToWorld(mx, my, w, h)
 
-    // Cluster label click — enter focus mode
-    for (const cluster of CLUSTERS) {
-      if (cluster.planetRadius === 0) continue
-      if (camera.zoom < LABEL_FADE_ZOOM * 0.5) continue
-      const labelScreen = camera.worldToScreen(cluster.cx, cluster.cy, w, h)
-      const labelY = labelScreen.y - cluster.planetRadius * Math.min(w, h) * camera.zoom - 6
-      const dy = my - labelY
-      const dx = mx - labelScreen.x
-      if (dy > -20 && dy < 4 && Math.abs(dx) < 50) {
-        if (model.focusPlanet === cluster.id) return
-        setFocusMode(cluster.id)
-        return
-      }
+    // A realm's name is the target §5.5.2 asks for, but the hit box is the
+    // constellation rather than the drawn label: the label is a rectangle of
+    // pixels that changes size with zoom, and a reader aims at the cluster of
+    // lights, not at the word above it. Tapping inside a realm's radius focuses
+    // it, on mouse and on touch alike.
+    //
+    // `realmAtWorld`, not `realmAt`: `worldMouse` is already in world units, and
+    // the screen-space wrapper would take it as pixels and look somewhere else
+    // entirely — which is why the probe answered "roshar" for the point while
+    // the handler focused nothing.
+    const realm = realmAtWorld(worldMouse.x, worldMouse.y)
+    if (realm && model.focusPlanet !== realm.id) {
+      setFocusMode(realm.id)
+      return
     }
 
-    // Empty space click while focused — exit focus
+    // Empty space while focused — leave, and restore the overview.
     if (focusActiveRef.current) {
       setFocusMode(null)
       return
@@ -263,108 +295,202 @@ export function Canvas() {
     }
     if (selection.state.phase !== 'idle') return
 
-    // Soul selection
     const clicked = findNearestSoul(grid, worldMouse.x, worldMouse.y)
-    if (clicked) {
-      selection.select(clicked, souls)
-    }
+    if (clicked) selection.select(clicked, souls)
   }
 
-  const onPointerDown = useCallback((e: React.PointerEvent) => {
-    const rect = canvasRef.current?.getBoundingClientRect()
-    if (!rect) return
-    const mx = e.clientX - rect.left
-    const my = e.clientY - rect.top
-    mouseRef.current = { x: mx, y: my }
+  /**
+   * Open a soul's record. §5.5.2 routes double-click and double-tap here.
+   *
+   * Only records that exist are navigable. A herald is a soul with a name and a
+   * surge list but no `/characters` entry, so the gesture on one of those does
+   * nothing rather than routing to a 404 — the reader is looking at something
+   * with no record behind it, and the page should say so by not pretending
+   * otherwise. §5.5.3 replaces this with a "View record" link that only appears
+   * when there is one.
+   */
+  function openRecord(mx: number, my: number) {
+    const { w, h } = sizeRef.current
+    if (w === 0 || h === 0) return
+    const world = cameraRef.current.screenToWorld(mx, my, w, h)
+    const soul = findNearestSoul(gridRef.current, world.x, world.y)
+    const id = soul?.entityId?.replace(/^soul_/, '')
+    if (!id || !HAS_RECORD.has(id)) return
+    navigate(`/characters?character=${id}`)
+  }
 
-    dragStateRef.current = {
-      active: true,
-      startX: mx,
-      startY: my,
-      moved: false,
-    }
-    cameraRef.current.startDrag(mx, my)
+  /** Page coordinates to canvas-relative ones; the canvas is not at the origin. */
+  const localPoint = useCallback((e: { clientX: number; clientY: number }) => {
+    const rect = canvasRef.current?.getBoundingClientRect()
+    if (!rect) return null
+    return { x: e.clientX - rect.left, y: e.clientY - rect.top }
   }, [])
 
-  const onPointerMove = useCallback((e: React.PointerEvent) => {
-    const rect = canvasRef.current?.getBoundingClientRect()
-    if (!rect) return
-    const mx = e.clientX - rect.left
-    const my = e.clientY - rect.top
-    mouseRef.current = { x: mx, y: my }
+  const onPointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      const p = localPoint(e)
+      if (!p) return
+      mouseRef.current = p
 
-    const ds = dragStateRef.current
-    if (ds.active) {
-      const dx = mx - ds.startX
-      const dy = my - ds.startY
-      if (!ds.moved && Math.sqrt(dx * dx + dy * dy) > CLICK_DRAG_THRESHOLD) {
-        ds.moved = true
+      pointersRef.current.down_(e.pointerId, p.x, p.y, performance.now())
+
+      if (pointersRef.current.panning) {
+        cameraRef.current.startDrag(p.x, p.y)
+      } else if (pointersRef.current.pinching) {
+        // A second finger landed. The drag started by the first has to be
+        // abandoned, or its inertia fires the moment the pinch ends and throws
+        // the world sideways.
+        cameraRef.current.endDrag()
+        cameraRef.current.stopInertia()
+        pinchMidRef.current = null
       }
+    },
+    [localPoint],
+  )
+
+  const onPointerMove = useCallback(
+    (e: React.PointerEvent) => {
+      const p = localPoint(e)
+      if (!p) return
+      mouseRef.current = p
+
+      const gesture = pointersRef.current.move_(e.pointerId, p.x, p.y)
       const { w, h } = sizeRef.current
-      if (w > 0 && h > 0) {
-        cameraRef.current.moveDrag(mx, my, w, h)
+      if (w === 0 || h === 0) return
+
+      if (gesture.kind === 'pan') {
+        cameraRef.current.moveDrag(p.x, p.y, w, h)
+        return
       }
-    }
-  }, [])
+
+      if (gesture.kind !== 'pinch') return
+
+      // A pinch zooms about its own midpoint *and* travels with it. Both, and in
+      // this order: the zoom first, so the midpoint's travel is measured against
+      // the scale it is happening at.
+      if (gesture.factor > PINCH_ZOOM_MIN_STEP) {
+        cameraRef.current.zoomAt(gesture.cx, gesture.cy, gesture.factor, w, h)
+      }
+      const last = pinchMidRef.current
+      if (last) cameraRef.current.panBy(gesture.cx - last.x, gesture.cy - last.y, w, h)
+      pinchMidRef.current = { x: gesture.cx, y: gesture.cy }
+    },
+    [localPoint],
+  )
 
   const onPointerUp = useCallback((e: React.PointerEvent) => {
-    const rect = canvasRef.current?.getBoundingClientRect()
-    if (!rect) return
-    const mx = e.clientX - rect.left
-    const my = e.clientY - rect.top
-    const ds = dragStateRef.current
+    const p = localPoint(e)
+    if (!p) return
 
+    const gesture = pointersRef.current.up_(e.pointerId)
     cameraRef.current.endDrag()
 
-    if (!ds.moved) {
-      const now = performance.now()
-      const cs = clickStateRef.current
-      const isDblClick =
-        now - cs.lastClickTime < DBLCLICK_TIME && Math.abs(mx - cs.lastClickX) < 8 && Math.abs(my - cs.lastClickY) < 8
+    if (!pointersRef.current.pinching) pinchMidRef.current = null
 
-      cs.lastClickTime = now
-      cs.lastClickX = mx
-      cs.lastClickY = my
-
-      if (!isDblClick) {
-        handleClick(mx, my)
-      }
+    switch (gesture.kind) {
+      case 'tap':
+        handleClick(p.x, p.y)
+        break
+      case 'doubleTap':
+        openRecord(p.x, p.y)
+        break
+      default:
+        break
     }
-
-    dragStateRef.current = { active: false, startX: 0, startY: 0, moved: false }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const onPointerLeave = useCallback(() => {
     mouseRef.current = { x: -9999, y: -9999 }
-    dragStateRef.current = { active: false, startX: 0, startY: 0, moved: false }
   }, [])
 
-  const onWheel = useCallback((e: React.WheelEvent) => {
-    e.preventDefault()
-    const rect = canvasRef.current?.getBoundingClientRect()
-    if (!rect) return
-    const mx = e.clientX - rect.left
-    const my = e.clientY - rect.top
-    const { w, h } = sizeRef.current
-    if (w > 0 && h > 0) {
-      const factor = e.deltaY > 0 ? 0.92 : 1.08
-      cameraRef.current.zoomAt(mx, my, factor, w, h)
-    }
+  const onPointerCancel = useCallback((e: React.PointerEvent) => {
+    pointersRef.current.cancel(e.pointerId)
+    cameraRef.current.endDrag()
+    pinchMidRef.current = null
   }, [])
+
+  const onWheel = useCallback(
+    (e: React.WheelEvent) => {
+      e.preventDefault()
+      const p = localPoint(e)
+      if (!p) return
+      const { w, h } = sizeRef.current
+      if (w > 0 && h > 0) {
+        const factor = e.deltaY > 0 ? WHEEL_ZOOM_OUT : WHEEL_ZOOM_IN
+        cameraRef.current.zoomAt(p.x, p.y, factor, w, h)
+      }
+    },
+    [localPoint],
+  )
+
+  /* ---- HUD and keyboard ------------------------------------------------- */
+
+  const zoomAboutCentre = useCallback((factor: number) => {
+    const { w, h } = sizeRef.current
+    if (w === 0 || h === 0) return
+    cameraRef.current.zoomAt(w / 2, h / 2, factor, w, h)
+  }, [])
+
+  /* The keydown listener is installed once with `[]`, so it reaches the zoom
+   * through a ref rather than closing over the first render's closure. */
+  useEffect(() => {
+    hudZoomRef.current = zoomAboutCentre
+  }, [zoomAboutCentre])
+
+  const goToOverview = useCallback(() => {
+    // Leave focus without scheduling the 600ms flight, then go to the
+    // overview: doing both meant a flight to the exit state starting on the
+    // same frame as the reset that was supposed to replace it.
+    modelRef.current.exitFocus()
+    focusActiveRef.current = false
+    setFocusedRealm(null)
+    cameraRef.current.resetToOverview()
+  }, [])
+
+  const leaveFocus = useCallback(() => setFocusMode(null), [])
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="block w-full h-full touch-none"
-      style={{ background: '#050508', cursor: 'default' }}
-      onPointerDown={onPointerDown}
-      onPointerMove={onPointerMove}
-      onPointerUp={onPointerUp}
-      onPointerLeave={onPointerLeave}
-      onWheel={onWheel}
-      onContextMenu={(e) => e.preventDefault()}
-    />
+    <>
+      <canvas
+        ref={canvasRef}
+        className="block w-full h-full touch-none"
+        style={{ background: '#050508', cursor: 'default' }}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerLeave={onPointerLeave}
+        onPointerCancel={onPointerCancel}
+        onWheel={onWheel}
+        onContextMenu={(e) => e.preventDefault()}
+      />
+      <ShadesmarHud
+        onZoom={zoomAboutCentre}
+        onOverview={goToOverview}
+        onBack={leaveFocus}
+        focusedRealm={focusedRealm}
+      />
+    </>
   )
+}
+
+/**
+ * The realm whose constellation contains a world point, if any.
+ *
+ * Module-level and pure: it needs no camera, no souls and no state, so the tap
+ * handler, the probe and any future keyboard path can all ask the same question
+ * and get the same answer.
+ */
+export function realmAtWorld(wx: number, wy: number) {
+  // The reach scales with the cluster, not the screen, so a tap keeps meaning
+  // the same thing at every zoom: a fixed fraction of the constellation itself.
+  const reach = CLUSTER_RADIUS * 1.6
+  for (const cluster of CLUSTERS) {
+    if (cluster.planetRadius === 0) continue
+    const dx = wx - cluster.cx
+    const dy = wy - cluster.cy
+    if (dx * dx + dy * dy < reach * reach) return cluster
+  }
+  return null
 }
 
 function findNearestSoul(grid: SpatialGrid, wx: number, wy: number): Soul | null {

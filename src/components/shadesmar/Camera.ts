@@ -56,6 +56,7 @@ export class CameraController {
   private storedX = WORLD_W / 2
   private storedY = WORLD_H / 2
   private storedZoom = 0.5
+  private hasStored = false
 
   /** The zoom that frames the whole realm grid in a viewport of this size. */
   fitToViewport(): number {
@@ -89,6 +90,12 @@ export class CameraController {
 
   /** Reset to the overview framing. */
   resetToOverview(): void {
+    // A flight already in progress has to be dropped, not merely overridden:
+    // `flyTo` captured its start values when it began, so setting `zoom` here
+    // would be undone on the next frame and the camera would fly on to where
+    // it was always going. That is how the overview button used to land the
+    // reader at 61% of the viewport instead of 66%.
+    this.cancelFlight()
     this.x = WORLD_W / 2
     this.y = WORLD_H / 2
     this.zoom = this.fitToViewport()
@@ -169,6 +176,32 @@ export class CameraController {
     this.dragging = false
   }
 
+  /**
+   * Translate the camera by a screen-space delta, without the drag bookkeeping.
+   *
+   * A pinch has to do two things at once — change the zoom and move the world
+   * under the fingers' midpoint — and driving that through `startDrag` /
+   * `moveDrag` around a `zoomAt` would fight over the same fields in an order
+   * that is easy to get subtly wrong. Two calls, one intent each.
+   *
+   * No inertia is imparted: a pinch should not fling, because there is no
+   * single pointer to fling from.
+   */
+  panBy(dxScreen: number, dyScreen: number, w: number, h: number) {
+    const scale = this.zoom * Math.min(w, h)
+    if (scale === 0) return
+    this.x -= dxScreen / scale
+    this.y -= dyScreen / scale
+    this.vx = 0
+    this.vy = 0
+  }
+
+  /** Forget any fling in progress — called when a pinch starts or ends. */
+  stopInertia() {
+    this.vx = 0
+    this.vy = 0
+  }
+
   zoomAt(sx: number, sy: number, factor: number, w: number, h: number) {
     const oldZoom = this.zoom
     this.zoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, this.zoom * factor))
@@ -215,10 +248,30 @@ export class CameraController {
     this.storedX = this.x
     this.storedY = this.y
     this.storedZoom = this.zoom
+    this.hasStored = true
   }
 
+  /**
+   * Fly back to where focus was entered from.
+   *
+   * With nothing stored — leaving focus that was never entered, which the
+   * keyboard's `Escape` handler can arrange — this goes to the fitted overview
+   * instead. The alternative was flying to the constructor's `0.5`, a zoom the
+   * reader was never at, which after block 1 is not even the framing the page
+   * opens in.
+   */
   restoreState() {
+    if (!this.hasStored) {
+      this.resetToOverview()
+      return
+    }
     this.flyTo(this.storedX, this.storedY, this.storedZoom, FOCUS_EXIT_DURATION)
+  }
+
+  /** Abandon a flight in progress, wherever it has got to. */
+  cancelFlight() {
+    this.flyActive = false
+    this.flyTime = 0
   }
 
   flyToFit(souls: Soul[], clusterId: string, _screenW: number, _screenH: number) {
