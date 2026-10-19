@@ -1,0 +1,528 @@
+[
+  {
+    "id": "kholin",
+    "name": "Kholin Dynasty",
+    "color": "#fbbf24",
+    "description": "The ruling house of Alethkar on Roshar. Gavilar and Dalinar are brothers; after Gavilar's death, Navani later married Dalinar.",
+    "rootIds": [
+      "kholin-house"
+    ],
+    "members": [
+      {
+        "id": "kholin-house",
+        "name": "House Kholin",
+        "parentIds": [],
+        "spouseId": null,
+        "characterId": null,
+        "isDeceased": true,
+        "gender": "male"
+      },
+      {
+        "id": "gavilar",
+        "name": "Gavilar Kholin",
+        "parentIds": [
+          "kholin-house"
+        ],
+        "spouseId": "navani",
+        "characterId": null,
+        "isDeceased": true,
+        "gender": "male"
+      },
+      {
+        "id": "navani",
+        "name": "Navani Kholin",
+        "parentIds": [],
+        "spouseId": "gavilar",
+        "characterId": "navani",
+        "isDeceased": false,
+        "gender": "female"
+      },
+      {
+        "id": "dalinar",
+        "name": "Dalinar Kholin",
+        "parentIds": [
+          "kholin-house"
+        ],
+        "spouseId": null,
+        "characterId": "dalinar",
+        "isDeceased": false,
+        "gender": "male"
+      },
+      {
+        "id": "evi",
+        "name": "Evi",
+        "parentIds": [],
+        "spouseId": "dalinar",
+        "characterId": null,
+        "isDeceased": true,
+        "gender": "female"
+      },
+      {
+        "id": "jasnah",
+        "name": "Jasnah Kholin",
+        "parentIds": [
+          "gavilar",
+          "navani"
+        ],
+        "spouseId": null,
+        "characterId": "jasnah",
+        "isDeceased": false,
+        "gender": "female"
+      },
+      {
+        "id": "elhokar",
+        "name": "Elhokar Kholin",
+        "parentIds": [
+          "gavilar",
+          "navani"
+        ],
+        "spouseId": null,
+        "characterId": "elhokar",
+        "isDeceased": true,
+        "gender": "male"
+      },
+      {
+        "id": "aesudan",
+        "name": "Aesudan",
+        "parentIds": [],
+        "spouseId": "elhokar",
+        "characterId": null,
+        "isDeceased": true,
+        "gender": "female"
+      },
+      {
+        "id": "gavinor",
+        "name": "Gavinor Kholin",
+        "parentIds": [
+          "elhokar",
+          "aesudan"
+        ],
+        "spouseId": null,
+        "characterId": null,
+        "isDeceased": false,
+        "gender": "male"
+      },
+      {
+        "id": "adolin",
+        "name": "Adolin Kholin",
+        "parentIds": [
+          "dalinar",
+          "evi"
+        ],
+        "spouseId": "shallan",
+        "characterId": "adolin",
+        "isDeceased": false,
+        "gender": "male"
+      },
+      {
+        "id": "renarin",
+        "name": "Renarin Kholin",
+        "parentIds": [
+          "dalinar",
+          "evi"
+        ],
+        "spouseId": null,
+        "characterId": "renarin",
+        "isDeceased": false,
+        "gender": "male"
+      },
+      {
+        "id": "shallan",
+        "name": "Shallan Davar",
+        "parentIds": [],
+        "spouseId": "adolin",
+        "characterId": "shallan",
+        "isDeceased": false,
+        "gender": "female"
+      }
+    ]
+  },
+  {
+    "id": "davar",
+    "name": "Davar Family",
+    "color": "#34d399",
+    "description": "A minor lighteyed house of Jah Keved on Roshar. Shallan has four older brothers and a younger sister who died in childhood.",
+    "rootIds": [
+      "lin-davar"
+    ],
+    "members": [
+      {
+        "id": "lin-davar",
+        "name": "Lin Davar",
+        "parentIds": [],
+        "spouseId": null,
+        "characterId": null,
+        "isDeceased": true,
+        "gender": "male"
+      },
+      {
+        "id": "lady-davar",
+        "name": "Lady Davar",
+        "parentIds": [],
+        "spouseId": null,
+        "characterId": null,
+        "isDeceased": true,
+        "gender": "female"
+      },
+      {
+        "id": "helaran-davar",
+        "name": "Helaran Davar",
+        "parentIds": [
+          "lin-davar",
+          "lady-davar"
+        ],
+        "spouseId": null,
+        "characterId": null,
+        "isDeceased": true,
+        "gender": "male"
+      },
+      {
+        "id": "balat-davar",
+        "name": "Balat Davar",
+        "parentIds": [
+          "lin-davar",
+          "lady-davar"
+        ],
+        "spouseId": null,
+        "characterId": null,
+        "isDeceased": false,
+        "gender": "male"
+      },
+      {
+        "id": "wikim-davar",
+        "name": "Wikim Davar",
+        "parentIds": [
+          "lin-davar",
+          "lady-davar"
+        ],
+        "spouseId": null,
+        "characterId": null,
+        "isDeceased": false,
+        "gender": "male"
+      },
+      {
+        "id": "jushu-davar",
+        "name": "Jushu Davar",
+        "parentIds": [
+          "lin-davar",
+          "lady-davar"
+        ],
+        "spouseId": null,
+        "characterId": null,
+        "isDeceased": false,
+        "gender": "male"
+      },
+      {
+        "id": "shallan",
+        "name": "Shallan Davar",
+        "parentIds": [
+          "lin-davar",
+          "lady-davar"
+        ],
+        "spouseId": "adolin",
+        "characterId": "shallan",
+        "isDeceased": false,
+        "gender": "female"
+      },
+      {
+        "id": "adolin",
+        "name": "Adolin Kholin",
+        "parentIds": [],
+        "spouseId": "shallan",
+        "characterId": "adolin",
+        "isDeceased": false,
+        "gender": "male"
+      }
+    ]
+  },
+  {
+    "id": "arelon-teod-royalty",
+    "name": "Arelon & Teod Royalty",
+    "color": "#f472b6",
+    "description": "The royal families of Arelon and Teod on Sel, united through the political marriage of Raoden and Sarene.",
+    "rootIds": [
+      "sel-crowns"
+    ],
+    "members": [
+      {
+        "id": "sel-crowns",
+        "name": "Royal Houses of Sel",
+        "parentIds": [],
+        "spouseId": null,
+        "characterId": null,
+        "isDeceased": true,
+        "gender": "male"
+      },
+      {
+        "id": "iadon",
+        "name": "King Iadon",
+        "parentIds": [
+          "sel-crowns"
+        ],
+        "spouseId": null,
+        "characterId": null,
+        "isDeceased": true,
+        "gender": "male"
+      },
+      {
+        "id": "eventeo",
+        "name": "King Eventeo",
+        "parentIds": [
+          "sel-crowns"
+        ],
+        "spouseId": null,
+        "characterId": null,
+        "isDeceased": true,
+        "gender": "male"
+      },
+      {
+        "id": "raoden",
+        "name": "Raoden",
+        "parentIds": [
+          "iadon"
+        ],
+        "spouseId": "sarene",
+        "characterId": "raoden",
+        "isDeceased": false,
+        "gender": "male"
+      },
+      {
+        "id": "sarene",
+        "name": "Sarene",
+        "parentIds": [
+          "eventeo"
+        ],
+        "spouseId": "raoden",
+        "characterId": "sarene",
+        "isDeceased": false,
+        "gender": "female"
+      }
+    ]
+  },
+  {
+    "id": "idris",
+    "name": "Idris Royal Family",
+    "color": "#38bdf8",
+    "description": "The ruling family of Idris on Nalthis. Princess Siri was sent to marry the God-King Susebron in Vivenna's place.",
+    "rootIds": [
+      "dedelin"
+    ],
+    "members": [
+      {
+        "id": "dedelin",
+        "name": "King Dedelin",
+        "parentIds": [],
+        "spouseId": null,
+        "characterId": null,
+        "isDeceased": true,
+        "gender": "male"
+      },
+      {
+        "id": "idris-queen",
+        "name": "Queen of Idris",
+        "parentIds": [],
+        "spouseId": null,
+        "characterId": null,
+        "isDeceased": true,
+        "gender": "female"
+      },
+      {
+        "id": "vivenna",
+        "name": "Vivenna",
+        "parentIds": [
+          "dedelin",
+          "idris-queen"
+        ],
+        "spouseId": null,
+        "characterId": "vivenna",
+        "isDeceased": false,
+        "gender": "female"
+      },
+      {
+        "id": "siri",
+        "name": "Siri",
+        "parentIds": [
+          "dedelin",
+          "idris-queen"
+        ],
+        "spouseId": "susebron",
+        "characterId": "siri",
+        "isDeceased": false,
+        "gender": "female"
+      },
+      {
+        "id": "susebron",
+        "name": "Susebron",
+        "parentIds": [],
+        "spouseId": "siri",
+        "characterId": "susebron",
+        "isDeceased": false,
+        "gender": "male"
+      }
+    ]
+  },
+  {
+    "id": "survivor",
+    "name": "Survivor's Kin",
+    "color": "#a78bfa",
+    "description": "The found family bonded to Kelsier, the Survivor of Hathsin. Marsh is Kelsier's older brother; Spook is their distant cousin.",
+    "rootIds": [
+      "survivor-circle"
+    ],
+    "members": [
+      {
+        "id": "survivor-circle",
+        "name": "Survivor's Circle",
+        "parentIds": [],
+        "spouseId": null,
+        "characterId": null,
+        "isDeceased": true,
+        "gender": "male"
+      },
+      {
+        "id": "kelsier",
+        "name": "Kelsier",
+        "parentIds": [
+          "survivor-circle"
+        ],
+        "spouseId": "mare",
+        "characterId": "kelsier",
+        "isDeceased": false,
+        "gender": "male"
+      },
+      {
+        "id": "mare",
+        "name": "Mare",
+        "parentIds": [],
+        "spouseId": "kelsier",
+        "characterId": null,
+        "isDeceased": true,
+        "gender": "female"
+      },
+      {
+        "id": "marsh",
+        "name": "Marsh",
+        "parentIds": [
+          "survivor-circle"
+        ],
+        "spouseId": null,
+        "characterId": "marsh",
+        "isDeceased": false,
+        "gender": "male"
+      },
+      {
+        "id": "spook",
+        "name": "Spook",
+        "parentIds": [
+          "survivor-circle"
+        ],
+        "spouseId": null,
+        "characterId": "spook",
+        "isDeceased": false,
+        "gender": "male"
+      }
+    ]
+  },
+  {
+    "id": "era2-scadrial",
+    "name": "Ladrian & Harms Family",
+    "color": "#2dd4bf",
+    "description": "Waxillium Ladrian, Steris Harms, and her half-sister Marasi Colms — the interconnected families of Scadrial's Era 2.",
+    "rootIds": [
+      "lord-harms"
+    ],
+    "members": [
+      {
+        "id": "lord-harms",
+        "name": "Lord Harms",
+        "parentIds": [],
+        "spouseId": null,
+        "characterId": null,
+        "isDeceased": true,
+        "gender": "male"
+      },
+      {
+        "id": "steris",
+        "name": "Steris Harms",
+        "parentIds": [
+          "lord-harms"
+        ],
+        "spouseId": "wax",
+        "characterId": "steris",
+        "isDeceased": false,
+        "gender": "female"
+      },
+      {
+        "id": "marasi",
+        "name": "Marasi Colms",
+        "parentIds": [
+          "lord-harms"
+        ],
+        "spouseId": null,
+        "characterId": "marasi",
+        "isDeceased": false,
+        "gender": "female"
+      },
+      {
+        "id": "wax",
+        "name": "Waxillium Ladrian",
+        "parentIds": [],
+        "spouseId": "steris",
+        "characterId": "wax",
+        "isDeceased": false,
+        "gender": "male"
+      }
+    ]
+  },
+  {
+    "id": "venture",
+    "name": "Venture Dynasty",
+    "color": "#f87171",
+    "description": "The noble house that ruled the Final Empire on Scadrial. Straff's illegitimate son Zane was a Mistborn assassin.",
+    "rootIds": [
+      "straff"
+    ],
+    "members": [
+      {
+        "id": "straff",
+        "name": "Straff Venture",
+        "parentIds": [],
+        "spouseId": null,
+        "characterId": null,
+        "isDeceased": true,
+        "gender": "male"
+      },
+      {
+        "id": "elend",
+        "name": "Elend Venture",
+        "parentIds": [
+          "straff"
+        ],
+        "spouseId": "vin",
+        "characterId": "elend",
+        "isDeceased": false,
+        "gender": "male"
+      },
+      {
+        "id": "vin",
+        "name": "Vin",
+        "parentIds": [],
+        "spouseId": "elend",
+        "characterId": "vin",
+        "isDeceased": false,
+        "gender": "female"
+      },
+      {
+        "id": "zane",
+        "name": "Zane",
+        "parentIds": [
+          "straff"
+        ],
+        "spouseId": null,
+        "characterId": null,
+        "isDeceased": true,
+        "gender": "male"
+      }
+    ]
+  }
+]

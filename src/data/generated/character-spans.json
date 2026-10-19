@@ -1,0 +1,687 @@
+[
+  {
+    "id": "hrathen",
+    "name": "Hrathen",
+    "planet": "sel",
+    "planetName": "Sel",
+    "color": "#14b8a6",
+    "birthYear": -510,
+    "deathYear": 12,
+    "isAlive": false,
+    "group": "other",
+    "titles": [
+      "High Priest of Dominon",
+      "Gyorn",
+      "Converted"
+    ]
+  },
+  {
+    "id": "sarene",
+    "name": "Sarene",
+    "planet": "sel",
+    "planetName": "Sel",
+    "color": "#14b8a6",
+    "birthYear": -495,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Princess of Teod",
+      "Strategist",
+      "Raoden's Wife"
+    ]
+  },
+  {
+    "id": "raoden",
+    "name": "Raoden",
+    "planet": "sel",
+    "planetName": "Sel",
+    "color": "#14b8a6",
+    "birthYear": -490,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Prince of Arelon",
+      "Restorer of Elantris",
+      "Elantrian"
+    ]
+  },
+  {
+    "id": "shai",
+    "name": "Wan ShaiLu",
+    "planet": "sel",
+    "planetName": "Sel",
+    "color": "#14b8a6",
+    "birthYear": -10,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Soulmaster",
+      "Forger",
+      "Thief"
+    ]
+  },
+  {
+    "id": "khriss",
+    "name": "Khriss",
+    "planet": "taldain",
+    "planetName": "Taldain",
+    "color": "#eab308",
+    "birthYear": 70,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Cosmere Scholar",
+      "Author of Ars Arcanum",
+      "Noble"
+    ]
+  },
+  {
+    "id": "baon",
+    "name": "Baon",
+    "planet": "taldain",
+    "planetName": "Taldain",
+    "color": "#eab308",
+    "birthYear": 75,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Master of Sand",
+      "Guardian"
+    ]
+  },
+  {
+    "id": "kenton",
+    "name": "Kenton",
+    "planet": "taldain",
+    "planetName": "Taldain",
+    "color": "#eab308",
+    "birthYear": 80,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Master of Sand",
+      "Last of the Diary"
+    ]
+  },
+  {
+    "id": "silence",
+    "name": "Silence Montane",
+    "planet": "threnody",
+    "planetName": "Threnody",
+    "color": "#8b5cf6",
+    "birthYear": 130,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Shadow Hunter",
+      "Innkeeper",
+      "Survivor"
+    ]
+  },
+  {
+    "id": "sazed",
+    "name": "Sazed",
+    "planet": "scadrial",
+    "planetName": "Scadrial",
+    "color": "#ef4444",
+    "birthYear": 150,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Keeper",
+      "Harmony",
+      "Hero of Ages"
+    ]
+  },
+  {
+    "id": "ten-soon",
+    "name": "TenSoon",
+    "planet": "scadrial",
+    "planetName": "Scadrial",
+    "color": "#ef4444",
+    "birthYear": 200,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Kandra",
+      "Freedom",
+      "Vin's Friend"
+    ]
+  },
+  {
+    "id": "susebron",
+    "name": "Susebron",
+    "planet": "nalthis",
+    "planetName": "Nalthis",
+    "color": "#d946ef",
+    "birthYear": 260,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "God-King of T'Telir",
+      "Voice Bearer",
+      "Freedom"
+    ]
+  },
+  {
+    "id": "vivenna",
+    "name": "Vivenna",
+    "planet": "nalthis",
+    "planetName": "Nalthis",
+    "color": "#d946ef",
+    "birthYear": 265,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Princess of Idris",
+      "Awakener",
+      "Wanderer"
+    ]
+  },
+  {
+    "id": "siri",
+    "name": "Siri",
+    "planet": "nalthis",
+    "planetName": "Nalthis",
+    "color": "#d946ef",
+    "birthYear": 270,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Princess of Idris",
+      "Queen of T'Telir",
+      "God-King's Wife"
+    ]
+  },
+  {
+    "id": "nightblood",
+    "name": "Nightblood",
+    "planet": "nalthis",
+    "planetName": "Nalthis",
+    "color": "#d946ef",
+    "birthYear": 290,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Sentient Sword",
+      "Soul Devourer",
+      "Evil Destroyer"
+    ]
+  },
+  {
+    "id": "nazh",
+    "name": "Nazh",
+    "planet": "threnody",
+    "planetName": "Threnody",
+    "color": "#8b5cf6",
+    "birthYear": 700,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Cartographer",
+      "Khriss's Agent"
+    ]
+  },
+  {
+    "id": "marsh",
+    "name": "Marsh",
+    "planet": "scadrial",
+    "planetName": "Scadrial",
+    "color": "#ef4444",
+    "birthYear": 988,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Steel Inquisitor",
+      "Kelsier's Brother",
+      "Spy of Harmony"
+    ]
+  },
+  {
+    "id": "kelsier",
+    "name": "Kelsier",
+    "planet": "scadrial",
+    "planetName": "Scadrial",
+    "color": "#ef4444",
+    "birthYear": 990,
+    "deathYear": 1024,
+    "isAlive": false,
+    "group": "other",
+    "titles": [
+      "Survivor of Hathsin",
+      "Thief",
+      "Founder of the Ghostbloods"
+    ]
+  },
+  {
+    "id": "breeze",
+    "name": "Breeze",
+    "planet": "scadrial",
+    "planetName": "Scadrial",
+    "color": "#ef4444",
+    "birthYear": 993,
+    "deathYear": 1026,
+    "isAlive": false,
+    "group": "other",
+    "titles": [
+      "Zinc Misting",
+      "Manipulator",
+      "Skaa Noble"
+    ]
+  },
+  {
+    "id": "ham",
+    "name": "Hammond (Ham)",
+    "planet": "scadrial",
+    "planetName": "Scadrial",
+    "color": "#ef4444",
+    "birthYear": 995,
+    "deathYear": 1026,
+    "isAlive": false,
+    "group": "other",
+    "titles": [
+      "Pewter Misting",
+      "Soldier",
+      "Philosopher"
+    ]
+  },
+  {
+    "id": "spook",
+    "name": "Spook",
+    "planet": "scadrial",
+    "planetName": "Scadrial",
+    "color": "#ef4444",
+    "birthYear": 1020,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Lord Mistborn",
+      "Survivor",
+      "Founder of Elendel"
+    ]
+  },
+  {
+    "id": "elend",
+    "name": "Elend Venture",
+    "planet": "scadrial",
+    "planetName": "Scadrial",
+    "color": "#ef4444",
+    "birthYear": 1021,
+    "deathYear": 1026,
+    "isAlive": false,
+    "group": "other",
+    "titles": [
+      "King of the New Empire",
+      "Ascendant",
+      "Visionary"
+    ]
+  },
+  {
+    "id": "vin",
+    "name": "Vin",
+    "planet": "scadrial",
+    "planetName": "Scadrial",
+    "color": "#ef4444",
+    "birthYear": 1022,
+    "deathYear": 1026,
+    "isAlive": false,
+    "group": "other",
+    "titles": [
+      "Mistborn",
+      "Hero of Ages",
+      "Ascendant"
+    ]
+  },
+  {
+    "id": "wax",
+    "name": "Waxillium Ladrian",
+    "planet": "scadrial",
+    "planetName": "Scadrial",
+    "color": "#ef4444",
+    "birthYear": 1300,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Law of the Frontier",
+      "Mistborn",
+      "Defender of the Basin"
+    ]
+  },
+  {
+    "id": "wayne",
+    "name": "Wayne",
+    "planet": "scadrial",
+    "planetName": "Scadrial",
+    "color": "#ef4444",
+    "birthYear": 1302,
+    "deathYear": 1328,
+    "isAlive": false,
+    "group": "other",
+    "titles": [
+      "Master of Disguise",
+      "Negotiator",
+      "Best Friend"
+    ]
+  },
+  {
+    "id": "steris",
+    "name": "Steris Harms",
+    "planet": "scadrial",
+    "planetName": "Scadrial",
+    "color": "#ef4444",
+    "birthYear": 1305,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Strategist",
+      "Wax's Wife",
+      "Planner"
+    ]
+  },
+  {
+    "id": "marasi",
+    "name": "Marasi Colms",
+    "planet": "scadrial",
+    "planetName": "Scadrial",
+    "color": "#ef4444",
+    "birthYear": 1310,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Governor",
+      "Lawyer",
+      "Leader"
+    ]
+  },
+  {
+    "id": "navani",
+    "name": "Navani Kholin",
+    "planet": "roshar",
+    "planetName": "Roshar",
+    "color": "#06b6d4",
+    "birthYear": 1440,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Scholar",
+      "Light Engineer",
+      "Widow Queen"
+    ]
+  },
+  {
+    "id": "taravangian",
+    "name": "Taravangian",
+    "planet": "roshar",
+    "planetName": "Roshar",
+    "color": "#06b6d4",
+    "birthYear": 1445,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "King of Kharbranth",
+      "Odium",
+      "The Wisest"
+    ]
+  },
+  {
+    "id": "dalinar",
+    "name": "Dalinar Kholin",
+    "planet": "roshar",
+    "planetName": "Roshar",
+    "color": "#06b6d4",
+    "birthYear": 1460,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Bondsmith",
+      "Highprince",
+      "Champion of Honor"
+    ]
+  },
+  {
+    "id": "jasnah",
+    "name": "Jasnah Kholin",
+    "planet": "roshar",
+    "planetName": "Roshar",
+    "color": "#06b6d4",
+    "birthYear": 1465,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Lightweaver",
+      "Queen of Alethkar",
+      "Scholar"
+    ]
+  },
+  {
+    "id": "szeth",
+    "name": "Szeth",
+    "planet": "roshar",
+    "planetName": "Roshar",
+    "color": "#06b6d4",
+    "birthYear": 1470,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Assassin of Kings",
+      "True Windrunner",
+      "Shin"
+    ]
+  },
+  {
+    "id": "kaladin",
+    "name": "Kaladin",
+    "planet": "roshar",
+    "planetName": "Roshar",
+    "color": "#06b6d4",
+    "birthYear": 1475,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Windrunner",
+      "Son of Honor",
+      "Captain"
+    ]
+  },
+  {
+    "id": "adolin",
+    "name": "Adolin Kholin",
+    "planet": "roshar",
+    "planetName": "Roshar",
+    "color": "#06b6d4",
+    "birthYear": 1476,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Duelist",
+      "Prince",
+      "Sword Bearer"
+    ]
+  },
+  {
+    "id": "shallan",
+    "name": "Shallan Davar",
+    "planet": "roshar",
+    "planetName": "Roshar",
+    "color": "#06b6d4",
+    "birthYear": 1478,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Lightweaver",
+      "Truthwatcher",
+      "Illuminator"
+    ]
+  },
+  {
+    "id": "venli",
+    "name": "Venli",
+    "planet": "roshar",
+    "planetName": "Roshar",
+    "color": "#06b6d4",
+    "birthYear": 1480,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Willshaper",
+      "Singer",
+      "Radiant"
+    ]
+  },
+  {
+    "id": "lift",
+    "name": "Lift",
+    "planet": "roshar",
+    "planetName": "Roshar",
+    "color": "#06b6d4",
+    "birthYear": 1485,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Edgedancer",
+      "Radiant",
+      "She Who Never Ages"
+    ]
+  },
+  {
+    "id": "tress",
+    "name": "Tress",
+    "planet": "lumar",
+    "planetName": "Lumar",
+    "color": "#f472b6",
+    "birthYear": 1580,
+    "deathYear": null,
+    "isAlive": true,
+    "group": "other",
+    "titles": [
+      "Navigator",
+      "Heroine of Lumar",
+      "Captain"
+    ]
+  },
+  {
+    "id": "battar",
+    "name": "Battar",
+    "planet": "roshar",
+    "planetName": "Roshar",
+    "color": "#06b6d4",
+    "isAlive": false,
+    "group": "other",
+    "titles": []
+  },
+  {
+    "id": "chanarach",
+    "name": "Chanarach",
+    "planet": "roshar",
+    "planetName": "Roshar",
+    "color": "#06b6d4",
+    "isAlive": false,
+    "group": "other",
+    "titles": []
+  },
+  {
+    "id": "denth",
+    "name": "Denth",
+    "planet": "nalthis",
+    "planetName": "Nalthis",
+    "color": "#d946ef",
+    "birthYear": null,
+    "deathYear": 300,
+    "isAlive": false,
+    "group": "other",
+    "titles": [
+      "Mercenary",
+      "Worldhopper Leader",
+      "Assassin"
+    ]
+  },
+  {
+    "id": "ishar",
+    "name": "Ishar",
+    "planet": "roshar",
+    "planetName": "Roshar",
+    "color": "#06b6d4",
+    "isAlive": false,
+    "group": "other",
+    "titles": []
+  },
+  {
+    "id": "jezrien",
+    "name": "Jezrien",
+    "planet": "roshar",
+    "planetName": "Roshar",
+    "color": "#06b6d4",
+    "isAlive": false,
+    "group": "other",
+    "titles": []
+  },
+  {
+    "id": "kalak",
+    "name": "Kalak",
+    "planet": "roshar",
+    "planetName": "Roshar",
+    "color": "#06b6d4",
+    "isAlive": false,
+    "group": "other",
+    "titles": []
+  },
+  {
+    "id": "nale",
+    "name": "Nale",
+    "planet": "roshar",
+    "planetName": "Roshar",
+    "color": "#06b6d4",
+    "isAlive": false,
+    "group": "other",
+    "titles": []
+  },
+  {
+    "id": "pailiah",
+    "name": "Pailiah",
+    "planet": "roshar",
+    "planetName": "Roshar",
+    "color": "#06b6d4",
+    "isAlive": false,
+    "group": "other",
+    "titles": []
+  },
+  {
+    "id": "vedel",
+    "name": "Vedel",
+    "planet": "roshar",
+    "planetName": "Roshar",
+    "color": "#06b6d4",
+    "isAlive": false,
+    "group": "other",
+    "titles": []
+  }
+]

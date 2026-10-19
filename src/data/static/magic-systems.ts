@@ -19,6 +19,8 @@ export interface MagicSystem {
   category: string
   bookIds: string[]
   allomanticMetals?: AllomanticMetal[]
+  /** Metal **ids**, from `content/magic-systems/`. `getMetalsFor` resolves them. */
+  allomanticMetalIds?: string[]
   classification?: string
   status?: string
   academicNote?: string
@@ -36,310 +38,24 @@ import metalsData from '@/data/generated/allomantic-metals.json'
  */
 export const ALLOMANTIC_METALS: AllomanticMetal[] = metalsData as AllomanticMetal[]
 
-export const MAGIC_SYSTEMS: MagicSystem[] = [
-  {
-    id: 'adonalsium_investiture',
-    name: "Adonalsium's Investiture",
-    description:
-      'The primeval investiture of Adonalsium before the Shattering. Its true nature and capabilities remain unknown.',
-    planetId: 'yolen',
-    shard: 'Adonalsium',
-    color: '#a78bfa',
-    category: 'primordial',
-    classification: 'Primordial',
-    status: 'Theoretical',
-    academicNote: 'No reliable documentation exists for the period before the Shattering.',
-    bookIds: [],
-  },
-  {
-    id: 'surgebinding',
-    name: 'Surgebinding',
-    description:
-      'The ten orders of Knights Radiant use Stormlight to manipulate natural forces. Surgebinding requires a Nahel bond between a human and a spren, allowing access to two of the ten Surges.',
-    planetId: 'roshar',
-    shard: 'Honor',
-    color: '#06b6d4',
-    category: 'surgebinding',
-    classification: 'Bonded Investiture',
-    status: 'Documented',
-    bookIds: ['the_way_of_kings', 'words_of_radiance', 'oathbringer', 'dawnshard', 'rhythm_of_war', 'wind_and_truth'],
-  },
-  {
-    id: 'old_magic',
-    name: 'Old Magic',
-    description:
-      'Primitive investiture tied to the Nightwatcher and the boons and curses she bestows upon those who seek her in the Valley.',
-    planetId: 'roshar',
-    shard: 'Cultivation',
-    color: '#22c55e',
-    category: 'old_magic',
-    classification: 'Environmental',
-    status: 'Poorly Understood',
-    academicNote:
-      'The Nightwatcher\u2019s exact nature and limitations remain a subject of debate among Silverlight scholars.',
-    bookIds: ['oathbringer', 'rhythm_of_war', 'wind_and_truth'],
-  },
-  {
-    id: 'voidbinding',
-    name: 'Voidbinding',
-    description:
-      'Investiture fueled by Odium, associated with the Unmade and the Fused. Uses Voidlight instead of Stormlight.',
-    planetId: 'roshar',
-    shard: 'Odium',
-    color: '#ef4444',
-    category: 'voidbinding',
-    classification: 'Environmental',
-    status: 'Partially Documented',
-    academicNote:
-      'Voidbinding appears to mirror Surgebinding in structure, but the underlying principles differ fundamentally.',
-    bookIds: ['words_of_radiance', 'oathbringer', 'rhythm_of_war', 'wind_and_truth'],
-  },
-  {
-    id: 'allomancy',
-    name: 'Allomancy',
-    description:
-      'Burning metals ingested to grant physical or mental powers. Sixteen base metals arranged in four groups: Physical, Mental, Temporal, and Enhancement. Mistborn can burn all metals; Mistings can burn only one.',
-    planetId: 'scadrial',
-    shard: 'Preservation',
-    color: '#ef4444',
-    category: 'metallic_art',
-    classification: 'Metallic Art',
-    status: 'Documented',
-    bookIds: [
-      'the_final_empire',
-      'the_well_of_ascension',
-      'the_hero_of_ages',
-      'the_alloy_of_law',
-      'shadows_of_self',
-      'the_bands_of_mourning',
-      'the_lost_metal',
-    ],
-    allomanticMetals: ALLOMANTIC_METALS,
-  },
-  {
-    id: 'feruchemy',
-    name: 'Feruchemy',
-    description:
-      'Storing attributes like strength, speed, or memory in metal minds for later use. Feruchemical power scales with the time spent storing.',
-    planetId: 'scadrial',
-    shard: 'Ruin',
-    color: '#f97316',
-    category: 'metallic_art',
-    classification: 'Metallic Art',
-    status: 'Documented',
-    bookIds: [
-      'the_final_empire',
-      'the_well_of_ascension',
-      'the_hero_of_ages',
-      'the_alloy_of_law',
-      'shadows_of_self',
-      'the_bands_of_mourning',
-      'the_lost_metal',
-    ],
-  },
-  {
-    id: 'hemalurgy',
-    name: 'Hemalurgy',
-    description:
-      'Stealing attributes from others via metal spikes driven through the body. The most dangerous metallic art, capable of stealing Allomancy, Feruchemy, or other attributes.',
-    planetId: 'scadrial',
-    shard: 'Ruin',
-    color: '#dc2626',
-    category: 'metallic_art',
-    classification: 'Metallic Art',
-    status: 'Partially Documented',
-    academicNote:
-      'Hemalurgic research remains severely restricted by Silverlight protocol due to its ethical implications.',
-    bookIds: ['the_final_empire', 'the_hero_of_ages', 'the_alloy_of_law', 'the_lost_metal'],
-  },
-  {
-    id: 'aondor',
-    name: 'AonDor',
-    description:
-      'Symbol-based magic tied to the geography of Arelon on Sel. Aons are complex symbols drawn in the air that produce magical effects. Weakened drastically after the Reod.',
-    planetId: 'sel',
-    shard: 'Devotion',
-    color: '#14b8a6',
-    category: 'selish',
-    classification: 'Symbolic Manipulation',
-    status: 'Documented',
-    bookIds: ['elantris'],
-  },
-  {
-    id: 'dakhor',
-    name: 'Dakhor',
-    description:
-      'Bone-based magic used by the Fjordell priesthood on Sel. Powered by blood sacrifices and bone-rearranging rituals.',
-    planetId: 'sel',
-    shard: 'Dominion',
-    color: '#991b1b',
-    category: 'selish',
-    classification: 'Symbolic Manipulation',
-    status: 'Partially Documented',
-    bookIds: ['elantris'],
-  },
-  {
-    id: 'forgery',
-    name: 'Forgery',
-    description:
-      "Altering an object's past through special seals. Most potent in the MaiPon region of Sel. Used extensively by Shai in The Emperor's Soul.",
-    planetId: 'sel',
-    shard: 'Devotion',
-    color: '#0d9488',
-    category: 'selish',
-    classification: 'Symbolic Manipulation',
-    status: 'Documented',
-    bookIds: ['arcanum_unbounded'],
-  },
-  {
-    id: 'chayshan',
-    name: 'ChayShan',
-    description: 'Martial-art-based investiture from Hrovell on Sel. Channeled through precise movements and stances.',
-    planetId: 'sel',
-    shard: 'Dominion',
-    color: '#a3e635',
-    category: 'selish',
-    classification: 'Symbolic Manipulation',
-    status: 'Poorly Understood',
-    academicNote:
-      'The relationship between ChayShan\u2019s physical movements and its investiture effects has yet to be fully mapped.',
-    bookIds: ['elantris'],
-  },
-  {
-    id: 'awakening',
-    name: 'Awakening',
-    description:
-      'Using BioChromatic Breath to animate objects and grant sentience. Color perception determines power. The Eighth Heightening grants the ability to Awaken with visual Commands.',
-    planetId: 'nalthis',
-    shard: 'Endowment',
-    color: '#d946ef',
-    category: 'biochromatic',
-    classification: 'BioChromatic',
-    status: 'Documented',
-    bookIds: ['warbreaker'],
-  },
-  {
-    id: 'sand_mastery',
-    name: 'Sand Mastery',
-    description:
-      'Manipulating white sand using Investiture. Practiced by the Darksiders on Taldain. Sand turns black when investiture is expended.',
-    planetId: 'taldain',
-    shard: 'Autonomy',
-    color: '#eab308',
-    category: 'sand_mastery',
-    classification: 'Kinetic Investiture',
-    status: 'Documented',
-    bookIds: ['white_sand_vol_1', 'white_sand_vol_2', 'white_sand_vol_3'],
-  },
-  {
-    id: 'sand_toning',
-    name: 'Sand Toning',
-    description:
-      'A lesser-known variant of Sand Mastery with different properties. Produces musical tones through sand manipulation.',
-    planetId: 'taldain',
-    shard: 'Autonomy',
-    color: '#a16207',
-    category: 'sand_mastery',
-    classification: 'Kinetic Investiture',
-    status: 'Partially Documented',
-    bookIds: ['white_sand_vol_1', 'white_sand_vol_2', 'white_sand_vol_3'],
-  },
-  {
-    id: 'shades',
-    name: 'Shades',
-    description:
-      'Cognitive shadows of the dead that inhabit the Forests of Hell on Threnody. Governed by Simple Rules: do not bleed, do not run, do not touch the shadows.',
-    planetId: 'threnody',
-    shard: 'Ambition',
-    color: '#8b5cf6',
-    category: 'cognitive',
-    classification: 'Cognitive Manifestation',
-    status: 'Partially Documented',
-    bookIds: ['arcanum_unbounded'],
-  },
-  {
-    id: 'aviar_bond',
-    name: 'Aviar Bond',
-    description:
-      'Birds on First of the Sun that bond with humans granting various abilities such as mental shielding or enhanced senses. The bond is formed through parasitic worms.',
-    planetId: 'first-of-the-sun',
-    shard: 'Autonomy',
-    color: '#22c55e',
-    category: 'bonding',
-    classification: 'Bonded Investiture',
-    status: 'Partially Documented',
-    bookIds: ['arcanum_unbounded', 'the_sunlit_man'],
-  },
-  {
-    id: 'yoki_hijo',
-    name: 'Yoki-Hijo',
-    description:
-      'Spirit summoning performed by yoki-hijo maidens on Komashi. They summon spirits from the dream realm and produce Hion threads that power technology.',
-    planetId: 'komashi',
-    shard: 'Virtuosity',
-    color: '#0ea5e9',
-    category: 'yoki_hijo',
-    classification: 'Cognitive Manifestation',
-    status: 'Partially Documented',
-    bookIds: ['yumi_and_the_nightmare_painter'],
-  },
-  {
-    id: 'nightmare_painting',
-    name: 'Nightmare Painting',
-    description:
-      'Trapping emotions and experiences in art on Komashi. Created by nightmare painters to contain dangerous emotions and memories.',
-    planetId: 'komashi',
-    shard: 'Virtuosity',
-    color: '#0284c7',
-    category: 'nightmare',
-    classification: 'Cognitive Manifestation',
-    status: 'Partially Documented',
-    bookIds: ['yumi_and_the_nightmare_painter'],
-  },
-  {
-    id: 'spore_magic',
-    name: 'Spore Magic',
-    description:
-      'Twelve types of magical spores make up the seas of Lumar. Each type has unique properties when activated by water. Extremely dangerous and unpredictable.',
-    planetId: 'lumar',
-    shard: 'Mercy',
-    color: '#f472b6',
-    category: 'spore',
-    classification: 'Environmental',
-    status: 'Partially Documented',
-    academicNote:
-      'Spore interaction with water suggests a Connection-based mechanism, but the precise Investiture pathways remain unidentified.',
-    bookIds: ['tress_of_the_emerald_sea'],
-  },
-  {
-    id: 'torment_bond',
-    name: 'Torment Bond',
-    description:
-      'Investiture bonded to individuals on Canticle grants heat resistance, flight, and other abilities. The planet itself is a trapped entity, and the bonds connect to its pain.',
-    planetId: 'canticle',
-    shard: 'Ambition',
-    color: '#f97316',
-    category: 'bonding',
-    classification: 'Bonded Investiture',
-    status: 'Poorly Understood',
-    academicNote:
-      'The bond appears to draw upon the planet\u2019s own Investiture rather than an external Shardic source.',
-    bookIds: ['the_sunlit_man'],
-  },
-]
+import systemsData from '@/data/generated/magic-systems.json'
 
-export const MAGIC_SYSTEM_CATEGORIES = [
-  { id: 'primordial', name: 'Primordial' },
-  { id: 'surgebinding', name: 'Surgebinding' },
-  { id: 'old_magic', name: 'Old Magic' },
-  { id: 'voidbinding', name: 'Voidbinding' },
-  { id: 'metallic_art', name: 'Metallic Arts' },
-  { id: 'selish', name: 'Selish' },
-  { id: 'biochromatic', name: 'BioChromatic' },
-  { id: 'sand_mastery', name: 'Sand Mastery' },
-  { id: 'cognitive', name: 'Cognitive' },
-  { id: 'bonding', name: 'Bonding' },
-  { id: 'yoki_hijo', name: 'Yoki-Hijo' },
-  { id: 'nightmare', name: 'Nightmare' },
-  { id: 'spore', name: 'Spore' },
-] as const
+/**
+ * The twenty magic systems, generated from `content/magic-systems/`.
+ *
+ * The win here is a join rather than a copy. Each system used to carry the full
+ * text of the metals it touched, so "Iron: Pull on nearby metals" was written
+ * down twenty times in two files and would have disagreed with
+ * `content/allomantic-metals/` the day anyone edited one of them. A system now
+ * names its metals in `allomanticMetalIds` and they are looked up.
+ *
+ * `getMetalsFor` is the lookup, so consumers get objects rather than ids.
+ */
+export const MAGIC_SYSTEMS: MagicSystem[] = systemsData as unknown as MagicSystem[]
+
+/** The metals a system touches, as objects. */
+export function getMetalsFor(system: MagicSystem): AllomanticMetal[] {
+  return (system.allomanticMetalIds ?? [])
+    .map((id) => ALLOMANTIC_METALS.find((m) => m.id === id))
+    .filter((m): m is AllomanticMetal => Boolean(m))
+}

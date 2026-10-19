@@ -1,0 +1,1736 @@
+{
+  "canticle": [
+    {
+      "id": "canticle-canticle-a",
+      "planet": "canticle",
+      "text": [
+        "Iron deposits inconsistent with",
+        "standard planetary formation",
+        "models. Composition suggests",
+        "deliberate intervention."
+      ],
+      "style": "khriss",
+      "left": "10%",
+      "top": "4%",
+      "rotation": "-0.3deg",
+      "maxWidth": "170px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "canticle-canticle-b",
+      "planet": "canticle",
+      "text": [
+        "All measurements from the initial",
+        "survey remain approximate.",
+        "A return visit is essential."
+      ],
+      "style": "khriss",
+      "left": "74%",
+      "top": "38%",
+      "rotation": "-1.1deg",
+      "maxWidth": "155px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "canticle-canticle-c",
+      "planet": "canticle",
+      "text": [
+        "The planet's rotation is unusually",
+        "slow for its orbital distance.",
+        "Tidal locking may be in progress."
+      ],
+      "style": "khriss",
+      "left": "30%",
+      "top": "40%",
+      "rotation": "1.5deg",
+      "maxWidth": "150px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "canticle-canticle-d",
+      "planet": "canticle",
+      "text": [
+        "The sun appears closer than",
+        "surface temperature suggests.",
+        "Calibrate instruments before",
+        "next visit."
+      ],
+      "style": "khriss",
+      "left": "14%",
+      "top": "74%",
+      "rotation": "0.7deg",
+      "maxWidth": "155px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "canticle-canticle-e",
+      "planet": "canticle",
+      "text": [
+        "No indigenous Investiture detected.",
+        "The planet may be a recent",
+        "arrival in the Cosmere."
+      ],
+      "style": "khriss",
+      "left": "50%",
+      "top": "4%",
+      "rotation": "-2.2deg",
+      "maxWidth": "150px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "canticle-canticle-f",
+      "planet": "canticle",
+      "text": [
+        "The population's migratory pattern",
+        "follows the habitable band.",
+        "Logically necessary."
+      ],
+      "style": "khriss",
+      "left": "12%",
+      "top": "42%",
+      "rotation": "0.5deg",
+      "maxWidth": "150px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "canticle-canticle-nazh-a",
+      "planet": "canticle",
+      "text": [
+        "The sun does not care about",
+        "my instruments. I do not",
+        "care about the sun."
+      ],
+      "style": "nazh",
+      "left": "60%",
+      "top": "22%",
+      "rotation": "1.4deg",
+      "maxWidth": "125px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "canticle-canticle-nazh-b",
+      "planet": "canticle",
+      "text": [
+        "Khriss insists on accurate",
+        "measurements. I insist on",
+        "not being on fire.",
+        "We disagree on priorities."
+      ],
+      "style": "nazh",
+      "left": "34%",
+      "top": "62%",
+      "rotation": "-0.7deg",
+      "maxWidth": "140px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    }
+  ],
+  "first-of-the-sun": [
+    {
+      "id": "first-of-the-sun-fots-a",
+      "planet": "first-of-the-sun",
+      "text": [
+        "The aviar bond is a unique",
+        "Investiture interaction with no",
+        "known parallel in the Cosmere."
+      ],
+      "style": "khriss",
+      "left": "10%",
+      "top": "4%",
+      "rotation": "-0.6deg",
+      "maxWidth": "160px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "first-of-the-sun-fots-b",
+      "planet": "first-of-the-sun",
+      "text": [
+        "Traces of Ambition's Investiture",
+        "linger throughout this system.",
+        "The death of a Shard leaves",
+        "permanent marks."
+      ],
+      "style": "khriss",
+      "left": "74%",
+      "top": "40%",
+      "rotation": "-2.4deg",
+      "maxWidth": "160px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "first-of-the-sun-fots-c",
+      "planet": "first-of-the-sun",
+      "text": [
+        "The Pantheon archipelago remains",
+        "incompletely charted. Several",
+        "islands appear and disappear from",
+        "navigation records."
+      ],
+      "style": "khriss",
+      "left": "14%",
+      "top": "74%",
+      "rotation": "0.4deg",
+      "maxWidth": "165px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "first-of-the-sun-fots-d",
+      "planet": "first-of-the-sun",
+      "text": [
+        "Sixth of the Dusk's account",
+        "provided the most reliable data on",
+        "the aviar bonding process."
+      ],
+      "style": "khriss",
+      "left": "12%",
+      "top": "34%",
+      "rotation": "-1.7deg",
+      "maxWidth": "160px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "first-of-the-sun-fots-e",
+      "planet": "first-of-the-sun",
+      "text": [
+        "The local cognitive realm is",
+        "unusually turbulent near the",
+        "dead Shard's resting place."
+      ],
+      "style": "khriss",
+      "left": "72%",
+      "top": "10%",
+      "rotation": "1.2deg",
+      "maxWidth": "155px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "first-of-the-sun-fots-f",
+      "planet": "first-of-the-sun",
+      "text": [
+        "Patji's eye may be a natural",
+        "perpendicularity.",
+        "Further observation required."
+      ],
+      "style": "khriss",
+      "left": "40%",
+      "top": "74%",
+      "rotation": "-1.0deg",
+      "maxWidth": "130px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "first-of-the-sun-fots-nazh-a",
+      "planet": "first-of-the-sun",
+      "text": [
+        "An aviar bit me.",
+        "I do not think it was personal."
+      ],
+      "style": "nazh",
+      "left": "30%",
+      "top": "20%",
+      "rotation": "1.9deg",
+      "maxWidth": "110px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "first-of-the-sun-fots-nazh-b",
+      "planet": "first-of-the-sun",
+      "text": [
+        "Khriss says the islands",
+        "are shifting. I say the map",
+        "is fine. She recalculated.",
+        "The map was not fine."
+      ],
+      "style": "nazh",
+      "left": "62%",
+      "top": "64%",
+      "rotation": "-1.5deg",
+      "maxWidth": "140px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    }
+  ],
+  "komashi": [
+    {
+      "id": "komashi-komashi-a",
+      "planet": "komashi",
+      "text": [
+        "Virtuosity's Investiture permeates",
+        "this world system at a fundamental",
+        "level. Potentially the most",
+        "Invested planet per capita."
+      ],
+      "style": "khriss",
+      "left": "10%",
+      "top": "4%",
+      "rotation": "-0.9deg",
+      "maxWidth": "175px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "komashi-komashi-b",
+      "planet": "komashi",
+      "text": [
+        "Prison world hypothesis",
+        "remains conjectural."
+      ],
+      "style": "khriss",
+      "left": "74%",
+      "top": "36%",
+      "rotation": "-2.0deg",
+      "maxWidth": "130px",
+      "crossedOut": true,
+      "correction": "Confirmed by subsequent expedition.",
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "komashi-komashi-c",
+      "planet": "komashi",
+      "text": [
+        "This page was rewritten after the",
+        "second visit corrected several",
+        "key measurements."
+      ],
+      "style": "khriss",
+      "left": "14%",
+      "top": "74%",
+      "rotation": "0.9deg",
+      "maxWidth": "165px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "komashi-komashi-d",
+      "planet": "komashi",
+      "text": [
+        "The shroud effect limits external",
+        "observation significantly. Data",
+        "accumulated over several visits."
+      ],
+      "style": "khriss",
+      "left": "72%",
+      "top": "10%",
+      "rotation": "1.4deg",
+      "maxWidth": "160px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "komashi-komashi-e",
+      "planet": "komashi",
+      "text": [
+        "The population appears unaware of",
+        "the broader Cosmere. The isolation",
+        "appears deliberate."
+      ],
+      "style": "khriss",
+      "left": "12%",
+      "top": "36%",
+      "rotation": "-0.1deg",
+      "maxWidth": "160px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "komashi-komashi-f",
+      "planet": "komashi",
+      "text": [
+        "The Father Machine remains poorly",
+        "understood. I suspect it predates",
+        "human habitation."
+      ],
+      "style": "khriss",
+      "left": "42%",
+      "top": "74%",
+      "rotation": "-1.5deg",
+      "maxWidth": "155px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "komashi-komashi-nazh-a",
+      "planet": "komashi",
+      "text": [
+        "Everything here is covered",
+        "in a thin layer of something.",
+        "I stopped asking what."
+      ],
+      "style": "nazh",
+      "left": "34%",
+      "top": "20%",
+      "rotation": "0.9deg",
+      "maxWidth": "130px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "komashi-komashi-nazh-b",
+      "planet": "komashi",
+      "text": [
+        "The locals stare at me.",
+        "I stare back.",
+        "This is acceptable."
+      ],
+      "style": "nazh",
+      "left": "58%",
+      "top": "58%",
+      "rotation": "-1.8deg",
+      "maxWidth": "120px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    }
+  ],
+  "lumar": [
+    {
+      "id": "lumar-lumar-a",
+      "planet": "lumar",
+      "text": [
+        "The aether spores behave unlike",
+        "any Investiture I have previously",
+        "documented. They appear to",
+        "respond to Intent directly."
+      ],
+      "style": "khriss",
+      "left": "10%",
+      "top": "4%",
+      "rotation": "-0.7deg",
+      "maxWidth": "170px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "lumar-lumar-b",
+      "planet": "lumar",
+      "text": [
+        "Almost lost these notes during an",
+        "incident on the Verdant Sea.",
+        "The spores react violently to",
+        "moisture."
+      ],
+      "style": "khriss",
+      "left": "74%",
+      "top": "34%",
+      "rotation": "-1.5deg",
+      "maxWidth": "160px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "lumar-lumar-c",
+      "planet": "lumar",
+      "text": [
+        "Two moons. Both exhibit unusual",
+        "orbital precession that defies",
+        "standard gravitational models."
+      ],
+      "style": "khriss",
+      "left": "12%",
+      "top": "74%",
+      "rotation": "0.2deg",
+      "maxWidth": "155px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "lumar-lumar-d",
+      "planet": "lumar",
+      "text": [
+        "The aether may predate Shardic",
+        "Investiture in this system.",
+        "If true, this is significant."
+      ],
+      "style": "khriss",
+      "left": "36%",
+      "top": "74%",
+      "rotation": "-1.2deg",
+      "maxWidth": "145px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "lumar-lumar-e",
+      "planet": "lumar",
+      "text": [
+        "Emergency jettison of equipment",
+        "during the second expedition.",
+        "Some records incomplete."
+      ],
+      "style": "khriss",
+      "left": "10%",
+      "top": "48%",
+      "rotation": "1.3deg",
+      "maxWidth": "150px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "lumar-lumar-f",
+      "planet": "lumar",
+      "text": [
+        "The salt sea crystallised from",
+        "spore activity. The formations",
+        "are remarkable."
+      ],
+      "style": "khriss",
+      "left": "46%",
+      "top": "4%",
+      "rotation": "-0.4deg",
+      "maxWidth": "140px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "lumar-lumar-nazh-a",
+      "planet": "lumar",
+      "text": [
+        "The spores ate through my boots.",
+        "Then my spare boots.",
+        "I have no more boots."
+      ],
+      "style": "nazh",
+      "left": "28%",
+      "top": "22%",
+      "rotation": "1.3deg",
+      "maxWidth": "130px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "lumar-lumar-nazh-b",
+      "planet": "lumar",
+      "text": [
+        "Khriss labelled this sea \"Verdant.\"",
+        "It is clearly blue-green.",
+        "I do not know what verdant means."
+      ],
+      "style": "nazh",
+      "left": "62%",
+      "top": "62%",
+      "rotation": "-1.1deg",
+      "maxWidth": "145px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    }
+  ],
+  "nalthis": [
+    {
+      "id": "nalthis-nalthis-a",
+      "planet": "nalthis",
+      "text": [
+        "BioChromatic aura intensity varies",
+        "predictably with each Heightening.",
+        "The gradient is consistent across",
+        "all sampled populations."
+      ],
+      "style": "khriss",
+      "left": "10%",
+      "top": "4%",
+      "rotation": "0.4deg",
+      "maxWidth": "170px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "nalthis-nalthis-b",
+      "planet": "nalthis",
+      "text": [
+        "I had nearly forgotten how pleasant",
+        "this climate is. My notes from",
+        "the first expedition were accurate."
+      ],
+      "style": "khriss",
+      "left": "74%",
+      "top": "30%",
+      "rotation": "-1.2deg",
+      "maxWidth": "155px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "nalthis-nalthis-c",
+      "planet": "nalthis",
+      "text": [
+        "Endowment's perpendicularity is",
+        "notably quiet compared to",
+        "other Shards."
+      ],
+      "style": "khriss",
+      "left": "14%",
+      "top": "74%",
+      "rotation": "-0.7deg",
+      "maxWidth": "150px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "nalthis-nalthis-d",
+      "planet": "nalthis",
+      "text": [
+        "The Returned present a unique",
+        "challenge to standard Cognitive",
+        "Shadow classification."
+      ],
+      "style": "khriss",
+      "left": "72%",
+      "top": "48%",
+      "rotation": "0.9deg",
+      "maxWidth": "155px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "nalthis-nalthis-e",
+      "planet": "nalthis",
+      "text": [
+        "Awakening commands function in",
+        "any language, suggesting the Intent",
+        "is more fundamental than the words."
+      ],
+      "style": "khriss",
+      "left": "12%",
+      "top": "34%",
+      "rotation": "-1.8deg",
+      "maxWidth": "160px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "nalthis-nalthis-f",
+      "planet": "nalthis",
+      "text": [
+        "Colour saturation here is measurably",
+        "higher than anywhere else in the",
+        "Cosmere. Not merely aesthetic."
+      ],
+      "style": "khriss",
+      "left": "42%",
+      "top": "4%",
+      "rotation": "0.6deg",
+      "maxWidth": "165px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "nalthis-nalthis-nazh-a",
+      "planet": "nalthis",
+      "text": [
+        "A Returned offered me a coin.",
+        "I do not know what it meant.",
+        "Khriss would not explain."
+      ],
+      "style": "nazh",
+      "left": "50%",
+      "top": "58%",
+      "rotation": "1.5deg",
+      "maxWidth": "130px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "nalthis-nalthis-nazh-b",
+      "planet": "nalthis",
+      "text": [
+        "The colours here are fine.",
+        "They are colours."
+      ],
+      "style": "nazh",
+      "left": "28%",
+      "top": "18%",
+      "rotation": "-0.8deg",
+      "maxWidth": "110px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    }
+  ],
+  "roshar": [
+    {
+      "id": "roshar-roshar-a",
+      "planet": "roshar",
+      "text": [
+        "Stormlight concentration exceeds my",
+        "earlier estimates by a considerable",
+        "margin. The entire ecosystem has",
+        "adapted to high Investiture density."
+      ],
+      "style": "khriss",
+      "left": "10%",
+      "top": "4%",
+      "rotation": "-0.6deg",
+      "maxWidth": "170px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "roshar-roshar-b",
+      "planet": "roshar",
+      "text": [
+        "Nazh insists this coastline maps",
+        "incorrectly. He may eventually be",
+        "right, though I suspect he has",
+        "confused it with a different continent."
+      ],
+      "style": "khriss",
+      "left": "73%",
+      "top": "22%",
+      "rotation": "-2.1deg",
+      "maxWidth": "160px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "roshar-roshar-c",
+      "planet": "roshar",
+      "text": [
+        "Three moons. A common oversight",
+        "in earlier catalogues."
+      ],
+      "style": "khriss",
+      "left": "28%",
+      "top": "40%",
+      "rotation": "1.2deg",
+      "maxWidth": "130px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "roshar-roshar-d",
+      "planet": "roshar",
+      "text": [
+        "The highstorm pattern shifts",
+        "measurably each year. I have yet",
+        "to determine whether this follows",
+        "a cycle."
+      ],
+      "style": "khriss",
+      "left": "14%",
+      "top": "74%",
+      "rotation": "0.3deg",
+      "maxWidth": "150px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "roshar-roshar-e",
+      "planet": "roshar",
+      "text": [
+        "Semi-major axis: 0.84 AU"
+      ],
+      "style": "khriss",
+      "left": "48%",
+      "top": "74%",
+      "rotation": "-0.8deg",
+      "maxWidth": "120px",
+      "crossedOut": true,
+      "correction": "Revised to 0.82 AU after additional parallax measurements.",
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "roshar-roshar-f",
+      "planet": "roshar",
+      "text": [
+        "Spren density near the eastern",
+        "peaks is unusually high. A",
+        "correlation with crem deposits",
+        "seems probable."
+      ],
+      "style": "khriss",
+      "left": "63%",
+      "top": "46%",
+      "rotation": "0.7deg",
+      "maxWidth": "160px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "roshar-roshar-g",
+      "planet": "roshar",
+      "text": [
+        "A stable perpendicularity, though",
+        "accessing it during the storm",
+        "season is not advisable."
+      ],
+      "style": "khriss",
+      "left": "10%",
+      "top": "42%",
+      "rotation": "-1.4deg",
+      "maxWidth": "150px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "roshar-roshar-h",
+      "planet": "roshar",
+      "text": [
+        "The Shattered Plains formation",
+        "remains unexplained by standard",
+        "geological models. The pattern is",
+        "too regular to be natural."
+      ],
+      "style": "khriss",
+      "left": "50%",
+      "top": "4%",
+      "rotation": "0.5deg",
+      "maxWidth": "170px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "roshar-roshar-nazh-a",
+      "planet": "roshar",
+      "text": [
+        "Khriss measured the highstorm",
+        "velocity from a sheltered valley.",
+        "I told her this was methodologically",
+        "unsound. She did not listen."
+      ],
+      "style": "nazh",
+      "left": "30%",
+      "top": "18%",
+      "rotation": "2.2deg",
+      "maxWidth": "145px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "roshar-roshar-nazh-b",
+      "planet": "roshar",
+      "text": [
+        "The bridge crews carry more than",
+        "stone. The survivors carry something",
+        "else entirely. Harder to map."
+      ],
+      "style": "nazh",
+      "left": "60%",
+      "top": "68%",
+      "rotation": "-1.6deg",
+      "maxWidth": "140px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    }
+  ],
+  "scadrial": [
+    {
+      "id": "scadrial-scadrial-a",
+      "planet": "scadrial",
+      "text": [
+        "Metal composition differs measurably",
+        "between pre- and post-Catacendre",
+        "samples. A remarkable record of",
+        "planetary transformation."
+      ],
+      "style": "khriss",
+      "left": "10%",
+      "top": "4%",
+      "rotation": "0.3deg",
+      "maxWidth": "175px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "scadrial-scadrial-b",
+      "planet": "scadrial",
+      "text": [
+        "Nazh says I should distinguish eras",
+        "more clearly. He is correct for once."
+      ],
+      "style": "khriss",
+      "left": "74%",
+      "top": "26%",
+      "rotation": "-1.9deg",
+      "maxWidth": "150px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "scadrial-scadrial-c",
+      "planet": "scadrial",
+      "text": [
+        "Preservation's perpendicularity remains",
+        "the most stable I have measured",
+        "in any world system."
+      ],
+      "style": "khriss",
+      "left": "14%",
+      "top": "76%",
+      "rotation": "-0.4deg",
+      "maxWidth": "165px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "scadrial-scadrial-d",
+      "planet": "scadrial",
+      "text": [
+        "Southern continent readings taken",
+        "under difficult conditions.",
+        "Verification recommended."
+      ],
+      "style": "khriss",
+      "left": "44%",
+      "top": "74%",
+      "rotation": "1.1deg",
+      "maxWidth": "140px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "scadrial-scadrial-e",
+      "planet": "scadrial",
+      "text": [
+        "Allomancy functions off-world",
+        "without the attenuation observed",
+        "in other Investitures.",
+        "Worth further study."
+      ],
+      "style": "khriss",
+      "left": "72%",
+      "top": "42%",
+      "rotation": "0.6deg",
+      "maxWidth": "155px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "scadrial-scadrial-f",
+      "planet": "scadrial",
+      "text": [
+        "Lord Ruler's alterations to the",
+        "planet's geography render older",
+        "maps largely obsolete."
+      ],
+      "style": "khriss",
+      "left": "12%",
+      "top": "36%",
+      "rotation": "-2.4deg",
+      "maxWidth": "160px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "scadrial-scadrial-g",
+      "planet": "scadrial",
+      "text": [
+        "An unexpectedly stable Investiture",
+        "signature for a world that has",
+        "endured two cataclysms."
+      ],
+      "style": "khriss",
+      "left": "44%",
+      "top": "4%",
+      "rotation": "-0.8deg",
+      "maxWidth": "160px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "scadrial-scadrial-h",
+      "planet": "scadrial",
+      "text": [
+        "The basin region shows evidence",
+        "of deliberate geological reshaping.",
+        "The scale is enormous."
+      ],
+      "style": "khriss",
+      "left": "10%",
+      "top": "56%",
+      "rotation": "1.4deg",
+      "maxWidth": "155px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "scadrial-scadrial-nazh-a",
+      "planet": "scadrial",
+      "text": [
+        "I drew the map of Luthadel",
+        "from memory because Khriss",
+        "refused to let me near the city.",
+        "Something about \"methodology.\""
+      ],
+      "style": "nazh",
+      "left": "58%",
+      "top": "16%",
+      "rotation": "1.8deg",
+      "maxWidth": "150px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "scadrial-scadrial-nazh-b",
+      "planet": "scadrial",
+      "text": [
+        "The mists are harmless",
+        "if you are not an idiot.",
+        "I was not harmed."
+      ],
+      "style": "nazh",
+      "left": "26%",
+      "top": "60%",
+      "rotation": "-2.0deg",
+      "maxWidth": "120px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    }
+  ],
+  "sel": [
+    {
+      "id": "sel-sel-a",
+      "planet": "sel",
+      "text": [
+        "The Dor is unlike any other",
+        "Investiture. It behaves as if",
+        "constrained by the cognitive",
+        "realm's unusual geography."
+      ],
+      "style": "khriss",
+      "left": "10%",
+      "top": "4%",
+      "rotation": "-0.5deg",
+      "maxWidth": "160px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "sel-sel-b",
+      "planet": "sel",
+      "text": [
+        "Nazh insists this landmass map is",
+        "incorrect by twelve leagues.",
+        "I disagree. He drew the original."
+      ],
+      "style": "khriss",
+      "left": "74%",
+      "top": "28%",
+      "rotation": "-0.2deg",
+      "maxWidth": "170px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "sel-sel-c",
+      "planet": "sel",
+      "text": [
+        "Oyn is the only confirmed satellite,",
+        "though earlier records mention",
+        "a second body."
+      ],
+      "style": "khriss",
+      "left": "30%",
+      "top": "40%",
+      "rotation": "1.6deg",
+      "maxWidth": "140px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "sel-sel-d",
+      "planet": "sel",
+      "text": [
+        "The Dor's pressure gradient varies",
+        "inversely with population density.",
+        "A correlation I cannot yet explain."
+      ],
+      "style": "khriss",
+      "left": "14%",
+      "top": "74%",
+      "rotation": "0.8deg",
+      "maxWidth": "165px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "sel-sel-e",
+      "planet": "sel",
+      "text": [
+        "Measurements from MaiPon have",
+        "produced unusually consistent",
+        "longitudinal readings."
+      ],
+      "style": "khriss",
+      "left": "56%",
+      "top": "74%",
+      "rotation": "-1.0deg",
+      "maxWidth": "145px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "sel-sel-f",
+      "planet": "sel",
+      "text": [
+        "The population of this planet",
+        "appears to be significantly larger",
+        "than previous guild estimates."
+      ],
+      "style": "khriss",
+      "left": "72%",
+      "top": "10%",
+      "rotation": "-0.5deg",
+      "maxWidth": "155px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "sel-sel-g",
+      "planet": "sel",
+      "text": [
+        "The border between Arelon and",
+        "Fjorden correlates precisely with",
+        "a shift in the Dor's flow.",
+        "Deliberate?"
+      ],
+      "style": "khriss",
+      "left": "10%",
+      "top": "26%",
+      "rotation": "0.2deg",
+      "maxWidth": "165px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "sel-sel-nazh-a",
+      "planet": "sel",
+      "text": [
+        "Every Selish map I have seen",
+        "is wrong. Every single one.",
+        "Including mine. But mostly",
+        "theirs."
+      ],
+      "style": "nazh",
+      "left": "38%",
+      "top": "18%",
+      "rotation": "-1.4deg",
+      "maxWidth": "130px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "sel-sel-nazh-b",
+      "planet": "sel",
+      "text": [
+        "Khriss insists on measuring",
+        "the Dor from atop a rooftop.",
+        "I fell off the rooftop.",
+        "She did not help."
+      ],
+      "style": "nazh",
+      "left": "56%",
+      "top": "62%",
+      "rotation": "2.1deg",
+      "maxWidth": "140px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    }
+  ],
+  "taldain": [
+    {
+      "id": "taldain-taldain-a",
+      "planet": "taldain",
+      "text": [
+        "Dayside heat measurements consistent",
+        "with a close binary star model.",
+        "The dark side remains largely",
+        "unvisited."
+      ],
+      "style": "khriss",
+      "left": "10%",
+      "top": "4%",
+      "rotation": "-1.0deg",
+      "maxWidth": "170px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "taldain-taldain-b",
+      "planet": "taldain",
+      "text": [
+        "Nazh finds this projection",
+        "unsatisfactory. I find his",
+        "critiques predictable."
+      ],
+      "style": "khriss",
+      "left": "74%",
+      "top": "32%",
+      "rotation": "-2.8deg",
+      "maxWidth": "145px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "taldain-taldain-c",
+      "planet": "taldain",
+      "text": [
+        "The sand on the Dayside shifts in",
+        "response to Investiture exposure.",
+        "A useful indicator."
+      ],
+      "style": "khriss",
+      "left": "14%",
+      "top": "74%",
+      "rotation": "0.5deg",
+      "maxWidth": "160px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "taldain-taldain-d",
+      "planet": "taldain",
+      "text": [
+        "Autonomy's influence here is more",
+        "overt than in any other system",
+        "I have studied."
+      ],
+      "style": "khriss",
+      "left": "72%",
+      "top": "10%",
+      "rotation": "1.1deg",
+      "maxWidth": "150px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "taldain-taldain-e",
+      "planet": "taldain",
+      "text": [
+        "The border between Dayside and",
+        "Darkside is the sharpest",
+        "environmental gradient in the",
+        "known Cosmere."
+      ],
+      "style": "khriss",
+      "left": "12%",
+      "top": "38%",
+      "rotation": "-0.3deg",
+      "maxWidth": "165px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "taldain-taldain-f",
+      "planet": "taldain",
+      "text": [
+        "The Kerzta region remains on my",
+        "list for a dedicated survey.",
+        "Access is restricted."
+      ],
+      "style": "khriss",
+      "left": "44%",
+      "top": "74%",
+      "rotation": "-1.6deg",
+      "maxWidth": "150px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "taldain-taldain-nazh-a",
+      "planet": "taldain",
+      "text": [
+        "Dayside sand master tried to",
+        "kill me. I drew his face on",
+        "the map so Khriss would know.",
+        "She removed it."
+      ],
+      "style": "nazh",
+      "left": "34%",
+      "top": "20%",
+      "rotation": "1.7deg",
+      "maxWidth": "145px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "taldain-taldain-nazh-b",
+      "planet": "taldain",
+      "text": [
+        "Khriss spent three days",
+        "arguing with a sand master",
+        "about orbital mechanics.",
+        "The sand master won."
+      ],
+      "style": "nazh",
+      "left": "60%",
+      "top": "56%",
+      "rotation": "-2.3deg",
+      "maxWidth": "135px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    }
+  ],
+  "threnody": [
+    {
+      "id": "threnody-threnody-a",
+      "planet": "threnody",
+      "text": [
+        "Ambition's death Investiture",
+        "permeates this world at every",
+        "measurable level. The cognitive",
+        "realm is saturated."
+      ],
+      "style": "khriss",
+      "left": "10%",
+      "top": "4%",
+      "rotation": "0.8deg",
+      "maxWidth": "170px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "threnody-threnody-b",
+      "planet": "threnody",
+      "text": [
+        "Cognitive shadows are both",
+        "abundant and hostile.",
+        "Extreme caution advised for",
+        "any visitor."
+      ],
+      "style": "khriss",
+      "left": "74%",
+      "top": "42%",
+      "rotation": "-1.8deg",
+      "maxWidth": "155px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "threnody-threnody-c",
+      "planet": "threnody",
+      "text": [
+        "The Forest of the Lost.",
+        "Apt naming. I lost two guides."
+      ],
+      "style": "khriss",
+      "left": "14%",
+      "top": "74%",
+      "rotation": "-0.6deg",
+      "maxWidth": "130px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "threnody-threnody-d",
+      "planet": "threnody",
+      "text": [
+        "The Silences are periods of",
+        "relative safety. The pattern",
+        "appears tied to orbital position."
+      ],
+      "style": "khriss",
+      "left": "52%",
+      "top": "74%",
+      "rotation": "1.3deg",
+      "maxWidth": "150px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "threnody-threnody-e",
+      "planet": "threnody",
+      "text": [
+        "Nazh refuses to return here.",
+        "I cannot entirely fault him."
+      ],
+      "style": "khriss",
+      "left": "72%",
+      "top": "10%",
+      "rotation": "-1.3deg",
+      "maxWidth": "130px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "threnody-threnody-f",
+      "planet": "threnody",
+      "text": [
+        "Standard measurement techniques",
+        "unreliable here due to Investiture",
+        "saturation. Alternative methods",
+        "were developed."
+      ],
+      "style": "khriss",
+      "left": "12%",
+      "top": "34%",
+      "rotation": "0.1deg",
+      "maxWidth": "165px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "threnody-threnody-g",
+      "planet": "threnody",
+      "text": [
+        "The Homeland continent appears",
+        "to be the origin of the shadows.",
+        "Further investigation postponed."
+      ],
+      "style": "khriss",
+      "left": "36%",
+      "top": "4%",
+      "rotation": "-1.1deg",
+      "maxWidth": "160px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "threnody-threnody-nazh-a",
+      "planet": "threnody",
+      "text": [
+        "I am not returning here.",
+        "I have said this before.",
+        "I will say it again."
+      ],
+      "style": "nazh",
+      "left": "30%",
+      "top": "22%",
+      "rotation": "1.2deg",
+      "maxWidth": "120px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "threnody-threnody-nazh-b",
+      "planet": "threnody",
+      "text": [
+        "The shadows do not",
+        "respond to cartography.",
+        "I checked."
+      ],
+      "style": "nazh",
+      "left": "56%",
+      "top": "66%",
+      "rotation": "-0.9deg",
+      "maxWidth": "115px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    }
+  ],
+  "yolen": [
+    {
+      "id": "yolen-yolen-a",
+      "planet": "yolen",
+      "text": [
+        "The original world. Fragmentary",
+        "records only. I have been unable",
+        "to verify any claims made about it."
+      ],
+      "style": "khriss",
+      "left": "10%",
+      "top": "4%",
+      "rotation": "-0.2deg",
+      "maxWidth": "165px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "yolen-yolen-b",
+      "planet": "yolen",
+      "text": [
+        "What existed before the",
+        "Shattering? The answer may be",
+        "lost to time."
+      ],
+      "style": "khriss",
+      "left": "74%",
+      "top": "44%",
+      "rotation": "-2.6deg",
+      "maxWidth": "130px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "yolen-yolen-c",
+      "planet": "yolen",
+      "text": [
+        "Yolen does not appear on any",
+        "contemporary star chart. Its",
+        "location was deliberately purged."
+      ],
+      "style": "khriss",
+      "left": "14%",
+      "top": "74%",
+      "rotation": "0.6deg",
+      "maxWidth": "160px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "yolen-yolen-d",
+      "planet": "yolen",
+      "text": [
+        "Adonalsium's origin world.",
+        "Every scholar's white whale."
+      ],
+      "style": "khriss",
+      "left": "40%",
+      "top": "74%",
+      "rotation": "-0.9deg",
+      "maxWidth": "140px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "yolen-yolen-e",
+      "planet": "yolen",
+      "text": [
+        "The few surviving records",
+        "contradict each other on nearly",
+        "every detail. Frustrating."
+      ],
+      "style": "khriss",
+      "left": "72%",
+      "top": "10%",
+      "rotation": "1.0deg",
+      "maxWidth": "145px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "yolen-yolen-f",
+      "planet": "yolen",
+      "text": [
+        "Hoid refuses to discuss his",
+        "memories of this place.",
+        "That alone is telling."
+      ],
+      "style": "khriss",
+      "left": "12%",
+      "top": "38%",
+      "rotation": "-1.9deg",
+      "maxWidth": "140px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "yolen-yolen-nazh-a",
+      "planet": "yolen",
+      "text": [
+        "I have drawn a large question",
+        "mark over the entire page.",
+        "Khriss removed it.",
+        "I drew a smaller one."
+      ],
+      "style": "nazh",
+      "left": "58%",
+      "top": "24%",
+      "rotation": "0.8deg",
+      "maxWidth": "135px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    },
+    {
+      "id": "yolen-yolen-nazh-b",
+      "planet": "yolen",
+      "text": [
+        "Nothing here is on any",
+        "chart. Including us."
+      ],
+      "style": "nazh",
+      "left": "34%",
+      "top": "60%",
+      "rotation": "-1.3deg",
+      "maxWidth": "110px",
+      "crossedOut": false,
+      "correction": null,
+      "sketch": null,
+      "sketchSize": null
+    }
+  ]
+}
