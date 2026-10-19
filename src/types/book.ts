@@ -14,9 +14,6 @@ export interface Book {
   /** Position within the saga (1 = first book, 2 = second, etc.). */
   order: number
 
-  /** Optional: Filename (e.g. 'stormlight.webp') for the emblem displayed on the book spine. */
-  emblem?: string
-
   /** Real-world publication year. */
   year?: number
 

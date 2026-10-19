@@ -27,7 +27,28 @@
 
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { BOOKS } from '../src/data/static/books'
+
+/*
+ * The book ids, read from `content/books/` rather than from
+ * `src/data/static/books`.
+ *
+ * This used to import the runtime module, which was fine when that module *was*
+ * the data and circular now that it is generated from the same `content/`
+ * directory: the generator would have been validating characters against an
+ * artefact derived from the thing it is validating them against. Reading the
+ * source makes the flow one-directional — `content/` in, `src/data/generated/`
+ * out — and means a book id that exists in `content/` but not in the generated
+ * file fails the build rather than passing quietly.
+ */
+const CONTENT_BOOK_IDS = new Set(
+  readdirSync(join(process.cwd(), 'content', 'books'))
+    .filter((f) => f.endsWith('.json') && f !== 'index.json')
+    .map((f) =>
+      toRuntimeBookId(
+        (JSON.parse(readFileSync(join(process.cwd(), 'content', 'books', f), 'utf8')) as { id: string }).id,
+      ),
+    ),
+)
 
 const CONTENT = join(process.cwd(), 'content', 'characters')
 const OUT = join(process.cwd(), 'src', 'data', 'generated', 'characters.json')
@@ -50,7 +71,6 @@ const OUT = join(process.cwd(), 'src', 'data', 'generated', 'characters.json')
  * translation lives here, in one place, and is verified below rather than
  * assumed.
  */
-const RUNTIME_BOOK_IDS = new Set<string>(BOOKS.map((b) => b.id))
 
 function toRuntimeBookId(contentId: string): string {
   return contentId.replace(/-/g, '_')
@@ -61,7 +81,7 @@ const dangling = new Set<string>()
 
 function runtimeBooks(ids: string[]): string[] {
   return ids.map(toRuntimeBookId).filter((id) => {
-    if (RUNTIME_BOOK_IDS.has(id)) return true
+    if (CONTENT_BOOK_IDS.has(id)) return true
     dangling.add(id)
     return false
   })

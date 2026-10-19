@@ -1,0 +1,110 @@
+[
+  {
+    "id": "pre-cosmere",
+    "name": "Pre-Cosmere",
+    "color": "#8a7050",
+    "order": 0,
+    "description": "Events before the Shattering of Adonalsium and the division of the Shards.",
+    "spine": {
+      "ink": null,
+      "foil": "#c8a96a",
+      "crop": "50% 20%"
+    }
+  },
+  {
+    "id": "mistborn-era-1",
+    "name": "Mistborn Era 1",
+    "color": "#ef4444",
+    "order": 1,
+    "description": "The original Mistborn trilogy: The Final Empire, The Well of Ascension, The Hero of Ages.",
+    "spine": {
+      "ink": null,
+      "foil": "#ef4444",
+      "crop": "50% 20%"
+    }
+  },
+  {
+    "id": "elantris",
+    "name": "Elantris",
+    "color": "#14b8a6",
+    "order": 2,
+    "description": "Sanderson's first published novel. A cursed city and a fallen prince.",
+    "spine": {
+      "ink": null,
+      "foil": "#14b8a6",
+      "crop": "50% 20%"
+    }
+  },
+  {
+    "id": "warbreaker",
+    "name": "Warbreaker",
+    "color": "#d946ef",
+    "order": 3,
+    "description": "Gods, breaths, and talking swords on the world of Nalthis.",
+    "spine": {
+      "ink": null,
+      "foil": "#d946ef",
+      "crop": "50% 20%"
+    }
+  },
+  {
+    "id": "white-sand",
+    "name": "White Sand",
+    "color": "#eab308",
+    "order": 4,
+    "description": "Graphic novel set on the planet Taldain, filled with deserts.",
+    "spine": {
+      "ink": null,
+      "foil": "#eab308",
+      "crop": "50% 20%"
+    }
+  },
+  {
+    "id": "mistborn-era-2",
+    "name": "Mistborn Era 2",
+    "color": "#f59e0b",
+    "order": 5,
+    "description": "Wax & Wayne: a mix of western and steampunk on Scadrial.",
+    "spine": {
+      "ink": null,
+      "foil": "#f59e0b",
+      "crop": "50% 20%"
+    }
+  },
+  {
+    "id": "stormlight",
+    "name": "The Stormlight Archive",
+    "color": "#06b6d4",
+    "order": 6,
+    "description": "The central epic of the Cosmere. Knights Radiant, storms, and warriors.",
+    "spine": {
+      "ink": null,
+      "foil": "#06b6d4",
+      "crop": "50% 20%"
+    }
+  },
+  {
+    "id": "arcanum-unbounded",
+    "name": "Arcanum Unbounded",
+    "color": "#8b5cf6",
+    "order": 7,
+    "description": "Collection of Cosmere short stories with information about each system.",
+    "spine": {
+      "ink": null,
+      "foil": "#8b5cf6",
+      "crop": "50% 20%"
+    }
+  },
+  {
+    "id": "secret-projects",
+    "name": "Secret Projects",
+    "color": "#0ea5e9",
+    "order": 8,
+    "description": "Sanderson's secret novels: Tress, Yumi, The Sunlit Man, and more.",
+    "spine": {
+      "ink": null,
+      "foil": "#0ea5e9",
+      "crop": "50% 20%"
+    }
+  }
+]
