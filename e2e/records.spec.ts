@@ -269,7 +269,10 @@ test.describe('the record card', () => {
         const img = el.querySelector('img') as HTMLImageElement | null
         return {
           hasImg: !!img,
-          broken: !!img && img.naturalWidth === 0,
+          // `complete` matters: reading naturalWidth the instant the card
+          // mounts reports 0 for an image that is merely still in flight, and
+          // that is not a broken portrait.
+          broken: !!img && img.complete && img.naturalWidth === 0,
           hasSvg: !!el.querySelector('svg'),
         }
       })
@@ -309,6 +312,81 @@ test.describe('the record card', () => {
     const section = page.locator('[data-character-card] section', { hasText: 'Relationships' })
     await expect(section).toBeVisible()
     await expect(section).toContainText('No recorded relationships.')
+  })
+
+  test('R.8 spoiler mode: name and origin stay, everything else is locked', async ({ page }) => {
+    // Turn it on with nothing ticked. `useSpoilerMode` persists to
+    // localStorage, so this is seeded the same way a reader's state is.
+    await page.addInitScript(() => {
+      localStorage.setItem('cosmere-spoiler-mode', 'true')
+      localStorage.setItem('cosmere-read-books', '[]')
+    })
+    await page.goto(`${RECORDS}?character=kaladin`)
+    await page.locator('[data-character-card]').waitFor()
+
+    // Name, portrait slot and origin survive.
+    await expect(page.locator('[data-character-card] h2')).toContainText('Kaladin')
+    await expect(page.locator('[data-character-card]')).toContainText('Roshar')
+
+    // The panel replaces the rest.
+    const panel = page.locator('[data-character-card] [data-locked]')
+    await expect(panel).toBeVisible()
+    await expect(panel).toContainText('Spoilers locked')
+
+    // And none of the spoilable content is in the document at all.
+    //
+    // The portrait and the title are decorative and carry `aria-hidden` by
+    // design, so counting aria-hidden attributes here would be measuring the
+    // wrong thing. What R.8 asks is that the *rest* is not reachable, and the
+    // honest check is that its text is gone.
+    const card = page.locator('[data-character-card]')
+    await expect(card).not.toContainText('1475 FE')
+    await expect(card).not.toContainText('Sylphrena')
+    await expect(card).not.toContainText('darkeyed surgeon')
+
+    // The locked panel names the books that open it.
+    await expect(panel).toContainText('The Way of Kings')
+  })
+
+  test('R.8 ticking a required book unlocks the record', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('cosmere-spoiler-mode', 'true')
+      localStorage.setItem('cosmere-read-books', '[]')
+    })
+    await page.goto(`${RECORDS}?character=kaladin`)
+    await expect(page.locator('[data-locked]')).toBeVisible()
+
+    await page.getByRole('button', { name: 'Mark books as read' }).click()
+    await page.getByRole('button', { name: /^Mark all/ }).click()
+    await page.waitForTimeout(300)
+
+    await expect(page.locator('[data-character-card] [data-locked]')).toHaveCount(0)
+    await expect(page.locator('[data-character-card]')).toContainText('1475 FE')
+  })
+
+  test('R.8 spoiler mode hides locked records from the index', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('cosmere-spoiler-mode', 'true')
+      localStorage.setItem('cosmere-read-books', '[]')
+    })
+    await page.goto(RECORDS)
+    await page.locator('[data-records-index]').waitFor()
+
+    // Nothing is readable, so the index says so rather than listing names that
+    // all lead to a locked panel.
+    await expect(page.locator('[data-records-index]')).toContainText('No records are unlocked yet')
+    await expect(page.locator('[data-records-index] nav a')).toHaveCount(0)
+  })
+
+  test('an unknown record id is a 404 state, not an empty panel', async ({ page }) => {
+    await page.goto(`${RECORDS}?character=no-such-person`)
+    // The route is lazy, so wait for the screen itself and not for a card that
+    // is never going to arrive.
+    await page.locator('[data-records-index]').waitFor()
+    await expect(page.locator('[data-records-main]')).toContainText('No such record')
+    await expect(page.getByRole('button', { name: /back to the index/i })).toBeVisible()
+    // No card is rendered for an id that does not exist.
+    await expect(page.locator('[data-character-card]')).toHaveCount(0)
   })
 
   test('the Appears In links point at books that exist', async ({ page }) => {

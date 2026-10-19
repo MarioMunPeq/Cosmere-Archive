@@ -95,9 +95,12 @@ export default function RecordsShell({ index, record, header, drawerLabel = 'Cha
           />
         )}
 
-        {/* ---- the record column ---- */}
+        {/* ---- the record column ----
+            No `id`: AppShell already owns `#main-content` for the skip link,
+            and a second element with the same id is invalid HTML that sends
+            the skip link to the first one — the wrong region. */}
         <main
-          id="main-content"
+          data-records-main
           className="min-h-0 min-w-0 flex-1 overflow-y-auto px-md py-md min-[1024px]:px-xl min-[1024px]:py-xl"
         >
           <div className="mx-auto w-full max-w-[780px] min-[1440px]:max-w-[860px]">{record}</div>

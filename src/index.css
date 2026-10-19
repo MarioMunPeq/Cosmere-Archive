@@ -960,6 +960,31 @@ html {
   content: attr(data-hint);
 }
 
+/*
+ * §5.4.6: changing record is a crossfade with an 8px rise, 400ms, and no
+ * stagger — it is a document being replaced, not a list arriving.
+ */
+@keyframes rec-fade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.record-enter {
+  animation: rec-fade 400ms var(--ease-standard) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .record-enter {
+    animation: none;
+  }
+}
+
 /**
  * The stamped volume number on a library spine.
  *

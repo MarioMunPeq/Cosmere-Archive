@@ -30,6 +30,17 @@ import { SHARD_COLORS } from '@/data/static/static-data'
 import type { Character } from '@/types/character'
 
 interface Props {
+  /**
+   * Characters the index may show. Defaults to all of them; the page passes a
+   * filtered list when spoiler mode is on.
+   *
+   * Locked records are *hidden* rather than listed-and-disabled. §5.4.6 blocks
+   * the record's contents, not its existence — a reader who has not read
+   * Oathbringer should not see that a character exists only because of it.
+   */
+  visible?: Character[]
+  /** How many records exist in total, for the counter. Defaults to all. */
+  totalCount?: number
   /** Called when the query changes, so the page can reset the card if needed. */
   onQueryChange?: (q: string) => void
 }
@@ -64,13 +75,16 @@ function matches(c: Character, q: string): boolean {
   )
 }
 
-export default function CharacterIndex({ onQueryChange }: Props) {
+export default function CharacterIndex({ visible, totalCount, onQueryChange }: Props) {
   const [params, setParams] = useSearchParams()
   const query = params.get('q') ?? ''
   const selected = params.get('character')
 
+  const pool = visible ?? ALL_CHARACTERS
+  const grandTotal = totalCount ?? ALL_CHARACTERS.length
+
   const groups = useMemo(() => {
-    const filtered = ALL_CHARACTERS.filter((c) => matches(c, query.trim()))
+    const filtered = pool.filter((c) => matches(c, query.trim()))
     // Sorting by name with a numeric collation so "Tress" and "The" behave and
     // accents land where a reader expects them.
     const sorted = [...filtered].sort((a, b) =>
@@ -84,7 +98,7 @@ export default function CharacterIndex({ onQueryChange }: Props) {
       else byLetter.set(letter, [c])
     }
     return [...byLetter.entries()]
-  }, [query])
+  }, [query, pool])
 
   const total = groups.reduce((n, [, chars]) => n + chars.length, 0)
 
@@ -136,14 +150,16 @@ export default function CharacterIndex({ onQueryChange }: Props) {
         </div>
 
         <p className="mt-sm text-nano tabular-nums text-tertiary">
-          {total} of {ALL_CHARACTERS.length} records
+          {total} of {grandTotal} records
         </p>
       </header>
 
       <nav aria-label="Character index" className="min-h-0 flex-1 overflow-y-auto px-md pb-lg">
         {groups.length === 0 ? (
           <p className="px-2 py-lg text-meta text-tertiary">
-            No records match “{query}”. Try a surname, a title, or a world.
+            {pool.length === 0
+              ? 'No records are unlocked yet. Tick the books you have read to open the archive.'
+              : `No records match “${query}”. Try a surname, a title, or a world.`}
           </p>
         ) : (
           groups.map(([letter, chars]) => (

@@ -38,6 +38,9 @@ import RecordsShell from '@/components/records/RecordsShell'
 import CharacterIndex from '@/components/records/CharacterIndex'
 import CharacterCard from '@/components/records/CharacterCard'
 import EmptyState from '@/components/primitives/EmptyState'
+import Button from '@/components/primitives/Button'
+import SpoilerControl from '@/components/records/SpoilerControl'
+import { useSpoilerMode } from '@/hooks/useSpoilerMode'
 import { useViewTransitionNavigate } from '@/hooks/useViewTransition'
 import { ALL_CHARACTERS } from '@/data/static'
 import { CHARACTER_RELATIONSHIPS } from '@/data/static/static-data'
@@ -110,6 +113,9 @@ export default function BiographicalArchivesPage() {
 
   const connectionId = searchParams.get('character') ?? 'hoid'
 
+  // §5.4.6 / R.8. The hook existed since M1 with no caller.
+  const spoiler = useSpoilerMode()
+
   useSEOMeta({
     title: 'Biographical Archives — Cosmere Archive',
     description:
@@ -151,7 +157,11 @@ export default function BiographicalArchivesPage() {
       {/* `min-w-0` and a scroll container: three section names plus the title
           do not fit 375px, and clipping "Connections" to "Connec" is worse
           than letting the row scroll. */}
-      <nav aria-label="Records sections" className="ml-auto min-w-0 max-w-full overflow-x-auto">
+      <div className="ml-auto flex min-w-0 max-w-full items-center gap-1">
+        <SpoilerControl spoiler={spoiler} />
+      </div>
+
+      <nav aria-label="Records sections" className="min-w-0 max-w-full overflow-x-auto">
         <ul className="flex items-center gap-1">
           {(['records', 'bloodlines', 'connections'] as const).map((c) => (
             <li key={c}>
@@ -249,14 +259,31 @@ export default function BiographicalArchivesPage() {
   /* ---- Records: the index and one record ---- */
 
   const record = selected ? (
-    <CharacterCard
-      key={selected.id}
-      character={selected}
-      relationships={relationshipsFor(selected.id)}
-      onOpenCharacter={openCharacter}
-      onOpenBook={(id) => navigate(`/books/${id}`)}
-      onOpenPlanet={(id) => navigate(`/celestial-charts?focus=planet&id=${id}`)}
-    />
+    <div key={selected.id} className="record-enter">
+      <CharacterCard
+        character={selected}
+        relationships={relationshipsFor(selected.id)}
+        locked={spoiler.enabled && !spoiler.isCharacterVisible(selected)}
+        onUnlock={() => spoiler.setPanelOpen(true)}
+        onOpenCharacter={openCharacter}
+        onOpenBook={(id) => navigate(`/books/${id}`)}
+        onOpenPlanet={(id) => navigate(`/celestial-charts?focus=planet&id=${id}`)}
+      />
+    </div>
+  ) : selectedId ? (
+    // §5.4.6: a character that does not exist is a real 404, not an empty
+    // panel. The id came from a URL, so something linked to it wrong.
+    <div className="rounded-[var(--radius-lg)] border border-[var(--border-subtle)] bg-[var(--surface-base)] p-xl shadow-[var(--shadow-1)]">
+      <EmptyState
+        title="No such record"
+        description={`The archive has no record with the id “${selectedId}”. The link that brought you here may be out of date.`}
+        action={
+          <Button tone="dark" size="sm" onClick={() => setChapter('records')}>
+            Back to the index
+          </Button>
+        }
+      />
+    </div>
   ) : (
     <div className="rounded-[var(--radius-lg)] border border-[var(--border-subtle)] bg-[var(--surface-base)] p-xl shadow-[var(--shadow-1)]">
       {chapter === 'contents' ? (
@@ -270,5 +297,15 @@ export default function BiographicalArchivesPage() {
     </div>
   )
 
-  return <RecordsShell header={header} index={<CharacterIndex />} record={record} />
+  /*
+   * The index list, filtered by spoiler state.
+   *
+   * With the toggle on and no books ticked this is the empty state, and it is
+   * the correct one: a record you cannot see yet should not exist in the index,
+   * or the toggle replaces the shelf with a list of names that all lead to a
+   * locked panel.
+   */
+  const visibleCharacters = spoiler.enabled ? spoiler.filterCharacters(ALL_CHARACTERS) : ALL_CHARACTERS
+
+  return <RecordsShell header={header} index={<CharacterIndex visible={visibleCharacters} />} record={record} />
 }
