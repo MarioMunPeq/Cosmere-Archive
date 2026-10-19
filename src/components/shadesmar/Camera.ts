@@ -5,13 +5,32 @@ import {
   FOCUS_EXPANSION_AMPLITUDE,
   FOCUS_FLY_DURATION,
   FOCUS_EXIT_DURATION,
+  FOCUS_VIEWPORT_FRACTION,
   CLUSTER_BY_ID,
+  WORLD_W,
+  WORLD_H,
+  WORLD_SPAN_Y,
+  VIEWPORT_FIT,
+  realmBounds,
 } from './types'
 import type { Soul } from './types'
 
+/**
+ * The camera.
+ *
+ * Three changes in this block, all from §5.5.1:
+ *
+ * - it starts at the centre of the **2.4 x 1.6** world, not the centre of a
+ *   unit square that no longer exists;
+ * - `fitToViewport()` replaces the hardcoded `zoom = 0.5`, and is recomputed on
+ *   every resize, so the ocean is framed the same on a phone and on a 4K panel;
+ * - `bounds()` reports where the realms actually land on screen. That is what
+ *   criterion S.1 measures, and it has to read the real camera rather than
+ *   recompute the arithmetic, or the criterion is testing its own formula.
+ */
 export class CameraController {
-  x = 0.5
-  y = 0.5
+  x = WORLD_W / 2
+  y = WORLD_H / 2
   zoom = 0.5
 
   private vx = 0
@@ -34,9 +53,81 @@ export class CameraController {
   private flyDuration = 0
   private flyTime = 0
 
-  private storedX = 0.5
-  private storedY = 0.5
+  private storedX = WORLD_W / 2
+  private storedY = WORLD_H / 2
   private storedZoom = 0.5
+
+  /** The zoom that frames the whole realm grid in a viewport of this size. */
+  fitToViewport(): number {
+    return VIEWPORT_FIT / WORLD_SPAN_Y
+  }
+
+  /**
+   * Re-frame on a resize.
+   *
+   * Only applied when the camera is idle. Re-zooming mid-drag would yank the
+   * world out from under a pointer that is still holding it, and the same goes
+   * for a flight in progress: both are animations with an end point, and a
+   * resize should not change where they end up.
+   */
+  resize(w: number, h: number): void {
+    if (this.dragging || this.flyActive) return
+    const fit = this.fitToViewport()
+    // Preserve where the reader is looking, in world terms, when only the
+    // framing changes.
+    const anchor = this.storedZoom > 0 ? this.zoom / this.storedZoom : 1
+    this.zoom = fit * anchor
+    this.storedZoom = fit
+    void w
+    void h
+  }
+
+  /** Called when focus is entered, so leaving it returns to the fitted overview. */
+  markFittedOverview(): void {
+    this.storedZoom = this.fitToViewport()
+  }
+
+  /** Reset to the overview framing. */
+  resetToOverview(): void {
+    this.x = WORLD_W / 2
+    this.y = WORLD_H / 2
+    this.zoom = this.fitToViewport()
+    // The overview *is* the state focus exits to, so it has to be recorded as
+    // stored or leaving a realm restores a framing nobody was ever in.
+    this.storedX = this.x
+    this.storedY = this.y
+    this.storedZoom = this.zoom
+    this.vx = 0
+    this.vy = 0
+  }
+
+  /**
+   * Where the realm grid currently sits on screen, in CSS pixels.
+   *
+   * Returned relative to the canvas, and measured from this camera's live
+   * `x`, `y`, `zoom`. Criterion S.1 reads it through `window.__shadesmar`.
+   */
+  bounds(w: number, h: number): { x: number; y: number; width: number; height: number } {
+    const b = realmBounds()
+    const tl = this.worldToScreen(b.minX, b.minY, w, h)
+    const br = this.worldToScreen(b.maxX, b.maxY, w, h)
+    return { x: tl.x, y: tl.y, width: br.x - tl.x, height: br.y - tl.y }
+  }
+
+  /**
+   * Fraction of the viewport's shorter side the realm grid occupies.
+   *
+   * The **smaller** of the two on-screen dimensions, deliberately. The grid is
+   * 4 x 3 over a 3:2 world, so on the long axis it always runs a few percent
+   * past the edge — that is what horizontal panning is for. What has to be
+   * true at every resolution is that its short axis is framed at the same
+   * fraction, and that fraction is what S.1 names.
+   */
+  boundsRatio(w: number, h: number): number {
+    const b = this.bounds(w, h)
+    const short = Math.min(w, h)
+    return short === 0 ? 0 : Math.min(b.width, b.height) / short
+  }
 
   worldToScreen(wx: number, wy: number, w: number, h: number) {
     const sx = (wx - this.x) * this.zoom * Math.min(w, h) + w / 2
@@ -148,7 +239,11 @@ export class CameraController {
 
     const expandedRadius = maxDist * (1 + FOCUS_EXPANSION_AMPLITUDE)
     const extent = expandedRadius * 2
-    const targetZoom = 0.8 / extent
+    // Focused framing is a fraction of the viewport's short side rather than an
+    // absolute zoom, so a realm opens at the same apparent size on a phone and
+    // on a 4K panel. `extent` is in world units and `worldToScreen` multiplies
+    // by `zoom * min(w, h)`, so the two cancel and the fraction is exact.
+    const targetZoom = FOCUS_VIEWPORT_FRACTION / extent
 
     this.storeState()
     this.flyTo(cluster.cx, cluster.cy, targetZoom, FOCUS_FLY_DURATION)

@@ -53,10 +53,19 @@ const IMPORTANT_CHAR_IDS = new Set([
   'pattern',
 ])
 
+/**
+ * Where in its constellation a soul sits, as a fraction of the cluster radius.
+ *
+ * The previous values were 0.03 / 0.05 / 0.07, which put every soul inside 7% of
+ * its cluster's radius: Roshar's 38 souls were a knot 7 millimetres across in a
+ * 2.4-unit ocean. Each layer is now a ring at a readable distance, and
+ * `jitterD` (see SoulField) spreads the layer wide enough that the outer one
+ * fills the disc instead of drawing a circle.
+ */
 const ORBIT_LAYER = {
-  HERALD: 0.03,
-  IMPORTANT_CHAR: 0.05,
-  CHAR: 0.07,
+  HERALD: 0.16,
+  IMPORTANT_CHAR: 0.46,
+  CHAR: 0.82,
 }
 
 function connSet(arr: string[]): string[] {

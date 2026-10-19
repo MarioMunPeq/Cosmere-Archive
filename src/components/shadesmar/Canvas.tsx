@@ -72,19 +72,56 @@ export function Canvas() {
 
     soulsRef.current = generateSoulField()
     gridRef.current.rebuild(soulsRef.current)
+    cameraRef.current.resetToOverview()
 
     let running = true
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect()
-      canvas.width = rect.width * devicePixelRatio
-      canvas.height = rect.height * devicePixelRatio
+      // `Math.min(devicePixelRatio, 2)`: at 3x the same drawing costs 2.25x the
+      // fill rate for detail nobody can see on a page of glowing dots.
+      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      canvas.width = rect.width * dpr
+      canvas.height = rect.height * dpr
       canvas.style.width = `${rect.width}px`
       canvas.style.height = `${rect.height}px`
       sizeRef.current = { w: rect.width, h: rect.height }
+      cameraRef.current.resize(rect.width, rect.height)
     }
     resize()
     window.addEventListener('resize', resize)
+
+    /*
+     * The test surface for criterion S.1.
+     *
+     * S.1 asks for the realm grid to occupy a measured fraction of the viewport
+     * at five resolutions. A screenshot cannot be measured that precisely, so the
+     * camera exposes where it actually put things and the criterion reads it.
+     * It reports the live camera rather than recomputing `realmBounds` and the
+     * fit formula, because a test that re-derives the arithmetic it is checking
+     * only proves that the arithmetic is self-consistent.
+     */
+    const probe = {
+      bounds: () => {
+        const { w, h } = sizeRef.current
+        return cameraRef.current.bounds(w, h)
+      },
+      ratio: () => {
+        const { w, h } = sizeRef.current
+        return cameraRef.current.boundsRatio(w, h)
+      },
+      zoom: () => cameraRef.current.zoom,
+      souls: () => soulsRef.current.length,
+      clusters: () => CLUSTERS.map((c) => ({ id: c.id, cx: c.cx, cy: c.cy, radius: c.radius })),
+      viewport: () => ({ ...sizeRef.current }),
+      /* A zoom must hold the point under the cursor still, so the test needs to
+       * ask where that point is in world terms before and after. */
+      screenToWorld: (sx: number, sy: number) => {
+        const { w, h } = sizeRef.current
+        return cameraRef.current.screenToWorld(sx, sy, w, h)
+      },
+    }
+    ;(window as unknown as { __shadesmar: typeof probe }).__shadesmar = probe
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && focusActiveRef.current) {
@@ -151,7 +188,7 @@ export function Canvas() {
       camera.tick(dt, w, h)
 
       // Render
-      const dpr = window.devicePixelRatio || 1
+      const dpr = Math.min(window.devicePixelRatio || 1, 2)
       ctx.save()
       ctx.scale(dpr, dpr)
 
@@ -184,6 +221,7 @@ export function Canvas() {
       window.removeEventListener('resize', resize)
       window.removeEventListener('keydown', onKeyDown)
       cancelAnimationFrame(rAFRef.current)
+      delete (window as unknown as { __shadesmar?: unknown }).__shadesmar
     }
   }, [])
 

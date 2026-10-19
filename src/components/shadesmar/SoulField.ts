@@ -1,7 +1,15 @@
 import type { Soul, DepthLayer } from './types'
-import { ENTITY_VISUALS, CLUSTERS } from './types'
+import { ENTITY_VISUALS, CLUSTERS, WORLD_W, WORLD_H } from './types'
 import { buildEntityCatalog } from './entity-catalog'
 import type { SoulDef } from './entity-catalog'
+
+/**
+ * How far a soul may stray from its layer's radius.
+ *
+ * Must be wider than the gap to the next layer or the layers overlap and the
+ * hierarchy — heralds at the centre, everyone else in the field — stops reading.
+ */
+const ORBIT_JITTER = 0.26
 
 function seed(s: string): () => number {
   let h = 0
@@ -16,14 +24,27 @@ function seed(s: string): () => number {
   }
 }
 
+/**
+ * The smallest zoom at which a soul of this kind is drawn.
+ *
+ * The renderer compares `camera.zoom * 2` against this, so these are half-zoom
+ * values. Every threshold has to sit below the overview framing, which is
+ * `VIEWPORT_FIT / WORLD_SPAN_Y = 0.5125` and therefore a `currentLod` of
+ * 1.025 — the previous 1.2 for ordinary characters meant that at the overview,
+ * the frame you always see first, 58 of the 93 souls were culled. An ocean that
+ * is empty until you zoom in is a loading screen with a star field.
+ *
+ * What zoom *does* control is how detailed a soul is drawn, which is §5.5.4's
+ * three-level LOD. That is a separate axis from whether it exists.
+ */
 function lodForKind(kind: SoulDef['kind']): number {
   switch (kind) {
     case 'herald':
       return 0.15
     case 'important_character':
-      return 0.65
+      return 0.3
     default:
-      return 1.2
+      return 0.55
   }
 }
 
@@ -106,13 +127,16 @@ export function generateSoulField(): Soul[] {
         const def = defs[i]!
         const pRng = seed(`pos:${def.id}`)
         const jitterA = (pRng() - 0.5) * gap * 0.4
-        const jitterD = (pRng() - 0.5) * 0.08
+        const jitterD = (pRng() - 0.5) * ORBIT_JITTER
         const angle = baseAngle + i * gap + jitterA
         const dist = cr * (layer + jitterD)
         let x = cx + Math.cos(angle) * dist
         let y = cy + Math.sin(angle) * dist
-        x = Math.max(0.01, Math.min(0.99, x))
-        y = Math.max(0.01, Math.min(0.99, y))
+        // The clamp is now to the world, not to a unit square that no longer
+        // exists — the previous 0.01/0.99 bound quietly pushed every soul in the
+        // right-hand third of the ocean onto its edge.
+        x = Math.max(0.01, Math.min(WORLD_W - 0.01, x))
+        y = Math.max(0.01, Math.min(WORLD_H - 0.01, y))
         souls.push(createSoul(def, x, y))
       }
     }
