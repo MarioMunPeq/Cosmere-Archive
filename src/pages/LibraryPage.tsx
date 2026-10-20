@@ -1,13 +1,20 @@
 /**
- * LibraryPage — the Library of Jasnah. M3 · the whole milestone, assembled.
+ * LibraryPage — the Library of Jasnah.
  *
- * Header with the Shelves/List switch (§5.3.5), the hall, and the reader.
+ * ## Chrome
  *
- * The view is in the URL, not in component state, for two reasons: the list is
- * linkable, and the browser Back button does something sensible after opening a
- * book. `?view=list` is read on mount and written on change.
+ * The old header was a top bar: an h1, a volume count, and a segmented
+ * control with a pill shape and a blur backdrop. That is a website's header
+ * in a library's costume. The library is a room; the room does not have a
+ * header. What it has is a sign on the wall and a way to choose how you look
+ * at the shelves.
+ *
+ * The sign is mounted above the cabinet. The volume count is a small brass
+ * plate beside it. The view switch is two physical markers — "shelves" and
+ * "list" — that sit on the rail beneath the sign, the way a bookend or a
+ * bookmark does. They are still tabs, because a keyboard user still needs to
+ * move between them; they are just not a segmented control anymore.
  */
-
 import { useCallback, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import CosmereLibrary from '@/components/library/CosmereLibrary'
@@ -25,24 +32,13 @@ export default function LibraryPage() {
     description: 'Browse the complete Cosmere book collection in a virtual library',
   })
 
-  // The view lives in the router's query string, not in component state.
-  //
-  // The obvious `window.location.search` does not work here: this is a
-  // HashRouter, so a real page URL is `/?foo=1#/library` and anything after the
-  // `#` belongs to the route. Reading the query through the router is also what
-  // makes `/#/library?view=list` a link worth pasting, and what puts the switch
-  // in history so Back does the obvious thing.
   const [params, setParams] = useSearchParams()
   const view: View = params.get('view') === 'list' ? 'list' : 'shelves'
   const [open, setOpen] = useState<Book | null>(null)
 
   const setView = useCallback(
     (next: View) => {
-      setParams(
-        next === 'list' ? { view: 'list' } : {},
-        // Replacing, not pushing: toggling a display mode is not navigation.
-        { replace: true },
-      )
+      setParams(next === 'list' ? { view: 'list' } : {}, { replace: true })
     },
     [setParams],
   )
@@ -51,22 +47,34 @@ export default function LibraryPage() {
 
   return (
     <div className="relative flex min-h-0 flex-1 flex-col bg-[var(--surface-void)]">
-      {/* ---- header ---- */}
-      <div className="relative z-20 flex shrink-0 flex-wrap items-center gap-x-4 gap-y-2 border-b border-[var(--border-subtle)] px-5 py-3 sm:px-8">
-        <h1 className="font-[var(--font-display)] text-[var(--text-h4)] text-[var(--text-primary)] sm:text-[var(--text-h3)]">
-          The Library of Jasnah
-        </h1>
+      {/* ---- the sign on the wall ---- */}
+      <div
+        className="relative z-20 flex shrink-0 flex-col items-center gap-2 px-5 pt-5 pb-3 sm:px-8"
+        style={{
+          background: 'linear-gradient(180deg, rgb(8 10 14 / .9) 0%, rgb(8 10 14 / 0) 100%)',
+        }}
+      >
+        {/* Brass plate: the name. */}
+        <div
+          className="relative px-6 py-2"
+          style={{
+            background: 'linear-gradient(180deg, #3a2a14 0%, #24180a 100%)',
+            border: '1px solid #5a3e1e',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(190,150,100,0.12)',
+          }}
+        >
+          <h1 className="font-[var(--font-display)] text-[var(--text-h3)] tracking-[0.04em] text-[#d8b878] sm:text-[var(--text-h2)]">
+            The Library of Jasnah
+          </h1>
+        </div>
 
-        <span className="hidden text-[var(--text-meta)] text-[var(--text-tertiary)] sm:inline">
+        {/* A small plate beneath it: the count. */}
+        <span className="font-[var(--font-mono)] text-[10px] uppercase tracking-[0.2em] text-[#8a6840]">
           {BOOKS.length} volumes
         </span>
 
-        {/* Shelves / List — a real segmented control, arrow-key navigable. */}
-        <div
-          role="tablist"
-          aria-label="Library view"
-          className="ml-auto flex items-center gap-0.5 rounded-[var(--radius-pill)] border border-[var(--border-interactive)] p-0.5"
-        >
+        {/* The two markers: shelves / list. Physical tokens, not a segmented control. */}
+        <div role="tablist" aria-label="Library view" className="mt-1 flex items-center gap-3">
           {(['shelves', 'list'] as const).map((v) => (
             <button
               key={v}
@@ -75,14 +83,13 @@ export default function LibraryPage() {
               aria-selected={view === v}
               data-view-toggle={v}
               onClick={() => setView(v)}
-              className={[
-                'cursor-pointer rounded-[var(--radius-pill)] px-4 py-1.5 text-[var(--text-meta)] capitalize',
-                'transition-colors duration-[var(--dur-fast)]',
-                'focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)]',
-                view === v
-                  ? 'bg-[var(--surface-raised)] text-[var(--text-primary)]'
-                  : 'text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]',
-              ].join(' ')}
+              className="cursor-pointer px-5 py-1.5 font-[var(--font-display)] text-[13px] capitalize transition-colors duration-[var(--dur-fast)] focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)]"
+              style={{
+                background: view === v ? 'linear-gradient(180deg, #3a2a14 0%, #24180a 100%)' : 'transparent',
+                border: view === v ? '1px solid #5a3e1e' : '1px solid transparent',
+                color: view === v ? '#d8b878' : '#8a6840',
+                boxShadow: view === v ? '0 2px 6px rgba(0,0,0,0.4)' : 'none',
+              }}
             >
               {v}
             </button>

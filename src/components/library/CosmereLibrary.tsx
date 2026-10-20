@@ -167,14 +167,14 @@ export default function CosmereLibrary({ onOpen }: Props) {
       <p
         role="status"
         aria-live="polite"
-        className="pointer-events-none fixed bottom-[calc(var(--bottom-nav-h)+var(--spacing-sm))] left-1/2 z-20 -translate-x-1/2 rounded-[var(--radius-pill)] border px-4 py-2 text-[var(--text-ui)] opacity-0 transition-opacity duration-[var(--dur-fast)] max-md:bottom-[var(--spacing-sm)]"
+        className="pointer-events-none fixed bottom-[calc(var(--bottom-nav-h)+var(--spacing-sm))] left-1/2 z-20 -translate-x-1/2 px-4 py-1.5 font-[var(--font-display)] text-[12px] opacity-0 transition-opacity duration-[var(--dur-fast)] max-md:bottom-[var(--spacing-sm)]"
         style={{
           left: '50%',
           opacity: active ? 1 : 0,
-          borderColor: activeMaterial ? `${activeMaterial.foil}33` : 'transparent',
-          background: 'color-mix(in srgb, var(--surface-raised) 92%, transparent)',
-          color: activeMaterial?.foil ?? 'var(--text-primary)',
-          backdropFilter: 'blur(12px)',
+          color: activeMaterial?.foil ?? '#d8b878',
+          background: 'linear-gradient(180deg, #2a1a0e 0%, #1a0e06 100%)',
+          border: '1px solid #5a3e1e',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
         }}
       >
         {active

@@ -196,19 +196,6 @@ function BookSpineImpl({
              * left to `object-position` alone.
              */
             transform: 'scale(2)',
-            /*
-             * And blurred.
-             *
-             * A jacket's title is 60px lettering. Any horizontal band of the
-             * cover that includes the middle also includes it, so the shelf read
-             * as twenty-two spines saying "NENE BENE" — legible enough to be
-             * embarrassing, not legible enough to be a cover. At 1.2px the same
-             * pixels stop being readable letters and become the mottling of old
-             * printed cloth, which is what a spine is allowed to show. It is the
-             * one change that fixes the whole problem, and it costs one filter
-             * on twenty-two already-composited layers.
-             */
-            filter: 'blur(1.2px)',
             opacity: 1,
           }}
         />
