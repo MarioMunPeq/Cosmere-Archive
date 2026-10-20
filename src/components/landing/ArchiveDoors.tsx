@@ -22,8 +22,6 @@ import { TIMELINE_EVENTS, ERAS } from '@/data/static/timeline'
 import { buildEntityCatalog } from '@/components/shadesmar/entity-catalog'
 import { CLUSTERS } from '@/components/shadesmar/types'
 import { CORE_DESTINATIONS } from '@/navigation'
-import type { IconName } from '@/navigation'
-import DestinationIcon from '@/components/layout/DestinationIcon'
 
 export const ARCHIVE_COUNTS = {
   volumes: BOOKS.length,
@@ -60,18 +58,11 @@ const STATS: Record<string, DoorStat[]> = {
   ],
 }
 
-const DOOR_ICONS: Record<string, IconName> = {
-  library: 'book',
-  records: 'person',
-  shadesmar: 'waves',
-  diagram: 'shard',
-}
-
 const ROTATIONS = [-1.2, 0.8, -0.6, 1.4]
 
 export default function ArchiveDoors() {
   return (
-    <ul aria-label="Core sections" className="grid w-full grid-cols-1 gap-lg sm:grid-cols-2 lg:grid-cols-4">
+    <ul aria-label="Core sections" className="grid w-full grid-cols-1 gap-xl sm:grid-cols-2">
       {CORE_DESTINATIONS.map((dest, i) => {
         const stats = STATS[dest.id] ?? []
         const rot = ROTATIONS[i] ?? 0
@@ -92,38 +83,32 @@ export default function ArchiveDoors() {
                 style={{
                   background: 'linear-gradient(180deg, #3a2414 0%, #2a180c 100%)',
                   border: '1px solid #5a3e1e',
-                  boxShadow: '0 8px 24px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.4)',
-                  minHeight: 180,
+                  boxShadow: '0 12px 32px rgba(0,0,0,0.5), 0 4px 8px rgba(0,0,0,0.4)',
+                  minHeight: 260,
                 }}
               >
                 {/* Spine (the binding). */}
                 <div
                   aria-hidden
-                  className="w-3 shrink-0"
+                  className="w-4 shrink-0"
                   style={{
                     background: 'linear-gradient(90deg, #1a0e06 0%, #3a2414 50%, #1a0e06 100%)',
                   }}
                 />
 
-                {/* Left page: title + glyph. */}
+                {/* Left page: title + description. */}
                 <div
-                  className="flex flex-1 flex-col justify-between p-5"
+                  className="flex flex-1 flex-col justify-between p-6"
                   style={{
                     background: 'linear-gradient(152deg, #f2e9d4 0%, #eae0c8 40%, #e0d4b6 76%, #d6c8a6 100%)',
                     borderRight: '1px solid rgba(60,40,20,0.25)',
                   }}
                 >
                   <div>
-                    <span
-                      aria-hidden
-                      className="flex h-9 w-9 items-center justify-center rounded-[2px] bg-[rgba(60,40,20,0.12)] text-[#5a3e1e]"
-                    >
-                      <DestinationIcon name={DOOR_ICONS[dest.id] ?? 'shard'} size={20} />
-                    </span>
-                    <h2 className="mt-3 font-[var(--font-display)] text-[20px] leading-[1.15] text-[#241a12]">
+                    <h2 className="font-[var(--font-display)] text-[26px] leading-[1.15] text-[#241a12]">
                       {dest.label}
                     </h2>
-                    <p className="mt-1 font-[var(--font-display)] text-[12px] italic leading-[1.4] text-[#5a4028]">
+                    <p className="mt-2 font-[var(--font-display)] text-[14px] italic leading-[1.5] text-[#5a4028]">
                       {dest.description}
                     </p>
                   </div>
@@ -131,17 +116,17 @@ export default function ArchiveDoors() {
 
                 {/* Right page: counters. */}
                 <div
-                  className="flex flex-1 flex-col justify-end gap-3 p-5"
+                  className="flex flex-1 flex-col justify-end gap-4 p-6"
                   style={{
                     background: 'linear-gradient(152deg, #f2e9d4 0%, #eae0c8 40%, #e0d4b6 76%, #d6c8a6 100%)',
                   }}
                 >
                   {stats.map((stat) => (
-                    <div key={stat.label} className="flex items-baseline gap-2">
-                      <span className="font-[var(--font-display)] text-[32px] leading-none text-[#241a12]">
+                    <div key={stat.label} className="flex items-baseline gap-3">
+                      <span className="font-[var(--font-display)] text-[40px] leading-none text-[#241a12]">
                         {stat.value}
                       </span>
-                      <span className="font-[var(--font-mono)] text-[10px] uppercase tracking-[0.15em] text-[#8a6840]">
+                      <span className="font-[var(--font-mono)] text-[11px] uppercase tracking-[0.15em] text-[#8a6840]">
                         {stat.label}
                       </span>
                     </div>

@@ -131,7 +131,7 @@ test.describe('M2.3 landing', () => {
 
     expect(await columnsAt(375)).toBe(1)
     expect(await columnsAt(768)).toBe(2)
-    expect(await columnsAt(1280)).toBe(4)
+    expect(await columnsAt(1280)).toBe(2)
   })
 
   test('D-HIST /historical lists the five archived sections', async ({ page }) => {
