@@ -5,9 +5,8 @@
  *
  * `ReadingPanel.tsx`: a 360px column with `border-[var(--border-subtle)]` and
  * `bg-[var(--surface-raised)]` — a web panel with a paper texture painted on
- * top, which is the opposite of what a reading surface is. The index and the
- * prose lived in a sidebar because the wall had no room for them, and the
- * sidebar said so.
+ * top. The index and the prose lived in a sidebar because the wall had no
+ * room for them, and the sidebar said so.
  *
  * ## What a notebook on a desk is
  *
@@ -17,18 +16,11 @@
  * sheet being read, or a blank page if none has been chosen. There is no
  * "nothing selected" state, because a blank page is a page, not a message.
  *
- * ## Why not 3D
+ * ## Content
  *
- * The Family Trees scene went through three 3D iterations and settled on a
- * flat SVG on a parchment for exactly this reason: the reading is the point,
- * and every polygone between the reader and the text is friction. A notebook
- * is paper. Paper is flat. The wall is where the 3D lives; the notebook is
- * where the reading lives.
- *
- * ## Mobile
- *
- * One page at a time. The index is the default; picking a sheet turns the
- * page. A small ink mark in the corner turns it back.
+ * The prose is transcribed from the Diagram as recorded on the Coppermind,
+ * which reproduces the epigraphs from *Words of Radiance* and *Oathbringer*.
+ * These are Taravangian's own words from his day of greatest genius.
  */
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -50,10 +42,6 @@ export default function Notebook({ active, hovered, onPick, onHover, onClose }: 
     if (bodyRef.current) bodyRef.current.scrollTop = 0
   }, [active?.id])
 
-  // When a sheet is chosen, the notebook turns to it. Done in the pick handler
-  // rather than in an effect, so we never call setState synchronously during
-  // render.
-
   const preview = hovered && hovered.id !== active?.id ? hovered : null
 
   return (
@@ -62,7 +50,6 @@ export default function Notebook({ active, hovered, onPick, onHover, onClose }: 
       aria-label="The Diagram, open on the desk"
       className="relative z-10 flex shrink-0 flex-col bg-[#3a2616] max-h-[88vh] w-full md:h-full md:max-h-none md:w-[720px]"
     >
-      {/* The desk surface the notebook rests on. */}
       <div
         aria-hidden
         className="absolute inset-x-0 bottom-0 h-12"
@@ -71,9 +58,7 @@ export default function Notebook({ active, hovered, onPick, onHover, onClose }: 
         }}
       />
 
-      {/* The notebook itself. */}
       <div className="relative m-3 flex min-h-0 flex-1 flex-col overflow-hidden rounded-[3px] shadow-[0_18px_40px_rgba(0,0,0,0.55),0_4px_8px_rgba(0,0,0,0.4)]">
-        {/* Binding: the dark spine down the centre on desktop. */}
         <div
           aria-hidden
           className="pointer-events-none absolute left-1/2 top-0 hidden h-full w-6 -translate-x-1/2 md:block"
@@ -83,7 +68,6 @@ export default function Notebook({ active, hovered, onPick, onHover, onClose }: 
             boxShadow: 'inset 0 0 6px rgba(0,0,0,0.6)',
           }}
         >
-          {/* Stitching. */}
           {Array.from({ length: 14 }, (_, i) => (
             <span
               key={i}
@@ -101,7 +85,6 @@ export default function Notebook({ active, hovered, onPick, onHover, onClose }: 
           ))}
         </div>
 
-        {/* Mobile: single page with a flip control. */}
         <div className="flex shrink-0 items-center justify-between gap-2 border-b border-[rgba(60,40,20,0.35)] bg-[#e8dcc0] px-4 py-2 md:hidden">
           <button
             type="button"
@@ -116,7 +99,6 @@ export default function Notebook({ active, hovered, onPick, onHover, onClose }: 
         </div>
 
         <div className="flex min-h-0 flex-1">
-          {/* Left page: the index. Always visible on desktop. */}
           <div
             className={['min-h-0 flex-1 overflow-y-auto', showIndex ? 'block' : 'hidden', 'md:block'].join(' ')}
             style={{
@@ -135,7 +117,6 @@ export default function Notebook({ active, hovered, onPick, onHover, onClose }: 
             />
           </div>
 
-          {/* Right page: the sheet being read. */}
           <div
             className={['min-h-0 flex-1 overflow-y-auto', showIndex ? 'hidden' : 'block', 'md:block'].join(' ')}
             style={{
@@ -167,7 +148,6 @@ export default function Notebook({ active, hovered, onPick, onHover, onClose }: 
   )
 }
 
-/** Ruled lines, as a notebook page has them. */
 function PageRule() {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0">
@@ -297,7 +277,7 @@ function SheetPage({ note, onClose }: { note: DiagramNote; onClose: () => void }
         ) : null}
       </header>
       <div aria-hidden className="mb-3 h-px w-full bg-[rgba(60,40,20,0.35)]" />
-      <div ref={undefined} className="max-w-[52ch]">
+      <div className="max-w-[52ch]">
         <div className="font-[var(--font-display)] text-[13px] leading-[1.65] text-[#241a12]">
           {PROSE[note.id] ?? null}
         </div>
@@ -336,97 +316,86 @@ function BlankPage() {
   )
 }
 
-/**
- * The prose for each sheet.
- *
- * Taravangian's voice: certain about some things, visibly unsure about others,
- * counting what can be counted because it is the only thing that stays the same.
- * Short paragraphs, not essays — this is a notebook, not a treatise.
- */
 const PROSE: Record<string, React.ReactNode> = {
   catalogue: (
     <>
-      <p>
-        Everything gathered so far. Not everything is here. What is missing is what interests me most, and I do not yet
-        know what that is.
+      <p className="font-[var(--font-mono)] text-[10px] text-[#8a6840]">
+        Catechism of the Back of the Flowered Painting · Paragraph 1
       </p>
       <p className="mt-3">
-        Twenty-seven volumes, ninety-three names, eleven worlds. I have counted them three times. The count does not
-        change; my understanding of it does.
-      </p>
-      <p className="mt-3">
-        This is not an index of knowledge. It is an index of ignorance, arranged so that the gaps show.
+        Q: For what essential must we strive? A: The essential of preservation, to shelter a seed of humanity through
+        the coming storm. Q: What cost must we bear? A: The cost is irrelevant. Mankind must survive. Our burden is that
+        of the species, and all other considerations are but dust by comparison.
       </p>
     </>
   ),
   chronology: (
     <>
-      <p>
-        The order of things is not ours. We count from when we learned them; those things happened before there was
-        anyone to count.
+      <p className="font-[var(--font-mono)] text-[10px] text-[#8a6840]">
+        Tenets of Instruction · Paragraph 1 · Back of the Footboard
       </p>
+      <p className="mt-3">You must become king. Of Everything.</p>
       <p className="mt-3">
-        I have tried to set them in sequence. The sequence refuses. Events that should be centuries apart sit beside
-        each other, and events that should be adjacent are separated by silences I cannot account for.
-      </p>
-      <p className="mt-3">
-        The Lord Ruler held for a thousand years. That is the only span I trust. Everything before it is reconstruction;
-        everything after it is consequence.
+        Debatably refers either to Taravangian's goal of becoming king of Roshar, or to his possible ambition to
+        supplant Rayse as the Shard of Odium — as suggested by the capitalization of "Everything".
       </p>
     </>
   ),
   worlds: (
     <>
-      <p>
-        Eleven. Twelve, if you count the one that broke. Each with its Shard, and each Shard with its particular way of
-        being wrong.
+      <p className="font-[var(--font-mono)] text-[10px] text-[#8a6840]">
+        Floorboard 17 · Paragraph 2 · every second letter
       </p>
       <p className="mt-3">
-        Sel interests me most. I do not know why yet. Something about the way power settled into geography there — as if
-        the land itself became the theology.
+        Ah, but they were left behind. It is obvious from the nature of the bond. But where, where, where, where? Set
+        off. Obvious. Realization like apricity. They are with the Shin. We must find one. Can we make to use a
+        Truthless? Can we craft a weapon?
       </p>
-      <p className="mt-3">Roshar is second. Not because of the storms. Because of what the storms remember.</p>
+      <p className="mt-3">This refers to the Honorblades and Szeth, who will become the Assassin in White.</p>
     </>
   ),
   shards: (
     <>
-      <p>
-        Power divided until it became personality. Each believes its fragment is the whole, and on that point they
-        agree.
+      <p className="font-[var(--font-mono)] text-[10px] text-[#8a6840]">West Wall Psalm of Wonders · Paragraph 8</p>
+      <p className="mt-3">
+        But who is the wanderer, the wild piece, the one who makes no sense? I glimpse at his implications, and the
+        world opens to me. I shy back. Impossible. Is it?
       </p>
       <p className="mt-3">
-        Honor, Cultivation, Odium. And before them, how many more? Adonalsium was not a person. It was a condition, and
-        the condition was broken, and the pieces do not know they are pieces.
-      </p>
-      <p className="mt-3">
-        I have written their names in order. The order is arbitrary. I keep it anyway, because an arbitrary order is
-        still an order, and I need one.
+        A note by Adrotagia accompanies this excerpt asking whether it refers to Mraize. However, the wanderer, the wild
+        piece, and the one who makes no sense seems to imply this is talking about Hoid.
       </p>
     </>
   ),
   heralds: (
     <>
-      <p>Ten at Aharietiam. Ten blades of metal driven into stone, and one of them empty since Talenel took it.</p>
-      <p className="mt-3">
-        The one that is missing is the one that matters. It is always the one that is missing. I have written their
-        names in the order they broke.
+      <p className="font-[var(--font-mono)] text-[10px] text-[#8a6840]">
+        Writings upon the Bedstand Lamp · Paragraph 4 · Adrotagia's third translation
       </p>
       <p className="mt-3">
-        Taln held. For four thousand five hundred years, Taln held. I do not understand what that means yet. I am not
-        sure I want to.
+        Chaos in Alethkar is, of course, inevitable. Watch carefully, and do not let power in the kingdom solidify. The
+        Blackthorn could become an ally or our greatest foe, depending on whether he takes the path of the warlord or
+        not. If he seems likely to sue for peace, assassinate him expeditiously. The risk of competition is too great.
       </p>
     </>
   ),
   connections: (
     <>
-      <p>Most of it is written. Most of it.</p>
-      <p className="mt-3">
-        The Heralds know each other. The Radiants do not. That means something. I have not found what.
+      <p className="font-[var(--font-mono)] text-[10px] text-[#8a6840]">
+        Book of the 2nd Desk Drawer · Paragraphs 14–15, 27
       </p>
       <p className="mt-3">
-        Ninety-three names. Most of them are dead. The living ones are the ones I cannot place, which is either a
-        coincidence or the point.
+        The Unmade are a deviation, a flair, a conundrum that may not be worth your time. You cannot help but think of
+        them. They are fascinating. Many are mindless. Like the spren of human emotions, only much more nasty. I do
+        believe a few can think, however.
       </p>
+      <p className="mt-3">
+        There is one you will watch. Though all of them have some relevance to precognition, Moelach is one of the most
+        powerful in this regard. His touch seeps into a soul as it breaks apart from the body, creating manifestations
+        powered by the spark of death itself. But no, this is a distraction. Deviation. Kingship. We must discuss the
+        nature of kingship.
+      </p>
+      <p className="mt-3">One is almost certainly a traitor to the others.</p>
     </>
   ),
   volumes: (

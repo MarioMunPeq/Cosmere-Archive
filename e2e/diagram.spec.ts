@@ -40,7 +40,7 @@ test.describe('D.1 — nine sheets, reachable and named', () => {
     await first.focus()
     await expect(first).toBeFocused()
     await page.keyboard.press('Enter')
-    await expect(page.locator('[data-diagram-sheet-title]')).toContainText('De lo que hay')
+    await expect(page.locator('[data-diagram-sheet-title]')).toContainText('Catechism')
   })
 
   test('Escape closes the sheet', async ({ page }) => {

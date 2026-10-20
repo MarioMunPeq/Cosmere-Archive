@@ -1,20 +1,8 @@
 /**
  * Small notes pinned to the wall — the apuntes.
  *
- * ## What these are
- *
- * The nine sheets are the argument. These are the thoughts that occurred while
- * making it: shorter, less certain, written on whatever paper was to hand. They
- * are not an index of anything. They are the wall being a wall rather than a
- * gallery of finished pages.
- *
- * ## Why a separate component
- *
- * A note is not a sheet. A sheet has ruled lines, a margin, a tack at top
- * centre, and a title. A note is a scrap: torn on three sides, pinned with a
- * single tack, no margin, handwriting that runs to the edge. Making them the
- * same component with a size flag would have made the notes look like small
- * sheets, which is the one thing they must not look like.
+ * The text is drawn from the Diagram as recorded on the Coppermind:
+ * epigraphs, predictions, and deviations. These are Taravangian's own words.
  */
 
 export interface WallNoteData {
@@ -72,46 +60,124 @@ export function WallNote({ id, x, y, rot, text }: WallNoteData) {
 
 const NOTES: WallNoteData[] = [
   {
-    id: 'n-sel',
+    id: 'n-ceiling',
     x: 300,
     y: 420,
     rot: -7,
-    text: 'Sel: el poder se volvió geografía. ¿Por qué allí y no en otro sitio?',
+    text: 'Obviously they are fools. The Desolation needs no usher. It can and will sit where it wishes.',
   },
-  { id: 'n-kel', x: 1650, y: 380, rot: 4, text: 'Kelsier mintió. Lo sé. No sé sobre qué.' },
-  { id: 'n-hoid', x: 2580, y: 460, rot: -3, text: 'Hoid estuvo en los tres. Siempre está en los tres.' },
-  { id: 'n-taln', x: 3350, y: 900, rot: 6, text: 'Taln sostuvo. 4500 años. No entiendo qué sostuvo.' },
-  { id: 'n-shards', x: 620, y: 1500, rot: 5, text: 'Las Esquirlas no saben que son fragmentos. Eso es lo peligroso.' },
   {
-    id: 'n-time',
+    id: 'n-desk',
+    x: 1650,
+    y: 380,
+    rot: 4,
+    text: 'Hold the secret that broke the Knights Radiant. You may need it to destroy the new orders when they return.',
+  },
+  {
+    id: 'n-catechism',
+    x: 2580,
+    y: 460,
+    rot: -3,
+    text: 'Mankind must survive. Our burden is that of the species, and all other considerations are but dust.',
+  },
+  {
+    id: 'n-coda',
+    x: 3350,
+    y: 900,
+    rot: 6,
+    text: 'They will come. You cannot stop their oaths. Look for those who survive when they should not.',
+  },
+  {
+    id: 'n-floor27',
+    x: 620,
+    y: 1500,
+    rot: 5,
+    text: 'One danger in deploying such a potent weapon: the potential encouragement of those exploring the Nahel bond.',
+  },
+  {
+    id: 'n-northwall',
     x: 1320,
     y: 1420,
     rot: -4,
-    text: 'El tiempo aquí no es lineal. Es una espiral que se muerde la cola.',
+    text: '1173090605 1173090801 1173090901 1173091001 — the last ten highstorms before the Everstorm.',
   },
-  { id: 'n-elantris', x: 2100, y: 1600, rot: 3, text: 'Elantris fue antes de todo. O después. No lo sé.' },
-  { id: 'n-roshar', x: 2920, y: 1520, rot: -6, text: 'Roshar: las tormentas recuerdan. ¿Qué recuerdan?' },
-  { id: 'n-odium', x: 3700, y: 1680, rot: 4, text: 'Odium no destruye. Redirige. Eso es peor.' },
-  { id: 'n-vin', x: 460, y: 2650, rot: -5, text: 'Vin confió en el Lord Ruler. Eso fue su error, y su acierto.' },
-  { id: 'n-sazed', x: 1200, y: 2850, rot: 2, text: 'Sazed tiene los dieciséis. Los dieciséis no se ponen de acuerdo.' },
-  { id: 'n-heralds', x: 2050, y: 2500, rot: -3, text: 'Los Heralds se conocen. Los Radiantes no. Eso significa algo.' },
+  {
+    id: 'n-westwall',
+    x: 2100,
+    y: 1600,
+    rot: 3,
+    text: 'But who is the wanderer, the wild piece, the one who makes no sense?',
+  },
+  {
+    id: 'n-bedstand',
+    x: 2920,
+    y: 1520,
+    rot: -6,
+    text: 'The Blackthorn could become an ally or our greatest foe. If he seems likely to sue for peace, assassinate him.',
+  },
+  { id: 'n-tenets', x: 3700, y: 1680, rot: 4, text: 'You must become king. Of Everything.' },
+  {
+    id: 'n-predictions',
+    x: 460,
+    y: 2650,
+    rot: -5,
+    text: 'The fall of Dalinar to become the enemy\u2019s champion. This has turned out to be false.',
+  },
+  {
+    id: 'n-deviation',
+    x: 1200,
+    y: 2850,
+    rot: 2,
+    text: 'Seven factions fighting in Jah Keved, rather than the six predicted. A deviation.',
+  },
+  {
+    id: 'n-unmade',
+    x: 2050,
+    y: 2500,
+    rot: -3,
+    text: 'The Unmade are a deviation, a flair, a conundrum. One is almost certainly a traitor to the others.',
+  },
   {
     id: 'n-words',
     x: 2780,
     y: 2720,
     rot: 5,
-    text: '4,4 M palabras. La cuenta no cambia. La entiendo un poco más cada vez.',
+    text: '4,4 M words. The count does not change. My understanding of it does.',
   },
-  { id: 'n-dead', x: 3520, y: 2600, rot: -4, text: 'Todos muertos. Archivo de muertos. Yo lo mantengo.' },
-  { id: 'n-unknown', x: 900, y: 2050, rot: 7, text: 'Hay nombres que no sé de dónde vienen. Los dejo donde están.' },
-  { id: 'n-gap', x: 2420, y: 2100, rot: -2, text: 'Lo que falta es lo que más me interesa. No sé todavía qué es.' },
-  { id: 'n-start', x: 3180, y: 2000, rot: 3, text: 'No sé por dónde empezar. Empiezo por aquí.' },
   {
-    id: 'n-end',
+    id: 'n-dead',
+    x: 3520,
+    y: 2600,
+    rot: -4,
+    text: 'All of them dead. This is an archive of the dead, and I am the one who keeps it.',
+  },
+  {
+    id: 'n-moelach',
+    x: 900,
+    y: 2050,
+    rot: 7,
+    text: 'Moelach. His touch seeps into a soul as it breaks apart from the body.',
+  },
+  {
+    id: 'n-honorblades',
+    x: 2420,
+    y: 2100,
+    rot: -2,
+    text: 'The Honorblades give their wielders powers. Can we craft a weapon?',
+  },
+  {
+    id: 'n-shin',
+    x: 3180,
+    y: 2000,
+    rot: 3,
+    text: 'They are with the Shin. We must find one. Can we make to use a Truthless?',
+  },
+  {
+    id: 'n-wanderer',
     x: 1500,
     y: 2350,
     rot: -5,
-    text: 'Cada vez que cuento, entiendo un poco menos. Eso también es contar.',
+    text: 'The wanderer, the wild piece, the one who makes no sense. Impossible. Is it?',
   },
 ]
 
