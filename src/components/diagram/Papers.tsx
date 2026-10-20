@@ -1,26 +1,27 @@
 /**
- * The notebook — the diegetic reading surface for the Diagram.
+ * Loose papers on the desk — the diegetic reading surface for the Diagram.
  *
- * ## What this replaces
+ * ## Why not a notebook
  *
- * `ReadingPanel.tsx`: a 360px column with `border-[var(--border-subtle)]` and
- * `bg-[var(--surface-raised)]` — a web panel with a paper texture painted on
- * top. The index and the prose lived in a sidebar because the wall had no
- * room for them, and the sidebar said so.
+ * A bound ledger says "someone organised this." Taravangian did not organise
+ * anything. He wrote on every surface of his bedroom on a day of genius and
+ * the notes have been pulled from those surfaces and left in a pile. A notebook
+ * with a spine and stitching is a library's object. A pile of torn paper on a
+ * desk is a madman's.
  *
- * ## What a notebook on a desk is
+ * ## What it is
  *
- * An open ledger, bound at the centre, two pages visible. The left page is
- * always the index — roman numerals, ink rules, the tally sheets marked —
- * because that is what a book shows when you open it. The right page is the
- * sheet being read, or a blank page if none has been chosen. There is no
- * "nothing selected" state, because a blank page is a page, not a message.
+ * A wooden surface with a stack of loose sheets. The top sheet is the one being
+ * read — or the index, if none has been chosen. The sheets behind it peek out
+ * from the edges, so the pile is visible without being legible. There is no
+ * binding, no ruled lines, no margin. Taravangian wrote to the edge.
  *
- * ## Content
+ * ## Interaction
  *
- * The prose is transcribed from the Diagram as recorded on the Coppermind,
- * which reproduces the epigraphs from *Words of Radiance* and *Oathbringer*.
- * These are Taravangian's own words from his day of greatest genius.
+ * Clicking a sheet on the wall pulls the corresponding paper to the top of the
+ * pile. The top paper carries a small ink mark in the corner that sends it back
+ * to the pile. There is no "Contents" button, because a pile of papers does
+ * not have a contents page — it has the top sheet.
  */
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -34,97 +35,76 @@ interface Props {
   onClose: () => void
 }
 
-export default function Notebook({ active, hovered, onPick, onHover, onClose }: Props) {
+export default function Papers({ active, hovered, onPick, onHover, onClose }: Props) {
   const bodyRef = useRef<HTMLDivElement>(null)
   const [showIndex, setShowIndex] = useState(true)
 
   useEffect(() => {
     if (bodyRef.current) bodyRef.current.scrollTop = 0
-  }, [active?.id])
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (active) setShowIndex(false)
+  }, [active])
 
   const preview = hovered && hovered.id !== active?.id ? hovered : null
+
+  const topIsIndex = showIndex || !active
 
   return (
     <aside
       data-diagram-panel
-      aria-label="The Diagram, open on the desk"
-      className="relative z-10 flex shrink-0 flex-col bg-[#3a2616] max-h-[88vh] w-full md:h-full md:max-h-none md:w-[720px]"
+      aria-label="The Diagram, on the desk"
+      className="relative z-10 flex shrink-0 flex-col bg-[#2a1a0e] min-h-[85vh] w-full md:h-full md:min-h-0 md:w-[460px]"
     >
+      {/* The desk surface. */}
       <div
         aria-hidden
-        className="absolute inset-x-0 bottom-0 h-12"
+        className="absolute inset-0"
         style={{
-          background: 'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(40,24,12,0.55) 100%)',
+          background: 'linear-gradient(160deg, #3a2414 0%, #2a180c 40%, #1a0e06 100%)',
+        }}
+      />
+      <div
+        aria-hidden
+        className="absolute inset-0 opacity-40"
+        style={{
+          backgroundImage:
+            'repeating-linear-gradient(90deg, rgba(80,50,24,0.18) 0px, rgba(80,50,24,0.18) 1px, transparent 1px, transparent 7px)',
         }}
       />
 
-      <div className="relative m-3 flex min-h-0 flex-1 flex-col overflow-hidden rounded-[3px] shadow-[0_18px_40px_rgba(0,0,0,0.55),0_4px_8px_rgba(0,0,0,0.4)]">
+      {/* The pile. */}
+      <div className="relative m-4 flex min-h-0 flex-1 flex-col">
+        {/* Backing sheets: the pile behind the top one. */}
+        <div aria-hidden className="absolute inset-0" style={{ transform: 'rotate(-2.6deg) translate(6px, 4px)' }}>
+          <Sheet back />
+        </div>
+        <div aria-hidden className="absolute inset-0" style={{ transform: 'rotate(1.8deg) translate(-4px, 6px)' }}>
+          <Sheet back />
+        </div>
+        <div aria-hidden className="absolute inset-0" style={{ transform: 'rotate(-0.8deg) translate(2px, 2px)' }}>
+          <Sheet back />
+        </div>
+
+        {/* The top sheet. */}
         <div
-          aria-hidden
-          className="pointer-events-none absolute left-1/2 top-0 hidden h-full w-6 -translate-x-1/2 md:block"
+          className="relative flex min-h-0 flex-1 flex-col overflow-hidden"
           style={{
-            background:
-              'linear-gradient(90deg, rgba(30,18,9,0.95) 0%, rgba(52,32,16,0.85) 35%, rgba(52,32,16,0.85) 65%, rgba(30,18,9,0.95) 100%)',
-            boxShadow: 'inset 0 0 6px rgba(0,0,0,0.6)',
+            transform: 'rotate(0.6deg)',
+            boxShadow: '4px 8px 18px rgba(0,0,0,0.55), 1px 2px 4px rgba(0,0,0,0.4)',
           }}
         >
-          {Array.from({ length: 14 }, (_, i) => (
-            <span
-              key={i}
-              aria-hidden
-              className="absolute block"
-              style={{
-                left: '50%',
-                top: `${6 + i * 7}%`,
-                width: 6,
-                height: 1,
-                marginLeft: -3,
-                background: 'rgba(190,150,100,0.35)',
-              }}
-            />
-          ))}
-        </div>
-
-        <div className="flex shrink-0 items-center justify-between gap-2 border-b border-[rgba(60,40,20,0.35)] bg-[#e8dcc0] px-4 py-2 md:hidden">
-          <button
-            type="button"
-            onClick={() => setShowIndex(true)}
-            className="font-[var(--font-display)] text-[13px] italic text-[#241a12]"
-          >
-            {showIndex ? 'Contents' : '← Contents'}
-          </button>
-          <span className="font-[var(--font-mono)] text-[10px] tracking-[0.15em] uppercase text-[#5a4028]">
-            {active ? active.numeral : '—'}
-          </span>
-        </div>
-
-        <div className="flex min-h-0 flex-1">
-          <div
-            className={['min-h-0 flex-1 overflow-y-auto', showIndex ? 'block' : 'hidden', 'md:block'].join(' ')}
-            style={{
-              background: 'linear-gradient(152deg, #f2e9d4 0%, #eae0c8 40%, #e0d4b6 76%, #d6c8a6 100%)',
-            }}
-          >
-            <PageRule />
-            <Index
-              entries={DIAGRAM_NOTES}
-              active={active}
-              onPick={(id) => {
-                onPick(id)
-                setShowIndex(false)
-              }}
-              onHover={onHover}
-            />
-          </div>
-
-          <div
-            className={['min-h-0 flex-1 overflow-y-auto', showIndex ? 'hidden' : 'block', 'md:block'].join(' ')}
-            style={{
-              background: 'linear-gradient(152deg, #f2e9d4 0%, #eae0c8 40%, #e0d4b6 76%, #d6c8a6 100%)',
-            }}
-          >
-            <PageRule />
-            {active ? (
+          <Sheet>
+            {topIsIndex ? (
+              <Index
+                entries={DIAGRAM_NOTES}
+                active={active}
+                onPick={(id) => {
+                  onPick(id)
+                  setShowIndex(false)
+                }}
+                onHover={onHover}
+              />
+            ) : active ? (
               <SheetPage
                 note={active}
                 onClose={() => {
@@ -135,7 +115,7 @@ export default function Notebook({ active, hovered, onPick, onHover, onClose }: 
             ) : (
               <BlankPage />
             )}
-          </div>
+          </Sheet>
         </div>
       </div>
 
@@ -148,32 +128,19 @@ export default function Notebook({ active, hovered, onPick, onHover, onClose }: 
   )
 }
 
-function PageRule() {
+function Sheet({ children, back = false }: { children?: React.ReactNode; back?: boolean }) {
   return (
-    <div aria-hidden className="pointer-events-none absolute inset-0">
-      {Array.from({ length: 34 }, (_, i) => (
-        <span
-          key={i}
-          className="absolute block"
-          style={{
-            left: 28,
-            right: 18,
-            top: 40 + i * 22,
-            height: 1,
-            background: 'rgba(58,86,120,0.14)',
-          }}
-        />
-      ))}
-      <span
-        className="absolute block"
-        style={{
-          left: 24,
-          top: 14,
-          bottom: 12,
-          width: 1,
-          background: 'rgba(170,60,50,0.20)',
-        }}
-      />
+    <div
+      className="h-full w-full overflow-hidden"
+      style={{
+        background: back
+          ? 'linear-gradient(152deg, #e8dcc0 0%, #ded0ae 100%)'
+          : 'linear-gradient(152deg, #f2e9d4 0%, #eae0c8 40%, #e0d4b6 76%, #d6c8a6 100%)',
+        clipPath: back ? 'polygon(0% 1%, 100% 0%, 99% 100%, 1% 99%)' : 'polygon(0% 0%, 100% 2%, 98% 100%, 2% 98%)',
+        padding: '22px 26px',
+      }}
+    >
+      {children}
     </div>
   )
 }
@@ -190,15 +157,13 @@ function Index({
   onHover: (id: string | null) => void
 }) {
   return (
-    <div className="relative px-6 py-5">
-      <header className="mb-3">
-        <h2 className="font-[var(--font-display)] text-[20px] leading-[1.15] text-[#241a12]">The Diagram</h2>
-        <p className="mt-1 font-[var(--font-display)] text-[13px] italic text-[#5a4028]">
-          Nine sheets. Choose one, or read them in order.
-        </p>
-      </header>
-      <div aria-hidden className="mb-3 h-px w-full bg-[rgba(60,40,20,0.35)]" />
-      <ol className="space-y-1">
+    <div className="relative">
+      <h2 className="font-[var(--font-display)] text-[22px] leading-[1.15] text-[#241a12]">The Diagram</h2>
+      <p className="mt-1 font-[var(--font-display)] text-[13px] italic text-[#5a4028]">
+        Nine sheets. Pick one up, or read them in order.
+      </p>
+      <div aria-hidden className="my-3 h-px w-full bg-[rgba(60,40,20,0.35)]" />
+      <ol className="space-y-1.5">
         {entries.map((note) => {
           const isActive = active?.id === note.id
           return (
@@ -211,9 +176,10 @@ function Index({
                 onFocus={() => onHover(note.id)}
                 onBlur={() => onHover(null)}
                 data-diagram-index-entry={note.id}
-                className="group w-full cursor-pointer px-1 py-1.5 text-left transition-colors"
+                className="group w-full cursor-pointer text-left"
                 style={{
-                  background: isActive ? 'rgba(60,40,20,0.08)' : 'transparent',
+                  background: isActive ? 'rgba(60,40,20,0.06)' : 'transparent',
+                  padding: '4px 2px',
                 }}
               >
                 <span className="flex items-baseline gap-2">
@@ -248,41 +214,38 @@ function Index({
 
 function SheetPage({ note, onClose }: { note: DiagramNote; onClose: () => void }) {
   return (
-    <div className="relative px-6 py-5">
+    <div className="relative">
       <button
         type="button"
         onClick={onClose}
         aria-label="Close sheet"
-        className="absolute right-3 top-3 cursor-pointer font-[var(--font-mono)] text-[11px] text-[#8a6840] transition-colors hover:text-[#241a12]"
+        className="absolute right-1 top-1 cursor-pointer font-[var(--font-mono)] text-[11px] text-[#8a6840] transition-colors hover:text-[#241a12]"
       >
         ×
       </button>
-      <header className="mb-3 pr-6">
-        <div className="flex items-baseline gap-2">
-          <span className="font-[var(--font-mono)] text-[10px] text-[#5a4028]">{note.numeral}</span>
-          {note.tally ? (
-            <span className="font-[var(--font-mono)] text-[9px] uppercase tracking-[0.15em] text-[#8a6840]">Tally</span>
-          ) : null}
-        </div>
-        <h2
-          data-diagram-sheet-title
-          className="mt-1 font-[var(--font-display)] text-[20px] leading-[1.15] text-[#241a12]"
-        >
-          {note.title}
-        </h2>
-        {note.caption ? (
-          <p className="mt-2 font-[var(--font-display)] text-[13px] italic leading-[1.5] text-[#5a4028]">
-            {note.caption}
-          </p>
+      <div className="mb-2 pr-4">
+        <span className="font-[var(--font-mono)] text-[10px] text-[#5a4028]">{note.numeral}</span>
+        {note.tally ? (
+          <span className="ml-2 font-[var(--font-mono)] text-[9px] uppercase tracking-[0.15em] text-[#8a6840]">
+            Tally
+          </span>
         ) : null}
-      </header>
-      <div aria-hidden className="mb-3 h-px w-full bg-[rgba(60,40,20,0.35)]" />
+      </div>
+      <h2 data-diagram-sheet-title className="font-[var(--font-display)] text-[20px] leading-[1.15] text-[#241a12]">
+        {note.title}
+      </h2>
+      {note.caption ? (
+        <p className="mt-2 font-[var(--font-display)] text-[13px] italic leading-[1.5] text-[#5a4028]">
+          {note.caption}
+        </p>
+      ) : null}
+      <div aria-hidden className="my-3 h-px w-full bg-[rgba(60,40,20,0.35)]" />
       <div className="max-w-[52ch]">
         <div className="font-[var(--font-display)] text-[13px] leading-[1.65] text-[#241a12]">
           {PROSE[note.id] ?? null}
         </div>
         {note.links.length > 0 ? (
-          <nav aria-label="What this sheet refers to" className="mt-5 max-w-[52ch]">
+          <nav aria-label="What this sheet refers to" className="mt-5 max-w-[48ch]">
             <h3 className="font-[var(--font-mono)] text-[9px] uppercase tracking-[0.15em] text-[#8a6840]">Refers to</h3>
             <ul className="mt-1.5 space-y-1">
               {note.links.map((link) => (
@@ -310,7 +273,7 @@ function BlankPage() {
   return (
     <div className="flex h-full items-center justify-center px-6 py-5">
       <p className="max-w-[30ch] text-center font-[var(--font-display)] text-[14px] italic leading-[1.6] text-[#8a6840]">
-        Choose a sheet from the contents, or tap one on the wall.
+        Pick up a sheet from the pile, or tap one on the wall.
       </p>
     </div>
   )
