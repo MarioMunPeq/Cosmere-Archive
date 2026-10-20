@@ -1,15 +1,8 @@
 /**
  * What is written on the nine sheets — the wall text.
  *
- * ## Content source
- *
  * The text is drawn from the Diagram as recorded on the Coppermind, which
- * reproduces the epigraphs from *Words of Radiance* and *Oathbringer*. These
- * are Taravangian's own words from his day of greatest genius. They are not
- * invented; they are transcribed, the way a wall of notes is transcribed from
- * the surfaces it was written on.
- *
- * The wall shows the short form. The notebook shows the full excerpt.
+ * reproduces the epigraphs from *Words of Radiance* and *Oathbringer*.
  */
 import type { ReactNode } from 'react'
 import { BOOKS } from '@/data/static/books'
@@ -89,7 +82,7 @@ const BODIES: Record<string, ReactNode> = {
         the coming storm. Q: What cost must we bear? A: The cost is irrelevant. Mankind must survive.
       </Body>
       <Mono>Paragraph 1</Mono>
-      <Margin>— mankind must survive. Our burden is that of the species.</Margin>
+      <Margin>- mankind must survive. Our burden is that of the species.</Margin>
     </>
   ),
 
@@ -97,8 +90,8 @@ const BODIES: Record<string, ReactNode> = {
     <>
       <Title>Tenets of Instruction</Title>
       <Body>You must become king. Of Everything.</Body>
-      <Mono>Paragraph 1 · Back of the Footboard</Mono>
-      <Margin>— of Everything. The capital letter is not an accident.</Margin>
+      <Mono>Paragraph 1 - Back of the Footboard</Mono>
+      <Margin>- of Everything. The capital letter is not an accident.</Margin>
     </>
   ),
 
@@ -109,8 +102,8 @@ const BODIES: Record<string, ReactNode> = {
         Ah, but they were left behind. It is obvious from the nature of the bond. But where, where, where, where? Set
         off. Obvious. Realization like apricity. They are with the Shin.
       </Body>
-      <Mono>Paragraph 2 · every second letter</Mono>
-      <Margin>— can we craft a weapon?</Margin>
+      <Mono>Paragraph 2 - every second letter</Mono>
+      <Margin>- can we craft a weapon?</Margin>
     </>
   ),
 
@@ -122,7 +115,7 @@ const BODIES: Record<string, ReactNode> = {
         world opens to me. I shy back. Impossible. Is it?
       </Body>
       <Mono>Paragraph 8</Mono>
-      <Margin>— the wanderer. The one who makes no sense.</Margin>
+      <Margin>- the wanderer. The one who makes no sense.</Margin>
     </>
   ),
 
@@ -133,8 +126,8 @@ const BODIES: Record<string, ReactNode> = {
         Chaos in Alethkar is, of course, inevitable. Watch carefully, and do not let power in the kingdom solidify. The
         Blackthorn could become an ally or our greatest foe.
       </Body>
-      <Mono>Paragraph 4 · Adrotagia's third translation</Mono>
-      <Margin>— if he seems likely to sue for peace, assassinate him.</Margin>
+      <Mono>Paragraph 4 - Adrotagia's third translation</Mono>
+      <Margin>- if he seems likely to sue for peace, assassinate him.</Margin>
     </>
   ),
 
@@ -146,35 +139,35 @@ const BODIES: Record<string, ReactNode> = {
         them. They are fascinating.
       </Body>
       <Mono>Paragraph 14</Mono>
-      <Margin>— one is almost certainly a traitor to the others.</Margin>
+      <Margin>- one is almost certainly a traitor to the others.</Margin>
     </>
   ),
 
   volumes: (
     <>
-      <Title>Los tomos</Title>
-      <Figure value={String(BOOKS.length)} unit="volúmenes" />
-      <Mono>contados de spine en spine</Mono>
+      <Title>The Volumes</Title>
+      <Figure value={String(BOOKS.length)} unit="volumes" />
+      <Mono>counted spine by spine, from the shelf</Mono>
     </>
   ),
 
   wordcount: (
     <>
-      <Title>De las palabras contadas</Title>
-      <Figure value={fmtWords(totalWords)} unit="palabras" />
+      <Title>Of the Words Counted</Title>
+      <Figure value={fmtWords(totalWords)} unit="words" />
       <Body>
-        Las he contado. Sé que no sirve de nada. Lo hago igual, cada pocas semanas, porque es lo único aquí que se puede
-        volver a hacer igual.
+        I have counted them. I know it serves no purpose. I do it anyway, every few weeks, because it is the only thing
+        here that can be done the same way twice.
       </Body>
     </>
   ),
 
   population: (
     <>
-      <Title>Cuántos viven, y dónde</Title>
-      <Figure value={String(ALL_CHARACTERS.length)} unit="nombres" />
-      <Mono>la mayoría en once mundos · el resto, en ninguno que sepa</Mono>
-      <Margin>Todos ellos están muertos. Es un archivo de muertos.</Margin>
+      <Title>How Many Live, and Where</Title>
+      <Figure value={String(ALL_CHARACTERS.length)} unit="names" />
+      <Mono>most of them in eleven worlds - the rest, in none that I know</Mono>
+      <Margin>All of them are dead. This is an archive of the dead.</Margin>
     </>
   ),
 }

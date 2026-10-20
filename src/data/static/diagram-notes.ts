@@ -89,7 +89,7 @@ export const DIAGRAM_NOTES: DiagramNote[] = [
   },
   {
     id: 'volumes',
-    title: 'Los tomos',
+    title: 'The Volumes',
     caption: 'Books, bound and shelved.',
     numeral: 'VII',
     tally: true,
@@ -97,7 +97,7 @@ export const DIAGRAM_NOTES: DiagramNote[] = [
   },
   {
     id: 'wordcount',
-    title: 'De las palabras contadas',
+    title: 'Of the Words Counted',
     caption: 'Every word, tallied, which I know does not help and did anyway.',
     numeral: 'VIII',
     tally: true,
@@ -105,7 +105,7 @@ export const DIAGRAM_NOTES: DiagramNote[] = [
   },
   {
     id: 'population',
-    title: 'Cuántos viven, y dónde',
+    title: 'How Many Live, and Where',
     caption: 'Ninety-three named. There are more. There are always more.',
     numeral: 'IX',
     tally: true,

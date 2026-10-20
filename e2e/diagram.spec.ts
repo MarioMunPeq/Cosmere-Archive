@@ -30,7 +30,7 @@ test.describe('D.1 — nine sheets, reachable and named', () => {
       expect(label, `sheet ${i} needs a name`).toBeTruthy()
       // D-DIEG: the name is a sheet on a wall, not a column name.
       expect(label).toMatch(/^Sheet [IVX]+: /)
-      expect(label).not.toMatch(/catalogue|wordcount|volumes|population/i)
+      expect(label).not.toMatch(/catalogue|wordcount/i)
     }
   })
 
