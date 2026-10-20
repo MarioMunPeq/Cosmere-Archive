@@ -176,28 +176,17 @@ test.describe('S.9 — the HUD', () => {
     await expect(page.getByRole('navigation', { name: 'Shadesmar view controls' })).toBeVisible()
   })
 
-  for (const name of ['Zoom in', 'Zoom out', 'Back to the whole ocean']) {
+  for (const name of ['Back to the whole ocean']) {
     test(`"${name}" measures at least 44x44`, async ({ page }) => {
       const box = await page.getByRole('button', { name }).boundingBox()
       expect(box).not.toBeNull()
-      // Exactly 44 is what the design asks for; 44 is the floor S.9 sets.
       expect(box!.width).toBeGreaterThanOrEqual(44)
       expect(box!.height).toBeGreaterThanOrEqual(44)
     })
   }
 
-  test('the buttons work without any gesture at all', async ({ page }) => {
+  test('the overview button works without any gesture at all', async ({ page }) => {
     const before = await probe(page)
-    await page.getByRole('button', { name: 'Zoom in' }).click()
-    await page.waitForTimeout(80)
-    expect((await probe(page)).zoom).toBeGreaterThan(before.zoom)
-
-    await page.getByRole('button', { name: 'Zoom out' }).click()
-    await page.waitForTimeout(80)
-    await page.getByRole('button', { name: 'Zoom out' }).click()
-    await page.waitForTimeout(80)
-    expect((await probe(page)).zoom).toBeLessThan(before.zoom)
-
     await page.getByRole('button', { name: 'Back to the whole ocean' }).click()
     await page.waitForTimeout(80)
     expect((await probe(page)).ratio).toBeCloseTo(before.ratio, 2)

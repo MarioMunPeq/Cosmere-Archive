@@ -505,12 +505,7 @@ export function Canvas() {
         onWheel={onWheel}
         onContextMenu={(e) => e.preventDefault()}
       />
-      <ShadesmarHud
-        onZoom={zoomAboutCentre}
-        onOverview={goToOverview}
-        onBack={leaveFocus}
-        focusedRealm={focusedRealm}
-      />
+      <ShadesmarHud onOverview={goToOverview} onBack={leaveFocus} focusedRealm={focusedRealm} />
       <ShadesmarOverlay
         souls={soulList}
         onFocusRealm={focusRealm}

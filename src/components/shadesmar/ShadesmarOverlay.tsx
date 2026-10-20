@@ -113,29 +113,28 @@ function ShadesmarHeader({ soulCount, realmCount, list }: { soulCount: number; r
   return (
     <header
       data-shadesmar-header
-      className="pointer-events-none relative flex h-14 shrink-0 items-center gap-md border-b border-[var(--border-subtle)] bg-[var(--surface-raised)] px-md"
+      className="pointer-events-none relative flex h-10 shrink-0 items-center gap-sm px-md"
+      style={{
+        background: 'linear-gradient(180deg, rgba(5,5,8,0.9) 0%, rgba(5,5,8,0) 100%)',
+      }}
     >
-      <h1 className="font-[var(--font-display)] text-[var(--text-h4)] font-semibold text-[var(--text-primary)]">
-        Shadesmar
-      </h1>
-      {/* Measured, not aspirational: 95 is the deduplicated soul count (93
-          characters + 10 Honorblades, of which eight share an id with a
-          character), and 11 is the number of worlds `planets.ts` defines. */}
-      <p className="text-[var(--text-meta)] text-[var(--text-secondary)]">
+      <h1 className="font-[var(--font-display)] text-[11px] tracking-[0.2em] uppercase text-[#3a3a4a]">Shadesmar</h1>
+      <p className="text-[10px] text-[#3a3a4a]">
         {soulCount} souls · {realmCount} realms
       </p>
 
-      {/*
-        The soul list lives in the header, at the right, as §5.5.3's plan puts
-        it. It was at the bottom-left first, and sat on top of the legend —
-        hiding Roshar, the first realm and the one every screenshot is of. The
-        header is the only row with nothing else in it.
-      */}
-      <details className="group pointer-events-auto relative ml-auto text-[var(--text-body-s)]">
-        <summary className="inline-flex min-h-[var(--target-min)] cursor-pointer list-none items-center rounded-[var(--radius-md)] border border-[var(--border-interactive)] px-md text-[var(--text-meta)] text-[var(--text-secondary)] transition-colors duration-[var(--dur-fast)] hover:border-[var(--text-link)] hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)]">
-          List all souls
+      <details className="group pointer-events-auto relative ml-auto">
+        <summary className="inline-flex min-h-[var(--target-min)] cursor-pointer list-none items-center rounded-[2px] border border-[#1a1a2a] px-sm text-[10px] text-[#3a3a4a] transition-colors duration-[var(--dur-fast)] hover:text-[#8a8aaa] focus-visible:outline-none">
+          souls
         </summary>
-        <div className="absolute right-0 z-30 mt-sm max-h-[60vh] w-[min(420px,calc(100vw-2rem))] overflow-y-auto rounded-[var(--radius-lg)] border border-[var(--border-interactive)] bg-[var(--surface-raised)] p-md shadow-[var(--shadow-3)]">
+        <div
+          className="absolute right-0 z-30 mt-sm max-h-[60vh] w-[min(420px,calc(100vw-2rem))] overflow-y-auto p-md shadow-[var(--shadow-3)]"
+          style={{
+            background: 'rgba(5,5,8,0.95)',
+            border: '1px solid #1a1a2a',
+            backdropFilter: 'blur(8px)',
+          }}
+        >
           {list}
         </div>
       </details>
@@ -172,11 +171,13 @@ function SoulInspector({
       style={{
         transform: `translate(${Math.round(clampedLeft)}px, ${Math.round(clampedTop)}px)`,
         width: `min(${INSPECTOR_MAX_WIDTH}px, calc(100vw - 16px))`,
+        background: 'rgba(5,5,8,0.85)',
+        backdropFilter: 'blur(8px)',
+        boxShadow: '0 8px 24px rgba(0,0,0,0.6)',
       }}
       className={[
-        'pointer-events-auto absolute top-0 left-0 rounded-[var(--radius-lg)]',
-        'border border-[var(--border-interactive)] bg-[var(--surface-raised)]',
-        'p-md shadow-[var(--shadow-3)] backdrop-blur-[12px]',
+        'pointer-events-auto absolute top-0 left-0',
+        'border border-[#1a1a2a] p-md',
         'animate-[var(--dur-base)_forwards]',
       ].join(' ')}
     >
@@ -270,7 +271,11 @@ function SoulLegend({
        * which is how Yolen — the only realm with no characters, and so the only
        * one a reader cannot otherwise find — became unreachable.
        */
-      className="pointer-events-auto flex shrink-0 items-center gap-md overflow-x-auto border-t border-[var(--border-subtle)] bg-[var(--surface-raised)] py-sm pr-[180px] pl-md"
+      className="pointer-events-auto flex shrink-0 items-center gap-sm overflow-x-auto py-sm pr-[180px] pl-md"
+      style={{
+        background: 'linear-gradient(180deg, rgba(5,5,8,0) 0%, rgba(5,5,8,0.8) 100%)',
+        borderTop: '1px solid #1a1a2a',
+      }}
     >
       {realms.map((r) => (
         <button
