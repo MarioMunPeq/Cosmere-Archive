@@ -264,17 +264,9 @@ function SoulLegend({
     <nav
       aria-label="Perpendicularities"
       data-shadesmar-legend
-      /*
-       * `pr-[180px]` clears the HUD, which is pinned to the bottom right: three
-       * 44px buttons, two 8px gaps and a 16px margin. Without it the legend's
-       * last realm scrolls underneath the overview button and cannot be clicked,
-       * which is how Yolen — the only realm with no characters, and so the only
-       * one a reader cannot otherwise find — became unreachable.
-       */
-      className="pointer-events-auto flex shrink-0 items-center gap-sm overflow-x-auto py-sm pr-[180px] pl-md"
+      className="pointer-events-auto flex shrink-0 items-center gap-xs overflow-x-auto py-xs pl-md pr-[180px]"
       style={{
-        background: 'linear-gradient(180deg, rgba(5,5,8,0) 0%, rgba(5,5,8,0.8) 100%)',
-        borderTop: '1px solid #1a1a2a',
+        background: 'linear-gradient(180deg, rgba(5,5,8,0) 0%, rgba(5,5,8,0.6) 100%)',
       }}
     >
       {realms.map((r) => (
@@ -283,31 +275,34 @@ function SoulLegend({
           type="button"
           onClick={() => onFocus(activeId === r.id ? null : r.id)}
           aria-current={activeId === r.id ? 'true' : undefined}
+          aria-label={r.name}
+          title={r.name}
           className={[
-            'inline-flex shrink-0 cursor-pointer items-center gap-sm rounded-[var(--radius-md)] px-sm py-xs',
-            'text-[var(--text-meta)] text-[var(--text-tertiary)]',
-            'transition-colors duration-[var(--dur-fast)]',
-            'hover:bg-[var(--surface-inset)] hover:text-[var(--text-primary)]',
-            'aria-[current]:bg-[var(--surface-raised)] aria-[current]:text-[var(--text-primary)]',
+            'inline-flex shrink-0 cursor-pointer items-center gap-xs rounded-[2px] px-xs py-xs',
+            'transition-all duration-[var(--dur-fast)]',
+            'hover:bg-[rgba(255,255,255,0.04)]',
             'focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)]',
           ].join(' ')}
+          style={{
+            opacity: activeId === r.id ? 1 : 0.4,
+          }}
         >
-          <span aria-hidden className="size-[10px] shrink-0 rounded-full" style={{ background: `rgb(${r.color})` }} />
-          {r.name}
-          <span className="tabular-nums text-[var(--text-tertiary)]">{r.count}</span>
+          <span
+            aria-hidden
+            className="size-[8px] shrink-0 rounded-full transition-transform duration-[var(--dur-fast)]"
+            style={{
+              background: `rgb(${r.color})`,
+              boxShadow: activeId === r.id ? `0 0 6px rgb(${r.color})` : 'none',
+              transform: activeId === r.id ? 'scale(1.4)' : 'scale(1)',
+            }}
+          />
+          <span className="sr-only">{r.name}</span>
+          <span className="sr-only">{r.count}</span>
         </button>
       ))}
     </nav>
   )
 }
-
-/* ---------------------------------------------------------------- soul list */
-
-/**
- * Every soul, as a link. S.3 wants this in the DOM; it is also the only way to
- * reach Yolen, which has no characters, or a herald that has no record — the
- * canvas can show you a light and tell you nothing about it.
- */
 function SoulList({ grouped, realms }: { grouped: Map<string, SoulInfo[]>; realms: { id: string; name: string }[] }) {
   return (
     <>

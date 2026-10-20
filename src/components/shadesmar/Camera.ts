@@ -174,6 +174,11 @@ export class CameraController {
 
   endDrag() {
     this.dragging = false
+    // No fling. A reader who lifts their hand wants the world to stop where
+    // they left it, not to keep sliding. The previous behaviour imparted the
+    // full drag distance as velocity, which made the ocean feel thrown.
+    this.vx = 0
+    this.vy = 0
   }
 
   /**
