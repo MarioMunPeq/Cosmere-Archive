@@ -185,39 +185,31 @@ function SpineLink({ dest, pathname }: { dest: (typeof CORE_DESTINATIONS)[number
       aria-label={dest.label}
       title={dest.label}
       className={[
-        'relative flex h-full items-end justify-center px-1 pb-1',
+        'relative flex h-full items-center justify-center px-2',
         'transition-transform duration-[var(--dur-fast)] ease-[var(--ease-standard)]',
         'focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)]',
-        active ? '-translate-y-1' : 'hover:-translate-y-0.5',
+        active ? 'translate-y-0.5' : 'hover:translate-y-0.5',
       ].join(' ')}
-      style={{ width: 48, minWidth: 44 }}
+      style={{ minWidth: 44 }}
     >
+      {/* A book lying flat on the shelf: spine up, title horizontal. */}
       <span
         aria-hidden
-        className="block w-full rounded-[1px]"
+        className="flex h-[26px] items-center rounded-[2px] px-3"
         style={{
-          height: 40,
           background: active
             ? 'linear-gradient(180deg, #5a3e1e 0%, #3a2414 100%)'
             : 'linear-gradient(180deg, #2a1a0e 0%, #1a0e06 100%)',
           border: '1px solid #0e0604',
           boxShadow: active ? '0 4px 8px rgba(0,0,0,0.5)' : '0 1px 3px rgba(0,0,0,0.4)',
         }}
-      />
-      <span
-        aria-hidden
-        className="absolute bottom-1 left-1/2 -translate-x-1/2 whitespace-nowrap font-[var(--font-display)] text-[11px] tracking-[0.05em] text-[#d8b878]"
-        style={{
-          writingMode: 'vertical-rl',
-          textOrientation: 'mixed',
-          transform: 'rotate(180deg) translateX(50%)',
-          height: 30,
-        }}
       >
-        {dest.label.toUpperCase()}
+        <span className="whitespace-nowrap font-[var(--font-display)] text-[11px] tracking-[0.05em] text-[#d8b878]">
+          {dest.label}
+        </span>
       </span>
       <span className="sr-only">{dest.label}</span>
-      {active && <span aria-hidden className="absolute bottom-0 left-1 right-1 h-0.5 rounded-t-full bg-[#d8b878]" />}
+      {active && <span aria-hidden className="absolute bottom-1 left-2 right-2 h-0.5 rounded-t-full bg-[#d8b878]" />}
     </Link>
   )
 }

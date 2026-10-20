@@ -1,20 +1,21 @@
 /**
- * ArchiveDoors — the four ways into the archive. D-HOME, REBUILD_PLAN §5.2.
+ * ArchiveDoors — the four ways into the archive, as open books on a workbench.
  *
- * Replaces a table of contents: ten chapters listed as roman numerals at
- * 1.46:1, each a `<button>` that navigated by hand. Four of those ten are the
- * archive proper and the other six now live under Historical.
+ * ## What this replaces
  *
- * Two rules this component exists to enforce:
+ * Four cards with a border, a shadow, and a hover lift: a website's grid in a
+ * library's costume. The numbers were right; the presentation was a product page.
  *
- *  1. Every door is a real `<a href>`. The old chapters were buttons, so none
- *     could be opened in a new tab, middle-clicked, or followed by a crawler.
- *  2. Every number on a door is counted from the data at render time. The plan
- *     quotes "22 / 93 / 103 / 118"; three of those were right and one was not
- *     — the Shadesmar catalog holds 47 souls, not 103. A counter that does not
- *     come from the data will drift, and then it is a lie.
+ * ## What a workbench is
+ *
+ * A wooden surface with four open books on it, each opened to its first page.
+ * The left page carries the title and the gliph; the right page carries the
+ * counts and a one-line description. A reader standing over the table sees
+ * four books and chooses one. There is no "door" and no "card": there is a
+ * book, opened, waiting.
+ *
+ * Every number is counted from the data at render time, as before.
  */
-
 import { Link } from 'react-router-dom'
 import { BOOKS, SAGAS, ALL_CHARACTERS, PLANETS } from '@/data/static'
 import { TIMELINE_EVENTS, ERAS } from '@/data/static/timeline'
@@ -24,12 +25,6 @@ import { CORE_DESTINATIONS } from '@/navigation'
 import type { IconName } from '@/navigation'
 import DestinationIcon from '@/components/layout/DestinationIcon'
 
-/**
- * The counters, measured rather than typed.
- *
- * Exported so the tests can assert them against the same functions, which means
- * a counter that drifts fails the build instead of quietly going stale.
- */
 export const ARCHIVE_COUNTS = {
   volumes: BOOKS.length,
   series: SAGAS.length,
@@ -46,7 +41,6 @@ interface DoorStat {
   label: string
 }
 
-/** Which figures belong to which door, and the words for them. */
 const STATS: Record<string, DoorStat[]> = {
   library: [
     { value: ARCHIVE_COUNTS.volumes, label: 'volumes' },
@@ -66,7 +60,6 @@ const STATS: Record<string, DoorStat[]> = {
   ],
 }
 
-/** The four doors, in the order §5.2 lists them. */
 const DOOR_ICONS: Record<string, IconName> = {
   library: 'book',
   records: 'person',
@@ -74,59 +67,87 @@ const DOOR_ICONS: Record<string, IconName> = {
   diagram: 'shard',
 }
 
+const ROTATIONS = [-1.2, 0.8, -0.6, 1.4]
+
 export default function ArchiveDoors() {
   return (
-    <ul aria-label="Core sections" className="grid w-full grid-cols-1 gap-md sm:grid-cols-2 lg:grid-cols-4 lg:gap-lg">
+    <ul aria-label="Core sections" className="grid w-full grid-cols-1 gap-lg sm:grid-cols-2 lg:grid-cols-4">
       {CORE_DESTINATIONS.map((dest, i) => {
         const stats = STATS[dest.id] ?? []
+        const rot = ROTATIONS[i] ?? 0
         return (
-          <li key={dest.id} className="min-w-0">
+          <li key={dest.id} className="min-w-0" style={{ transform: `rotate(${rot}deg)` }}>
             <Link
               to={dest.to}
               className={[
-                'group flex h-full flex-col gap-sm rounded-[var(--radius-lg)] p-xl',
-                'border border-[var(--border-subtle)] bg-[var(--surface-base)]',
-                'shadow-[var(--shadow-1)] no-underline',
-                'transition-[border-color,box-shadow,background-color] duration-[var(--dur-slow)] ease-[var(--ease-standard)]',
-                'hover:border-[var(--border-interactive)] hover:bg-[var(--surface-raised)] hover:shadow-[var(--shadow-2)]',
+                'group block no-underline',
+                'transition-transform duration-[var(--dur-slow)] ease-[var(--ease-standard)]',
+                'hover:-translate-y-1',
                 'focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)]',
               ].join(' ')}
             >
-              {/* Staggered entrance, capped at 8 items per the motion tokens. */}
-              <span
-                aria-hidden
-                className="flex h-10 w-10 items-center justify-center rounded-[var(--radius-md)] bg-[var(--surface-inset)] text-[var(--text-accent)]"
+              {/* The open book. */}
+              <div
+                className="relative flex overflow-hidden"
                 style={{
-                  animation: `var(--dur-slow) var(--ease-decelerate) both`,
-                  animationDelay: `${Math.min(i, 7) * 40}ms`,
+                  background: 'linear-gradient(180deg, #3a2414 0%, #2a180c 100%)',
+                  border: '1px solid #5a3e1e',
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.4)',
+                  minHeight: 180,
                 }}
               >
-                <DestinationIcon name={DOOR_ICONS[dest.id] ?? 'shard'} size={24} />
-              </span>
+                {/* Spine (the binding). */}
+                <div
+                  aria-hidden
+                  className="w-3 shrink-0"
+                  style={{
+                    background: 'linear-gradient(90deg, #1a0e06 0%, #3a2414 50%, #1a0e06 100%)',
+                  }}
+                />
 
-              <span className="min-w-0">
-                <span className="block font-display text-h3 leading-[var(--lh-heading)] font-[var(--fw-semibold)] text-[var(--text-primary)]">
-                  {dest.label}
-                </span>
-                <span className="mt-1 block text-meta leading-[var(--lh-body)] text-[var(--text-secondary)]">
-                  {dest.description}
-                </span>
-              </span>
+                {/* Left page: title + glyph. */}
+                <div
+                  className="flex flex-1 flex-col justify-between p-5"
+                  style={{
+                    background: 'linear-gradient(152deg, #f2e9d4 0%, #eae0c8 40%, #e0d4b6 76%, #d6c8a6 100%)',
+                    borderRight: '1px solid rgba(60,40,20,0.25)',
+                  }}
+                >
+                  <div>
+                    <span
+                      aria-hidden
+                      className="flex h-9 w-9 items-center justify-center rounded-[2px] bg-[rgba(60,40,20,0.12)] text-[#5a3e1e]"
+                    >
+                      <DestinationIcon name={DOOR_ICONS[dest.id] ?? 'shard'} size={20} />
+                    </span>
+                    <h2 className="mt-3 font-[var(--font-display)] text-[20px] leading-[1.15] text-[#241a12]">
+                      {dest.label}
+                    </h2>
+                    <p className="mt-1 font-[var(--font-display)] text-[12px] italic leading-[1.4] text-[#5a4028]">
+                      {dest.description}
+                    </p>
+                  </div>
+                </div>
 
-              {stats.length > 0 && (
-                <span className="mt-auto flex items-baseline gap-md pt-sm">
+                {/* Right page: counters. */}
+                <div
+                  className="flex flex-1 flex-col justify-end gap-3 p-5"
+                  style={{
+                    background: 'linear-gradient(152deg, #f2e9d4 0%, #eae0c8 40%, #e0d4b6 76%, #d6c8a6 100%)',
+                  }}
+                >
                   {stats.map((stat) => (
-                    <span key={stat.label} className="flex items-baseline gap-1.5">
-                      <span className="font-[var(--font-mono)] text-h4 text-[var(--text-accent)] tabular-nums">
+                    <div key={stat.label} className="flex items-baseline gap-2">
+                      <span className="font-[var(--font-display)] text-[32px] leading-none text-[#241a12]">
                         {stat.value}
                       </span>
-                      <span className="text-micro tracking-[var(--ls-caps)] text-[var(--text-tertiary)] uppercase">
+                      <span className="font-[var(--font-mono)] text-[10px] uppercase tracking-[0.15em] text-[#8a6840]">
                         {stat.label}
                       </span>
-                    </span>
+                    </div>
                   ))}
-                </span>
-              )}
+                </div>
+              </div>
             </Link>
           </li>
         )

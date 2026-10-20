@@ -13,7 +13,6 @@
 import { useSEOMeta } from '@/hooks/useSEOMeta'
 import ArchiveDoors from '@/components/landing/ArchiveDoors'
 import HistoricalBand from '@/components/landing/HistoricalBand'
-import ArchiveDust from '@/components/landing/ArchiveDust'
 
 export default function LandingPage() {
   useSEOMeta({
@@ -24,31 +23,39 @@ export default function LandingPage() {
 
   return (
     <div className="relative min-h-0 flex-1 overflow-y-auto">
-      {/* The archive hall: a cold void with one warm pool of light, so the
-          doors sit in space rather than on a page. */}
+      {/* The workbench. */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
         style={{
-          background:
-            'radial-gradient(ellipse 120% 70% at 50% -10%, rgba(200,169,106,0.07) 0%, transparent 55%), radial-gradient(ellipse 90% 60% at 50% 110%, rgba(90,169,230,0.05) 0%, transparent 60%)',
+          background: 'linear-gradient(180deg, #2a180c 0%, #1a0e06 50%, #0e0804 100%)',
         }}
       />
-      <ArchiveDust />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-30"
+        style={{
+          backgroundImage:
+            'repeating-linear-gradient(90deg, rgba(80,50,24,0.12) 0px, rgba(80,50,24,0.12) 1px, transparent 1px, transparent 8px)',
+        }}
+      />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-[1040px] flex-col gap-2xl px-[var(--gutter-md)] py-3xl max-md:px-[var(--gutter)] max-md:py-2xl">
+      <div className="relative z-10 mx-auto flex w-full max-w-[1100px] flex-col gap-2xl px-[var(--gutter-md)] py-3xl max-md:px-[var(--gutter)] max-md:py-2xl">
         <header className="flex flex-col items-center gap-sm text-center">
-          <h1
-            className={[
-              'font-display font-[var(--fw-semibold)] tracking-[var(--ls-wordmark)]',
-              'text-h1 lg:text-display',
-              'leading-[var(--lh-display)] text-[var(--text-primary)]',
-            ].join(' ')}
-            style={{ wordSpacing: '0.18em' }}
+          {/* A brass plate, not a heading. */}
+          <div
+            className="relative px-8 py-3"
+            style={{
+              background: 'linear-gradient(180deg, #3a2a14 0%, #24180a 100%)',
+              border: '1px solid #5a3e1e',
+              boxShadow: '0 6px 16px rgba(0,0,0,0.5), inset 0 1px 0 rgba(190,150,100,0.12)',
+            }}
           >
-            COSMERE ARCHIVE
-          </h1>
-          <p className="max-w-[var(--measure)] text-lead leading-[var(--lh-body)] text-[var(--text-secondary)]">
+            <h1 className="font-[var(--font-display)] text-h1 tracking-[0.12em] text-[#d8b878] lg:text-display">
+              COSMERE ARCHIVE
+            </h1>
+          </div>
+          <p className="max-w-[var(--measure)] font-[var(--font-display)] text-[14px] italic leading-[var(--lh-body)] text-[#8a6840]">
             An archive of worlds, histories and shattered ideals.
           </p>
         </header>

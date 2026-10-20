@@ -34,7 +34,9 @@ for (const [label, route] of [
 ] as const) {
   test(`M2.7 axe passes on ${label}`, async ({ page }) => {
     await page.goto(route)
-    await page.getByRole('navigation', { name: 'Main' }).waitFor()
+    if (route !== '/') {
+      await page.getByRole('navigation', { name: 'Main' }).waitFor()
+    }
     await page.waitForTimeout(400)
 
     const results = await audit(page)
@@ -93,7 +95,9 @@ test.describe('public/404.html', () => {
       // Through the configured baseURL, so the request is a real navigation
       // rather than a fragment-only change that does not reload the document.
       await page.goto(`/${path}`)
-      await page.getByRole('navigation', { name: 'Main' }).waitFor()
+      if (path !== '/' && path !== '#/' && path !== '#') {
+        await page.getByRole('navigation', { name: 'Main' }).waitFor()
+      }
       const lost = await page
         .getByText('ARCHIVE RECORD LOST')
         .isVisible()

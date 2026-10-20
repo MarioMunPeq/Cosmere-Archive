@@ -258,7 +258,14 @@ export default function BookReader({ book, onClose }: Props) {
                 series={book.saga}
                 side="left"
               />
-              <span className="page-dogear page-dogear--left" aria-hidden />
+              <button
+                type="button"
+                onClick={prev}
+                disabled={!canPrev || phase !== 'open'}
+                aria-label="Previous page"
+                className="page-dogear page-dogear--left"
+                style={{ cursor: canPrev && phase === 'open' ? 'pointer' : 'default' }}
+              />
             </div>
 
             {/* right page */}
@@ -278,7 +285,14 @@ export default function BookReader({ book, onClose }: Props) {
                   </span>
                 </div>
               )}
-              <span className="page-dogear page-dogear--right" aria-hidden />
+              <button
+                type="button"
+                onClick={next}
+                disabled={!canNext || phase !== 'open'}
+                aria-label="Next page"
+                className="page-dogear page-dogear--right"
+                style={{ cursor: canNext && phase === 'open' ? 'pointer' : 'default' }}
+              />
             </div>
 
             <span className="book-gutter" aria-hidden />
@@ -331,60 +345,10 @@ export default function BookReader({ book, onClose }: Props) {
           </div>
         </div>
 
-        {/* ---- foot ---- */}
-        <footer className="reader-foot">
-          <div className="reader-foot__rule">
-            <button
-              type="button"
-              onClick={prev}
-              disabled={!canPrev || phase !== 'open'}
-              aria-label="Previous page"
-              className="reader-turn"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                className="size-4"
-                aria-hidden
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.6"
-              >
-                <path d="M15 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-
-            <p className="reader-folio">
-              {folioLeft}
-              <em>/</em>
-              {pages.length}
-            </p>
-
-            <button
-              type="button"
-              onClick={next}
-              disabled={!canNext || phase !== 'open'}
-              aria-label="Next page"
-              className="reader-turn"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                className="size-4"
-                aria-hidden
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.6"
-              >
-                <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-          </div>
-
-          {phase === 'opening' && (
-            <p className="reader-hint" aria-hidden>
-              <kbd>←</kbd> <kbd>→</kbd> turn · <kbd>Esc</kbd> back to the shelf
-            </p>
-          )}
-        </footer>
+        {/* ---- folio mark ---- */}
+        <div className="reader-folio-mark" aria-hidden>
+          {folioLeft} / {pages.length}
+        </div>
       </div>
     </div>
   )

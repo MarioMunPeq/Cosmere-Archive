@@ -40,8 +40,11 @@ for (const { hash, name, heading } of ROUTES) {
     page.on('pageerror', (e) => errors.push(e.message))
 
     await page.goto(`/#${hash}`)
-    // The shell must be there whatever the page does.
-    await expect(page.getByRole('navigation', { name: 'Main' })).toBeVisible({ timeout: 15000 })
+    // The shell must be there whatever the page does, except on the landing,
+    // which is its own cover and carries no top navigation.
+    if (hash !== '/') {
+      await expect(page.getByRole('navigation', { name: 'Main' })).toBeVisible({ timeout: 15000 })
+    }
     await expect(page.getByRole('main')).toBeVisible()
     expect(errors, `uncaught errors on ${hash}`).toHaveLength(0)
   })
@@ -157,7 +160,9 @@ test('an unknown route shows the archive 404', async ({ page }) => {
 test('the shell is present on every route', async ({ page }) => {
   for (const { hash } of ROUTES.slice(0, 5)) {
     await page.goto(`/#${hash}`)
-    await expect(page.getByRole('navigation', { name: 'Main' })).toBeVisible()
+    if (hash !== '/') {
+      await expect(page.getByRole('navigation', { name: 'Main' })).toBeVisible()
+    }
     await expect(page.getByRole('main')).toBeVisible()
   }
 })

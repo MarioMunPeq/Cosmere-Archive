@@ -129,18 +129,30 @@
    top of a block of paper. */
 .book-block {
   position: absolute;
-  inset: auto 13px -14px 13px;
-  height: 14px;
-  border-radius: 0 0 2px 2px;
-  background: repeating-linear-gradient(180deg, #efe8d8 0 1px, #cdc0a8 1px 2.2px);
-  box-shadow: 0 6px 14px -6px rgb(0 0 0 / 0.7);
+  inset: auto 13px -16px 13px;
+  height: 18px;
+  border-radius: 0 0 3px 3px;
+  background:
+    repeating-linear-gradient(180deg, #f4efe4 0 0.8px, #e8ddc8 0.8px 1.6px, #d8c8a8 1.6px 2.4px),
+    linear-gradient(180deg, #e8ddc8 0%, #c8b490 100%);
+  box-shadow:
+    0 8px 16px -6px rgb(0 0 0 / 0.7),
+    0 2px 4px -2px rgb(0 0 0 / 0.5),
+    inset 0 1px 0 rgb(255 248 235 / 0.4);
+}
+.book-block::before {
+  content: '';
+  position: absolute;
+  inset: 0 4px 0 4px;
+  background: repeating-linear-gradient(90deg, transparent 0 3px, rgb(120 100 72 / 0.08) 3px 4px);
+  opacity: 0.6;
 }
 .book-block::after {
   content: '';
   position: absolute;
   inset: 0 0 auto 0;
   height: 1px;
-  background: rgb(120 104 80 / 0.5);
+  background: linear-gradient(90deg, transparent, rgb(120 104 80 / 0.6) 20%, rgb(120 104 80 / 0.6) 80%, transparent);
 }
 
 /* A page. Absolutely positioned so it has a definite height — as a grid item it
@@ -371,10 +383,10 @@
 }
 
 .leaf--forward {
-  animation: leaf-forward 720ms var(--ease-standard) both;
+  animation: leaf-forward 780ms cubic-bezier(0.25, 0.1, 0.25, 1) both;
 }
 .leaf--back {
-  animation: leaf-back 720ms var(--ease-standard) both;
+  animation: leaf-back 780ms cubic-bezier(0.25, 0.1, 0.25, 1) both;
 }
 .leaf--forward .leaf__shade {
   animation: shade-forward 720ms var(--ease-standard) both;
@@ -515,6 +527,21 @@
   padding: 0 6px;
 }
 
+/* A small folio mark, written in ink on the page rather than in a footer bar. */
+.reader-folio-mark {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  translate: -50% 0;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  font-variant-numeric: tabular-nums;
+  color: rgb(120 104 80 / 0.5);
+  pointer-events: none;
+  z-index: 4;
+}
+
 /* The keyboard hint, shown once and then fading for good.
    It sits in the foot, below the rule. Absolutely positioned over the book it
    landed on the bottom of the spread and sat on top of the folio. */
@@ -553,14 +580,21 @@
   bottom: 0;
   width: 58px;
   height: 58px;
-  pointer-events: none;
   z-index: 4;
-  opacity: 0;
+  opacity: 0.45;
   transition: opacity var(--dur-base) var(--ease-standard);
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
 }
 .page:hover .page-dogear,
 .page:focus-within .page-dogear {
   opacity: 1;
+}
+.page-dogear:disabled {
+  opacity: 0.15;
+  cursor: default;
 }
 .page-dogear--right {
   right: 0;

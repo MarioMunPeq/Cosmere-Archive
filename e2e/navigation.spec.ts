@@ -61,7 +61,7 @@ async function effectiveColor(locator: Locator): Promise<[number, number, number
 
 test.describe('M2.2 navigation', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/')
+    await page.goto('/#/library')
     await page.getByRole('navigation', { name: 'Main' }).waitFor()
   })
 

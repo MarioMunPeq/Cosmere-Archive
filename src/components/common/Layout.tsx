@@ -91,7 +91,7 @@ export default function Layout() {
       {searchOpen && <SearchDialog open onClose={() => setSearchOpen(false)} />}
       {shortcutsOpen && <KeyboardShortcutsHelp onClose={() => setShortcutsOpen(false)} />}
 
-      <AppShell onSearch={() => setSearchOpen(true)} header={<Breadcrumbs />}>
+      <AppShell onSearch={() => setSearchOpen(true)} header={<Breadcrumbs />} hideTopNav={pathname === '/'}>
         <Outlet />
       </AppShell>
 

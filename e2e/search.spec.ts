@@ -21,7 +21,7 @@ import { join } from 'node:path'
  * half the time.
  */
 async function openSearch(page: import('@playwright/test').Page) {
-  await page.goto('/')
+  await page.goto('/#/library')
   await page.getByRole('navigation', { name: 'Main' }).waitFor()
   await page.keyboard.press('Control+k')
   const input = page.getByRole('combobox', { name: 'Search the archive' })
@@ -136,7 +136,9 @@ test.describe('M2.4 search', () => {
     const bad: string[] = []
     for (const [route, label] of routes) {
       await page.goto(`/#${route}`)
-      await page.getByRole('navigation', { name: 'Main' }).waitFor()
+      if (route !== '/') {
+        await page.getByRole('navigation', { name: 'Main' }).waitFor()
+      }
       await page.waitForTimeout(200)
       const errored = await page
         .getByText('ARCHIVE RECORD LOST')

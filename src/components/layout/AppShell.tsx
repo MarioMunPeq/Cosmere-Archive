@@ -17,18 +17,17 @@ import BottomNav from './BottomNav'
 
 interface Props {
   children: ReactNode
-  /** Sticky bar above the page content, e.g. breadcrumbs or filters. */
   header?: ReactNode
-  /** Opens the global search. Wired to ⌘K for now; M2 block 4 replaces it. */
   onSearch?: () => void
-  /** Hide the bottom bar, for full-bleed pieces such as Shadesmar. */
   hideBottomNav?: boolean
+  /** Hide the top shelf, for the landing page which is its own cover. */
+  hideTopNav?: boolean
 }
 
-export default function AppShell({ children, header, onSearch, hideBottomNav = false }: Props) {
+export default function AppShell({ children, header, onSearch, hideBottomNav = false, hideTopNav = false }: Props) {
   return (
     <div className="flex h-dvh flex-col overflow-hidden bg-[var(--surface-void)] text-[var(--text-primary)]">
-      <NavBar onSearch={onSearch} />
+      {!hideTopNav && <NavBar onSearch={onSearch} />}
 
       <main id="main-content" tabIndex={-1} className="relative flex min-h-0 flex-1 flex-col focus:outline-none">
         {header}
