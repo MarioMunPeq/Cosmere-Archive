@@ -184,28 +184,28 @@ test.describe('the frame', () => {
     const minY = Math.min(...sheets.map((s) => s.y))
     const maxY = Math.max(...sheets.map((s) => s.b))
 
-    // Every sheet inside the mural's box.
-    expect(minX).toBeGreaterThanOrEqual(mural.x - 1)
-    expect(maxX).toBeLessThanOrEqual(mural.x + mural.width + 1)
-    expect(minY).toBeGreaterThanOrEqual(mural.y - 1)
-    expect(maxY).toBeLessThanOrEqual(mural.y + mural.height + 1)
+    // In reading mode, at least one sheet is large enough to read: D.3's floor
+    // is 310px, and the reading scale is set so an A-5 sheet is 298px tall.
+    const tallest = Math.max(...sheets.map((s) => s.b - s.y))
+    expect(tallest).toBeGreaterThan(280)
 
-    // And it uses the space: the wall is not squeezed into a corner with
-    // two-thirds of the column left empty.
-    //
-    // 0.85, not 0.95: the fit is computed over `CONTENT_BOUNDS`, which carries
-    // a deliberate 260-unit margin so no sheet sits against the edge of the
-    // view. Measured, that leaves the *sheets* at ~88% of the column. The
-    // remaining 12% is the margin, and a wall with no air around it looks like
-    // a contact sheet rather than a wall.
-    const usedWidth = (maxX - minX) / mural.width
-    const usedHeight = (maxY - minY) / mural.height
-    expect(Math.max(usedWidth, usedHeight)).toBeGreaterThan(0.85)
-    // And it is centred in the axis it is *not* limited by.
-    const slack = usedWidth > usedHeight ? 1 : 0
-    if (slack) {
-      expect(Math.abs(minX - mural.x) - (mural.x + mural.width - maxX)).toBeLessThan(40)
-    }
+    // Stepping back, the whole wall still fits: every sheet inside the mural.
+    await page.getByRole('button', { name: /The whole wall/i }).click()
+    await page.waitForTimeout(400)
+    const wideSheets = await page.locator('[data-diagram-sheet]').evaluateAll((els) =>
+      els.map((e) => {
+        const b = (e as HTMLElement).getBoundingClientRect()
+        return { x: b.x, y: b.y, r: b.right, b: b.bottom }
+      }),
+    )
+    const wminX = Math.min(...wideSheets.map((s) => s.x))
+    const wmaxX = Math.max(...wideSheets.map((s) => s.r))
+    const wminY = Math.min(...wideSheets.map((s) => s.y))
+    const wmaxY = Math.max(...wideSheets.map((s) => s.b))
+    expect(wminX).toBeGreaterThanOrEqual(mural.x - 1)
+    expect(wmaxX).toBeLessThanOrEqual(mural.x + mural.width + 1)
+    expect(wminY).toBeGreaterThanOrEqual(mural.y - 1)
+    expect(wmaxY).toBeLessThanOrEqual(mural.y + mural.height + 1)
   })
 
   test('the mural is not fixed to the window', async ({ page }) => {

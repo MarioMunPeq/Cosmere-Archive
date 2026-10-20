@@ -10,8 +10,8 @@ interface FocusAnchor {
 
 interface Props {
   children: ReactNode
-  focusAnchor: FocusAnchor | null
-  onFocusChange: (a: FocusAnchor | null) => void
+  focusAnchor?: FocusAnchor | null
+  onFocusChange?: (a: FocusAnchor | null) => void
   minScale?: number
   maxScale?: number
 }
@@ -46,13 +46,39 @@ function measure(el: HTMLElement | null): { w: number; h: number } {
  * hang, so the fit and the centring disagreed with each other and the wall sat
  * off to one side.
  */
-function frame(w: number, h: number) {
-  const scale = Math.min(w / CONTENT_BOUNDS.w, h / CONTENT_BOUNDS.h)
-  return {
-    scale,
-    x: (w - CONTENT_BOUNDS.w * scale) / 2 - CONTENT_BOUNDS.x * scale,
-    y: (h - CONTENT_BOUNDS.h * scale) / 2 - CONTENT_BOUNDS.y * scale,
-  }
+/**
+ * The scale at which a sheet is a sheet.
+ *
+ * One wall unit is one wall unit, so at `scale: 1` an A-5 page measures
+ * 210 x 298 px on screen — which is D.3's floor, not a decoration of it. This
+ * constant is what makes that true.
+ */
+const READING_SCALE = 1.05
+
+/**
+ * Where the reader arrives, in one of two modes.
+ *
+ * **`wide`** steps back until all nine sheets fit. It is the honest way to see
+ * how many there are and where they sit, and it is useless for reading: at
+ * 1440x900 the whole spread fits in 0.26 and every sheet's handwriting is 5px
+ * tall. The old wall arrived here and that is most of why it looked like a
+ * thumbnail grid rather than a wall of notes.
+ *
+ * **`reading`** opens at 1:1, on the first sheet, so the first thing on screen
+ * is a page you can actually read. The rest of the wall is 10 units of drag away.
+ */
+function frame(w: number, h: number, wide: boolean) {
+  const fit = Math.min(w / CONTENT_BOUNDS.w, h / CONTENT_BOUNDS.h)
+  // Reading mode does not try to fit: the wall is bigger than the view, and
+  // that is the point. Panning is how a reader moves along a wall of notes.
+  const scale = wide ? fit : READING_SCALE
+  const cx = CONTENT_BOUNDS.x + CONTENT_BOUNDS.w / 2
+  const cy = CONTENT_BOUNDS.y + CONTENT_BOUNDS.h / 2
+  // `wide` centres the whole spread. `reading` centres the first sheet, which is
+  // the top-left of the layout — the one somebody would reach for.
+  const anchorX = wide ? cx : CONTENT_BOUNDS.x + 260
+  const anchorY = wide ? cy : CONTENT_BOUNDS.y + 180
+  return { scale, x: w / 2 - anchorX * scale, y: h / 2 - anchorY * scale }
 }
 
 function clampView(x: number, y: number, s: number, w: number, h: number) {
@@ -86,7 +112,9 @@ export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale =
   const vel = useRef({ x: 0, y: 0 })
   const lastMove = useRef(0)
   const raf = useRef<number>(undefined)
-  const [showOverview, setShowOverview] = useState(false)
+  /** Stepped back to see the whole wall? Off by default; see frame. */
+  const [wide, setWide] = useState(false)
+  const wideRef = useRef(false)
   const isAnimating = useRef(false)
   const prevFocusRef = useRef<FocusAnchor | null>(null)
   /** True once the reader has moved or zoomed, so a resize stops refitting. */
@@ -118,7 +146,7 @@ export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale =
       apply()
       return
     }
-    const f = frame(size.w, size.h)
+    const f = frame(size.w, size.h, wideRef.current)
     tr.current = { x: f.x, y: f.y, scale: f.scale }
     initialView.current = { ...tr.current }
     apply()
@@ -147,7 +175,7 @@ export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale =
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === 'Escape' && focusAnchor) {
-        onFocusChange(null)
+        onFocusChange?.(null)
       }
     }
     window.addEventListener('keydown', onKey)
@@ -156,7 +184,7 @@ export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale =
 
   useEffect(() => {
     if (prevFocusRef.current === focusAnchor) return
-    prevFocusRef.current = focusAnchor
+    prevFocusRef.current = focusAnchor ?? null
 
     if (raf.current) {
       cancelAnimationFrame(raf.current)
@@ -204,7 +232,6 @@ export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale =
         tr.current.scale = to.scale
         apply()
         isAnimating.current = false
-        setShowOverview(to.scale < 0.25 && !focusAnchor)
       }
     }
     raf.current = requestAnimationFrame(step)
@@ -259,7 +286,6 @@ export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale =
     const vx = vel.current.x * 0.3
     const vy = vel.current.y * 0.3
     if (Math.abs(vx) < 3 && Math.abs(vy) < 3) {
-      setShowOverview(tr.current.scale < 0.25)
       return
     }
 
@@ -277,8 +303,6 @@ export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale =
       apply()
       if (r < 1) {
         raf.current = requestAnimationFrame(inert)
-      } else {
-        setShowOverview(tr.current.scale < 0.25)
       }
     }
     raf.current = requestAnimationFrame(inert)
@@ -303,26 +327,17 @@ export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale =
       tr.current.x = clamped.x
       tr.current.y = clamped.y
       tr.current.scale = s
-      setShowOverview(s < 0.25)
+
       apply()
     },
     [minScale, maxScale, getClamped],
   )
 
-  const resetView = useCallback(() => {
-    onFocusChange(null)
-    const iv = initialView.current
-    const clamped = getClamped(iv.x, iv.y, iv.scale)
-    tr.current = { x: clamped.x, y: clamped.y, scale: iv.scale }
-    setShowOverview(false)
-    apply()
-  }, [onFocusChange, getClamped])
-
   const onContainerClick = useCallback(
     (e: React.MouseEvent) => {
       if (isAnimating.current) return
       if (e.target === containerRef.current || (e.target as HTMLElement)?.dataset?.diagramBg) {
-        onFocusChange(null)
+        onFocusChange?.(null)
       }
     },
     [onFocusChange],
@@ -375,7 +390,7 @@ export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale =
         <button
           onClick={(e) => {
             e.stopPropagation()
-            onFocusChange(null)
+            onFocusChange?.(null)
           }}
           className="fixed top-4 right-4 z-50 px-3 py-1.5 text-[11px] font-mono tracking-[0.15em] uppercase text-[#b8a898] border border-[#5a4a3a]/30 rounded hover:bg-[#5a4a3a]/20 transition-all"
         >
@@ -383,12 +398,23 @@ export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale =
         </button>
       )}
 
-      {showOverview && !focusAnchor && (
+      {!focusAnchor && (
         <button
-          onClick={resetView}
+          onClick={() => {
+            const next = !wide
+            setWide(next)
+            wideRef.current = next
+            touched.current = true
+            const size = measure(containerRef.current)
+            viewport.current = size
+            const f = frame(size.w, size.h, next)
+            tr.current = { x: f.x, y: f.y, scale: f.scale }
+            initialView.current = { ...tr.current }
+            apply()
+          }}
           className="fixed top-4 left-4 z-50 px-4 py-2 text-[11px] font-mono tracking-[0.15em] uppercase text-[#b8a898] border border-[#5a4a3a]/30 rounded hover:bg-[#5a4a3a]/20 transition-all"
         >
-          ← Overview
+          {wide ? 'Back to the papers' : 'The whole wall'}
         </button>
       )}
     </div>

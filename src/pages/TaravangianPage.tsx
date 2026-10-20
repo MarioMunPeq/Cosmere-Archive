@@ -25,11 +25,6 @@ import { useSEOMeta } from '@/hooks/useSEOMeta'
 import { DiagramScene } from '@/components/diagram/DiagramScene'
 import ReadingPanel from '@/components/diagram/ReadingPanel'
 import { noteFor, type DiagramNote } from '@/data/static/diagram-notes'
-import { BOOKS } from '@/data/static/books'
-import { ALL_CHARACTERS } from '@/data/static'
-import { PLANETS } from '@/data/static/planets'
-import { MAGICS } from '@/data/static/diagram-totals'
-import { HONORBLADES } from '@/data/static/aharietiam'
 
 export default function TaravangianPage() {
   useSEOMeta({
@@ -43,28 +38,6 @@ export default function TaravangianPage() {
 
   const active: DiagramNote | null = useMemo(() => (activeId ? noteFor(activeId) : null), [activeId])
   const hovered: DiagramNote | null = useMemo(() => (hoveredId ? noteFor(hoveredId) : null), [hoveredId])
-
-  /** The counts the wall shows, read from the same generated data as the site. */
-  const totals = useMemo(() => {
-    const bySaga = countBySaga()
-    const pubYears = BOOKS.map((b) => b.year ?? 0).filter((y) => y > 0)
-    return {
-      bookCountBySaga: bySaga,
-      charCountByPlanet: countByPlanet(),
-      totalWords: BOOKS.reduce((a, b) => a + (b.wordCount ?? 0), 0),
-      bookCount: BOOKS.length,
-      charCount: ALL_CHARACTERS.length,
-      planetCount: PLANETS.length,
-      sagaCount: MAGICS.seriesCount,
-      eventCount: MAGICS.eventCount,
-      heraldCount: HONORBLADES.length,
-      shardCount: MAGICS.shardCount,
-      pubYears,
-      pubMin: pubYears.length ? Math.min(...pubYears) : 0,
-      pubMax: pubYears.length ? Math.max(...pubYears) : 0,
-      maxSagaCount: Math.max(1, ...bySaga.map(([, n]) => n)),
-    }
-  }, [])
 
   const onPick = useCallback((id: string) => setActiveId((current) => (current === id ? null : id)), [])
   const onClose = useCallback(() => setActiveId(null), [])
@@ -99,28 +72,34 @@ export default function TaravangianPage() {
       className="relative flex h-full min-h-0 w-full flex-col overflow-hidden bg-[var(--surface-base)] md:flex-row"
     >
       <main className="relative min-h-0 flex-1">
-        <DiagramScene {...totals} activeDoc={activeId} onSelect={onPick} onHover={setHoveredId} />
+        {/*
+         * The page's own name, for anyone who is not looking at the wall.
+         *
+         * Hidden, not painted on the plaster. A title written across the wall
+         * would say "this is a website about Taravangian", which is the one
+         * thing the wall must not say. A screen reader, though, arrives with no
+         * wall: it gets a document, and a document with nine sheet headings and
+         * no title is a document with no name.
+         */}
+        <h1
+          style={{
+            position: 'absolute',
+            width: 1,
+            height: 1,
+            margin: -1,
+            padding: 0,
+            overflow: 'hidden',
+            clipPath: 'inset(50%)',
+            whiteSpace: 'nowrap',
+            border: 0,
+          }}
+        >
+          The Diagram of Taravangian
+        </h1>
+        <DiagramScene activeDoc={activeId} onSelect={onPick} onHover={setHoveredId} />
       </main>
 
       <ReadingPanel active={active} hovered={hovered} onPick={onPick} onHover={setHoveredId} onClose={onClose} />
     </div>
   )
-}
-
-function countBySaga(): [string, number][] {
-  const tally = new Map<string, number>()
-  for (const b of BOOKS) tally.set(b.saga, (tally.get(b.saga) ?? 0) + 1)
-  return [...tally].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-}
-
-function countByPlanet(): { name: string; count: number; id: string }[] {
-  const tally = new Map<string, number>()
-  for (const c of ALL_CHARACTERS) {
-    const id = c.planet ?? ''
-    if (id) tally.set(id, (tally.get(id) ?? 0) + 1)
-  }
-  const byId = new Map(PLANETS.map((p) => [p.id, p]))
-  return [...tally]
-    .map(([id, count]) => ({ id, count, name: byId.get(id)?.name ?? id }))
-    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
 }
