@@ -23,7 +23,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
 import { DiagramScene } from '@/components/diagram/DiagramScene'
-import ReadingPanel from '@/components/diagram/ReadingPanel'
+import Notebook from '@/components/diagram/Notebook'
 import { noteFor, type DiagramNote } from '@/data/static/diagram-notes'
 
 export default function TaravangianPage() {
@@ -99,7 +99,7 @@ export default function TaravangianPage() {
         <DiagramScene activeDoc={activeId} onSelect={onPick} onHover={setHoveredId} />
       </main>
 
-      <ReadingPanel active={active} hovered={hovered} onPick={onPick} onHover={setHoveredId} onClose={onClose} />
+      <Notebook active={active} hovered={hovered} onPick={onPick} onHover={setHoveredId} onClose={onClose} />
     </div>
   )
 }

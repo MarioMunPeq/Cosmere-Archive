@@ -4,6 +4,7 @@ import { WallSurface } from './WallSurface'
 import { Sheet } from './Sheet'
 import { SheetBody } from './SheetBodies'
 import { noteFor } from '@/data/static/diagram-notes'
+import { WALL_NOTES, WallNote } from './WallNote'
 import { WALL_DOCS, WALL_W, WALL_H, sheetSize, LARGE_SHEETS } from './wall-docs'
 
 /** How far a sheet may be crooked: 5.6.2's ±6, down from ±18-±22. */
@@ -85,6 +86,9 @@ export function DiagramScene({
       </svg>
 
       <div onClick={handleBackgroundClick}>
+        {WALL_NOTES.map((n) => (
+          <WallNote key={n.id} {...n} />
+        ))}
         {WALL_DOCS.map((d) => {
           const size = sheetSize(d.id)
           const note = noteFor(d.id)

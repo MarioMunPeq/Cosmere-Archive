@@ -40,14 +40,14 @@ test.describe('D.1 — nine sheets, reachable and named', () => {
     await first.focus()
     await expect(first).toBeFocused()
     await page.keyboard.press('Enter')
-    await expect(page.locator('[data-diagram-panel] h1')).toContainText('De lo que hay')
+    await expect(page.locator('[data-diagram-sheet-title]')).toContainText('De lo que hay')
   })
 
   test('Escape closes the sheet', async ({ page }) => {
     await page.locator('[data-diagram-sheet]').first().click()
-    await expect(page.locator('[data-diagram-panel] h1')).not.toContainText('The Diagram')
+    await expect(page.locator('[data-diagram-sheet-title]')).toBeVisible()
     await page.keyboard.press('Escape')
-    await expect(page.locator('[data-diagram-panel] h1')).toContainText('The Diagram')
+    await expect(page.locator('[data-diagram-panel]')).toContainText('The Diagram')
   })
 })
 
@@ -55,7 +55,7 @@ test.describe('D.5 — every sheet reaches a record', () => {
   test('the index lists nine, and each one leads somewhere real', async ({ page }) => {
     const entries = page.locator('[data-diagram-index-entry]')
     const links = page.locator('[data-diagram-panel] a')
-    const contents = page.getByRole('button', { name: 'Contents' })
+    const contents = page.getByRole('button', { name: 'Close sheet' })
 
     // The ids are read up front: choosing a sheet replaces the index with the
     // sheet, so `entries.nth(i)` does not survive the first click.
@@ -123,8 +123,8 @@ test.describe('the panel', () => {
     await page.setViewportSize({ width: 1440, height: 900 })
     await page.goto(DIAGRAM)
     const box = (await page.locator('[data-diagram-panel]').boundingBox())!
-    expect(Math.round(box.width)).toBeLessThanOrEqual(363)
-    expect(box.x).toBeGreaterThan(1440 - 380)
+    expect(Math.round(box.width)).toBeLessThanOrEqual(723)
+    expect(box.x).toBeGreaterThan(1440 - 740)
   })
 })
 

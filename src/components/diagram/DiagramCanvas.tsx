@@ -386,20 +386,9 @@ export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale =
         {children}
       </div>
 
-      {focusAnchor && (
-        <button
-          onClick={(e) => {
-            e.stopPropagation()
-            onFocusChange?.(null)
-          }}
-          className="fixed top-4 right-4 z-50 px-3 py-1.5 text-[11px] font-mono tracking-[0.15em] uppercase text-[#b8a898] border border-[#5a4a3a]/30 rounded hover:bg-[#5a4a3a]/20 transition-all"
-        >
-          ✕ Close
-        </button>
-      )}
-
       {!focusAnchor && (
         <button
+          type="button"
           onClick={() => {
             const next = !wide
             setWide(next)
@@ -412,9 +401,25 @@ export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale =
             initialView.current = { ...tr.current }
             apply()
           }}
-          className="fixed top-4 left-4 z-50 px-4 py-2 text-[11px] font-mono tracking-[0.15em] uppercase text-[#b8a898] border border-[#5a4a3a]/30 rounded hover:bg-[#5a4a3a]/20 transition-all"
+          aria-label={wide ? 'Closer to the papers' : 'Step back and see the whole wall'}
+          className="fixed left-4 top-4 z-50 cursor-pointer text-left transition-transform duration-200 hover:-translate-y-0.5"
+          style={{
+            width: 128,
+            padding: '10px 12px',
+            background: 'linear-gradient(152deg, #f2e9d4 0%, #eae0c8 40%, #e0d4b6 76%, #d6c8a6 100%)',
+            boxShadow: '3px 5px 10px rgba(0,0,0,0.45), 1px 2px 3px rgba(0,0,0,0.3)',
+            transform: 'rotate(-2.4deg)',
+            clipPath: 'polygon(0% 2%, 100% 0%, 99% 100%, 1% 98%)',
+            fontFamily: 'var(--font-display)',
+            fontSize: 13,
+            lineHeight: 1.25,
+            color: '#241a12',
+          }}
         >
-          {wide ? 'Back to the papers' : 'The whole wall'}
+          <span className="block font-[var(--font-mono)] text-[9px] uppercase tracking-[0.15em] text-[#8a6840]">
+            note
+          </span>
+          <span className="mt-0.5 block italic">{wide ? 'closer to the papers' : 'step back — see all nine'}</span>
         </button>
       )}
     </div>
