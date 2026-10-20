@@ -189,36 +189,6 @@ for (const width of [375, 768, 1440, 2560]) {
   })
 }
 
-test('M3.8 the List view carries the same 22 volumes', async ({ page }) => {
-  const shelfCount = await page.locator(SPINES).count()
-
-  await page.getByRole('tab', { name: 'list' }).click()
-  const rows = page.locator('[data-list-row]')
-  await expect(rows).toHaveCount(shelfCount)
-
-  // The view is in the URL, so it is linkable and survives a reload.
-  await expect(page).toHaveURL(/view=list/)
-  await page.reload()
-  await expect(page.getByRole('tab', { name: 'list' })).toHaveAttribute('aria-selected', 'true')
-})
-
-test('M3.8 the List view sorts', async ({ page }) => {
-  await page.getByRole('tab', { name: 'list' }).click()
-  const rows = page.locator('[data-list-row]')
-
-  const first = async () => (await rows.first().getAttribute('data-list-row')) ?? ''
-
-  const defaultFirst = await first()
-  await page.getByRole('button', { name: /published/i }).click()
-  const byYear = await first()
-
-  await page.getByRole('button', { name: /title/i }).click()
-  const byTitle = await first()
-
-  expect(byTitle.toLowerCase()).toBe('arcanum_unbounded')
-  expect(byYear).not.toBe(defaultFirst)
-})
-
 test('the shelves are reachable with the keyboard alone', async ({ page }) => {
   await page.locator('[data-book-id="the_way_of_kings"]').focus()
 

@@ -73,9 +73,11 @@ export default function HistoricalMenu({ id, items, pathname, onNavigate, trigge
       aria-label="Historical Archive"
       className={[
         'absolute top-[calc(100%+8px)] right-0 z-[var(--z-drawer)] w-[320px]',
-        'rounded-[var(--radius-lg)] border border-[var(--border-interactive)]',
-        'bg-[var(--surface-raised)] p-2 shadow-[var(--shadow-3)]',
+        'border border-[#5a3e1e] p-2 shadow-[0_12px_32px_rgba(0,0,0,0.6)]',
       ].join(' ')}
+      style={{
+        background: 'linear-gradient(180deg, #3a2414 0%, #24180a 100%)',
+      }}
     >
       <p className="px-3 pt-1.5 pb-2 text-nano tracking-[var(--ls-caps-wide)] text-[var(--text-tertiary)] uppercase">
         Historical Archive
