@@ -67,15 +67,18 @@ const READING_SCALE = 1.05
  * **`reading`** opens at 1:1, on the first sheet, so the first thing on screen
  * is a page you can actually read. The rest of the wall is 10 units of drag away.
  */
-function frame(w: number, h: number, wide: boolean) {
+function frame(w: number, h: number, wide: boolean, minScale: number) {
   const fit = Math.min(w / CONTENT_BOUNDS.w, h / CONTENT_BOUNDS.h)
+  // The wall must always cover the viewport, even when zoomed out. Otherwise
+  // the reader sees empty space around the wall, which reads as a page with a
+  // border rather than as a wall. So the scale never drops below minScale.
+  const wallCover = Math.max(w / WALL_W, h / WALL_H)
+  const floor = Math.max(minScale, wallCover)
   // Reading mode does not try to fit: the wall is bigger than the view, and
   // that is the point. Panning is how a reader moves along a wall of notes.
-  const scale = wide ? fit : READING_SCALE
+  const scale = wide ? Math.max(fit, floor) : Math.max(READING_SCALE, floor)
   const cx = CONTENT_BOUNDS.x + CONTENT_BOUNDS.w / 2
   const cy = CONTENT_BOUNDS.y + CONTENT_BOUNDS.h / 2
-  // `wide` centres the whole spread. `reading` centres the first sheet, which is
-  // the top-left of the layout — the one somebody would reach for.
   const anchorX = wide ? cx : CONTENT_BOUNDS.x + 260
   const anchorY = wide ? cy : CONTENT_BOUNDS.y + 180
   return { scale, x: w / 2 - anchorX * scale, y: h / 2 - anchorY * scale }
@@ -100,7 +103,7 @@ function lerp(a: number, b: number, t: number) {
   return a + (b - a) * t
 }
 
-export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale = 0.18, maxScale = 5.0 }: Props) {
+export function DiagramCanvas({ children, focusAnchor, onFocusChange, maxScale = 5.0 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
 
@@ -115,6 +118,10 @@ export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale =
   /** Stepped back to see the whole wall? Off by default; see frame. */
   const [wide, setWide] = useState(false)
   const wideRef = useRef(false)
+  /** Minimum scale at which the wall still covers the viewport. Below this the
+   *  wall would leave empty space around it, which reads as a page with a
+   *  border rather than as a wall. Computed per viewport in `refit`. */
+  const minScaleRef = useRef(0.18)
   const isAnimating = useRef(false)
   const prevFocusRef = useRef<FocusAnchor | null>(null)
   /** True once the reader has moved or zoomed, so a resize stops refitting. */
@@ -139,6 +146,7 @@ export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale =
   const refit = useCallback(() => {
     const size = measure(containerRef.current)
     viewport.current = size
+    minScaleRef.current = Math.max(size.w / WALL_W, size.h / WALL_H, 0.12)
     if (touched.current) {
       // Keep what they were looking at; only re-clamp to the new bounds.
       const clamped = getClamped()
@@ -146,7 +154,7 @@ export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale =
       apply()
       return
     }
-    const f = frame(size.w, size.h, wideRef.current)
+    const f = frame(size.w, size.h, wideRef.current, minScaleRef.current)
     tr.current = { x: f.x, y: f.y, scale: f.scale }
     initialView.current = { ...tr.current }
     apply()
@@ -320,7 +328,7 @@ export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale =
       const mx = e.clientX - rect.left
       const my = e.clientY - rect.top
       const factor = e.deltaY > 0 ? 0.9 : 1 / 0.9
-      const s = Math.max(minScale, Math.min(maxScale, tr.current.scale * factor))
+      const s = Math.max(minScaleRef.current, Math.min(maxScale, tr.current.scale * factor))
       const newX = mx - (mx - tr.current.x) * (s / tr.current.scale)
       const newY = my - (my - tr.current.y) * (s / tr.current.scale)
       const clamped = getClamped(newX, newY, s)
@@ -330,7 +338,7 @@ export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale =
 
       apply()
     },
-    [minScale, maxScale, getClamped],
+    [maxScale, getClamped],
   )
 
   const onContainerClick = useCallback(
@@ -396,7 +404,7 @@ export function DiagramCanvas({ children, focusAnchor, onFocusChange, minScale =
             touched.current = true
             const size = measure(containerRef.current)
             viewport.current = size
-            const f = frame(size.w, size.h, next)
+            const f = frame(size.w, size.h, next, minScaleRef.current)
             tr.current = { x: f.x, y: f.y, scale: f.scale }
             initialView.current = { ...tr.current }
             apply()
