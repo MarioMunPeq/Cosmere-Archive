@@ -90,7 +90,7 @@ export default function ArchiveError({ error, type, onRetry, route }: Props) {
           {/* Title */}
           <h1
             style={{
-              fontFamily: 'Cormorant Garamond, serif',
+              fontFamily: 'var(--font-display)',
               fontSize: 'clamp(28px, 3.5vw, 48px)',
               fontWeight: 300,
               letterSpacing: '0.08em',
@@ -105,7 +105,7 @@ export default function ArchiveError({ error, type, onRetry, route }: Props) {
           {/* Description */}
           <p
             style={{
-              fontFamily: 'Cormorant Garamond, serif',
+              fontFamily: 'var(--font-display)',
               fontSize: 'clamp(14px, 1.2vw, 17px)',
               fontWeight: 400,
               fontStyle: 'italic',
@@ -134,7 +134,7 @@ export default function ArchiveError({ error, type, onRetry, route }: Props) {
               display: 'grid',
               gridTemplateColumns: 'auto 1fr',
               gap: '6px 16px',
-              fontFamily: 'Cormorant Garamond, serif',
+              fontFamily: 'var(--font-display)',
               fontSize: 'clamp(11px, 0.9vw, 13px)',
               color: '#8a7a5a',
               marginBottom: 32,

@@ -37,7 +37,7 @@ const LoadingSpinner = memo(function LoadingSpinner() {
           <circle cx="24" cy="6" r="2" fill="#2a1a0a" opacity="0.3" />
           <circle cx="42" cy="24" r="2" fill="#2a1a0a" opacity="0.3" />
         </svg>
-        <p className="text-[13px] font-[Cormorant_Garamond,serif] italic text-[#2a1a0a]" style={{ opacity: 0.45 }}>
+        <p className="text-[13px] italic text-[#2a1a0a]" style={{ opacity: 0.45, fontFamily: 'var(--font-display)' }}>
           Loading…
         </p>
       </div>

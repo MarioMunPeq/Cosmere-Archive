@@ -25,7 +25,7 @@ export default function ErrorDetails({ error, route }: Props) {
       <button
         onClick={() => setOpen((o) => !o)}
         className="flex w-full items-center justify-between px-4 py-2.5 text-left cursor-pointer"
-        style={{ fontFamily: 'Cormorant Garamond, serif' }}
+        style={{ fontFamily: 'var(--font-display)' }}
       >
         <span className="text-[11px] font-semibold tracking-[0.12em] uppercase" style={{ color: '#8a7a5a' }}>
           Archive Details

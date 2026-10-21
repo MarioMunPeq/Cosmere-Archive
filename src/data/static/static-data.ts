@@ -25,18 +25,37 @@ import type { CharacterRelationship } from '@/types/relationships'
 
 // ── Character Relationships ──
 
+/**
+ * The relationship table.
+ *
+ * Two rules, enforced by `src/utils/relationships.ts` and its tests:
+ *
+ *   1. `label` names the **first** character's role. So `['vin', 'elend']`
+ *      with `label: 'Wife'` means Vin is Elend's wife, and Vin's card reads
+ *      "Elend — Husband" from the mirrored row.
+ *   2. A pair is recorded once per direction at most. The duplicate
+ *      `['kelsier', 'sazed']` row that had no label was removed; the surviving
+ *      row says "Allies" and is symmetric.
+ *
+ * Before this, labels were authored from whichever side the writer had in
+ * mind, so Adolin's card listed Shallan twice (once as Wife, once as Husband,
+ * the second being Adolin's own role) and Vin's card called Elend her wife.
+ * The labels below are written from the first character's point of view and
+ * `inverseLabel` covers the reverse where the neutral type word would be
+ * false.
+ */
 export const CHARACTER_RELATIONSHIPS: CharacterRelationship[] = [
   { characters: ['kelsier', 'mare'], type: 'spouse', label: 'Husband' },
   { characters: ['kelsier', 'vin'], type: 'mentor', label: 'Mentor' },
   { characters: ['kelsier', 'sazed'], type: 'ally', label: 'Allies' },
   { characters: ['vin', 'elend'], type: 'spouse', label: 'Wife' },
-  { characters: ['vin', 'reene'], type: 'sibling', label: 'Brother' },
+  { characters: ['vin', 'reene'], type: 'sibling', label: 'Sister', inverseLabel: 'Brother' },
   { characters: ['vin', 'kelsier'], type: 'mentee', label: 'Student' },
   { characters: ['sazed', 'tindwyl'], type: 'spouse', label: 'Husband' },
   { characters: ['sazed', 'kelsier'], type: 'ally', label: 'Allies' },
   { characters: ['kaladin', 'syl'], type: 'bonded', label: 'Nahel bond' },
   { characters: ['kaladin', 'shallan'], type: 'ally', label: 'Allies' },
-  { characters: ['kaladin', 'dalinar'], type: 'allegiance', label: 'Leads' },
+  { characters: ['kaladin', 'dalinar'], type: 'allegiance', label: 'Sworn to' },
   { characters: ['kaladin', 'teft'], type: 'ally', label: 'Bridge Four' },
   { characters: ['kaladin', 'moash'], type: 'rival', label: 'Betrayed' },
   { characters: ['shallan', 'adolin'], type: 'spouse', label: 'Wife' },
@@ -49,23 +68,22 @@ export const CHARACTER_RELATIONSHIPS: CharacterRelationship[] = [
   { characters: ['raoden', 'sarene'], type: 'spouse', label: 'Husband' },
   { characters: ['hoid', 'kelsier'], type: 'rival', label: 'Adversaries' },
   { characters: ['hoid', 'dalinar'], type: 'ally', label: 'Advisor' },
-  { characters: ['hoid', 'kaladin'], type: 'mentor', label: 'Philosophical guide' },
+  { characters: ['hoid', 'kaladin'], type: 'mentor', label: 'Philosophical guide', inverseLabel: 'Student' },
   { characters: ['vasher', 'nightblood'], type: 'creator', label: 'Awakener' },
   { characters: ['vasher', 'vivenna'], type: 'ally', label: 'Fellow Returned' },
   { characters: ['sarene', 'raoden'], type: 'spouse', label: 'Wife' },
-  { characters: ['sarene', 'kiin'], type: 'parent', label: 'Niece' },
-  { characters: ['spook', 'kelsier'], type: 'mentee', label: 'Student' },
+  { characters: ['sarene', 'kiin'], type: 'parent', label: 'Niece', inverseLabel: 'Uncle' },
+  { characters: ['spook', 'kelsier'], type: 'mentee', label: 'Student', inverseLabel: 'Mentor' },
   { characters: ['spook', 'vin'], type: 'ally', label: 'Crewmate' },
   { characters: ['teft', 'kaladin'], type: 'ally', label: 'Bridge Four' },
-  { characters: ['moash', 'kaladin'], type: 'rival', label: 'Betrayed' },
+  { characters: ['moash', 'kaladin'], type: 'rival', label: 'Betrayer' },
   { characters: ['adolin', 'shallan'], type: 'spouse', label: 'Husband' },
   { characters: ['navani', 'dalinar'], type: 'spouse', label: 'Wife' },
   { characters: ['syl', 'kaladin'], type: 'bonded', label: 'Nahel bond' },
   { characters: ['nightblood', 'vasher'], type: 'creation', label: 'Created by' },
-  { characters: ['nightblood', 'szeth'], type: 'wielder', label: 'Wields' },
-  { characters: ['szeth', 'nightblood'], type: 'wields', label: 'Sword' },
-  { characters: ['szeth', 'dalinar'], type: 'allegiance', label: 'Sworn to' },
-  { characters: ['kelsier', 'sazed'], type: 'ally' },
+  { characters: ['nightblood', 'szeth'], type: 'wielder', label: 'Sword' },
+  { characters: ['szeth', 'nightblood'], type: 'wields', label: 'Wielder' },
+  { characters: ['szeth', 'dalinar'], type: 'allegiance', label: 'Sworn to', inverseLabel: 'Liege' },
   { characters: ['mare', 'kelsier'], type: 'spouse', label: 'Wife' },
 ]
 

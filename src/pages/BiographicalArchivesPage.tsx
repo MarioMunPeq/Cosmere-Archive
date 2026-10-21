@@ -45,8 +45,8 @@ import Button from '@/components/primitives/Button'
 import SpoilerControl from '@/components/records/SpoilerControl'
 import { useSpoilerMode } from '@/hooks/useSpoilerMode'
 import { useViewTransitionNavigate } from '@/hooks/useViewTransition'
+import { relationshipsFor, relationshipCounts } from '@/utils/relationships'
 import { ALL_CHARACTERS } from '@/data/static'
-import { CHARACTER_RELATIONSHIPS } from '@/data/static/static-data'
 import { FAMILY_TREES } from '@/data/static/family-data'
 import type { Character } from '@/types/character'
 
@@ -57,22 +57,14 @@ const CHAR_MAP: Map<string, Character> = new Map(ALL_CHARACTERS.map((c) => [c.id
 /**
  * Characters with at least one recorded relationship, most-connected first.
  *
- * The count is of *distinct other people*, not of table rows. Vin appears in
- * six rows and is connected to four people — Kelsier twice, as mentor and as
- * spouse — so counting rows made the index say "6" next to a view that lists
- * four links, which reads as a bug in one of them. The view dedupes, so the
- * index has to as well.
+ * The count comes from `relationshipCounts`, which counts *distinct other
+ * people*. Counting table rows made the index say "6" next to a view that
+ * lists four links, because a pair stored in both directions is still one
+ * relationship.
  */
 function connectedCharacters(): { id: string; name: string; count: number }[] {
-  const others = new Map<string, Set<string>>()
-  for (const rel of CHARACTER_RELATIONSHIPS) {
-    for (const id of rel.characters) {
-      const set = others.get(id) ?? new Set<string>()
-      for (const other of rel.characters) if (other !== id) set.add(other)
-      others.set(id, set)
-    }
-  }
-  return ALL_CHARACTERS.map((c) => ({ id: c.id, name: c.name, count: others.get(c.id)?.size ?? 0 }))
+  const counts = relationshipCounts()
+  return ALL_CHARACTERS.map((c) => ({ id: c.id, name: c.name, count: counts.get(c.id) ?? 0 }))
     .filter((c) => c.count > 0)
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
 }
@@ -80,29 +72,19 @@ function connectedCharacters(): { id: string; name: string; count: number }[] {
 const CONNECTIONS = connectedCharacters()
 
 /**
- * Relationships for one record, as the card's rows.
+ * Relationships for one record, with the other person's name resolved.
  *
- * The relationship table stores each link once as a pair of ids plus a type.
- * A card needs the other end's *name* and the type rendered as prose, so this
- * is the join, and it is done here rather than in the card so the card stays a
- * pure presentation component.
- *
- * A name the archive does not have is dropped rather than shown as a raw id:
- * an entry that says "telsin-ladrian" where a reader expects "Telsin Ladrian"
- * is worse than no entry.
+ * The table stores ids; a card needs prose. The join lives here rather than in
+ * the card so the card stays a presentation component, and an id the archive
+ * does not know is dropped rather than printed — `telsin-ladrian` where a
+ * reader expects "Telsin Ladrian" is worse than no entry.
  */
-function relationshipsFor(id: string): { otherId: string; otherName: string; kind: string }[] {
+function namedRelationshipsFor(id: string): { otherId: string; otherName: string; kind: string }[] {
   const rows: { otherId: string; otherName: string; kind: string }[] = []
-  for (const rel of CHARACTER_RELATIONSHIPS) {
-    if (!rel.characters.includes(id)) continue
-    for (const otherId of rel.characters) {
-      if (otherId === id) continue
-      const other = CHAR_MAP.get(otherId)
-      if (!other) continue
-      // `label` is the display string the table already carries ("Mentor",
-      // "Husband"). `type` is the machine key. Prefer the former.
-      rows.push({ otherId, otherName: other.name, kind: rel.label ?? rel.type })
-    }
+  for (const link of relationshipsFor(id)) {
+    const other = CHAR_MAP.get(link.otherId)
+    if (!other) continue
+    rows.push({ otherId: link.otherId, otherName: other.name, kind: link.label })
   }
   return rows
 }
@@ -289,7 +271,7 @@ export default function BiographicalArchivesPage() {
     <div key={selected.id} className="record-enter">
       <CharacterCard
         character={selected}
-        relationships={relationshipsFor(selected.id)}
+        relationships={namedRelationshipsFor(selected.id)}
         locked={spoiler.enabled && !spoiler.isCharacterVisible(selected)}
         onUnlock={() => spoiler.setPanelOpen(true)}
         onOpenCharacter={openCharacter}

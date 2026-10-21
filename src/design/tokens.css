@@ -46,6 +46,10 @@
   --font-display: 'EB Garamond Variable', 'EB Garamond', 'Iowan Old Style', Georgia, serif;
   --font-ui: 'Inter Variable', Inter, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  /* Khriss's hand. Marginalia and connection labels only; never body text and
+     never below 14px. Falls back to the system script before generic cursive,
+     so a machine without the woff2 still looks written rather than defaulted. */
+  --font-hand: 'Caveat Variable', 'Segoe Script', 'Bradley Hand', cursive;
 
   /* 8b. TYPOGRAPHY — sizes. NOTHING may render below 11px. */
   --text-display: 3rem; /* 48px */

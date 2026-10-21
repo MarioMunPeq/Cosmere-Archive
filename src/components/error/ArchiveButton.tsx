@@ -6,7 +6,8 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export default function ArchiveButton({ children, variant = 'primary', className = '', ...rest }: Props) {
-  const base = 'font-[Cormorant_Garamond,serif] tracking-[0.12em] uppercase transition-all duration-300 cursor-pointer'
+  const base =
+    '[font-family:var(--font-display)] tracking-[0.12em] uppercase transition-all duration-300 cursor-pointer'
 
   const styles: Record<string, string> = {
     primary: [

@@ -305,7 +305,7 @@ export default function DestroyedManuscript({ inscription, seed = 42 }: Props) {
       >
         <span
           style={{
-            fontFamily: 'Cormorant Garamond, serif',
+            fontFamily: 'var(--font-display)',
             fontSize: 'clamp(14px, 1.6vw, 22px)',
             fontWeight: 300,
             letterSpacing: '0.25em',

@@ -24,7 +24,7 @@ import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import Monogram from '@/components/common/Monogram'
 import { ALL_CHARACTERS } from '@/data/static'
-import { CHARACTER_RELATIONSHIPS } from '@/data/static/static-data'
+import { relationshipsFor } from '@/utils/relationships'
 import type { Character } from '@/types/character'
 
 interface Props {
@@ -39,16 +39,10 @@ const BY_ID = new Map(ALL_CHARACTERS.map((c) => [c.id, c]))
 export default function ConnectionsView({ character, buildHref }: Props) {
   const relations = useMemo(() => {
     const out: { other: Character; kind: string }[] = []
-    const seen = new Set<string>()
-    for (const rel of CHARACTER_RELATIONSHIPS) {
-      if (!rel.characters.includes(character.id)) continue
-      for (const otherId of rel.characters) {
-        if (otherId === character.id || seen.has(otherId)) continue
-        const other = BY_ID.get(otherId)
-        if (!other) continue
-        seen.add(otherId)
-        out.push({ other, kind: rel.label ?? rel.type })
-      }
+    for (const link of relationshipsFor(character.id)) {
+      const other = BY_ID.get(link.otherId)
+      if (!other) continue
+      out.push({ other, kind: link.label })
     }
     return out.sort((a, b) => a.other.name.localeCompare(b.other.name))
   }, [character.id])
