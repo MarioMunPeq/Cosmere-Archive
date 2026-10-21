@@ -35,7 +35,7 @@ export function SkeletonBlock({
       className={[
         'shrink-0',
         toneMode === 'paper' ? 'bg-[var(--surface-page-inset)]' : 'bg-[var(--surface-raised)]',
-        'animate-pulse',
+        'animate-ink-drying',
         className,
       ].join(' ')}
       style={{ width, height, borderRadius: rounded }}

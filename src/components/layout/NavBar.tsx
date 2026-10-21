@@ -28,6 +28,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { CORE_DESTINATIONS, HISTORICAL_DESTINATIONS, isDestinationActive } from '@/navigation'
+import { BOOKS, PLANETS, ALL_CHARACTERS } from '@/data/static'
 import DestinationIcon from './DestinationIcon'
 import VisuallyHidden from '@/components/primitives/VisuallyHidden'
 import HistoricalMenu from './HistoricalMenu'
@@ -169,7 +170,7 @@ export default function NavBar({ onSearch }: Props) {
       </div>
 
       <VisuallyHidden>
-        {CORE_DESTINATIONS.length} core sections and {HISTORICAL_DESTINATIONS.length} archived sections
+        {BOOKS.length} volumes across {PLANETS.length} worlds and {ALL_CHARACTERS.length} named souls
       </VisuallyHidden>
     </nav>
   )
