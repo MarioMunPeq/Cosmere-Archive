@@ -242,7 +242,7 @@ export function Canvas() {
       ctx.save()
       ctx.scale(dpr, dpr)
 
-      drawBackground(ctx, w, h, selection.state.bgDim, time)
+      drawBackground(ctx, w, h, selection.state.bgDim, time, camera)
       drawSouls(ctx, souls, camera, w, h, time, dt, selection.state.soulId, model.hoveredId, 0)
       drawConnectionLines(ctx, selection.state, souls, time)
 

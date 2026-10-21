@@ -248,7 +248,7 @@ export function realmBounds(): { minX: number; minY: number; maxX: number; maxY:
 
 export const CLUSTER_BY_ID = new Map<string, ClusterDef>(CLUSTERS.map((c) => [c.id, c]))
 
-export const FOG_PARTICLES = 100
+export const FOG_PARTICLES = 200
 export const OTHER_DIM_FACTOR = 0.4
 
 export const MIN_ZOOM = 0.25

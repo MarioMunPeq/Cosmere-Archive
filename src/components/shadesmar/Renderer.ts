@@ -1,7 +1,7 @@
 import type { Soul } from './types'
 import type { SelectionState } from './types'
 import type { CameraController } from './Camera'
-import { FOG_PARTICLES, LOD_DOT, LOD_BEAD, GLOW_MIN, GLOW_MAX_VISIBLE } from './types'
+import { FOG_PARTICLES, LOD_DOT, LOD_BEAD, GLOW_MIN, GLOW_MAX_VISIBLE, CLUSTERS, WORLD_W, WORLD_H } from './types'
 import { getSoulTexture } from './TextureCache'
 
 interface FogDot {
@@ -62,33 +62,104 @@ function initFog(w: number, h: number): void {
   }
 }
 
-export function drawBackground(ctx: CanvasRenderingContext2D, w: number, h: number, dim: number, time: number): void {
-  ctx.fillStyle = '#050508'
+export function drawBackground(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+  dim: number,
+  time: number,
+  camera?: CameraController,
+): void {
+  ctx.fillStyle = '#030308'
   ctx.fillRect(0, 0, w, h)
 
+  // Nebulae and stars are drawn in world space via the camera transform.
+
+  // Deep space gradient: darker at edges, slightly warmer at center.
   const cx = w / 2
   const cy = h / 2
-  const r = Math.max(w, h) * 0.5
-
+  const r = Math.max(w, h) * 0.7
   const bgGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r)
-  bgGrad.addColorStop(0, `rgba(8, 16, 30, ${0.12 * (1 - dim)})`)
-  bgGrad.addColorStop(0.6, `rgba(6, 12, 25, ${0.06 * (1 - dim)})`)
-  bgGrad.addColorStop(1, 'rgba(5, 5, 8, 0)')
+  bgGrad.addColorStop(0, `rgba(8, 12, 24, ${0.6 * (1 - dim)})`)
+  bgGrad.addColorStop(0.5, `rgba(5, 8, 18, ${0.4 * (1 - dim)})`)
+  bgGrad.addColorStop(1, 'rgba(3, 3, 8, 0)')
   ctx.fillStyle = bgGrad
   ctx.fillRect(0, 0, w, h)
 
-  const ts = time * 0.12
-  for (let i = 0; i < 4; i++) {
-    const gx = cx + Math.sin(ts * 0.25 + i * 1.8) * w * 0.35
-    const gy = cy + Math.cos(ts * 0.2 + i * 1.3) * h * 0.25
-    const gr = w * 0.4 + Math.sin(ts * 0.1 + i) * w * 0.1
-    const grad = ctx.createRadialGradient(gx, gy, 0, gx, gy, gr)
-    grad.addColorStop(0, `rgba(15, 25, 50, ${0.05 * (1 - dim)})`)
-    grad.addColorStop(1, 'rgba(15, 25, 50, 0)')
-    ctx.fillStyle = grad
-    ctx.fillRect(0, 0, w, h)
+  // Nebulae: each realm is a colored cloud. Drawn in world space via camera.
+  for (const cluster of CLUSTERS) {
+    let sx: number, sy: number, nr: number
+    if (camera) {
+      const sp = camera.worldToScreen(cluster.cx, cluster.cy, w, h)
+      sx = sp.x
+      sy = sp.y
+      nr = cluster.radius * camera.zoom * Math.min(w, h) * 2.5
+    } else {
+      const scale = Math.min(w / WORLD_W, h / WORLD_H) * 0.85
+      const offsetX = (w - WORLD_W * scale) / 2
+      const offsetY = (h - WORLD_H * scale) / 2
+      sx = cluster.cx * scale + offsetX
+      sy = cluster.cy * scale + offsetY
+      nr = cluster.radius * scale * 2.5
+    }
+    const color = cluster.color
+    const pulse = 0.85 + Math.sin(time * 0.15 + cluster.cx * 3) * 0.15
+    const nebula = ctx.createRadialGradient(sx, sy, 0, sx, sy, nr)
+    nebula.addColorStop(0, `rgba(${color}, ${0.07 * pulse * (1 - dim)})`)
+    nebula.addColorStop(0.4, `rgba(${color}, ${0.035 * pulse * (1 - dim)})`)
+    nebula.addColorStop(0.7, `rgba(${color}, ${0.012 * (1 - dim)})`)
+    nebula.addColorStop(1, `rgba(${color}, 0)`)
+    ctx.fillStyle = nebula
+    ctx.fillRect(sx - nr, sy - nr, nr * 2, nr * 2)
   }
 
+  // The Cosmere at center: a subtle warm glow.
+  let cosmereX: number, cosmereY: number, cosmereR: number
+  if (camera) {
+    const sp = camera.worldToScreen(WORLD_W / 2, WORLD_H / 2, w, h)
+    cosmereX = sp.x
+    cosmereY = sp.y
+    cosmereR = camera.zoom * Math.min(w, h) * 0.15
+  } else {
+    const scale = Math.min(w / WORLD_W, h / WORLD_H) * 0.85
+    const offsetX = (w - WORLD_W * scale) / 2
+    const offsetY = (h - WORLD_H * scale) / 2
+    cosmereX = (WORLD_W / 2) * scale + offsetX
+    cosmereY = (WORLD_H / 2) * scale + offsetY
+    cosmereR = scale * 0.3
+  }
+  const cosmereGlow = ctx.createRadialGradient(cosmereX, cosmereY, 0, cosmereX, cosmereY, cosmereR)
+  cosmereGlow.addColorStop(0, `rgba(100,150,200, ${0.1 * (1 - dim)})`)
+  cosmereGlow.addColorStop(0.5, `rgba(100,150,200, ${0.04 * (1 - dim)})`)
+  cosmereGlow.addColorStop(1, 'rgba(100,150,200, 0)')
+  ctx.fillStyle = cosmereGlow
+  ctx.fillRect(cosmereX - cosmereR, cosmereY - cosmereR, cosmereR * 2, cosmereR * 2)
+
+  // Stars: tiny bright points scattered across the canvas.
+  const starSeed = 0x9e3779b9
+  let starA = starSeed >>> 0
+  function starRand() {
+    starA = (starA + 0x6d2b79f5) | 0
+    let t = Math.imul(starA ^ (starA >>> 15), 1 | starA)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+  const starCount = Math.floor((w * h) / 4000)
+  for (let i = 0; i < starCount; i++) {
+    const sx = starRand() * w
+    const sy = starRand() * h
+    const brightness = 0.15 + starRand() * 0.5
+    const twinkle = 0.6 + Math.sin(time * (0.5 + starRand() * 1.5) + starRand() * Math.PI * 2) * 0.4
+    const size = starRand() < 0.85 ? 0.5 : 1.2
+    ctx.globalAlpha = brightness * twinkle * (1 - dim)
+    ctx.fillStyle = `rgba(200, 215, 240, 1)`
+    ctx.beginPath()
+    ctx.arc(sx, sy, size, 0, Math.PI * 2)
+    ctx.fill()
+  }
+  ctx.globalAlpha = 1
+
+  // Slow-drifting fog particles.
   initFog(w, h)
   for (const f of fogDots) {
     f.x += f.vx
@@ -99,9 +170,16 @@ export function drawBackground(ctx: CanvasRenderingContext2D, w: number, h: numb
     if (f.y > h + 10) f.y = -10
     ctx.beginPath()
     ctx.arc(f.x, f.y, f.size, 0, Math.PI * 2)
-    ctx.fillStyle = `rgba(80, 100, 140, ${f.opacity * (1 - dim)})`
+    ctx.fillStyle = `rgba(100, 120, 160, ${f.opacity * 2 * (1 - dim)})`
     ctx.fill()
   }
+
+  // Vignette: darken the edges.
+  const vigGrad = ctx.createRadialGradient(cx, cy, Math.min(w, h) * 0.3, cx, cy, Math.max(w, h) * 0.7)
+  vigGrad.addColorStop(0, 'rgba(0,0,0,0)')
+  vigGrad.addColorStop(1, `rgba(0,0,0,${0.5 * (1 - dim) + 0.3})`)
+  ctx.fillStyle = vigGrad
+  ctx.fillRect(0, 0, w, h)
 }
 
 export function drawSouls(
