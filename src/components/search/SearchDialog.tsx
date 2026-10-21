@@ -157,10 +157,13 @@ export default function SearchDialog({ open, onClose }: Props) {
       }}
       className={[
         'm-0 mt-[10vh] w-[min(640px,calc(100vw-32px))] max-w-none p-0',
-        'border border-[var(--border-interactive)] bg-[var(--surface-raised)] text-[var(--text-primary)]',
-        'rounded-[var(--radius-lg)] shadow-[var(--shadow-3)]',
-        'backdrop:bg-[color-mix(in_srgb,var(--surface-void)_78%,transparent)] backdrop:backdrop-blur-[3px]',
+        'border border-[#5a3e1e] text-[#241a12]',
+        'shadow-[0_12px_40px_rgba(0,0,0,0.6)]',
+        'backdrop:bg-[color-mix(in_srgb,var(--surface-void)_85%,transparent)] backdrop:backdrop-blur-[3px]',
       ].join(' ')}
+      style={{
+        background: 'linear-gradient(152deg, #f2e9d4 0%, #eae0c8 40%, #e0d4b6 76%, #d6c8a6 100%)',
+      }}
     >
       <div className="flex items-center gap-[var(--spacing-sm)] border-b border-[var(--border-subtle)] px-[var(--spacing-md)]">
         <span aria-hidden className="shrink-0 text-[var(--text-tertiary)]">

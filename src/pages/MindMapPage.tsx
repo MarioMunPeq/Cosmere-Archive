@@ -10,9 +10,9 @@ export default function MindMapPage() {
   })
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
+    <div className="flex min-h-0 flex-1 flex-col bg-[var(--surface-void)]">
       <div className="absolute left-4 top-4 z-10">
-        <BackToMapButton className="rounded-lg border border-gray-700/60 bg-gray-900/80 px-3 py-1.5 backdrop-blur-sm" />
+        <BackToMapButton className="border border-[#5a3e1e] bg-[#2a180c] px-3 py-1.5 font-[var(--font-display)] text-[12px] text-[#d8b878] shadow-[0_2px_6px_rgba(0,0,0,0.4)]" />
       </div>
       <div className="flex min-h-0 flex-1 flex-col">
         <CosmereMindMap3D />

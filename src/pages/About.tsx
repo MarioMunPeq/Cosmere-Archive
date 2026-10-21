@@ -14,7 +14,7 @@
  */
 
 import { useSEOMeta } from '@/hooks/useSEOMeta'
-import PageHeader from '@/components/layout/PageHeader'
+
 import Signature from '@/components/about/Signature'
 
 const FACTS: [string, string][] = [
@@ -63,15 +63,32 @@ export default function About() {
   })
 
   return (
-    <>
-      <PageHeader
-        eyebrow="Silverlight Archives"
-        title="About the Archive"
-        description="A personal project inspired by Brandon Sanderson's Cosmere."
-      />
-
-      <div className="min-h-0 flex-1 overflow-y-auto bg-[var(--surface-page)]">
-        <article className="mx-auto max-w-[var(--reading-max)] px-[var(--gutter-md)] py-[var(--spacing-2xl)] text-[var(--text-on-page-primary)] max-md:px-[var(--gutter)]">
+    <div className="min-h-0 flex-1 overflow-y-auto bg-[var(--surface-void)]">
+      <div className="relative flex shrink-0 flex-col items-center gap-2 px-5 pt-5 pb-3">
+        <div
+          className="relative px-6 py-2"
+          style={{
+            background: 'linear-gradient(180deg, #3a2a14 0%, #24180a 100%)',
+            border: '1px solid #5a3e1e',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(190,150,100,0.12)',
+          }}
+        >
+          <h1 className="font-[var(--font-display)] text-[var(--text-h3)] tracking-[0.04em] text-[#d8b878]">
+            About the Archive
+          </h1>
+        </div>
+        <span className="font-[var(--font-display)] text-[13px] italic text-[#8a6840]">
+          A personal project inspired by Brandon Sanderson's Cosmere.
+        </span>
+      </div>
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <article
+          className="mx-auto max-w-[var(--reading-max)] px-[var(--gutter-md)] py-[var(--spacing-2xl)] max-md:px-[var(--gutter)]"
+          style={{
+            background: 'linear-gradient(152deg, #f2e9d4 0%, #eae0c8 40%, #e0d4b6 76%, #d6c8a6 100%)',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+          }}
+        >
           {/* Opening */}
           <div className="max-w-[var(--measure)] space-y-md text-[var(--text-on-page-secondary)]">
             <p className="text-lead leading-[var(--lh-body)]">
@@ -178,6 +195,6 @@ export default function About() {
           </section>
         </article>
       </div>
-    </>
+    </div>
   )
 }

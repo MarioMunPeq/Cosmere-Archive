@@ -41,16 +41,12 @@ export default function BottomNav() {
   return (
     <nav
       aria-label="Primary"
-      className={[
-        'z-[var(--z-nav)] shrink-0 border-t border-[var(--border-subtle)] md:hidden',
-        'fixed inset-x-0 bottom-0',
-      ].join(' ')}
+      className={['z-[var(--z-nav)] shrink-0 md:hidden', 'fixed inset-x-0 bottom-0'].join(' ')}
       style={{
         height: 'calc(var(--bottom-nav-h) + env(safe-area-inset-bottom))',
         paddingBottom: 'env(safe-area-inset-bottom)',
-        background: 'color-mix(in srgb, var(--surface-base) 92%, transparent)',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
+        background: 'linear-gradient(180deg, #3a2414 0%, #2a180c 60%, #1a0e06 100%)',
+        boxShadow: 'inset 0 1px 0 rgba(190,150,100,0.12), 0 -2px 0 rgba(0,0,0,0.5)',
       }}
     >
       <ul className="mx-auto grid h-[var(--bottom-nav-h)] max-w-[560px] grid-cols-5">
