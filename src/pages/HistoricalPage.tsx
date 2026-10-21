@@ -1,32 +1,21 @@
 /**
- * /historical — the index of the Historical Archive. D-HIST, §5.7.
+ * /historical — the index of the Historical Archive.
  *
- * One route with an index, not five loose routes. The five sections keep their
- * current implementations; only the container, the header and the breadcrumb
- * change, which is why each card carries a status note saying whether it is
- * maintained or legacy rather than presenting them as equal citizens.
+ * ## Diegetic treatment
  *
- * The old routes keep working. Nothing here redirects yet: `/aharietiam`,
- * `/mind-map`, `/magic`, `/chronology` and `/about` are all live and reachable,
- * so moving them would break external links for no gain.
+ * An archive index is not a card grid. It is a cabinet of folders, each
+ * labelled in ink on the tab, with a stamp showing whether it has been
+ * maintained or left frozen. The reader opens a folder and finds the section
+ * inside.
  */
-
 import { Link } from 'react-router-dom'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
-import PageHeader from '@/components/layout/PageHeader'
 import { HISTORICAL_DESTINATIONS, SECONDARY_DESTINATIONS } from '@/navigation'
 import type { Destination } from '@/navigation'
-import DestinationIcon from '@/components/layout/DestinationIcon'
 
-/**
- * Honest status per section (§5.7 asks for a visible note, "no marketing").
- *
- * `maintained` is rewritten as the rebuild reaches it; `legacy` means the
- * section works and is frozen until its milestone.
- */
 const STATUS: Record<string, { note: string; tone: 'maintained' | 'legacy' }> = {
   aharietiam: { note: 'Legacy. Rebuilt in M6.', tone: 'legacy' },
-  'ars-arcanum': { note: 'Maintained. Content validated.', tone: 'maintained' },
+  'ars-arcanum': { note: 'Maintained.', tone: 'maintained' },
   chronology: { note: 'Legacy. Rebuilt in M6.', tone: 'legacy' },
   'mind-map': { note: 'Legacy. Rebuilt in M6.', tone: 'legacy' },
   about: { note: 'Maintained.', tone: 'maintained' },
@@ -39,27 +28,45 @@ export default function HistoricalPage() {
   })
 
   return (
-    <>
-      <PageHeader
-        eyebrow="Silverlight Archives"
-        title="Historical Archive"
-        description="Preserved sections of the archive, kept in their original form. Each one still works; some are frozen until their rebuild."
-      />
+    <div className="relative flex min-h-0 flex-1 flex-col bg-[var(--surface-void)]">
+      {/* The cabinet. */}
+      <div
+        className="relative flex shrink-0 flex-col items-center gap-2 px-5 pt-5 pb-3"
+        style={{
+          background: 'linear-gradient(180deg, rgb(8 10 14 / .9) 0%, rgb(8 10 14 / 0) 100%)',
+        }}
+      >
+        <div
+          className="relative px-6 py-2"
+          style={{
+            background: 'linear-gradient(180deg, #3a2a14 0%, #24180a 100%)',
+            border: '1px solid #5a3e1e',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(190,150,100,0.12)',
+          }}
+        >
+          <h1 className="font-[var(--font-display)] text-[var(--text-h3)] tracking-[0.04em] text-[#d8b878]">
+            Historical Archive
+          </h1>
+        </div>
+        <span className="font-[var(--font-mono)] text-[10px] uppercase tracking-[0.2em] text-[#8a6840]">
+          Preserved sections, in their original form
+        </span>
+      </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto px-[var(--gutter-md)] py-2xl max-md:px-[var(--gutter)]">
         <div className="mx-auto max-w-page">
-          <Section title="Sections" items={HISTORICAL_DESTINATIONS} />
-          <Section title="Elsewhere in the archive" items={SECONDARY_DESTINATIONS} />
+          <FolderSection title="Sections" items={HISTORICAL_DESTINATIONS} />
+          <FolderSection title="Elsewhere in the archive" items={SECONDARY_DESTINATIONS} />
         </div>
       </div>
-    </>
+    </div>
   )
 }
 
-function Section({ title, items }: { title: string; items: Destination[] }) {
+function FolderSection({ title, items }: { title: string; items: Destination[] }) {
   return (
     <section className="mb-2xl last:mb-0">
-      <h2 className="mb-md text-nano tracking-[var(--ls-caps-wide)] text-[var(--text-tertiary)] uppercase">{title}</h2>
+      <h2 className="mb-md font-[var(--font-mono)] text-[10px] uppercase tracking-[0.2em] text-[#8a6840]">{title}</h2>
 
       <ul className="grid grid-cols-1 gap-md sm:grid-cols-2 lg:grid-cols-3">
         {items.map((dest) => {
@@ -69,33 +76,49 @@ function Section({ title, items }: { title: string; items: Destination[] }) {
               <Link
                 to={dest.to}
                 className={[
-                  'group flex h-full flex-col gap-xs rounded-[var(--radius-lg)] p-lg',
-                  'border border-[var(--border-subtle)] bg-[var(--surface-base)]',
-                  'transition-[border-color,background-color] duration-[var(--dur-fast)] ease-[var(--ease-standard)]',
-                  'hover:border-[var(--border-interactive)] hover:bg-[var(--surface-raised)]',
+                  'group block no-underline',
+                  'transition-transform duration-[var(--dur-fast)] ease-[var(--ease-standard)]',
+                  'hover:-translate-y-0.5',
                   'focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)]',
                 ].join(' ')}
               >
-                <DestinationIcon name={dest.icon} size={24} className="text-[var(--text-accent)]" />
-
-                <span className="font-display text-h4 font-[var(--fw-semibold)] text-[var(--text-primary)]">
-                  {dest.label}
-                </span>
-
-                <span className="text-meta leading-[var(--lh-body)] text-[var(--text-secondary)]">
-                  {dest.description}
-                </span>
-
-                {status && (
-                  <span
-                    className={[
-                      'mt-auto pt-sm text-micro',
-                      status.tone === 'maintained' ? 'text-[var(--shard-cultivation)]' : 'text-[var(--text-tertiary)]',
-                    ].join(' ')}
-                  >
-                    {status.note}
+                {/* A folder. */}
+                <div
+                  className="relative overflow-hidden p-5"
+                  style={{
+                    background: 'linear-gradient(152deg, #f2e9d4 0%, #eae0c8 40%, #e0d4b6 76%, #d6c8a6 100%)',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                    transform: 'rotate(-0.5deg)',
+                  }}
+                >
+                  {/* Folder tab. */}
+                  <div
+                    aria-hidden
+                    className="absolute -top-2 left-4 h-4 w-24"
+                    style={{
+                      background: 'linear-gradient(180deg, #e0d4b6 0%, #d6c8a6 100%)',
+                      border: '1px solid rgba(60,40,20,0.25)',
+                      borderBottom: 'none',
+                      borderRadius: '2px 2px 0 0',
+                    }}
+                  />
+                  <span className="font-[var(--font-display)] text-[18px] leading-[1.15] text-[#241a12]">
+                    {dest.label}
                   </span>
-                )}
+                  <p className="mt-1 font-[var(--font-display)] text-[12px] italic leading-[1.4] text-[#5a4028]">
+                    {dest.description}
+                  </p>
+                  {status && (
+                    <span
+                      className="mt-3 inline-block font-[var(--font-mono)] text-[9px] uppercase tracking-[0.15em]"
+                      style={{
+                        color: status.tone === 'maintained' ? '#3a6a3a' : '#8a6840',
+                      }}
+                    >
+                      {status.note}
+                    </span>
+                  )}
+                </div>
               </Link>
             </li>
           )
