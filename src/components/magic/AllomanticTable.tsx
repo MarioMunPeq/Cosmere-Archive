@@ -29,73 +29,92 @@ export default function AllomanticTable() {
   const [expanded, setExpanded] = useState<ExpandedState>({})
 
   const toggleExpanded = (id: string) => {
-    setExpanded((prev) => ({ ...prev, [id]: !prev[id] }))
+    setExpanded((previous) => ({ ...previous, [id]: !previous[id] }))
   }
 
   return (
     <div>
-      <p className="font-serif text-[10px] italic mb-4" style={{ color: 'rgba(80,60,40,0.35)' }}>
+      <p
+        className="mb-4 text-[12px] italic leading-relaxed [font-family:var(--font-display)]"
+        style={{ color: 'var(--text-on-page-tertiary)' }}
+      >
         Each of the sixteen metals manifests three distinct properties — Allomantic, Feruchemical, and Hemalurgic.
       </p>
 
       <div className="space-y-4">
         {GROUP_ORDER.map((group) => {
-          const metals = ALLOMANTIC_METALS.filter((m) => m.group === group)
-          const color = GROUP_COLORS[group]
+          const metals = ALLOMANTIC_METALS.filter((metal) => metal.group === group)
           return (
             <div key={group}>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="h-px flex-1" style={{ background: `rgba(80,60,40,0.08)` }} />
-                <span className="font-serif text-[9px] uppercase tracking-[0.15em]" style={{ color: `${color}99` }}>
+              <div className="mb-1 flex items-center gap-2">
+                <span
+                  className="h-1.5 w-1.5 shrink-0 rounded-full"
+                  style={{ backgroundColor: GROUP_COLORS[group] }}
+                  aria-hidden="true"
+                />
+                <span
+                  className="text-[11px] uppercase tracking-[0.15em] [font-family:var(--font-ui)]"
+                  style={{ color: 'var(--text-on-page-tertiary)' }}
+                >
                   {GROUP_LABELS[group]}
                 </span>
-                <span className="h-px flex-1" style={{ background: `rgba(80,60,40,0.08)` }} />
+                <span className="h-px flex-1" style={{ background: 'rgba(80,60,40,0.14)' }} aria-hidden="true" />
               </div>
+
               {metals.map((metal) => {
                 const isOpen = expanded[metal.id] ?? false
+                const panelId = `metal-${metal.id}-properties`
+
                 return (
                   <div key={metal.id}>
-                    <span
-                      role="button"
-                      tabIndex={0}
+                    <button
+                      type="button"
+                      aria-expanded={isOpen}
+                      aria-controls={isOpen ? panelId : undefined}
                       onClick={() => toggleExpanded(metal.id)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault()
-                          toggleExpanded(metal.id)
-                        }
-                      }}
-                      className="group flex items-baseline gap-2 py-[3px] cursor-pointer"
-                      style={{ color: 'rgba(60,40,25,0.6)' }}
+                      className="group flex w-full cursor-pointer items-baseline gap-2 border-0 bg-transparent py-[4px] text-left"
                     >
                       <span
-                        className="h-2 w-2 rounded-full shrink-0 inline-block"
+                        className="inline-block h-2 w-2 shrink-0 rounded-full"
                         style={{ backgroundColor: metal.color }}
+                        aria-hidden="true"
                       />
-                      <span className="font-serif text-[13px] font-medium" style={{ color: '#2d1a0e' }}>
+                      <span
+                        className="text-[13px] font-medium transition-colors duration-150 group-hover:text-[color:var(--text-on-page-link)] [font-family:var(--font-display)]"
+                        style={{ color: 'var(--text-on-page-primary)' }}
+                      >
                         {metal.name}
                       </span>
-                      <span className="font-serif text-[10px]" style={{ color: 'rgba(80,60,40,0.25)' }}>
+                      <span
+                        className="text-[11px] [font-family:var(--font-display)]"
+                        style={{ color: 'var(--text-on-page-tertiary)' }}
+                      >
                         / {metal.alloy}
                       </span>
                       <span
-                        className="ml-auto font-serif text-[9px] transition-opacity"
-                        style={{ color: 'rgba(80,60,40,0.15)' }}
+                        className="ml-auto text-[11px] [font-family:var(--font-display)]"
+                        style={{ color: 'var(--text-on-page-tertiary)' }}
+                        aria-hidden="true"
                       >
                         {isOpen ? '△' : '▽'}
                       </span>
-                    </span>
+                    </button>
+
                     {isOpen && (
-                      <div className="ml-5 mb-1 pb-1 border-l pl-3" style={{ borderColor: 'rgba(80,60,40,0.08)' }}>
+                      <div
+                        id={panelId}
+                        className="mb-1 ml-5 border-l pb-1 pl-3"
+                        style={{ borderColor: 'rgba(80,60,40,0.18)' }}
+                      >
                         {METAL_ATTRS.map(({ key, label }) => (
                           <p
                             key={key}
-                            className="font-serif text-[11px] leading-relaxed"
-                            style={{ color: 'rgba(60,40,25,0.6)' }}
+                            className="text-[12px] leading-relaxed [font-family:var(--font-display)]"
+                            style={{ color: 'var(--text-on-page-secondary)' }}
                           >
                             <span
-                              className="text-[9px] uppercase tracking-[0.08em]"
-                              style={{ color: 'rgba(80,60,40,0.25)' }}
+                              className="text-[11px] uppercase tracking-[0.08em] [font-family:var(--font-ui)]"
+                              style={{ color: 'var(--text-on-page-tertiary)' }}
                             >
                               {label}
                             </span>

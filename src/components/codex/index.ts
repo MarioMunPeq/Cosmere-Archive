@@ -1,6 +1,8 @@
 export { default as Codex } from './Codex'
+export type { CodexSpreadView } from './Codex'
 export { default as CodexObject } from './CodexObject'
 export { default as CodexCover } from './CodexCover'
+export { default as CodexFlip } from './CodexFlip'
 export { default as PageBlock } from './PageBlock'
 export { default as Spread } from './Spread'
 export { default as PageSurface } from './PageSurface'

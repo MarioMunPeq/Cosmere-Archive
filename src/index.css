@@ -1028,9 +1028,9 @@ html {
 
    The Ars Arcanum and the Biographical Archives are read in a bound volume, not
    in a web card. Everything below is the chassis: desk, candle, leather cover,
-   page block, paper. Reading text is never inside a transformed box — the only
-   rotateY in the system belongs to the cover leaf, and that leaf is unmounted
-   the moment the book is open.
+   page block, paper. Reading text is never left inside a transformed box — the
+   cover leaf and the single turning leaf are the only rotateY surfaces, and
+   both are unmounted the moment they come to rest.
 
    D-DIEG: no floating toolbar, no cards, no generic panel. If it is not wood,
    leather, brass, thread or paper, it does not belong here.
@@ -1246,6 +1246,7 @@ html {
     0 10px 26px rgb(0 0 0 / 0.6),
     0 0 0 1px rgb(0 0 0 / 0.45);
   perspective: 2200px;
+  touch-action: pan-y pinch-zoom;
 }
 
 @supports not (height: 1cqh) {
@@ -1501,6 +1502,148 @@ html {
   font-family: var(--font-display);
 }
 
+/* ---- Turning leaf -------------------------------------------------------- */
+
+.codex-flip {
+  position: absolute;
+  inset: 5px var(--codex-edge-w);
+}
+
+.codex-flip__underlay {
+  position: absolute;
+  inset: 0;
+}
+
+.codex-flip__leaf {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 8;
+  width: 50%;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.codex-flip__leaf--next {
+  left: 50%;
+  transform-origin: left center;
+}
+
+.codex-flip__leaf--prev {
+  left: 0;
+  transform-origin: right center;
+}
+
+.codex-flip__face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--surface-page);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.codex-flip__face--back {
+  transform: rotateY(180deg);
+}
+
+.codex-flip__face .codex-page {
+  height: 100%;
+}
+
+.codex-flip__shade {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.codex-flip[data-direction='next'] .codex-flip__shade--front {
+  background: linear-gradient(to right, rgb(0 0 0 / 0.34), transparent 26%);
+  opacity: calc(0.3 + var(--flip-progress, 0) * 0.55);
+}
+
+.codex-flip[data-direction='prev'] .codex-flip__shade--front {
+  background: linear-gradient(to left, rgb(0 0 0 / 0.34), transparent 26%);
+  opacity: calc(0.3 + var(--flip-progress, 0) * 0.55);
+}
+
+.codex-flip__shade--back {
+  background: linear-gradient(to right, rgb(255 250 235 / 0.09), transparent 18%, transparent 78%, rgb(0 0 0 / 0.22));
+  opacity: calc(0.2 + var(--flip-progress, 0) * 0.5);
+}
+
+.codex-ribbon {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  z-index: 7;
+  width: clamp(10px, 1vw, 14px);
+  height: clamp(44px, 10%, 76px);
+  transform: translateX(-50%);
+  pointer-events: none;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 88%, 0 100%);
+  background:
+    linear-gradient(90deg, rgb(0 0 0 / 0.28), transparent 34%, rgb(255 220 180 / 0.12) 62%, transparent),
+    linear-gradient(180deg, #7c3222 0%, var(--codex-wax) 24%, #521f15 100%);
+  box-shadow:
+    0 6px 12px -6px rgb(0 0 0 / 0.6),
+    inset 1px 0 0 rgb(255 230 200 / 0.12);
+  animation: codex-ribbon-settle 520ms var(--ease-page) both;
+}
+
+@keyframes codex-ribbon-settle {
+  from {
+    transform: translate(-50%, -8px);
+    opacity: 0.2;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+
+/* Page-edge controls. They live on the fore-edge, not over the text, and the
+   only visual is a catchlight on the paper block when pointed at. */
+.codex-edge {
+  position: absolute;
+  top: 10%;
+  bottom: 10%;
+  z-index: 9;
+  width: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.codex-edge--prev {
+  left: -12px;
+}
+
+.codex-edge--next {
+  right: -12px;
+}
+
+.codex-edge--prev:hover {
+  background: linear-gradient(to right, rgb(236 217 173 / 0.13), transparent);
+}
+
+.codex-edge--next:hover {
+  background: linear-gradient(to left, rgb(236 217 173 / 0.13), transparent);
+}
+
+.codex-edge:focus-visible {
+  outline: 2px solid var(--codex-brass-ink);
+  outline-offset: -2px;
+  border-radius: 2px;
+}
+
+.codex-stage[data-dragging='true'] {
+  cursor: grabbing;
+  user-select: none;
+}
+
 /* ---- Cover --------------------------------------------------------------- */
 
 .codex-cover {
@@ -1712,6 +1855,10 @@ html {
 @media (prefers-reduced-motion: reduce) {
   .codex-cover__leaf {
     transition: none;
+  }
+
+  .codex-ribbon {
+    animation: none;
   }
 
   .codex-object__candle {

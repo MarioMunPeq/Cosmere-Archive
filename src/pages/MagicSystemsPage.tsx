@@ -1,15 +1,21 @@
-import { useState, useMemo, useCallback, useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useCallback, useEffect, useMemo, type ReactNode } from 'react'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
 import { useViewTransitionNavigate } from '@/hooks/useViewTransition'
+import { useCodexRoute } from '@/hooks/useCodexRoute'
+import { useCodexSession } from '@/hooks/useCodexSession'
 import { getPlanetById, BOOKS, ALL_CHARACTERS } from '@/data/static'
 import { MAGIC_SYSTEMS, type MagicSystem } from '@/data/static/magic-systems'
 import type { Planet } from '@/types/planet'
+import {
+  buildSpreads,
+  findSpreadForSystem,
+  spreadIndexById,
+  type CodexLeaf,
+  type CodexSection,
+} from '@/utils/codex-pages'
 import ArchivalIndex from '@/components/ars-arcanum/ArchivalIndex'
-import Codex from '@/components/codex/Codex'
+import Codex, { type CodexSpreadView } from '@/components/codex/Codex'
 import AllomanticTable from '@/components/magic/AllomanticTable'
-
-type Mode = 'toc' | 'chapter' | 'index'
 
 const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI'] as const
 const CHAPTER_ORDER = [
@@ -26,153 +32,449 @@ const CHAPTER_ORDER = [
   'canticle',
 ]
 
-function getChapters(): { planet: Planet; systems: MagicSystem[] }[] {
+const TEXT_BUTTON = 'cursor-pointer border-0 bg-transparent p-0 text-left'
+
+interface Chapter {
+  planet: Planet
+  systems: MagicSystem[]
+}
+
+function getChapters(): Chapter[] {
   const map = new Map<string, MagicSystem[]>()
-  for (const s of MAGIC_SYSTEMS) {
-    const existing = map.get(s.planetId) ?? []
-    existing.push(s)
-    map.set(s.planetId, existing)
+  for (const system of MAGIC_SYSTEMS) {
+    const existing = map.get(system.planetId) ?? []
+    existing.push(system)
+    map.set(system.planetId, existing)
   }
   return CHAPTER_ORDER.map((id) => {
     const planet = getPlanetById(id)
     const systems = map.get(id)
     return planet && systems ? { planet, systems } : null
-  }).filter((x): x is { planet: Planet; systems: MagicSystem[] } => x !== null && x.planet !== undefined)
+  }).filter((entry): entry is Chapter => entry !== null)
 }
 
 function getRelatedSystems(
   system: MagicSystem,
   allSystems: MagicSystem[],
 ): { samePlanet: MagicSystem[]; sameShard: MagicSystem[]; sameClassification: MagicSystem[] } {
-  const samePlanet = allSystems.filter((s) => s.planetId === system.planetId && s.id !== system.id)
+  const samePlanet = allSystems.filter(
+    (candidate) => candidate.planetId === system.planetId && candidate.id !== system.id,
+  )
   const sameShard = allSystems.filter(
-    (s) => s.shard === system.shard && s.planetId !== system.planetId && s.id !== system.id,
+    (candidate) =>
+      candidate.shard === system.shard && candidate.planetId !== system.planetId && candidate.id !== system.id,
   )
   const sameClassification = system.classification
     ? allSystems.filter(
-        (s) => s.classification === system.classification && s.planetId !== system.planetId && s.id !== system.id,
+        (candidate) =>
+          candidate.classification === system.classification &&
+          candidate.planetId !== system.planetId &&
+          candidate.id !== system.id,
       )
     : []
   return { samePlanet, sameShard, sameClassification }
 }
 
-export default function MagicSystemsPage() {
-  const [searchParams] = useSearchParams()
-  const navigate = useViewTransitionNavigate()
-  const [mode, setMode] = useState<Mode>(() => (searchParams.get('system') ? 'chapter' : 'toc'))
-  const [currentChapter, setCurrentChapter] = useState<string | null>(() => {
-    const param = searchParams.get('system')
-    if (param) {
-      const sys = MAGIC_SYSTEMS.find((ms) => ms.id === param)
-      return sys?.planetId ?? null
-    }
-    return null
-  })
-  const [scrollToSection, setScrollToSection] = useState<string | null>(searchParams.get('system'))
+function chapterRoman(planetId: string): string {
+  const index = CHAPTER_ORDER.indexOf(planetId)
+  return index >= 0 ? (ROMAN[index] ?? '') : ''
+}
 
+function shortStatus(status: string): string {
+  if (status === 'Documented') return 'Doc.'
+  if (status === 'Partially Documented') return 'Part.'
+  if (status === 'Poorly Understood') return 'Unc.'
+  return status
+}
+
+function RecordField({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div className="flex gap-3">
+      <span
+        className="shrink-0 text-right text-[11px] uppercase tracking-[0.1em] [font-family:var(--font-ui)]"
+        style={{ color: 'var(--text-on-page-tertiary)', minWidth: '82px' }}
+      >
+        {label}
+      </span>
+      <span
+        className="text-[clamp(12px,0.9vw,13px)] [font-family:var(--font-display)]"
+        style={{ color: 'var(--text-on-page-secondary)' }}
+      >
+        {children}
+      </span>
+    </div>
+  )
+}
+
+interface ContentsPageProps {
+  chapters: Chapter[]
+  onOpenChapter: (planetId: string) => void
+  onOpenIndex: () => void
+}
+
+function ContentsPage({ chapters, onOpenChapter, onOpenIndex }: ContentsPageProps) {
+  return (
+    <div>
+      <h2
+        className="mb-5 text-[12px] uppercase tracking-[0.15em] [font-family:var(--font-ui)]"
+        style={{ color: 'var(--text-on-page-tertiary)' }}
+      >
+        Contents
+      </h2>
+      <nav aria-label="Table of contents" className="space-y-[3px]">
+        {chapters.map(({ planet, systems }) => {
+          const count = systems.length
+          return (
+            <button
+              key={planet.id}
+              type="button"
+              onClick={() => onOpenChapter(planet.id)}
+              className={`${TEXT_BUTTON} group flex w-full flex-wrap items-baseline gap-x-2 gap-y-0.5`}
+            >
+              <span
+                className="min-w-[22px] text-right text-[11px] [font-family:var(--font-display)]"
+                style={{ color: 'var(--text-on-page-tertiary)' }}
+              >
+                {chapterRoman(planet.id)}.
+              </span>
+              <span
+                className="min-w-0 text-[15px] tracking-[0.02em] transition-colors duration-150 group-hover:text-[color:var(--text-on-page-link)] [font-family:var(--font-display)]"
+                style={{ color: 'var(--text-on-page-primary)' }}
+              >
+                {planet.name}
+              </span>
+              <span
+                aria-hidden="true"
+                className="hidden min-w-[12px] flex-1 sm:block"
+                style={{ borderBottom: '1px dotted rgba(107,87,68,0.45)' }}
+              />
+              <span
+                className="w-full pl-[30px] text-left text-[11px] [font-family:var(--font-ui)] sm:w-auto sm:pl-0 sm:text-right"
+                style={{ color: 'var(--text-on-page-secondary)' }}
+              >
+                {count} manifestation{count !== 1 ? 's' : ''}
+              </span>
+            </button>
+          )
+        })}
+      </nav>
+
+      <div className="mt-8">
+        <button
+          type="button"
+          onClick={onOpenIndex}
+          className={`${TEXT_BUTTON} group text-[11px] uppercase tracking-[0.1em] [font-family:var(--font-ui)]`}
+          style={{ color: 'var(--text-on-page-tertiary)' }}
+        >
+          <span className="transition-colors duration-150 group-hover:text-[color:var(--text-on-page-link)]">
+            Archival Index →
+          </span>
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function TitlePage() {
+  return (
+    <div className="flex h-full flex-col items-center justify-start text-center sm:justify-center">
+      <div className="mb-2 h-px w-12 sm:mb-3" style={{ background: 'rgba(80,60,40,0.28)' }} />
+      <h1
+        className="text-[clamp(20px,6vw,42px)] font-bold leading-tight tracking-[0.1em] [font-family:var(--font-display)] sm:text-[clamp(24px,3vw,42px)] sm:tracking-[0.15em]"
+        style={{ color: 'var(--text-on-page-primary)' }}
+      >
+        ARS
+        <br />
+        ARCANUM
+      </h1>
+      <div className="mt-3 h-px w-10 sm:mt-4" style={{ background: 'rgba(80,60,40,0.24)' }} />
+      <p
+        className="mt-3 max-w-[360px] text-[clamp(13px,1vw,15px)] italic leading-snug [font-family:var(--font-display)] sm:mt-5 sm:leading-relaxed"
+        style={{ color: 'var(--text-on-page-secondary)' }}
+      >
+        Collected observations concerning the manifestations of Investiture throughout the known Cosmere
+      </p>
+      <div className="mt-3 space-y-1 sm:mt-8">
+        <p className="text-[11px] [font-family:var(--font-display)]" style={{ color: 'var(--text-on-page-tertiary)' }}>
+          Compiled from the research of Khrissalla
+        </p>
+        <p
+          className="text-[11px] italic [font-family:var(--font-display)]"
+          style={{ color: 'var(--text-on-page-tertiary)' }}
+        >
+          Preserved within the Cosmere Archive
+        </p>
+      </div>
+      <div className="mt-5 h-px w-12 sm:mt-10" style={{ background: 'rgba(80,60,40,0.28)' }} />
+      <p
+        className="mt-3 text-[11px] uppercase tracking-[0.04em] [font-family:var(--font-ui)] sm:mt-4 sm:tracking-[0.12em]"
+        style={{ color: 'var(--text-on-page-tertiary)' }}
+      >
+        <span className="hidden sm:inline">— </span>Silverlight Edition
+        <span className="hidden sm:inline"> —</span>
+      </p>
+    </div>
+  )
+}
+
+interface ChapterPageProps {
+  chapter: Chapter
+  onOpenSystem: (system: MagicSystem) => void
+  onOpenContents: () => void
+}
+
+function ChapterPage({ chapter, onOpenSystem, onOpenContents }: ChapterPageProps) {
+  const { planet, systems } = chapter
+  const shardLabel = planet.shard?.includes('&') ? 'Shards' : 'Shard'
+
+  return (
+    <div>
+      <p
+        className="text-[11px] uppercase tracking-[0.12em] [font-family:var(--font-ui)]"
+        style={{ color: 'var(--text-on-page-tertiary)' }}
+      >
+        Chapter {chapterRoman(planet.id)}
+      </p>
+      <h1
+        className="mt-2 mb-1 text-[clamp(22px,2.4vw,32px)] font-bold leading-tight tracking-[0.05em] [font-family:var(--font-display)]"
+        style={{ color: 'var(--text-on-page-primary)' }}
+      >
+        {planet.name}
+      </h1>
+
+      <div
+        className="mt-3 mb-5 space-y-1 text-[12px] [font-family:var(--font-display)]"
+        style={{ color: 'var(--text-on-page-secondary)' }}
+      >
+        <p>
+          <span style={{ color: 'var(--text-on-page-tertiary)' }}>{shardLabel}:</span> {planet.shard ?? 'Unknown'}
+        </p>
+        <p>
+          <span style={{ color: 'var(--text-on-page-tertiary)' }}>Investiture:</span> {systems.length} documented
+          manifestation{systems.length !== 1 ? 's' : ''}
+        </p>
+      </div>
+
+      <div className="space-y-[1px]">
+        {systems.map((system, index) => (
+          <button
+            key={system.id}
+            type="button"
+            onClick={() => onOpenSystem(system)}
+            className={`${TEXT_BUTTON} group flex w-full items-baseline gap-2 py-[3px]`}
+          >
+            <span
+              className="min-w-[18px] text-right text-[11px] [font-family:var(--font-display)]"
+              style={{ color: 'var(--text-on-page-tertiary)' }}
+            >
+              {index + 1}.
+            </span>
+            <span
+              className="text-[14px] tracking-[0.02em] transition-colors duration-150 group-hover:text-[color:var(--text-on-page-link)] [font-family:var(--font-display)]"
+              style={{ color: 'var(--text-on-page-primary)' }}
+            >
+              {system.name}
+            </span>
+            {system.status && (
+              <span
+                className="ml-auto text-[11px] uppercase tracking-[0.06em] [font-family:var(--font-ui)]"
+                style={{ color: 'var(--text-on-page-tertiary)' }}
+              >
+                {shortStatus(system.status)}
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+
+      <div className="mt-6">
+        <button
+          type="button"
+          onClick={onOpenContents}
+          className={`${TEXT_BUTTON} text-[11px] uppercase tracking-[0.1em] [font-family:var(--font-ui)]`}
+          style={{ color: 'var(--text-on-page-tertiary)' }}
+        >
+          ← Contents
+        </button>
+      </div>
+    </div>
+  )
+}
+
+interface ByWorldProps {
+  chapters: Chapter[]
+  onOpenChapter: (planetId: string) => void
+  onOpenSystem: (system: MagicSystem) => void
+}
+
+function ByWorldPage({ chapters, onOpenChapter, onOpenSystem }: ByWorldProps) {
+  return (
+    <div>
+      <h2
+        className="mb-5 text-[12px] uppercase tracking-[0.15em] [font-family:var(--font-ui)]"
+        style={{ color: 'var(--text-on-page-secondary)' }}
+      >
+        By World
+      </h2>
+      <div className="space-y-4">
+        {chapters.map(({ planet, systems }) => (
+          <div key={planet.id}>
+            <button
+              type="button"
+              onClick={() => onOpenChapter(planet.id)}
+              className={`${TEXT_BUTTON} text-[13px] font-medium transition-colors duration-150 hover:text-[color:var(--text-on-page-link)] [font-family:var(--font-display)]`}
+              style={{ color: 'var(--text-on-page-primary)' }}
+            >
+              {chapterRoman(planet.id)}. {planet.name}
+            </button>
+            <div className="mt-1">
+              {systems.map((system) => (
+                <button
+                  key={system.id}
+                  type="button"
+                  onClick={() => onOpenSystem(system)}
+                  className={`${TEXT_BUTTON} block pl-4 py-[1px] text-[12px] transition-colors duration-150 hover:text-[color:var(--text-on-page-link)] [font-family:var(--font-display)]`}
+                  style={{ color: 'var(--text-on-page-secondary)' }}
+                >
+                  {system.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export default function MagicSystemsPage() {
   useSEOMeta({
     title: 'Ars Arcanum — Cosmere Archive',
     description: 'Collected observations concerning the manifestations of Investiture throughout the known Cosmere.',
   })
 
+  const navigate = useViewTransitionNavigate()
   const chapters = useMemo(() => getChapters(), [])
+  const chapterByPlanet = useMemo(() => new Map(chapters.map((chapter) => [chapter.planet.id, chapter])), [chapters])
+  const systemById = useMemo(() => new Map(MAGIC_SYSTEMS.map((system) => [system.id, system])), [])
 
-  const chapterData = useMemo(() => {
-    if (!currentChapter) return null
-    return chapters.find((c) => c.planet.id === currentChapter) ?? null
-  }, [currentChapter, chapters])
+  const sections = useMemo<CodexSection[]>(() => {
+    const book: CodexSection[] = [
+      {
+        leaves: [
+          { id: 'contents', title: 'Contents', frontMatter: true, view: 'contents' },
+          { id: 'title', title: 'Ars Arcanum', frontMatter: true, view: 'contents' },
+        ],
+      },
+    ]
 
-  const currentSystems = chapterData?.systems ?? []
-  const chapterIndex = currentChapter ? CHAPTER_ORDER.indexOf(currentChapter) : -1
+    for (const { planet, systems } of chapters) {
+      const leaves: CodexLeaf[] = [
+        { id: `chapter-${planet.id}`, title: planet.name, chapterId: planet.id, view: 'chapter' },
+        ...systems.map((system) => ({
+          id: `system-${system.id}`,
+          title: system.name,
+          chapterId: planet.id,
+          systemIds: [system.id],
+        })),
+      ]
+      book.push({ leaves })
+    }
 
-  const chaptersForToc = useMemo(
-    () => chapters.map(({ planet, systems }, idx) => ({ planet, count: systems.length, roman: ROMAN[idx] ?? '' })),
-    [chapters],
+    book.push({
+      leaves: [
+        { id: 'index', title: 'Index', view: 'index' },
+        { id: 'index-world', title: 'Index of Worlds', view: 'index' },
+      ],
+    })
+
+    return book
+  }, [chapters])
+
+  const spreads = useMemo(() => buildSpreads(sections), [sections])
+  const leafById = useMemo(
+    () => new Map(sections.flatMap((section) => section.leaves).map((leaf) => [leaf.id, leaf])),
+    [sections],
   )
 
-  const openChapter = useCallback((planetId: string, sectionId?: string) => {
-    setCurrentChapter(planetId)
-    setMode('chapter')
-    setScrollToSection(sectionId ?? null)
-  }, [])
-
-  const openIndex = useCallback(() => {
-    setMode('index')
-  }, [])
-
-  const backToToc = useCallback(() => {
-    setCurrentChapter(null)
-    setMode('toc')
-    setScrollToSection(null)
-  }, [])
-
-  const navigateToSystem = useCallback(
-    (system: MagicSystem) => {
-      if (system.planetId === currentChapter) {
-        document.getElementById(`section-${system.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      } else {
-        openChapter(system.planetId, system.id)
-      }
-    },
-    [currentChapter, openChapter],
-  )
-
-  const handleSystemClick = useCallback(
-    (system: MagicSystem) => {
-      openChapter(system.planetId)
-    },
-    [openChapter],
-  )
+  const { ribbon, rememberSpread, edition } = useCodexSession('investiture')
+  const fallbackId = ribbon && spreadIndexById(spreads, ribbon) >= 0 ? ribbon : spreads[0]?.id
+  const route = useCodexRoute({ spreads, fallbackId })
+  const activeSpreadId = route.spread?.id
 
   useEffect(() => {
-    if (scrollToSection) {
-      const id = scrollToSection
-      requestAnimationFrame(() => {
-        setScrollToSection(null)
-        document.getElementById(`section-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      })
-    }
-  }, [scrollToSection])
+    if (activeSpreadId) rememberSpread(activeSpreadId)
+  }, [activeSpreadId, rememberSpread])
 
-  const renderSection = (system: MagicSystem, sectionIndex: number) => {
-    const related = getRelatedSystems(system, currentSystems)
-    const planet = chapterData?.planet
-    const chars = ALL_CHARACTERS.filter((c) => c.planet === system.planetId)
-    const books = system.bookIds
-      .map((bid) => BOOKS.find((b) => b.id === bid))
-      .filter((b): b is (typeof BOOKS)[number] => !!b)
+  const openChapter = useCallback(
+    (planetId: string) => {
+      route.openSpread(`chapter-${planetId}`)
+    },
+    [route],
+  )
 
+  const openIndex = useCallback(() => {
+    route.openSpread('index')
+  }, [route])
+
+  const openContents = useCallback(() => {
+    route.openSpread('contents')
+  }, [route])
+
+  const goToSystem = useCallback(
+    (system: MagicSystem, sameChapter: boolean) => {
+      const target = findSpreadForSystem(spreads, system.id)
+      if (!target) return
+      if (sameChapter) route.turnTo(target.id)
+      else route.openSpread(target.id)
+    },
+    [route, spreads],
+  )
+
+  const renderSection = (system: MagicSystem) => {
+    const chapter = chapterByPlanet.get(system.planetId)
+    const systems = chapter?.systems ?? []
+    const sectionIndex = Math.max(
+      0,
+      systems.findIndex((candidate) => candidate.id === system.id),
+    )
+    const planet = chapter?.planet
+    const related = getRelatedSystems(system, systems)
     const allRelated = getRelatedSystems(system, MAGIC_SYSTEMS)
     const shardRefs = allRelated.sameShard.slice(0, 3)
     const classRefs = allRelated.sameClassification.slice(0, 3)
+    const characters = ALL_CHARACTERS.filter((character) => character.planet === system.planetId)
+    const books = system.bookIds
+      .map((bookId) => BOOKS.find((book) => book.id === bookId))
+      .filter((book): book is (typeof BOOKS)[number] => Boolean(book))
 
     return (
-      <section key={system.id} id={`section-${system.id}`} className="mb-8">
-        <div className="h-px w-full mb-4" style={{ background: 'rgba(80,60,40,0.06)' }} />
+      <section key={system.id} id={`section-${system.id}`} className="mb-2">
+        <div className="mb-4 h-px w-full" style={{ background: 'rgba(80,60,40,0.08)' }} />
 
         <h2
-          className="font-serif text-[clamp(16px,1.6vw,22px)] font-bold tracking-[0.04em] leading-tight"
-          style={{ color: '#2d1a0e' }}
+          className="text-[clamp(17px,1.7vw,23px)] font-bold leading-tight tracking-[0.04em] [font-family:var(--font-display)]"
+          style={{ color: 'var(--text-on-page-primary)' }}
         >
           {sectionIndex + 1}. {system.name}
         </h2>
 
         <p
-          className="font-serif text-[clamp(10px,0.85vw,13px)] leading-[1.9] mt-3 mb-4"
-          style={{ color: 'rgba(40,30,20,0.75)' }}
+          className="mt-3 mb-4 text-[clamp(13px,1.05vw,15px)] leading-[1.9] [font-family:var(--font-display)]"
+          style={{ color: 'var(--text-on-page-secondary)' }}
         >
           {system.description}
         </p>
 
         {system.academicNote && (
           <p
-            className="font-serif text-[10px] italic leading-relaxed mb-4 pl-3"
-            style={{ color: 'rgba(80,60,40,0.45)' }}
+            className="mb-4 border-l pl-3 text-[12px] italic leading-relaxed [font-family:var(--font-display)]"
+            style={{ color: 'var(--text-on-page-tertiary)', borderColor: 'var(--surface-page-edge)' }}
           >
             {system.academicNote}
             <span
-              className="block mt-1 text-[8px] not-italic uppercase tracking-[0.08em]"
-              style={{ color: 'rgba(80,60,40,0.2)' }}
+              className="mt-1 block text-[11px] not-italic uppercase tracking-[0.08em] [font-family:var(--font-ui)]"
+              style={{ color: 'var(--text-on-page-tertiary)' }}
             >
               — Silverlight Scholarly Record
             </span>
@@ -180,29 +482,29 @@ export default function MagicSystemsPage() {
         )}
 
         {system.id === 'allomancy' && (
-          <div className="mb-4 pl-3">
+          <div className="mb-5">
             <AllomanticTable />
           </div>
         )}
 
-        <div className="mb-3">
+        <div className="mb-4">
           <p
-            className="font-serif text-[8px] uppercase tracking-[0.15em] mb-1.5"
-            style={{ color: 'rgba(80,60,40,0.2)' }}
+            className="mb-1.5 text-[11px] uppercase tracking-[0.15em] [font-family:var(--font-ui)]"
+            style={{ color: 'var(--text-on-page-tertiary)' }}
           >
             Research Record
           </p>
-          <div className="space-y-[1px]">
+          <div className="space-y-[2px]">
             <RecordField label="Origin">{planet?.name ?? system.planetId}</RecordField>
             <RecordField label="Shard">{system.shard}</RecordField>
             {system.classification && <RecordField label="Classification">{system.classification}</RecordField>}
             {system.status && <RecordField label="Status">{system.status}</RecordField>}
             {books.length > 0 && (
               <RecordField label="Appears in">
-                {books.map((b, i) => (
-                  <span key={b.id}>
-                    {i > 0 && <span style={{ color: 'rgba(80,60,40,0.2)' }}>; </span>}
-                    <span>{b.title}</span>
+                {books.map((book, index) => (
+                  <span key={book.id}>
+                    {index > 0 && <span style={{ color: 'var(--text-on-page-tertiary)' }}>; </span>}
+                    <span>{book.title}</span>
                   </span>
                 ))}
               </RecordField>
@@ -213,125 +515,84 @@ export default function MagicSystemsPage() {
         {(related.samePlanet.length > 0 || shardRefs.length > 0 || classRefs.length > 0) && (
           <div>
             <p
-              className="font-serif text-[8px] uppercase tracking-[0.15em] mb-1"
-              style={{ color: 'rgba(80,60,40,0.2)' }}
+              className="mb-1 text-[11px] uppercase tracking-[0.15em] [font-family:var(--font-ui)]"
+              style={{ color: 'var(--text-on-page-tertiary)' }}
             >
               See also
             </p>
             <div className="space-y-[1px]">
-              {related.samePlanet.map((s) => {
-                const secNum = currentSystems.indexOf(s)
+              {related.samePlanet.map((candidate) => {
+                const section = Math.max(
+                  0,
+                  systems.findIndex((entry) => entry.id === candidate.id),
+                )
                 return (
-                  <span
-                    key={s.id}
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => navigateToSystem(s)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault()
-                        navigateToSystem(s)
-                      }
-                    }}
-                    className="block font-serif text-[11px] italic cursor-pointer transition-opacity hover:opacity-60"
-                    style={{ color: 'rgba(60,40,25,0.45)' }}
+                  <button
+                    key={candidate.id}
+                    type="button"
+                    onClick={() => goToSystem(candidate, true)}
+                    className={`${TEXT_BUTTON} block text-[12px] italic underline-offset-2 transition-colors duration-150 hover:underline [font-family:var(--font-display)]`}
+                    style={{ color: 'var(--text-on-page-link)' }}
                   >
-                    → Sec. {secNum + 1}: {s.name}
-                  </span>
+                    → Sec. {section + 1}: {candidate.name}
+                  </button>
                 )
               })}
-              {shardRefs.map((s) => {
-                const chIdx = CHAPTER_ORDER.indexOf(s.planetId)
-                const chRoman = chIdx >= 0 ? (ROMAN[chIdx] ?? '') : ''
-                return (
-                  <span
-                    key={s.id}
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => navigateToSystem(s)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault()
-                        navigateToSystem(s)
-                      }
-                    }}
-                    className="block font-serif text-[11px] italic cursor-pointer transition-opacity hover:opacity-60"
-                    style={{ color: 'rgba(60,40,25,0.3)' }}
-                  >
-                    → {s.name} · Ch. {chRoman} ({s.shard})
-                  </span>
-                )
-              })}
-              {classRefs.map((s) => {
-                const chIdx = CHAPTER_ORDER.indexOf(s.planetId)
-                const chRoman = chIdx >= 0 ? (ROMAN[chIdx] ?? '') : ''
-                return (
-                  <span
-                    key={s.id}
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => navigateToSystem(s)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault()
-                        navigateToSystem(s)
-                      }
-                    }}
-                    className="block font-serif text-[11px] italic cursor-pointer transition-opacity hover:opacity-60"
-                    style={{ color: 'rgba(60,40,25,0.3)' }}
-                  >
-                    → {s.name} · Ch. {chRoman} ({system.classification})
-                  </span>
-                )
-              })}
+              {shardRefs.map((candidate) => (
+                <button
+                  key={candidate.id}
+                  type="button"
+                  onClick={() => goToSystem(candidate, false)}
+                  className={`${TEXT_BUTTON} block text-[12px] italic underline-offset-2 transition-colors duration-150 hover:underline [font-family:var(--font-display)]`}
+                  style={{ color: 'var(--text-on-page-link)' }}
+                >
+                  → {candidate.name} · Ch. {chapterRoman(candidate.planetId)} ({candidate.shard})
+                </button>
+              ))}
+              {classRefs.map((candidate) => (
+                <button
+                  key={candidate.id}
+                  type="button"
+                  onClick={() => goToSystem(candidate, false)}
+                  className={`${TEXT_BUTTON} block text-[12px] italic underline-offset-2 transition-colors duration-150 hover:underline [font-family:var(--font-display)]`}
+                  style={{ color: 'var(--text-on-page-link)' }}
+                >
+                  → {candidate.name} · Ch. {chapterRoman(candidate.planetId)} ({system.classification})
+                </button>
+              ))}
             </div>
           </div>
         )}
 
-        {chars.length > 0 && (
+        {characters.length > 0 && (
           <div className="mt-3">
             <p
-              className="font-serif text-[8px] uppercase tracking-[0.15em] mb-1"
-              style={{ color: 'rgba(80,60,40,0.2)' }}
+              className="mb-1 text-[11px] uppercase tracking-[0.15em] [font-family:var(--font-ui)]"
+              style={{ color: 'var(--text-on-page-tertiary)' }}
             >
               Known Practitioners
             </p>
-            <p className="font-serif text-[11px]" style={{ color: 'rgba(60,40,25,0.55)' }}>
-              {chars
-                .map((c) => (
-                  <span
-                    key={c.id}
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => navigate(`/characters?character=${c.id}`)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault()
-                        navigate(`/characters?character=${c.id}`)
-                      }
-                    }}
-                    className="cursor-pointer transition-opacity hover:opacity-60"
+            <p
+              className="text-[12px] leading-relaxed [font-family:var(--font-display)]"
+              style={{ color: 'var(--text-on-page-secondary)' }}
+            >
+              {characters.map((character, index) => (
+                <span key={character.id}>
+                  {index > 0 && <span style={{ color: 'var(--text-on-page-tertiary)' }}>, </span>}
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/characters?character=${character.id}`)}
+                    className={`${TEXT_BUTTON} underline transition-colors duration-150 hover:text-[color:var(--text-on-page-link)]`}
                     style={{
-                      textDecoration: 'underline',
-                      textDecorationColor: 'rgba(80,60,40,0.15)',
+                      color: 'var(--text-on-page-secondary)',
+                      textDecorationColor: 'var(--surface-page-edge)',
                       textUnderlineOffset: '2px',
                     }}
                   >
-                    {c.name}
-                  </span>
-                ))
-                .reduce((acc, el, i, arr) => {
-                  if (i < arr.length - 1) {
-                    return [
-                      ...acc,
-                      el,
-                      <span key={`sep-${i}`} style={{ color: 'rgba(80,60,40,0.15)' }}>
-                        ,{' '}
-                      </span>,
-                    ]
-                  }
-                  return [...acc, el]
-                }, [] as React.ReactNode[])}
+                    {character.name}
+                  </button>
+                </span>
+              ))}
             </p>
           </div>
         )}
@@ -339,324 +600,72 @@ export default function MagicSystemsPage() {
     )
   }
 
-  const renderLeft = () => {
-    switch (mode) {
-      case 'toc':
-        return (
-          <div>
-            <h2
-              className="mb-5 text-[11px] uppercase tracking-[0.15em] [font-family:var(--font-ui)]"
-              style={{ color: 'var(--text-on-page-tertiary)' }}
-            >
-              Contents
-            </h2>
-            <div className="space-y-[3px]">
-              {chaptersForToc.map(({ planet, count, roman }) => (
-                <span
-                  key={planet.id}
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => openChapter(planet.id)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault()
-                      openChapter(planet.id)
-                    }
-                  }}
-                  className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 cursor-pointer group"
-                >
-                  <span
-                    className="min-w-[22px] text-right text-[11px] [font-family:var(--font-display)]"
-                    style={{ color: 'var(--text-on-page-tertiary)' }}
-                  >
-                    {roman}.
-                  </span>
-                  <span
-                    className="min-w-0 text-sm tracking-[0.02em] transition-colors duration-150 group-hover:text-[var(--text-on-page-link)] [font-family:var(--font-display)]"
-                    style={{ color: 'var(--text-on-page-primary)' }}
-                  >
-                    {planet.name}
-                  </span>
-                  <span
-                    className="hidden min-w-[12px] flex-1 sm:block"
-                    style={{ borderBottom: '1px dotted rgba(107,87,68,0.45)' }}
-                  />
-                  <span
-                    className="w-full pl-[30px] text-left text-[11px] [font-family:var(--font-ui)] sm:w-auto sm:pl-0 sm:text-right"
-                    style={{ color: 'var(--text-on-page-secondary)' }}
-                  >
-                    {count} manifestation{count !== 1 ? 's' : ''}
-                  </span>
-                </span>
-              ))}
-            </div>
-            <div className="mt-8">
-              <span
-                role="button"
-                tabIndex={0}
-                onClick={openIndex}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    openIndex()
-                  }
-                }}
-                className="text-[11px] uppercase tracking-[0.1em] cursor-pointer transition-colors hover:text-[var(--text-on-page-link)] [font-family:var(--font-ui)]"
-                style={{ color: 'var(--text-on-page-tertiary)' }}
-              >
-                Archival Index →
-              </span>
-            </div>
-          </div>
-        )
+  const renderLeaf = (leaf: CodexLeaf | undefined): ReactNode => {
+    if (!leaf) return null
 
-      case 'chapter':
-        return chapterData ? (
-          <div>
-            <span className="font-serif text-[9px] uppercase tracking-[0.12em]" style={{ color: 'rgba(80,60,40,0.2)' }}>
-              Chapter {chapterIndex >= 0 ? ROMAN[chapterIndex] : ''}
-            </span>
-            <h1
-              className="font-serif text-[clamp(18px,2vw,28px)] font-bold tracking-[0.06em] leading-tight mt-2 mb-1"
-              style={{ color: '#2d1a0e' }}
-            >
-              {chapterData.planet.name}
-            </h1>
-            <div className="space-y-0.5 mt-3 mb-5">
-              <p className="font-serif text-[10px]" style={{ color: 'rgba(80,60,40,0.3)' }}>
-                <span style={{ color: 'rgba(80,60,40,0.15)' }}>
-                  Shard{chapterData.planet.shard && chapterData.planet.shard.includes('&') ? 's' : ''}:
-                </span>{' '}
-                {chapterData.planet.shard ?? 'Unknown'}
-              </p>
-              <p className="font-serif text-[10px]" style={{ color: 'rgba(80,60,40,0.3)' }}>
-                <span style={{ color: 'rgba(80,60,40,0.15)' }}>Investiture:</span> {currentSystems.length} documented
-                manifestation{currentSystems.length !== 1 ? 's' : ''}
-              </p>
-            </div>
-
-            <div className="space-y-[1px]">
-              {currentSystems.map((system, idx) => (
-                <span
-                  key={system.id}
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => {
-                    document
-                      .getElementById(`section-${system.id}`)
-                      ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault()
-                      document
-                        .getElementById(`section-${system.id}`)
-                        ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                    }
-                  }}
-                  className="flex items-baseline gap-2 py-[3px] cursor-pointer group"
-                >
-                  <span
-                    className="font-serif text-[10px] min-w-[18px] text-right"
-                    style={{ color: 'rgba(80,60,40,0.15)' }}
-                  >
-                    {idx + 1}.
-                  </span>
-                  <span
-                    className="font-serif text-sm tracking-[0.02em] transition-opacity group-hover:opacity-60"
-                    style={{ color: '#2d1a0e' }}
-                  >
-                    {system.name}
-                  </span>
-                  {system.status && (
-                    <span
-                      className="ml-auto font-serif text-[8px] uppercase tracking-[0.06em]"
-                      style={{ color: 'rgba(80,60,40,0.15)' }}
-                    >
-                      {system.status === 'Documented'
-                        ? 'Doc.'
-                        : system.status === 'Partially Documented'
-                          ? 'Part.'
-                          : system.status === 'Poorly Understood'
-                            ? 'Unc.'
-                            : system.status}
-                    </span>
-                  )}
-                </span>
-              ))}
-            </div>
-
-            <div className="mt-6">
-              <span
-                role="button"
-                tabIndex={0}
-                onClick={backToToc}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    backToToc()
-                  }
-                }}
-                className="font-serif text-[10px] uppercase tracking-[0.1em] cursor-pointer transition-opacity hover:opacity-60"
-                style={{ color: 'rgba(80,60,40,0.3)' }}
-              >
-                ← Contents
-              </span>
-            </div>
-          </div>
-        ) : (
-          <div>
-            <p className="font-serif text-[11px] italic" style={{ color: 'rgba(80,60,40,0.35)' }}>
-              Select a chapter from the contents.
-            </p>
-          </div>
-        )
-
-      case 'index':
-        return <ArchivalIndex systems={MAGIC_SYSTEMS} onSelectSystem={handleSystemClick} />
+    if (leaf.id === 'contents') {
+      return <ContentsPage chapters={chapters} onOpenChapter={openChapter} onOpenIndex={openIndex} />
     }
+    if (leaf.id === 'title') return <TitlePage />
+    if (leaf.id === 'index') {
+      return <ArchivalIndex systems={MAGIC_SYSTEMS} onSelectSystem={(system) => goToSystem(system, false)} />
+    }
+    if (leaf.id === 'index-world') {
+      return (
+        <ByWorldPage
+          chapters={chapters}
+          onOpenChapter={openChapter}
+          onOpenSystem={(system) => goToSystem(system, false)}
+        />
+      )
+    }
+    if (leaf.view === 'chapter' && leaf.chapterId) {
+      const chapter = chapterByPlanet.get(leaf.chapterId)
+      if (!chapter) return null
+      return (
+        <ChapterPage
+          chapter={chapter}
+          onOpenSystem={(system) => goToSystem(system, true)}
+          onOpenContents={openContents}
+        />
+      )
+    }
+    const systemId = leaf.systemIds?.[0]
+    if (systemId) {
+      const system = systemById.get(systemId)
+      return system ? renderSection(system) : null
+    }
+    return null
   }
 
-  const renderRight = () => {
-    switch (mode) {
-      case 'toc':
-        return (
-          <div className="flex h-full flex-col items-center justify-start text-center sm:justify-center">
-            <div className="mb-2 h-px w-12 sm:mb-3" style={{ background: 'rgba(80,60,40,0.28)' }} />
-            <h1
-              className="text-[clamp(20px,6vw,42px)] font-bold leading-tight tracking-[0.1em] [font-family:var(--font-display)] sm:text-[clamp(24px,3vw,42px)] sm:tracking-[0.15em]"
-              style={{ color: 'var(--text-on-page-primary)' }}
-            >
-              ARS
-              <br />
-              ARCANUM
-            </h1>
-            <div className="mt-3 h-px w-10 sm:mt-4" style={{ background: 'rgba(80,60,40,0.24)' }} />
-            <p
-              className="mt-3 max-w-[360px] text-[clamp(12px,1vw,14px)] italic leading-snug [font-family:var(--font-display)] sm:mt-5 sm:leading-relaxed"
-              style={{ color: 'var(--text-on-page-secondary)' }}
-            >
-              Collected observations concerning the manifestations of Investiture throughout the known Cosmere
-            </p>
-            <div className="mt-3 space-y-1 sm:mt-8">
-              <p
-                className="text-[11px] [font-family:var(--font-display)]"
-                style={{ color: 'var(--text-on-page-tertiary)' }}
-              >
-                Compiled from the research of Khrissalla
-              </p>
-              <p
-                className="text-[11px] italic [font-family:var(--font-display)]"
-                style={{ color: 'var(--text-on-page-tertiary)' }}
-              >
-                Preserved within the Cosmere Archive
-              </p>
-            </div>
-            <div className="mt-5 h-px w-12 sm:mt-10" style={{ background: 'rgba(80,60,40,0.28)' }} />
-            <p
-              className="mt-3 text-[11px] uppercase tracking-[0.04em] [font-family:var(--font-ui)] sm:mt-4 sm:tracking-[0.12em]"
-              style={{ color: 'var(--text-on-page-tertiary)' }}
-            >
-              <span className="hidden sm:inline">— </span>Silverlight Edition
-              <span className="hidden sm:inline"> —</span>
-            </p>
-          </div>
-        )
+  const views: CodexSpreadView[] = spreads.map((spread) => {
+    const chapter = spread.chapterId ? chapterByPlanet.get(spread.chapterId) : undefined
+    const planet = chapter?.planet
+    const leftLeaf = spread.leftId ? leafById.get(spread.leftId) : undefined
+    const rightLeaf = spread.rightId ? leafById.get(spread.rightId) : undefined
 
-      case 'chapter':
-        return chapterData ? (
-          <div>{currentSystems.map((system, idx) => renderSection(system, idx))}</div>
-        ) : (
-          <div className="flex flex-col items-center justify-center text-center h-full">
-            <p
-              className="font-serif text-[clamp(10px,0.9vw,13px)] italic leading-relaxed max-w-[360px]"
-              style={{ color: 'rgba(80,60,40,0.4)' }}
-            >
-              Select a chapter from the contents.
-            </p>
-          </div>
-        )
-
-      case 'index':
-        return (
-          <div>
-            <h2
-              className="font-serif text-xs uppercase tracking-[0.15em] mb-5"
-              style={{ color: 'rgba(80,60,40,0.35)' }}
-            >
-              By World
-            </h2>
-            <div className="space-y-4">
-              {chapters.map(({ planet, systems }) => {
-                const idx = CHAPTER_ORDER.indexOf(planet.id)
-                return (
-                  <div key={planet.id}>
-                    <span
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => openChapter(planet.id)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault()
-                          openChapter(planet.id)
-                        }
-                      }}
-                      className="font-serif text-[12px] font-medium cursor-pointer transition-opacity hover:opacity-60"
-                      style={{ color: '#2d1a0e' }}
-                    >
-                      {idx >= 0 ? (ROMAN[idx] ?? '') : ''}. {planet.name}
-                    </span>
-                    {systems.map((s) => (
-                      <span
-                        key={s.id}
-                        role="button"
-                        tabIndex={0}
-                        onClick={() => navigateToSystem(s)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault()
-                            navigateToSystem(s)
-                          }
-                        }}
-                        className="block font-serif text-[11px] pl-4 py-[1px] cursor-pointer transition-opacity hover:opacity-60"
-                        style={{ color: 'rgba(60,40,25,0.45)' }}
-                      >
-                        {s.name}
-                      </span>
-                    ))}
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        )
+    return {
+      id: spread.id,
+      title: spread.title,
+      left: renderLeaf(leftLeaf),
+      right: renderLeaf(rightLeaf),
+      leftFolio: spread.folios[0] ?? undefined,
+      rightFolio: spread.folios[1] ?? undefined,
+      leftHeader: planet?.name ?? 'Ars Arcanum',
+      rightHeader: planet?.name ?? (spread.view === 'index' ? 'Index' : 'Investiture'),
     }
-  }
+  })
 
   return (
     <Codex
-      left={renderLeft()}
-      right={renderRight()}
-      leftHeader="Ars Arcanum"
-      rightHeader="Investiture"
-      leftFolio="i"
-      rightFolio="ii"
+      spreads={views}
+      index={route.index}
+      onTurn={(next) => {
+        const spread = spreads[next]
+        if (spread) route.turnTo(spread.id)
+      }}
+      edition={edition}
+      label="Ars Arcanum"
     />
-  )
-}
-
-function RecordField({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="flex gap-3">
-      <span
-        className="font-serif text-[9px] uppercase tracking-[0.1em] shrink-0 text-right"
-        style={{ color: 'rgba(80,60,40,0.2)', minWidth: '80px' }}
-      >
-        {label}
-      </span>
-      <span className="font-serif text-[clamp(10px,0.8vw,12px)]" style={{ color: 'rgba(60,40,25,0.65)' }}>
-        {children}
-      </span>
-    </div>
   )
 }

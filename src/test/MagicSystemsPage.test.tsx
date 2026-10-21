@@ -14,6 +14,8 @@ function renderPage() {
 
 describe('Ars Arcanum (manuscript)', () => {
   beforeEach(() => {
+    window.localStorage.clear()
+    window.sessionStorage.clear()
     vi.useFakeTimers({ shouldAdvanceTime: true })
   })
 
@@ -46,7 +48,7 @@ describe('Ars Arcanum (manuscript)', () => {
 
   it('navigates to a chapter when a TOC entry is clicked', async () => {
     renderPage()
-    const rosharEntry = screen.getByText('Roshar')
+    const rosharEntry = screen.getByRole('button', { name: /Roshar/ })
     await userEvent.click(rosharEntry)
     act(() => {
       vi.advanceTimersByTime(350)
@@ -60,33 +62,33 @@ describe('Ars Arcanum (manuscript)', () => {
 
   it('shows a Contents link when inside a chapter', async () => {
     renderPage()
-    const rosharEntry = screen.getByText('Roshar')
+    const rosharEntry = screen.getByRole('button', { name: /Roshar/ })
     await userEvent.click(rosharEntry)
     act(() => {
       vi.advanceTimersByTime(350)
     })
 
     await waitFor(() => {
-      expect(screen.getByText(/Contents/)).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /Contents/ })).toBeInTheDocument()
     })
   })
 
   it('displays manifestation sections when a chapter is opened', async () => {
     renderPage()
-    const rosharEntry = screen.getByText('Roshar')
+    const rosharEntry = screen.getByRole('button', { name: /Roshar/ })
     await userEvent.click(rosharEntry)
     act(() => {
       vi.advanceTimersByTime(350)
     })
 
     await waitFor(() => {
-      expect(screen.getByText('1. Surgebinding')).toBeInTheDocument()
+      expect(screen.getAllByText('1. Surgebinding').length).toBeGreaterThanOrEqual(1)
     })
   })
 
   it('shows Research Record metadata for manifestations', async () => {
     renderPage()
-    const rosharEntry = screen.getByText('Roshar')
+    const rosharEntry = screen.getByRole('button', { name: /Roshar/ })
     await userEvent.click(rosharEntry)
     act(() => {
       vi.advanceTimersByTime(350)

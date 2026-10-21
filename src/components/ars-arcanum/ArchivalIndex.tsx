@@ -30,50 +30,49 @@ export default function ArchivalIndex({ systems, onSelectSystem }: Props) {
   const alphabetical = useMemo(() => {
     const sorted = [...systems].sort((a, b) => a.name.localeCompare(b.name))
     const groups = new Map<string, MagicSystem[]>()
-    for (const s of sorted) {
-      const letter = s.name.charAt(0).toUpperCase()
+    for (const system of sorted) {
+      const letter = system.name.charAt(0).toUpperCase()
       const existing = groups.get(letter) ?? []
-      existing.push(s)
+      existing.push(system)
       groups.set(letter, existing)
     }
     return Array.from(groups.entries()).sort((a, b) => a[0].localeCompare(b[0]))
   }, [systems])
 
   return (
-    <div className="flex flex-col h-full">
-      <h2 className="font-serif text-xs uppercase tracking-[0.15em] mb-5" style={{ color: 'rgba(80,60,40,0.35)' }}>
+    <div className="flex h-full flex-col">
+      <h2
+        className="mb-5 text-[12px] uppercase tracking-[0.15em] [font-family:var(--font-ui)]"
+        style={{ color: 'var(--text-on-page-secondary)' }}
+      >
         Alphabetical Index
       </h2>
 
-      <div className="flex-1 space-y-3 overflow-y-auto">
+      <div className="flex-1 space-y-3">
         {alphabetical.map(([letter, entries]) => (
           <div key={letter}>
             <span
-              className="font-serif text-[11px] font-bold tracking-[0.04em]"
-              style={{ color: 'rgba(60,40,25,0.4)' }}
+              className="text-[11px] font-bold tracking-[0.04em] [font-family:var(--font-display)]"
+              style={{ color: 'var(--text-on-page-tertiary)' }}
             >
               {letter}
             </span>
-            {entries.map((s) => (
-              <span
-                key={s.id}
-                role="button"
-                tabIndex={0}
-                onClick={() => onSelectSystem(s)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    onSelectSystem(s)
-                  }
-                }}
-                className="block font-serif text-[12px] py-[2px] cursor-pointer transition-opacity hover:opacity-60"
-                style={{ color: 'rgba(60,40,25,0.55)' }}
+            {entries.map((system) => (
+              <button
+                key={system.id}
+                type="button"
+                onClick={() => onSelectSystem(system)}
+                className="block w-full cursor-pointer border-0 bg-transparent p-0 py-[2px] text-left text-[12px] transition-colors duration-150 hover:text-[color:var(--text-on-page-link)] [font-family:var(--font-display)]"
+                style={{ color: 'var(--text-on-page-secondary)' }}
               >
-                {s.name}
-                <span className="ml-2 font-serif text-[9px] italic" style={{ color: 'rgba(80,60,40,0.2)' }}>
-                  — Ch. {getChapterNum(s.planetId)}
+                {system.name}
+                <span
+                  className="ml-2 text-[11px] italic [font-family:var(--font-display)]"
+                  style={{ color: 'var(--text-on-page-tertiary)' }}
+                >
+                  — Ch. {getChapterNum(system.planetId)}
                 </span>
-              </span>
+              </button>
             ))}
           </div>
         ))}

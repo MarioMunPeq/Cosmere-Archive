@@ -240,6 +240,12 @@
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* physical items only  */
   --ease-exit: cubic-bezier(0.4, 0, 1, 1);
 
+  /* A page is heavier than a panel, so the turn gets its own clock. Forward
+     and back differ because the hand returns faster than it advances. */
+  --dur-page-forward: 640ms;
+  --dur-page-back: 560ms;
+  --ease-page: cubic-bezier(0.33, 0.8, 0.2, 1);
+
   --stagger-step: 40ms; /* max 8 items => 320ms total                  */
   --stagger-max: 8;
 

@@ -1,6 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { useState } from 'react'
 import type { ComponentProps } from 'react'
-import { render, screen, fireEvent, act } from '@testing-library/react'
+import { render, screen, fireEvent, act, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import Codex from '@/components/codex/Codex'
 import { CODEX_SESSION_KEY, hasOpenedCodex, markCodexOpened } from '@/components/codex/codex-session'
 import { buildDustMotes } from '@/components/codex/codex-dust'
@@ -136,5 +138,153 @@ describe('Codex · dust', () => {
       expect(mote.opacity).toBeLessThan(1)
       expect(mote.delay).toBeLessThanOrEqual(0)
     }
+  })
+})
+
+const SPREADS = [
+  {
+    id: 'one',
+    title: 'One',
+    left: <p>Spread one left</p>,
+    right: <p>Spread one right</p>,
+  },
+  {
+    id: 'two',
+    title: 'Two',
+    left: <p>Spread two left</p>,
+    right: <p>Spread two right</p>,
+  },
+  {
+    id: 'three',
+    title: 'Three',
+    left: <p>Spread three left</p>,
+    right: <p>Spread three right</p>,
+  },
+]
+
+function Reader({ initial = 0 }: { initial?: number }) {
+  const [index, setIndex] = useState(initial)
+  return <Codex spreads={SPREADS} index={index} onTurn={setIndex} label="Test codex" />
+}
+
+function reducedMotion(): void {
+  vi.spyOn(window, 'matchMedia').mockImplementation(
+    (query: string) =>
+      ({
+        matches: query.includes('prefers-reduced-motion'),
+        media: query,
+        onchange: null,
+        addListener: () => {},
+        removeListener: () => {},
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        dispatchEvent: () => false,
+      }) as unknown as MediaQueryList,
+  )
+}
+
+describe('Codex · spread engine', () => {
+  beforeEach(() => {
+    window.sessionStorage.clear()
+    window.localStorage.clear()
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+    vi.restoreAllMocks()
+  })
+
+  it('announces the settled spread in a live region', () => {
+    window.sessionStorage.setItem(CODEX_SESSION_KEY, '1')
+    render(<Reader />)
+
+    const status = screen.getByText(/Spread 1 of 3/)
+    expect(status).toHaveTextContent('One')
+    expect(status).toHaveAttribute('aria-live', 'polite')
+  })
+
+  it('turns with the arrow keys, Home and End under reduced motion', () => {
+    reducedMotion()
+    window.sessionStorage.setItem(CODEX_SESSION_KEY, '1')
+    render(<Reader />)
+
+    fireEvent.keyDown(window, { key: 'ArrowRight' })
+    expect(screen.getByText('Spread two left')).toBeInTheDocument()
+    expect(screen.getByText(/Spread 2 of 3/)).toHaveTextContent('Two')
+
+    fireEvent.keyDown(window, { key: 'ArrowLeft' })
+    expect(screen.getByText('Spread one left')).toBeInTheDocument()
+
+    fireEvent.keyDown(window, { key: 'End' })
+    expect(screen.getByText('Spread three left')).toBeInTheDocument()
+    expect(screen.getByText(/Spread 3 of 3/)).toHaveTextContent('Three')
+
+    fireEvent.keyDown(window, { key: 'Home' })
+    expect(screen.getByText('Spread one left')).toBeInTheDocument()
+  })
+
+  it('lets a second key interrupt the turn already in flight', async () => {
+    window.sessionStorage.setItem(CODEX_SESSION_KEY, '1')
+    const { container } = render(<Reader />)
+
+    fireEvent.keyDown(window, { key: 'End' })
+    await waitFor(() => expect(container.querySelector('.codex-flip__leaf')).not.toBeNull())
+
+    fireEvent.keyDown(window, { key: 'Home' })
+    await waitFor(() => expect(container.querySelector('.codex-flip__leaf')).toBeNull(), {
+      timeout: 1500,
+    })
+    expect(screen.getByText('Spread one left')).toBeInTheDocument()
+    expect(screen.getByText(/Spread 1 of 3/)).toHaveTextContent('One')
+  })
+
+  it('turns from the fore-edge controls', async () => {
+    reducedMotion()
+    window.sessionStorage.setItem(CODEX_SESSION_KEY, '1')
+    render(<Reader />)
+
+    expect(screen.queryByRole('button', { name: 'Previous spread' })).toBeNull()
+    await userEvent.click(screen.getByRole('button', { name: 'Next spread' }))
+    expect(screen.getByText('Spread two left')).toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Previous spread' }))
+    expect(screen.getByText('Spread one left')).toBeInTheDocument()
+  })
+
+  it('does not turn before the cover has opened', () => {
+    render(<Reader />)
+    fireEvent.keyDown(window, { key: 'ArrowRight' })
+    expect(screen.getByText(/Spread 1 of 3/)).toBeInTheDocument()
+    expect(screen.queryByText('Spread two left')).toBeNull()
+  })
+
+  it('renders one turning leaf and removes it once the turn settles', async () => {
+    window.sessionStorage.setItem(CODEX_SESSION_KEY, '1')
+    const { container } = render(<Reader />)
+
+    fireEvent.keyDown(window, { key: 'ArrowRight' })
+    await waitFor(() => expect(container.querySelector('.codex-flip__leaf')).not.toBeNull())
+    const leaf = container.querySelector('.codex-flip__leaf') as HTMLElement
+    expect(leaf).toHaveAttribute('aria-hidden', 'true')
+    expect(leaf).toHaveAttribute('inert')
+
+    await waitFor(() => expect(container.querySelector('.codex-flip__leaf')).toBeNull(), {
+      timeout: 1500,
+    })
+    expect(screen.getByText('Spread two left')).toBeInTheDocument()
+    expect(screen.getByText(/Spread 2 of 3/)).toHaveTextContent('Two')
+  })
+
+  it('shows the ribbon and keeps the spine progress in step', () => {
+    reducedMotion()
+    window.sessionStorage.setItem(CODEX_SESSION_KEY, '1')
+    const { container } = render(<Reader />)
+
+    expect(container.querySelector('.codex-ribbon')).not.toBeNull()
+    const book = container.querySelector('.codex-book') as HTMLElement
+    expect(book.style.getPropertyValue('--codex-depth')).toBe('20.00px')
+
+    fireEvent.keyDown(window, { key: 'End' })
+    expect(book.style.getPropertyValue('--codex-depth')).toBe('14.00px')
   })
 })

@@ -22,12 +22,15 @@ interface Props {
 }
 
 export default function PageSurface({ side, header, folio, noScroll = false, children }: Props) {
+  const empty = children === null || children === undefined
+  const sideName = side === 'left' ? 'Left' : 'Right'
+
   return (
     <div className={`codex-page codex-page--${side}`}>
       <div className="codex-page__paper" aria-hidden="true" />
       <div className="codex-page__gutter-shade" aria-hidden="true" />
 
-      {header && (
+      {!empty && header && (
         <div className="codex-page__header">
           {side === 'right' && <span className="codex-page__rule" aria-hidden="true" />}
           <span className="codex-page__running">{header}</span>
@@ -35,16 +38,18 @@ export default function PageSurface({ side, header, folio, noScroll = false, chi
         </div>
       )}
 
-      <div
-        className={`codex-page__body manuscript-scrollbar ${noScroll ? 'overflow-hidden' : 'overflow-y-auto'}`}
-        role={noScroll ? undefined : 'region'}
-        aria-label={noScroll ? undefined : `${header ?? (side === 'left' ? 'Left' : 'Right')} page`}
-        tabIndex={noScroll ? undefined : 0}
-      >
-        {children}
-      </div>
+      {!empty && (
+        <div
+          className={`codex-page__body manuscript-scrollbar ${noScroll ? 'overflow-hidden' : 'overflow-y-auto'}`}
+          role={noScroll ? undefined : 'region'}
+          aria-label={noScroll ? undefined : `${sideName} page${header ? `: ${header}` : ''}`}
+          tabIndex={noScroll ? undefined : 0}
+        >
+          {children}
+        </div>
+      )}
 
-      {folio && <div className="codex-page__folio">— {folio} —</div>}
+      {!empty && folio && <div className="codex-page__folio">— {folio} —</div>}
     </div>
   )
 }
