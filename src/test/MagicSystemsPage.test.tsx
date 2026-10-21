@@ -3,6 +3,7 @@ import { render, screen, waitFor, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import MagicSystemsPage from '@/pages/MagicSystemsPage'
+import { CODEX_SESSION_KEY } from '@/components/codex/codex-session'
 
 function renderPage() {
   return render(
@@ -10,6 +11,10 @@ function renderPage() {
       <MagicSystemsPage />
     </MemoryRouter>,
   )
+}
+
+function findRosharEntry() {
+  return screen.getByRole('button', { name: /^II\.\s*Roshar/ })
 }
 
 describe('Ars Arcanum (manuscript)', () => {
@@ -41,6 +46,33 @@ describe('Ars Arcanum (manuscript)', () => {
     expect(tocNames.length).toBeGreaterThanOrEqual(1)
   })
 
+  it('lists the eleven world chapters and the ninety-three records', () => {
+    const { container } = renderPage()
+    expect(container.querySelectorAll('[data-contents-kind="world"]')).toHaveLength(11)
+    expect(screen.getByText('11 chapters')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /93 records — open Part II/ })).toBeInTheDocument()
+  })
+
+  it('renders one thumb tab per world chapter', () => {
+    window.sessionStorage.setItem(CODEX_SESSION_KEY, '1')
+    const { container } = renderPage()
+    expect(container.querySelectorAll('[data-thumb]')).toHaveLength(11)
+  })
+
+  it('opens a chapter from its thumb tab', async () => {
+    window.sessionStorage.setItem(CODEX_SESSION_KEY, '1')
+    renderPage()
+    const tab = screen.getByRole('button', { name: /^II — Roshar/ })
+    await userEvent.click(tab)
+    act(() => {
+      vi.advanceTimersByTime(350)
+    })
+
+    await waitFor(() => {
+      expect(screen.getAllByText((content) => content.includes('Chapter')).length).toBeGreaterThanOrEqual(1)
+    })
+  })
+
   it('shows an Archival Index link in the TOC', () => {
     renderPage()
     expect(screen.getByText('Archival Index →')).toBeInTheDocument()
@@ -48,7 +80,7 @@ describe('Ars Arcanum (manuscript)', () => {
 
   it('navigates to a chapter when a TOC entry is clicked', async () => {
     renderPage()
-    const rosharEntry = screen.getByRole('button', { name: /Roshar/ })
+    const rosharEntry = findRosharEntry()
     await userEvent.click(rosharEntry)
     act(() => {
       vi.advanceTimersByTime(350)
@@ -62,7 +94,7 @@ describe('Ars Arcanum (manuscript)', () => {
 
   it('shows a Contents link when inside a chapter', async () => {
     renderPage()
-    const rosharEntry = screen.getByRole('button', { name: /Roshar/ })
+    const rosharEntry = findRosharEntry()
     await userEvent.click(rosharEntry)
     act(() => {
       vi.advanceTimersByTime(350)
@@ -75,7 +107,7 @@ describe('Ars Arcanum (manuscript)', () => {
 
   it('displays manifestation sections when a chapter is opened', async () => {
     renderPage()
-    const rosharEntry = screen.getByRole('button', { name: /Roshar/ })
+    const rosharEntry = findRosharEntry()
     await userEvent.click(rosharEntry)
     act(() => {
       vi.advanceTimersByTime(350)
@@ -88,7 +120,7 @@ describe('Ars Arcanum (manuscript)', () => {
 
   it('shows Research Record metadata for manifestations', async () => {
     renderPage()
-    const rosharEntry = screen.getByRole('button', { name: /Roshar/ })
+    const rosharEntry = findRosharEntry()
     await userEvent.click(rosharEntry)
     act(() => {
       vi.advanceTimersByTime(350)

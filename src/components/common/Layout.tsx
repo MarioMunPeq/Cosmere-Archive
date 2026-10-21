@@ -93,9 +93,9 @@ export default function Layout() {
 
       <AppShell onSearch={() => setSearchOpen(true)} header={<Breadcrumbs />} hideTopNav={pathname === '/'}>
         <Outlet />
+        {/* Inside `main` so the archive summary has a landmark (axe: region). */}
+        <VisuallyHidden as="p">{ALL_DESTINATIONS.length} destinations in this archive.</VisuallyHidden>
       </AppShell>
-
-      <VisuallyHidden as="p">{ALL_DESTINATIONS.length} destinations in this archive.</VisuallyHidden>
     </>
   )
 }

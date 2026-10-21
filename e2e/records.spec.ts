@@ -50,62 +50,57 @@ function ratio(fg: string, bg: string): number {
   return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)
 }
 
-/** Walks up for the first opaque background behind an element. */
-async function backdropOf(page: import('@playwright/test').Page, selector: string): Promise<string> {
-  return page.evaluate((sel) => {
-    const bgOf = (el: Element | null): string => {
-      while (el) {
-        const bg = getComputedStyle(el).backgroundColor
-        const alpha = Number(bg.match(/\/\s*([\d.]+)\s*\)/)?.[1] ?? 1)
-        if (alpha > 0.95) return bg
-        el = el.parentElement
-      }
-      return 'rgb(255,255,255)'
-    }
-    const el = document.querySelector(sel)
-    return bgOf(el)
-  }, selector)
-}
-
 const EXPECTED = (() => {
   const dir = join(process.cwd(), 'src', 'data', 'generated')
   return JSON.parse(readFileSync(join(dir, 'characters.json'), 'utf8')).length
 })()
 
 test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    try {
+      sessionStorage.setItem('cosmere-codex-opened', '1')
+      localStorage.removeItem('cosmere-codex-ribbon')
+    } catch {
+      // Storage may be unavailable on about:blank.
+    }
+  })
   await page.goto(RECORDS)
   await page.locator('[data-records-index]').waitFor()
 })
 
 test('R.9 the A–Z index lists every record, grouped by letter', async ({ page }) => {
-  const rows = page.locator('[data-records-index] nav a')
+  const rows = page.locator('[data-records-index] [data-contents-kind="record"]')
   await expect(rows).toHaveCount(EXPECTED)
 
-  // Grouped, not a flat list: at least a dozen letter headings.
+  // Grouped, not a flat list: the eight letter ranges.
   const groups = page.locator('[data-records-index] section')
-  expect(await groups.count()).toBeGreaterThan(10)
+  expect(await groups.count()).toBeGreaterThan(7)
 
   const first = await rows.first().innerText()
   expect(first).not.toHaveLength(0)
 })
 
 test('R.9 the index is ordered alphabetically', async ({ page }) => {
-  const names = await page.locator('[data-records-index] nav a > span:nth-child(2)').allInnerTexts()
+  const names = await page.locator('[data-records-index] [data-contents-kind="record"]').allInnerTexts()
   const sorted = [...names].sort((a, b) => a.localeCompare(b, 'en', { numeric: true, sensitivity: 'base' }))
   expect(names).toEqual(sorted)
 })
 
-test('R.4 the planet chip clears 4.5:1', async ({ page }) => {
-  const backdrop = await backdropOf(page, '[data-records-index] nav a span:last-child')
-  const chip = await page
-    .locator('[data-records-index] nav a span:last-child')
-    .first()
-    .evaluate((el) => getComputedStyle(el).color)
+test('R.4 the planet label clears 4.5:1', async ({ page }) => {
+  await page.goto(`${RECORDS}?character=kaladin`)
+  await page.locator('[data-record-planet]').waitFor()
 
-  const measured = ratio(flatten(chip, backdrop), backdrop)
+  const [label, backdrop] = await page.evaluate(() => {
+    const el = document.querySelector('[data-record-planet]')!
+    const pageEl = el.closest('.codex-page')
+    const paper = pageEl?.querySelector('.codex-page__paper')
+    return [getComputedStyle(el).color, paper ? getComputedStyle(paper).backgroundColor : 'rgb(244,239,228)']
+  })
+
+  const measured = ratio(flatten(label, backdrop), backdrop)
   expect(
     measured,
-    `planet chip measured ${measured.toFixed(2)}:1 against ${backdrop} — the audit recorded 2.21:1 for the old one`,
+    `planet label measured ${measured.toFixed(2)}:1 against ${backdrop} — the audit recorded 2.21:1 for the old chip`,
   ).toBeGreaterThanOrEqual(4.5)
 })
 
@@ -182,13 +177,20 @@ test('R.6 no div-onclick anywhere in the records feature', async () => {
 })
 
 test('a record is chosen by URL and is shareable', async ({ page }) => {
-  await page.locator('[data-records-index] nav a').first().click()
-  await expect(page).toHaveURL(/character=/)
+  await page.locator('[data-records-index] [data-contents-kind="record"]').first().click()
+  await expect(page).toHaveURL(/spread=record-/)
 
   const url = page.url()
   await page.goto('about:blank')
   await page.goto(url)
-  await expect(page.locator('[data-records-index] a[aria-current="true"]')).toHaveCount(1)
+  await expect(page.locator('[data-character-card]')).toBeVisible()
+  await expect(page.locator('[data-character-card] h2')).not.toHaveCount(0)
+})
+
+test('a character search result at /records/:id resolves to the record spread', async ({ page }) => {
+  await page.goto('/#/records/adolin')
+  await expect(page).toHaveURL(/spread=record-adolin/)
+  await expect(page.locator('[data-character-card] h2')).toContainText('Adolin Kholin')
 })
 
 /* ------------------------------------------------------------------ the card */
@@ -217,7 +219,7 @@ test.describe('the record card', () => {
 
   test('R.10 the card is operable without a mouse', async ({ page }) => {
     await page.goto(RECORDS)
-    await page.locator('[data-records-index] nav a').first().focus()
+    await page.locator('[data-records-index] [data-contents-kind="record"]').first().focus()
     await page.keyboard.press('Enter')
     await expect(page.locator('[data-character-card]')).toBeVisible()
 
@@ -237,7 +239,7 @@ test.describe('the record card', () => {
       if (r.status() >= 400 && r.request().resourceType() === 'image') failures.push(r.url())
     })
 
-    for (const id of ['kaladin', 'vin', 'sazed', 'is-har', 'szeth', 'shallan-davar']) {
+    for (const id of ['kaladin', 'vin', 'sazed', 'is-har', 'szeth', 'shallan']) {
       await page.goto(`${RECORDS}?character=${id}`)
       await page.waitForTimeout(200)
     }
@@ -257,20 +259,22 @@ test.describe('the record card', () => {
      * 404s fails the same way on the first record as on the ninetieth.
      */
     await page.goto(RECORDS)
-    await page.locator('[data-records-index] nav a').first().waitFor()
+    await page.locator('[data-records-index] [data-contents-kind="record"]').first().waitFor()
 
     const problems: string[] = []
     let monograms = 0
     let portraits = 0
-    const sample = page.locator('[data-records-index] nav a')
+    const sample = page.locator('[data-records-index] [data-contents-kind="record"]')
     const total = await sample.count()
     expect(total).toBeGreaterThan(90)
 
     for (const i of [0, 7, 23, 41, 58, 76, 90]) {
       if (i >= total) continue
-      await sample.nth(i).click()
+      await page.goto(RECORDS)
+      await page.locator('[data-records-index]').waitFor()
+      await page.locator('[data-contents-kind="record"]').nth(i).click()
       const card = page.locator('[data-character-card]')
-      await card.waitFor()
+      await card.locator('[data-record-plate]').waitFor()
       const state = await card.evaluate((el) => {
         const img = el.querySelector('img') as HTMLImageElement | null
         return {
@@ -309,7 +313,7 @@ test.describe('the record card', () => {
     // spans, so they were unreachable and announced as text.
     await section.locator('a').first().click()
     await page.waitForTimeout(400)
-    expect(page.url()).toContain('character=')
+    expect(page.url()).toContain('spread=record-')
   })
 
   test('a record with no relationships says so rather than showing an empty section', async ({ page }) => {
@@ -381,14 +385,14 @@ test.describe('the record card', () => {
     // Nothing is readable, so the index says so rather than listing names that
     // all lead to a locked panel.
     await expect(page.locator('[data-records-index]')).toContainText('No records are unlocked yet')
-    await expect(page.locator('[data-records-index] nav a')).toHaveCount(0)
+    await expect(page.locator('[data-records-index] [data-contents-kind="record"]')).toHaveCount(0)
   })
 
   test('an unknown record id is a 404 state, not an empty panel', async ({ page }) => {
     await page.goto(`${RECORDS}?character=no-such-person`)
     // The route is lazy, so wait for the screen itself and not for a card that
     // is never going to arrive.
-    await page.locator('[data-records-index]').waitFor()
+    await page.locator('[data-records-main]').waitFor()
     await expect(page.locator('[data-records-main]')).toContainText('No such record')
     await expect(page.getByRole('button', { name: /back to the index/i })).toBeVisible()
     // No card is rendered for an id that does not exist.
@@ -549,7 +553,7 @@ test.describe('connections', () => {
 })
 
 test('the index filters by name, description and world', async ({ page }) => {
-  const all = page.locator('[data-records-index] nav a')
+  const all = page.locator('[data-records-index] [data-contents-kind="record"]')
   const total = await all.count()
 
   await page.locator('#record-search').fill('kaladin')

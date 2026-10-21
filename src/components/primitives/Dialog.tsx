@@ -92,7 +92,7 @@ export default function Dialog({
       }}
       onClose={onClose}
       className={[
-        'm-0 max-h-[85vh] w-[calc(100vw-2rem)] rounded-[var(--radius-lg)] p-0',
+        'fixed inset-0 z-[100] m-auto max-h-[85vh] w-[calc(100vw_-_2rem)] rounded-[var(--radius-lg)] p-0',
         'border border-[var(--border-interactive)] bg-[var(--surface-raised)] text-[var(--text-primary)]',
         'shadow-[var(--shadow-3)] backdrop:bg-[color-mix(in_srgb,var(--surface-void)_78%,transparent)]',
         'backdrop:backdrop-blur-[3px]',

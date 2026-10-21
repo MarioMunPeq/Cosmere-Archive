@@ -1,29 +1,10 @@
 import { useMemo } from 'react'
 import type { MagicSystem } from '@/data/static/magic-systems'
+import { chapterNumeral } from '@/utils/ars-arcanum'
 
 interface Props {
   systems: MagicSystem[]
   onSelectSystem: (system: MagicSystem) => void
-}
-
-const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI'] as const
-const CHAPTER_ORDER = [
-  'yolen',
-  'roshar',
-  'scadrial',
-  'sel',
-  'nalthis',
-  'taldain',
-  'threnody',
-  'first-of-the-sun',
-  'komashi',
-  'lumar',
-  'canticle',
-]
-
-function getChapterNum(planetId: string): string {
-  const idx = CHAPTER_ORDER.indexOf(planetId)
-  return idx >= 0 ? (ROMAN[idx] ?? '') : ''
 }
 
 export default function ArchivalIndex({ systems, onSelectSystem }: Props) {
@@ -70,7 +51,7 @@ export default function ArchivalIndex({ systems, onSelectSystem }: Props) {
                   className="ml-2 text-[11px] italic [font-family:var(--font-display)]"
                   style={{ color: 'var(--text-on-page-tertiary)' }}
                 >
-                  — Ch. {getChapterNum(system.planetId)}
+                  — Ch. {chapterNumeral(system.planetId)}
                 </span>
               </button>
             ))}

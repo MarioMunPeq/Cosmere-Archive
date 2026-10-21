@@ -9,7 +9,7 @@ import {
 } from 'react'
 import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion'
 import { useCodexCover } from '@/hooks/useCodexSession'
-import type { CodexEdition } from '@/utils/codex-pages'
+import type { CodexEdition, CodexPartId } from '@/utils/codex-pages'
 import CodexObject from './CodexObject'
 import CodexCover, { type CoverPhase } from './CodexCover'
 import CodexFlip from './CodexFlip'
@@ -57,6 +57,8 @@ export interface CodexSpreadView {
   leftHeader?: string
   rightHeader?: string
   rightNoScroll?: boolean
+  /** Present when the spread is a single person's record. */
+  recordId?: string
 }
 
 interface Props {
@@ -79,7 +81,11 @@ interface Props {
   /** 0 → 1, fraction of the volume already read. Multi-spread books derive it. */
   progress?: number
   label?: string
+  /** The archive part this volume belongs to. */
+  part?: CodexPartId
   edition?: CodexEdition
+  /** Fore-edge thumb index, owned by the page so it can point at real spreads. */
+  thumbs?: ReactNode
 }
 
 interface FlipState {
@@ -160,7 +166,9 @@ export default function Codex({
   rightNoScroll = false,
   progress = 0,
   label = 'Ars Arcanum',
+  part,
   edition = 'working',
+  thumbs,
 }: Props) {
   const reduced = usePrefersReducedMotion()
   const { coverSeen, markCoverSeen } = useCodexCover()
@@ -547,7 +555,14 @@ export default function Codex({
   const shown = views[phase === 'open' && !reduced ? displayed : safeIndex] ?? target
 
   return (
-    <div className="codex" data-phase={phase} data-edition={edition} data-codex-spread={target.id}>
+    <div
+      className="codex"
+      data-phase={phase}
+      data-edition={edition}
+      data-part={part}
+      data-codex-spread={target.id}
+      data-character-card={target.recordId}
+    >
       <CodexObject>
         <div
           ref={stageRef}
@@ -562,6 +577,7 @@ export default function Codex({
             {renderPages()}
 
             {phase === 'open' && <span key={shown.id} className="codex-ribbon" aria-hidden="true" />}
+            {phase === 'open' && thumbs}
 
             {phase === 'open' && canPrev && (
               <button

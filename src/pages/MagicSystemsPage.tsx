@@ -3,9 +3,8 @@ import { useSEOMeta } from '@/hooks/useSEOMeta'
 import { useViewTransitionNavigate } from '@/hooks/useViewTransition'
 import { useCodexRoute } from '@/hooks/useCodexRoute'
 import { useCodexSession } from '@/hooks/useCodexSession'
-import { getPlanetById, BOOKS, ALL_CHARACTERS } from '@/data/static'
+import { BOOKS, ALL_CHARACTERS } from '@/data/static'
 import { MAGIC_SYSTEMS, type MagicSystem } from '@/data/static/magic-systems'
-import type { Planet } from '@/types/planet'
 import {
   buildSpreads,
   findSpreadForSystem,
@@ -13,45 +12,14 @@ import {
   type CodexLeaf,
   type CodexSection,
 } from '@/utils/codex-pages'
+import { ARCANUM_CHAPTERS, chapterNumeral, type ArcanumChapter } from '@/utils/ars-arcanum'
 import ArchivalIndex from '@/components/ars-arcanum/ArchivalIndex'
 import Codex, { type CodexSpreadView } from '@/components/codex/Codex'
+import ContentsPage, { type ContentsCompanion, type ContentsPart } from '@/components/codex/ContentsPage'
+import ThumbTabs, { type ThumbTab } from '@/components/codex/ThumbTabs'
 import AllomanticTable from '@/components/magic/AllomanticTable'
 
-const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI'] as const
-const CHAPTER_ORDER = [
-  'yolen',
-  'roshar',
-  'scadrial',
-  'sel',
-  'nalthis',
-  'taldain',
-  'threnody',
-  'first-of-the-sun',
-  'komashi',
-  'lumar',
-  'canticle',
-]
-
 const TEXT_BUTTON = 'cursor-pointer border-0 bg-transparent p-0 text-left'
-
-interface Chapter {
-  planet: Planet
-  systems: MagicSystem[]
-}
-
-function getChapters(): Chapter[] {
-  const map = new Map<string, MagicSystem[]>()
-  for (const system of MAGIC_SYSTEMS) {
-    const existing = map.get(system.planetId) ?? []
-    existing.push(system)
-    map.set(system.planetId, existing)
-  }
-  return CHAPTER_ORDER.map((id) => {
-    const planet = getPlanetById(id)
-    const systems = map.get(id)
-    return planet && systems ? { planet, systems } : null
-  }).filter((entry): entry is Chapter => entry !== null)
-}
 
 function getRelatedSystems(
   system: MagicSystem,
@@ -73,11 +41,6 @@ function getRelatedSystems(
       )
     : []
   return { samePlanet, sameShard, sameClassification }
-}
-
-function chapterRoman(planetId: string): string {
-  const index = CHAPTER_ORDER.indexOf(planetId)
-  return index >= 0 ? (ROMAN[index] ?? '') : ''
 }
 
 function shortStatus(status: string): string {
@@ -102,75 +65,6 @@ function RecordField({ label, children }: { label: string; children: ReactNode }
       >
         {children}
       </span>
-    </div>
-  )
-}
-
-interface ContentsPageProps {
-  chapters: Chapter[]
-  onOpenChapter: (planetId: string) => void
-  onOpenIndex: () => void
-}
-
-function ContentsPage({ chapters, onOpenChapter, onOpenIndex }: ContentsPageProps) {
-  return (
-    <div>
-      <h2
-        className="mb-5 text-[12px] uppercase tracking-[0.15em] [font-family:var(--font-ui)]"
-        style={{ color: 'var(--text-on-page-tertiary)' }}
-      >
-        Contents
-      </h2>
-      <nav aria-label="Table of contents" className="space-y-[3px]">
-        {chapters.map(({ planet, systems }) => {
-          const count = systems.length
-          return (
-            <button
-              key={planet.id}
-              type="button"
-              onClick={() => onOpenChapter(planet.id)}
-              className={`${TEXT_BUTTON} group flex w-full flex-wrap items-baseline gap-x-2 gap-y-0.5`}
-            >
-              <span
-                className="min-w-[22px] text-right text-[11px] [font-family:var(--font-display)]"
-                style={{ color: 'var(--text-on-page-tertiary)' }}
-              >
-                {chapterRoman(planet.id)}.
-              </span>
-              <span
-                className="min-w-0 text-[15px] tracking-[0.02em] transition-colors duration-150 group-hover:text-[color:var(--text-on-page-link)] [font-family:var(--font-display)]"
-                style={{ color: 'var(--text-on-page-primary)' }}
-              >
-                {planet.name}
-              </span>
-              <span
-                aria-hidden="true"
-                className="hidden min-w-[12px] flex-1 sm:block"
-                style={{ borderBottom: '1px dotted rgba(107,87,68,0.45)' }}
-              />
-              <span
-                className="w-full pl-[30px] text-left text-[11px] [font-family:var(--font-ui)] sm:w-auto sm:pl-0 sm:text-right"
-                style={{ color: 'var(--text-on-page-secondary)' }}
-              >
-                {count} manifestation{count !== 1 ? 's' : ''}
-              </span>
-            </button>
-          )
-        })}
-      </nav>
-
-      <div className="mt-8">
-        <button
-          type="button"
-          onClick={onOpenIndex}
-          className={`${TEXT_BUTTON} group text-[11px] uppercase tracking-[0.1em] [font-family:var(--font-ui)]`}
-          style={{ color: 'var(--text-on-page-tertiary)' }}
-        >
-          <span className="transition-colors duration-150 group-hover:text-[color:var(--text-on-page-link)]">
-            Archival Index →
-          </span>
-        </button>
-      </div>
     </div>
   )
 }
@@ -218,7 +112,7 @@ function TitlePage() {
 }
 
 interface ChapterPageProps {
-  chapter: Chapter
+  chapter: ArcanumChapter
   onOpenSystem: (system: MagicSystem) => void
   onOpenContents: () => void
 }
@@ -233,7 +127,7 @@ function ChapterPage({ chapter, onOpenSystem, onOpenContents }: ChapterPageProps
         className="text-[11px] uppercase tracking-[0.12em] [font-family:var(--font-ui)]"
         style={{ color: 'var(--text-on-page-tertiary)' }}
       >
-        Chapter {chapterRoman(planet.id)}
+        Chapter {chapter.numeral}
       </p>
       <h1
         className="mt-2 mb-1 text-[clamp(22px,2.4vw,32px)] font-bold leading-tight tracking-[0.05em] [font-family:var(--font-display)]"
@@ -302,7 +196,7 @@ function ChapterPage({ chapter, onOpenSystem, onOpenContents }: ChapterPageProps
 }
 
 interface ByWorldProps {
-  chapters: Chapter[]
+  chapters: ArcanumChapter[]
   onOpenChapter: (planetId: string) => void
   onOpenSystem: (system: MagicSystem) => void
 }
@@ -317,7 +211,7 @@ function ByWorldPage({ chapters, onOpenChapter, onOpenSystem }: ByWorldProps) {
         By World
       </h2>
       <div className="space-y-4">
-        {chapters.map(({ planet, systems }) => (
+        {chapters.map(({ planet, systems, numeral }) => (
           <div key={planet.id}>
             <button
               type="button"
@@ -325,7 +219,7 @@ function ByWorldPage({ chapters, onOpenChapter, onOpenSystem }: ByWorldProps) {
               className={`${TEXT_BUTTON} text-[13px] font-medium transition-colors duration-150 hover:text-[color:var(--text-on-page-link)] [font-family:var(--font-display)]`}
               style={{ color: 'var(--text-on-page-primary)' }}
             >
-              {chapterRoman(planet.id)}. {planet.name}
+              {numeral}. {planet.name}
             </button>
             <div className="mt-1">
               {systems.map((system) => (
@@ -354,7 +248,7 @@ export default function MagicSystemsPage() {
   })
 
   const navigate = useViewTransitionNavigate()
-  const chapters = useMemo(() => getChapters(), [])
+  const chapters = ARCANUM_CHAPTERS
   const chapterByPlanet = useMemo(() => new Map(chapters.map((chapter) => [chapter.planet.id, chapter])), [chapters])
   const systemById = useMemo(() => new Map(MAGIC_SYSTEMS.map((system) => [system.id, system])), [])
 
@@ -420,6 +314,44 @@ export default function MagicSystemsPage() {
   const openContents = useCallback(() => {
     route.openSpread('contents')
   }, [route])
+
+  const chapterCount = chapters.length
+  const manifestationCount = chapters.reduce((total, chapter) => total + chapter.systems.length, 0)
+
+  const contentsPart: ContentsPart = {
+    id: 'investiture',
+    kicker: 'Part I',
+    title: 'Investiture',
+    description: `${chapterCount} worlds and ${manifestationCount} documented manifestations of Investiture, surveyed by Khrissalla.`,
+    total: chapterCount,
+    totalLabel: 'chapters',
+    entries: chapters.map(({ planet, systems, numeral }) => ({
+      id: planet.id,
+      label: planet.name,
+      numeral,
+      meta: `${systems.length} manifestation${systems.length === 1 ? '' : 's'}`,
+      onOpen: () => openChapter(planet.id),
+    })),
+    indexLabel: 'Archival Index →',
+    onOpenIndex: openIndex,
+  }
+
+  const recordCompanion: ContentsCompanion = {
+    kicker: 'Part II',
+    title: 'Biographical Records',
+    count: ALL_CHARACTERS.length,
+    countLabel: 'records',
+    onOpen: () => navigate('/characters'),
+  }
+
+  const activeChapterId = route.spread?.chapterId
+  const worldTabs: ThumbTab[] = chapters.map(({ planet, systems, numeral }) => ({
+    id: planet.id,
+    label: numeral,
+    ariaLabel: `${numeral} — ${planet.name}, ${systems.length} manifestation${systems.length === 1 ? '' : 's'}`,
+    active: activeChapterId === planet.id,
+    onSelect: () => openChapter(planet.id),
+  }))
 
   const goToSystem = useCallback(
     (system: MagicSystem, sameChapter: boolean) => {
@@ -546,7 +478,7 @@ export default function MagicSystemsPage() {
                   className={`${TEXT_BUTTON} block text-[12px] italic underline-offset-2 transition-colors duration-150 hover:underline [font-family:var(--font-display)]`}
                   style={{ color: 'var(--text-on-page-link)' }}
                 >
-                  → {candidate.name} · Ch. {chapterRoman(candidate.planetId)} ({candidate.shard})
+                  → {candidate.name} · Ch. {chapterNumeral(candidate.planetId)} ({candidate.shard})
                 </button>
               ))}
               {classRefs.map((candidate) => (
@@ -557,7 +489,7 @@ export default function MagicSystemsPage() {
                   className={`${TEXT_BUTTON} block text-[12px] italic underline-offset-2 transition-colors duration-150 hover:underline [font-family:var(--font-display)]`}
                   style={{ color: 'var(--text-on-page-link)' }}
                 >
-                  → {candidate.name} · Ch. {chapterRoman(candidate.planetId)} ({system.classification})
+                  → {candidate.name} · Ch. {chapterNumeral(candidate.planetId)} ({system.classification})
                 </button>
               ))}
             </div>
@@ -604,7 +536,7 @@ export default function MagicSystemsPage() {
     if (!leaf) return null
 
     if (leaf.id === 'contents') {
-      return <ContentsPage chapters={chapters} onOpenChapter={openChapter} onOpenIndex={openIndex} />
+      return <ContentsPage part={contentsPart} companion={recordCompanion} />
     }
     if (leaf.id === 'title') return <TitlePage />
     if (leaf.id === 'index') {
@@ -665,7 +597,9 @@ export default function MagicSystemsPage() {
         if (spread) route.turnTo(spread.id)
       }}
       edition={edition}
+      part="investiture"
       label="Ars Arcanum"
+      thumbs={<ThumbTabs label="World chapters" tabs={worldTabs} />}
     />
   )
 }

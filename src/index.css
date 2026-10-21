@@ -1644,6 +1644,109 @@ html {
   user-select: none;
 }
 
+/* ---- Thumb index ---------------------------------------------------------
+   Paper slips cut into the fore-edge, inside the leather so they never cover
+   the page-turn strip. The rail itself scrolls when an eleven-tab alphabet
+   cannot fit the height of the book; each slip keeps the requested 26 x 38. */
+.codex-thumbs {
+  position: absolute;
+  top: 50%;
+  right: var(--codex-edge-w);
+  z-index: 10;
+  width: 26px;
+  max-height: 80%;
+  transform: translateY(-50%);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.codex-thumbs::-webkit-scrollbar {
+  display: none;
+}
+
+.codex-thumbs__list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.codex-thumb {
+  display: flex;
+  flex: 0 0 38px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 38px;
+  min-height: 38px;
+  padding: 0;
+  border: 1px solid rgb(58 38 20 / 0.65);
+  border-radius: 0 3px 3px 0;
+  appearance: none;
+  background: #ece0c7;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.45),
+    0 1px 2px rgb(0 0 0 / 0.35);
+  color: var(--text-on-page-primary);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.codex-thumb:hover {
+  background: #f4ecd9;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.6),
+    0 2px 4px rgb(0 0 0 / 0.4);
+}
+
+.codex-thumb[aria-current='page'] {
+  border-color: #8a6721;
+  background: #d6b05a;
+  box-shadow:
+    inset 0 1px 0 rgb(255 244 208 / 0.5),
+    0 1px 3px rgb(0 0 0 / 0.45);
+  color: #241a12;
+  font-weight: 700;
+}
+
+.codex-thumb:focus-visible {
+  outline: 2px solid var(--text-on-page-link);
+  outline-offset: -2px;
+}
+
+/* On a narrow book the page margin is too thin for a 26px slip. Move the rail
+   onto the desk beside the fore-edge and reserve the space, so the index never
+   sits on top of the title page or a record. */
+@media (max-width: 760px) {
+  .codex-stage {
+    padding-right: 48px;
+  }
+
+  .codex-thumbs {
+    right: -38px;
+    max-height: 88%;
+  }
+
+  .codex-thumb {
+    border-radius: 3px;
+  }
+}
+
 /* ---- Cover --------------------------------------------------------------- */
 
 .codex-cover {
@@ -1861,6 +1964,10 @@ html {
     animation: none;
   }
 
+  .codex-thumb {
+    transition: none;
+  }
+
   .codex-object__candle {
     animation: none;
     opacity: 0.95;
@@ -1869,5 +1976,261 @@ html {
   .codex-mote {
     animation: none;
     opacity: calc(var(--mote-opacity, 0.24) * 0.7);
+  }
+}
+/* ---- Part II · record spread -------------------------------------------- */
+
+.record-portrait {
+  position: relative;
+  width: 100%;
+  max-width: 220px;
+}
+
+.record-portrait__frame {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  padding: 6px;
+  border: 1px solid var(--text-on-page-accent);
+  background: var(--surface-page-raised);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.45),
+    0 10px 22px -18px rgb(40 28 16 / 0.9);
+}
+
+.record-portrait__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: sepia(0.32) grayscale(0.12) contrast(1.03);
+  transition: filter 300ms var(--ease-standard);
+}
+
+.record-portrait:hover .record-portrait__image {
+  filter: none;
+}
+
+.record-portrait[data-deceased='true'] .record-portrait__image {
+  filter: grayscale(0.45) sepia(0.18) contrast(1.02);
+}
+
+.record-portrait__corner {
+  position: absolute;
+  z-index: 1;
+  width: 17px;
+  height: 17px;
+  pointer-events: none;
+  border-color: var(--text-on-page-accent);
+}
+
+.record-portrait__corner--tl {
+  top: -3px;
+  left: -3px;
+  border-top: 2px solid;
+  border-left: 2px solid;
+}
+
+.record-portrait__corner--tr {
+  top: -3px;
+  right: -3px;
+  border-top: 2px solid;
+  border-right: 2px solid;
+}
+
+.record-portrait__corner--bl {
+  bottom: -3px;
+  left: -3px;
+  border-bottom: 2px solid;
+  border-left: 2px solid;
+}
+
+.record-portrait__corner--br {
+  right: -3px;
+  bottom: -3px;
+  border-right: 2px solid;
+  border-bottom: 2px solid;
+}
+
+.record-stamp {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  min-width: 86px;
+  padding: 4px 8px;
+  border: 1px solid currentColor;
+  box-shadow: inset 0 0 0 2px var(--surface-page);
+  color: var(--text-on-page-accent);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  line-height: 1.1;
+  text-transform: uppercase;
+  transform: rotate(-3deg);
+}
+
+.record-stamp[data-status='deceased'] {
+  color: #7a2e22;
+}
+
+.record-stamp[data-status='unknown'] {
+  color: var(--text-on-page-tertiary);
+}
+
+.record-stamp[data-status='sealed'] {
+  color: var(--text-on-page-accent);
+  letter-spacing: 0.18em;
+}
+
+.record-ledger__row {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: 12px;
+  padding: 7px 0;
+  border-top: 1px solid rgb(80 60 40 / 0.16);
+}
+
+.record-ledger__row:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.record-ledger dt {
+  color: var(--text-on-page-tertiary);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.record-ledger dd {
+  min-width: 0;
+  margin: 0;
+  color: var(--text-on-page-primary);
+  font-family: var(--font-display);
+  font-size: 15px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.record-code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+.record-link {
+  color: var(--text-on-page-link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.record-link:hover {
+  color: var(--text-on-page-primary);
+}
+
+.record-bio {
+  color: var(--text-on-page-primary);
+  font-family: var(--font-display);
+  font-size: 15px;
+  line-height: 1.62;
+  overflow-wrap: anywhere;
+}
+
+.record-bio::first-letter {
+  float: left;
+  padding: 0.08em 0.12em 0 0;
+  color: var(--text-on-page-accent);
+  font-family: var(--font-display);
+  font-size: 3.1em;
+  line-height: 0.82;
+}
+
+.record-miniature {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 62px;
+  overflow: hidden;
+  border: 1px solid var(--text-on-page-accent);
+  background: var(--surface-page-raised);
+}
+
+.record-miniature__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: sepia(0.32) grayscale(0.12) contrast(1.03);
+  transition: filter 300ms var(--ease-standard);
+}
+
+.group:hover .record-miniature__image {
+  filter: none;
+}
+
+.record-search::placeholder {
+  color: var(--text-on-page-tertiary);
+  opacity: 1;
+}
+
+.codex[data-phase='closed'] + .records-spoiler,
+.codex[data-phase='opening'] + .records-spoiler {
+  display: none;
+}
+
+.records-spoiler {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 5;
+  padding: 2px;
+  border: 1px solid var(--border-subtle-on-page);
+  border-radius: var(--radius-sm);
+  background: var(--surface-page);
+  box-shadow: var(--shadow-1);
+  color: var(--text-on-page-primary);
+  --surface-raised: var(--surface-page-inset);
+  --text-accent: var(--text-on-page-accent);
+  --text-tertiary: var(--text-on-page-tertiary);
+  --text-secondary: var(--text-on-page-secondary);
+  --text-primary: var(--text-on-page-primary);
+  --border-interactive: var(--border-interactive-on-page);
+  --focus-ring: var(--focus-ring-on-page);
+}
+
+@media (max-width: 760px) {
+  .record-ledger__row {
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .record-stamp {
+    min-width: 72px;
+  }
+}
+
+@media (max-width: 480px) {
+  .record-ledger__row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .record-ledger dt {
+    margin-bottom: 2px;
+  }
+
+  .record-portrait {
+    max-width: 170px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .record-portrait__image,
+  .record-miniature__image {
+    transition: none;
   }
 }

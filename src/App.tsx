@@ -13,7 +13,7 @@
 
 import { lazy } from 'react'
 import type { ReactElement } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useParams } from 'react-router-dom'
 import Layout from '@/components/common/Layout'
 import ErrorBoundary from '@/components/common/ErrorBoundary'
 import RouteFallback from '@/components/ui/RouteFallback'
@@ -38,6 +38,16 @@ const HistoricalPage = lazy(() => import('@/pages/HistoricalPage'))
 /** Wraps a page element in its loading and error boundaries. */
 const page = (element: ReactElement): ReactElement => <RouteFallback>{element}</RouteFallback>
 
+/**
+ * The search index has always published character results as `/records/:id`.
+ * Part II now owns the record spreads, so the old address resolves into the
+ * canonical `?character=` deep link before the codex rewrites it to `?spread=`.
+ */
+function CharacterRecordRedirect() {
+  const { id } = useParams()
+  return <Navigate to={`/characters?character=${encodeURIComponent(id ?? '')}`} replace />
+}
+
 const ROUTES = [
   { path: '/', element: page(<LandingPage />) },
   { path: '/celestial-charts', element: page(<KhrissAtlas />) },
@@ -47,6 +57,7 @@ const ROUTES = [
   { path: '/books/:id', element: page(<BookPage />) },
   { path: '/books', element: page(<StandaloneBooksPage />) },
   { path: '/characters', element: page(<BiographicalArchivesPage />) },
+  { path: '/records/:id', element: page(<CharacterRecordRedirect />) },
   { path: '/taravangian', element: page(<TaravangianPage />) },
   /* The Diagram had no route of its own; the nav called it " and pointed at
      /stats. The old address keeps working rather than 404-ing, because it has
