@@ -5,8 +5,8 @@ import { useViewTransitionNavigate } from '@/hooks/useViewTransition'
 import { getPlanetById, BOOKS, ALL_CHARACTERS } from '@/data/static'
 import { MAGIC_SYSTEMS, type MagicSystem } from '@/data/static/magic-systems'
 import type { Planet } from '@/types/planet'
-import ArchivalViewer from '@/components/ars-arcanum/ArchivalViewer'
 import ArchivalIndex from '@/components/ars-arcanum/ArchivalIndex'
+import Codex from '@/components/codex/Codex'
 import AllomanticTable from '@/components/magic/AllomanticTable'
 
 type Mode = 'toc' | 'chapter' | 'index'
@@ -345,8 +345,8 @@ export default function MagicSystemsPage() {
         return (
           <div>
             <h2
-              className="font-serif text-xs uppercase tracking-[0.15em] mb-5"
-              style={{ color: 'rgba(80,60,40,0.35)' }}
+              className="mb-5 text-[11px] uppercase tracking-[0.15em] [font-family:var(--font-ui)]"
+              style={{ color: 'var(--text-on-page-tertiary)' }}
             >
               Contents
             </h2>
@@ -363,22 +363,28 @@ export default function MagicSystemsPage() {
                       openChapter(planet.id)
                     }
                   }}
-                  className="flex items-baseline gap-2 cursor-pointer group"
+                  className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 cursor-pointer group"
                 >
                   <span
-                    className="font-serif text-[11px] min-w-[22px] text-right"
-                    style={{ color: 'rgba(80,60,40,0.25)' }}
+                    className="min-w-[22px] text-right text-[11px] [font-family:var(--font-display)]"
+                    style={{ color: 'var(--text-on-page-tertiary)' }}
                   >
                     {roman}.
                   </span>
                   <span
-                    className="font-serif text-sm tracking-[0.02em] transition-colors duration-150 group-hover:opacity-60"
-                    style={{ color: '#2d1a0e' }}
+                    className="min-w-0 text-sm tracking-[0.02em] transition-colors duration-150 group-hover:text-[var(--text-on-page-link)] [font-family:var(--font-display)]"
+                    style={{ color: 'var(--text-on-page-primary)' }}
                   >
                     {planet.name}
                   </span>
-                  <span className="flex-1 min-w-[12px]" style={{ borderBottom: '1px dotted rgba(80,60,40,0.08)' }} />
-                  <span className="font-serif text-[10px]" style={{ color: 'rgba(80,60,40,0.2)' }}>
+                  <span
+                    className="hidden min-w-[12px] flex-1 sm:block"
+                    style={{ borderBottom: '1px dotted rgba(107,87,68,0.45)' }}
+                  />
+                  <span
+                    className="w-full pl-[30px] text-left text-[11px] [font-family:var(--font-ui)] sm:w-auto sm:pl-0 sm:text-right"
+                    style={{ color: 'var(--text-on-page-secondary)' }}
+                  >
                     {count} manifestation{count !== 1 ? 's' : ''}
                   </span>
                 </span>
@@ -395,8 +401,8 @@ export default function MagicSystemsPage() {
                     openIndex()
                   }
                 }}
-                className="font-serif text-[10px] uppercase tracking-[0.1em] cursor-pointer transition-opacity hover:opacity-60"
-                style={{ color: 'rgba(80,60,40,0.3)' }}
+                className="text-[11px] uppercase tracking-[0.1em] cursor-pointer transition-colors hover:text-[var(--text-on-page-link)] [font-family:var(--font-ui)]"
+                style={{ color: 'var(--text-on-page-tertiary)' }}
               >
                 Archival Index →
               </span>
@@ -515,37 +521,44 @@ export default function MagicSystemsPage() {
     switch (mode) {
       case 'toc':
         return (
-          <div className="flex flex-col items-center justify-center text-center h-full">
-            <div className="mb-3 h-px w-12" style={{ background: 'rgba(80,60,40,0.12)' }} />
+          <div className="flex h-full flex-col items-center justify-start text-center sm:justify-center">
+            <div className="mb-2 h-px w-12 sm:mb-3" style={{ background: 'rgba(80,60,40,0.28)' }} />
             <h1
-              className="font-serif text-[clamp(24px,3vw,42px)] font-bold tracking-[0.15em] leading-tight"
-              style={{ color: '#2d1a0e' }}
+              className="text-[clamp(20px,6vw,42px)] font-bold leading-tight tracking-[0.1em] [font-family:var(--font-display)] sm:text-[clamp(24px,3vw,42px)] sm:tracking-[0.15em]"
+              style={{ color: 'var(--text-on-page-primary)' }}
             >
               ARS
               <br />
               ARCANUM
             </h1>
-            <div className="mt-4 h-px w-10" style={{ background: 'rgba(80,60,40,0.1)' }} />
+            <div className="mt-3 h-px w-10 sm:mt-4" style={{ background: 'rgba(80,60,40,0.24)' }} />
             <p
-              className="mt-5 font-serif text-[clamp(10px,1vw,14px)] italic leading-relaxed max-w-[360px]"
-              style={{ color: 'rgba(80,60,40,0.55)' }}
+              className="mt-3 max-w-[360px] text-[clamp(12px,1vw,14px)] italic leading-snug [font-family:var(--font-display)] sm:mt-5 sm:leading-relaxed"
+              style={{ color: 'var(--text-on-page-secondary)' }}
             >
               Collected observations concerning the manifestations of Investiture throughout the known Cosmere
             </p>
-            <div className="mt-8 space-y-1">
-              <p className="font-serif text-[clamp(9px,0.8vw,11px)]" style={{ color: 'rgba(80,60,40,0.35)' }}>
+            <div className="mt-3 space-y-1 sm:mt-8">
+              <p
+                className="text-[11px] [font-family:var(--font-display)]"
+                style={{ color: 'var(--text-on-page-tertiary)' }}
+              >
                 Compiled from the research of Khrissalla
               </p>
-              <p className="font-serif text-[clamp(8px,0.7vw,10px)] italic" style={{ color: 'rgba(80,60,40,0.25)' }}>
+              <p
+                className="text-[11px] italic [font-family:var(--font-display)]"
+                style={{ color: 'var(--text-on-page-tertiary)' }}
+              >
                 Preserved within the Cosmere Archive
               </p>
             </div>
-            <div className="mt-10 h-px w-12" style={{ background: 'rgba(80,60,40,0.12)' }} />
+            <div className="mt-5 h-px w-12 sm:mt-10" style={{ background: 'rgba(80,60,40,0.28)' }} />
             <p
-              className="mt-4 font-serif text-[clamp(7px,0.6vw,8px)] uppercase tracking-[0.12em]"
-              style={{ color: 'rgba(80,60,40,0.15)' }}
+              className="mt-3 text-[11px] uppercase tracking-[0.04em] [font-family:var(--font-ui)] sm:mt-4 sm:tracking-[0.12em]"
+              style={{ color: 'var(--text-on-page-tertiary)' }}
             >
-              — Silverlight Edition —
+              <span className="hidden sm:inline">— </span>Silverlight Edition
+              <span className="hidden sm:inline"> —</span>
             </p>
           </div>
         )
@@ -621,14 +634,14 @@ export default function MagicSystemsPage() {
   }
 
   return (
-    <div
-      className="flex min-h-0 flex-1 flex-col overflow-hidden"
-      style={{ background: 'radial-gradient(ellipse at 50% 50%, #1a1008 0%, #0f0a06 100%)' }}
-    >
-      <div className="relative flex flex-1 min-h-0">
-        <ArchivalViewer left={renderLeft()} right={renderRight()} />
-      </div>
-    </div>
+    <Codex
+      left={renderLeft()}
+      right={renderRight()}
+      leftHeader="Ars Arcanum"
+      rightHeader="Investiture"
+      leftFolio="i"
+      rightFolio="ii"
+    />
   )
 }
 
