@@ -54,27 +54,25 @@ export default function BookPage() {
 
   return (
     <PageLayout variant="none">
-      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto bg-[var(--surface-void)]">
         <div className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6">
           <TransitionLink
             to="/books"
-            className="inline-flex items-center gap-1.5 text-xs transition-colors mb-6 hover:opacity-80"
-            style={{ color: '#8a7050' }}
+            className="mb-6 inline-flex items-center gap-1.5 font-[var(--font-display)] text-[12px] text-[#d8b878] transition-colors hover:text-[#f0d0a0]"
           >
-            <IconChevronLeft size={12} />
-            Back to books
+            ← Back to books
           </TransitionLink>
 
           <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
             <BookCover book={book} size="lg" />
 
             <div className="flex-1">
-              <h1 className="text-3xl font-bold text-gray-100">{book.title}</h1>
+              <h1 className="font-[var(--font-display)] text-[28px] leading-[1.15] text-[#d8b878]">{book.title}</h1>
 
-              <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-sm" style={{ color: '#8a7050' }}>
+              <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 font-[var(--font-mono)] text-[11px] text-[#8a6840]">
                 {saga && (
                   <span>
-                    Saga: <span style={{ color: '#5a4a3a' }}>{saga.name}</span>
+                    Saga: <span className="text-[#5a4028]">{saga.name}</span>
                   </span>
                 )}
                 <span>
@@ -85,7 +83,7 @@ export default function BookPage() {
               </div>
 
               {book.description && (
-                <p className="mt-4 leading-relaxed" style={{ color: '#8a7050' }}>
+                <p className="mt-4 font-[var(--font-display)] text-[13px] italic leading-[1.6] text-[#5a4028]">
                   {book.description}
                 </p>
               )}
