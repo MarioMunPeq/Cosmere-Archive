@@ -46,7 +46,7 @@ export default function NotFound() {
           </Link>
         ))}
       </div>
-      <p className="max-w-[40ch] text-center font-[var(--font-mono)] text-[10px] text-[#8a6840]">
+      <p className="max-w-[40ch] text-center font-[var(--font-mono)] text-[10px] text-[#d8b878]">
         Search reaches every record. Press <kbd className="border border-[#5a3e1e] px-1.5 py-0.5">Ctrl</kbd> +{' '}
         <kbd className="border border-[#5a3e1e] px-1.5 py-0.5">K</kbd> to search.
       </p>

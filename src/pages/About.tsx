@@ -77,7 +77,7 @@ export default function About() {
             About the Archive
           </h1>
         </div>
-        <span className="font-[var(--font-display)] text-[13px] italic text-[#8a6840]">
+        <span className="font-[var(--font-display)] text-[13px] italic text-[#d8b878]">
           A personal project inspired by Brandon Sanderson's Cosmere.
         </span>
       </div>
@@ -108,16 +108,14 @@ export default function About() {
 
           {/* Facts */}
           <section className="mt-[var(--spacing-2xl)]">
-            <h2 className="text-nano tracking-[var(--ls-caps-wide)] text-[var(--text-on-page-tertiary)] uppercase">
-              At a glance
-            </h2>
+            <h2 className="text-nano tracking-[var(--ls-caps-wide)] text-[#3a2a1a] uppercase">At a glance</h2>
             <dl className="mt-md grid grid-cols-1 gap-x-[var(--spacing-xl)] gap-y-[var(--spacing-sm)] sm:grid-cols-2">
               {FACTS.map(([term, value]) => (
                 <div
                   key={term}
                   className="flex items-baseline gap-md border-b border-[var(--border-subtle-on-page)] pb-xs"
                 >
-                  <dt className="w-24 shrink-0 text-micro tracking-[var(--ls-caps)] text-[var(--text-on-page-tertiary)] uppercase">
+                  <dt className="w-24 shrink-0 text-micro tracking-[var(--ls-caps)] text-[#3a2a1a] uppercase">
                     {term}
                   </dt>
                   <dd className="min-w-0 text-[var(--text-on-page-primary)]">{value}</dd>
@@ -128,9 +126,7 @@ export default function About() {
 
           {/* Sources */}
           <section className="mt-[var(--spacing-2xl)]">
-            <h2 className="text-nano tracking-[var(--ls-caps-wide)] text-[var(--text-on-page-tertiary)] uppercase">
-              Sources
-            </h2>
+            <h2 className="text-nano tracking-[var(--ls-caps-wide)] text-[#3a2a1a] uppercase">Sources</h2>
             <ul className="mt-md space-y-md">
               {SOURCES.map((source) => (
                 <li key={source.name}>
@@ -150,9 +146,7 @@ export default function About() {
 
           {/* Rights */}
           <section className="mt-[var(--spacing-2xl)]">
-            <h2 className="text-nano tracking-[var(--ls-caps-wide)] text-[var(--text-on-page-tertiary)] uppercase">
-              Rights
-            </h2>
+            <h2 className="text-nano tracking-[var(--ls-caps-wide)] text-[#3a2a1a] uppercase">Rights</h2>
             <p className="mt-md max-w-[var(--measure)] text-[var(--text-on-page-secondary)]">
               This is an educational project with no commercial intent. All rights to the Cosmere, its worlds and its
               characters belong to Brandon Sanderson.
@@ -161,9 +155,7 @@ export default function About() {
 
           {/* Thanks */}
           <section className="mt-[var(--spacing-2xl)]">
-            <h2 className="text-nano tracking-[var(--ls-caps-wide)] text-[var(--text-on-page-tertiary)] uppercase">
-              Thanks
-            </h2>
+            <h2 className="text-nano tracking-[var(--ls-caps-wide)] text-[#3a2a1a] uppercase">Thanks</h2>
             <p className="mt-md max-w-[var(--measure)] text-[var(--text-on-page-secondary)]">
               Deep gratitude to the contributors of The Coppermind, whose meticulous work makes archives like this
               possible. Without their dedication, this project would not exist.
@@ -172,9 +164,7 @@ export default function About() {
 
           {/* Contact */}
           <section className="mt-[var(--spacing-2xl)]">
-            <h2 className="text-nano tracking-[var(--ls-caps-wide)] text-[var(--text-on-page-tertiary)] uppercase">
-              Contact
-            </h2>
+            <h2 className="text-nano tracking-[var(--ls-caps-wide)] text-[#3a2a1a] uppercase">Contact</h2>
             <ul className="mt-md flex flex-wrap gap-lg">
               {CONTACT.map((c) => (
                 <li key={c.name}>
@@ -185,7 +175,7 @@ export default function About() {
                     className="inline-flex min-h-[var(--target-min)] items-center gap-2xs text-[var(--text-on-page-link)] underline decoration-[var(--border-interactive-on-page)] underline-offset-4 transition-colors hover:text-[var(--text-on-page-primary)] focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring-on-page)]"
                   >
                     {c.name}
-                    <span className="text-[var(--text-on-page-tertiary)] no-underline">{c.handle}</span>
+                    <span className="text-[#3a2a1a] no-underline">{c.handle}</span>
                   </a>
                 </li>
               ))}
