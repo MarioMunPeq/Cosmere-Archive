@@ -1,10 +1,17 @@
+/**
+ * ComparePage — two records laid side by side on a desk.
+ *
+ * ## Diegetic treatment
+ *
+ * A comparison is not a table. It is two open records on a desk, with a brass
+ * balance between them. The reader picks two names from a card catalogue and
+ * the records open on the desk, facing each other.
+ */
 import { useState, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import BackToMapButton from '@/components/ui/BackToMapButton'
-import CompareCharacterPanel from '@/components/ui/CompareCharacterPanel'
 import { ALL_CHARACTERS, PLANETS, BOOKS, SAGA_BY_ID } from '@/data/static'
-import PageLayout from '@/components/ui/PageLayout'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
+import BackToMapButton from '@/components/ui/BackToMapButton'
 
 const ATTRS: {
   label: string
@@ -49,14 +56,17 @@ function CharacterSelector({
   onChange: (id: string) => void
 }) {
   return (
-    <div>
-      <label className="mb-1 block text-xs text-gray-500">{label}</label>
+    <div className="flex flex-col gap-1">
+      <span className="font-[var(--font-mono)] text-[10px] uppercase tracking-[0.2em] text-[#8a6840]">{label}</span>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-200 focus:border-purple-500 focus:outline-none"
+        className="cursor-pointer border border-[#5a3e1e] bg-[#2a180c] px-3 py-2 font-[var(--font-display)] text-[13px] text-[#d8b878] focus:outline-none focus:[box-shadow:var(--focus-ring)]"
+        style={{
+          background: 'linear-gradient(180deg, #3a2a14 0%, #24180a 100%)',
+        }}
       >
-        <option value="">Select a character…</option>
+        <option value="">Choose a name…</option>
         {ALL_CHARACTERS.map((c) => (
           <option key={c.id} value={c.id}>
             {c.name}
@@ -90,36 +100,103 @@ export default function ComparePage() {
     setSearchParams({ a: charA, b: id }, { replace: true })
   }
 
-  const planetA = characterA ? PLANETS.find((p) => p.id === characterA.planet) : null
-  const planetB = characterB ? PLANETS.find((p) => p.id === characterB.planet) : null
-
   return (
-    <PageLayout variant="center">
-      <div className="w-full max-w-4xl animate-fade-in-up">
-        <BackToMapButton to="/characters" label="Back to characters" className="mb-6" />
-
-        <h1 className="text-3xl font-bold text-gray-100">Character Comparison</h1>
-        <p className="mt-1 text-sm text-gray-500">Compare two characters side by side</p>
-
-        <div className="mt-6 grid gap-4 sm:grid-cols-2">
-          <CharacterSelector label="Character A" value={charA} onChange={updateA} />
-          <CharacterSelector label="Character B" value={charB} onChange={updateB} />
+    <div className="relative flex min-h-0 flex-1 flex-col bg-[var(--surface-void)]">
+      <div
+        className="relative z-20 flex shrink-0 flex-col items-center gap-2 px-5 pt-5 pb-3"
+        style={{
+          background: 'linear-gradient(180deg, rgb(8 10 14 / .9) 0%, rgb(8 10 14 / 0) 100%)',
+        }}
+      >
+        <div
+          className="relative px-6 py-2"
+          style={{
+            background: 'linear-gradient(180deg, #3a2a14 0%, #24180a 100%)',
+            border: '1px solid #5a3e1e',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(190,150,100,0.12)',
+          }}
+        >
+          <h1 className="font-[var(--font-display)] text-[var(--text-h3)] tracking-[0.04em] text-[#d8b878]">
+            The Balance
+          </h1>
         </div>
-
-        {characterA && characterB ? (
-          <div className="mt-8 grid gap-0 overflow-hidden rounded-lg border border-gray-800 sm:grid-cols-2">
-            <CompareCharacterPanel
-              character={characterA}
-              planet={planetA}
-              attrs={ATTRS}
-              className="border-b border-gray-800 sm:border-b-0 sm:border-r"
-            />
-            <CompareCharacterPanel character={characterB} planet={planetB} attrs={ATTRS} />
-          </div>
-        ) : (
-          <p className="mt-12 text-center text-sm text-gray-600">Select two characters to compare them side by side</p>
-        )}
+        <span className="font-[var(--font-mono)] text-[10px] uppercase tracking-[0.2em] text-[#8a6840]">
+          Compare two records
+        </span>
       </div>
-    </PageLayout>
+
+      <div className="min-h-0 flex-1 overflow-y-auto px-[var(--gutter-md)] py-2xl max-md:px-[var(--gutter)]">
+        <div className="mx-auto max-w-page">
+          <BackToMapButton to="/characters" label="Back to characters" className="mb-6" />
+
+          <div className="mb-8 grid gap-4 sm:grid-cols-2">
+            <CharacterSelector label="First record" value={charA} onChange={updateA} />
+            <CharacterSelector label="Second record" value={charB} onChange={updateB} />
+          </div>
+
+          {characterA && characterB ? (
+            <div className="grid gap-6 sm:grid-cols-2">
+              <RecordCard character={characterA} attrs={ATTRS} />
+              <RecordCard character={characterB} attrs={ATTRS} />
+            </div>
+          ) : (
+            <p className="mt-12 text-center font-[var(--font-display)] text-[14px] italic text-[#8a6840]">
+              Choose two names to set them side by side.
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function RecordCard({ character, attrs }: { character: (typeof ALL_CHARACTERS)[number]; attrs: typeof ATTRS }) {
+  return (
+    <div
+      className="overflow-hidden p-5"
+      style={{
+        background: 'linear-gradient(152deg, #f2e9d4 0%, #eae0c8 40%, #e0d4b6 76%, #d6c8a6 100%)',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+        transform: 'rotate(-0.3deg)',
+      }}
+    >
+      <div className="flex items-center gap-3">
+        {character.image ? (
+          <img
+            src={`${import.meta.env.BASE_URL}${character.image}`}
+            alt=""
+            className="h-12 w-12 shrink-0 object-cover"
+            style={{ border: '1px solid rgba(60,40,20,0.3)' }}
+          />
+        ) : (
+          <div
+            className="flex h-12 w-12 shrink-0 items-center justify-center font-[var(--font-display)] text-[18px] text-[#5a4028]"
+            style={{ background: 'rgba(60,40,20,0.12)', border: '1px solid rgba(60,40,20,0.3)' }}
+          >
+            {character.name.charAt(0)}
+          </div>
+        )}
+        <div>
+          <div className="font-[var(--font-display)] text-[18px] leading-[1.15] text-[#241a12]">{character.name}</div>
+          <div className="font-[var(--font-mono)] text-[10px] text-[#8a6840]">{character.id}</div>
+        </div>
+      </div>
+      <p className="mt-3 font-[var(--font-display)] text-[12px] italic leading-[1.5] text-[#5a4028]">
+        {character.description}
+      </p>
+      <div aria-hidden className="my-3 h-px w-full bg-[rgba(60,40,20,0.35)]" />
+      <dl className="space-y-2">
+        {attrs.map((attr) => (
+          <div key={attr.label} className="flex justify-between gap-2">
+            <dt className="font-[var(--font-mono)] text-[10px] uppercase tracking-[0.15em] text-[#8a6840]">
+              {attr.label}
+            </dt>
+            <dd className="text-right font-[var(--font-display)] text-[12px] text-[#241a12]">
+              {attr.getValue(character)}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
   )
 }
