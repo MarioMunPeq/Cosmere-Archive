@@ -9,7 +9,7 @@ import type { SoulDef } from './entity-catalog'
  * Must be wider than the gap to the next layer or the layers overlap and the
  * hierarchy — heralds at the centre, everyone else in the field — stops reading.
  */
-const ORBIT_JITTER = 0.26
+const ORBIT_JITTER = 0.15
 
 function seed(s: string): () => number {
   let h = 0

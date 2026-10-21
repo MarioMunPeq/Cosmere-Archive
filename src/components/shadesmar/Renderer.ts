@@ -93,14 +93,14 @@ export function drawBackground(
       const sp = camera.worldToScreen(cluster.cx, cluster.cy, w, h)
       sx = sp.x
       sy = sp.y
-      nr = cluster.radius * camera.zoom * Math.min(w, h) * 2.5
+      nr = cluster.radius * camera.zoom * Math.min(w, h) * 1.4
     } else {
       const scale = Math.min(w / WORLD_W, h / WORLD_H) * 0.85
       const offsetX = (w - WORLD_W * scale) / 2
       const offsetY = (h - WORLD_H * scale) / 2
       sx = cluster.cx * scale + offsetX
       sy = cluster.cy * scale + offsetY
-      nr = cluster.radius * scale * 2.5
+      nr = cluster.radius * scale * 1.4
     }
     const color = cluster.color
     const pulse = 0.85 + Math.sin(time * 0.15 + cluster.cx * 3) * 0.15
