@@ -3,22 +3,20 @@
  *
  * ## What makes paper read as paper
  *
- * Four things, and the old sheets had none of them:
+ * Four things, and none of them is a border radius:
  *
  *   **An edge.** Torn, not cut. A perfectly straight edge on a cream rectangle
  *   is a card; a slightly ragged one is a page out of a notebook.
- *   **A fastener.** A pin, a tack, or a strip of tape. Something is holding it
- *   to the wall, and that is the whole difference between "on" and "painted on".
- *   **A shadow.** Cast down and to the right, away from the candle at the left.
+ *   **A fastener.** Every sheet hangs from one brass tack at its top centre.
+ *   The tack is also where the string is tied, so the wall's thread lands on
+ *   something physical instead of floating over the paper.
+ *   **A shadow.** Cast to the right, away from the candle at the low left.
  *   **Uneven tone.** Paper that has been handled: warmer where a hand has been,
- *   a faint stain, a corner turned up.
+ *   a faint foxing stain, a corner turned up, tape that has aged.
  *
- * ## The sizes are not all the same
- *
- * A wall where every sheet is identical is a contact sheet. The nine are A-5
- * with a few larger ones — a fold-out chart, a plan — which is what a wall looks
- * like when someone has been working on it for years: some pages matter more
- * than others and got more paper.
+ * Paper is drawn from the codex tokens — `--surface-page`, `--codex-page-block`,
+ * `--codex-foxing`, `--codex-brass*` — so the wall's paper is the same paper as
+ * the volume on the desk next door.
  */
 
 import type { MouseEvent, ReactNode } from 'react'
@@ -30,7 +28,7 @@ export interface SheetProps {
   h: number
   /** Crooked, in degrees. Clamped by the caller. */
   rotation?: number
-  /** `true` for a folded, larger chart. */
+  /** `true` for a ledger-sized fold-out. */
   large?: boolean
   label: string
   onClick?: (e: MouseEvent) => void
@@ -38,8 +36,8 @@ export interface SheetProps {
   onMouseLeave?: () => void
   onFocus?: () => void
   onBlur?: () => void
+  /** Lifted by a few pixels while the pointer is on it or it has focus. */
   raised?: boolean
-  dimmed?: boolean
   children: ReactNode
 }
 
@@ -56,7 +54,6 @@ export function Sheet({
   onFocus,
   onBlur,
   raised = false,
-  dimmed = false,
   children,
 }: SheetProps) {
   /*
@@ -67,40 +64,33 @@ export function Sheet({
    * back to it.
    */
   const seed = hash(id)
-  const pinX = 26 + (seed % 3) * 8
   const stain = (seed >> 3) % 5
   const curl = ((seed >> 5) % 3) - 1
+  const taped = (seed >> 7) % 3 === 0
 
   return (
-    <button
-      type="button"
-      aria-label={label}
-      data-diagram-sheet={id}
-      onClick={onClick}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      onFocus={onFocus}
-      onBlur={onBlur}
-      className={[
-        'group absolute cursor-pointer text-left',
-        'focus-visible:outline-none',
-        'transition-[filter,opacity] duration-[var(--dur-base)]',
-        dimmed ? 'brightness-[0.45] saturate-[0.4]' : '',
-      ].join(' ')}
+    <div
+      className="group absolute text-left"
       style={{
         left: 0,
         top: 0,
         width: w,
         height: h,
-        transform: `rotate(${rotation ?? 0}deg)`,
+        transform: `rotate(${rotation ?? 0}deg) translateY(${raised ? -4 : 0}px)`,
         filter: raised
-          ? 'drop-shadow(-10px 18px 22px rgba(0,0,0,0.62)) drop-shadow(-2px 4px 6px rgba(0,0,0,0.4))'
-          : 'drop-shadow(7px 13px 15px rgba(0,0,0,0.55)) drop-shadow(2px 3px 4px rgba(0,0,0,0.35))',
-        transition: 'filter var(--dur-base) ease, transform var(--dur-base) ease',
+          ? 'drop-shadow(2px 16px 20px rgba(4,2,1,0.62)) drop-shadow(0 3px 5px rgba(4,2,1,0.45))'
+          : 'drop-shadow(7px 12px 14px rgba(4,2,1,0.55)) drop-shadow(1px 3px 4px rgba(4,2,1,0.4))',
+        transition: 'filter var(--dur-base) var(--ease-standard), transform var(--dur-fast) var(--ease-standard)',
       }}
     >
-      {/* The paper. */}
+      {/*
+        The paper.
+        The whole painted face is decorative to assistive tech: the button's
+        `aria-label` is the sheet's name, and the excerpt is a glance, not the
+        document. The document is the reader, opened with Enter.
+      */}
       <span
+        aria-hidden
         className="absolute inset-0 block overflow-hidden"
         style={{
           background: paperBackground(large),
@@ -109,29 +99,29 @@ export function Sheet({
           borderRadius: '1px 2px 1px 3px',
         }}
       >
-        {/* Ruled lines and a margin, as a notebook page has. */}
-        <span aria-hidden className="absolute inset-0 block" style={{ opacity: 0.5 }}>
-          {Array.from({ length: 26 }, (_, i) => (
+        {/* Ruled lines and a margin, as a page written on a board has. */}
+        <span aria-hidden className="absolute inset-0 block" style={{ opacity: 0.55 }}>
+          {Array.from({ length: large ? 30 : 24 }, (_, i) => (
             <span
               key={i}
               className="absolute block"
               style={{
-                left: large ? 46 : 34,
+                left: large ? 44 : 32,
                 right: 14,
-                top: large ? 62 + i * 15 : 44 + i * 12,
+                top: large ? 58 + i * 13.6 : 42 + i * 10.4,
                 height: 1,
-                background: 'rgba(58,86,120,0.16)',
+                background: 'rgb(36 26 18 / 0.09)',
               }}
             />
           ))}
           <span
             className="absolute block"
             style={{
-              left: large ? 38 : 28,
-              top: 14,
-              bottom: 12,
+              left: large ? 34 : 24,
+              top: 12,
+              bottom: 10,
               width: 1,
-              background: 'rgba(170,60,50,0.22)',
+              background: 'rgb(140 43 31 / 0.34)',
             }}
           />
         </span>
@@ -147,7 +137,7 @@ export function Sheet({
               width: large ? 190 : 120,
               height: large ? 130 : 84,
               borderRadius: '50%',
-              background: 'radial-gradient(closest-side, rgba(150,110,60,0.16), rgba(150,110,60,0))',
+              background: `radial-gradient(closest-side, var(--codex-foxing), transparent)`,
               filter: 'blur(2px)',
             }}
           />
@@ -163,8 +153,8 @@ export function Sheet({
               height: 46,
               background:
                 curl > 0
-                  ? 'linear-gradient(315deg, rgba(60,40,22,0.30) 0%, rgba(0,0,0,0) 62%)'
-                  : 'linear-gradient(225deg, rgba(60,40,22,0.22) 0%, rgba(0,0,0,0) 62%)',
+                  ? 'linear-gradient(315deg, rgb(60 40 22 / 0.3) 0%, rgb(0 0 0 / 0) 62%)'
+                  : 'linear-gradient(225deg, rgb(60 40 22 / 0.22) 0%, rgb(0 0 0 / 0) 62%)',
             }}
           />
         )}
@@ -172,23 +162,59 @@ export function Sheet({
         {/* The content, inset like a written page. */}
         <span
           className="absolute inset-0 block"
-          style={{ padding: large ? '18px 26px 22px 46px' : '14px 18px 16px 34px' }}
+          style={{ padding: large ? '18px 24px 20px 44px' : '14px 16px 16px 32px' }}
         >
           {children}
         </span>
       </span>
 
-      {/* The fastener. A brass tack, head at the top centre-left. */}
+      {/* Tape on the corners of one sheet in three. Never over the writing. */}
+      {taped && (
+        <>
+          <span
+            aria-hidden
+            className="pointer-events-none absolute block"
+            style={{
+              left: -16,
+              top: 10,
+              width: 54,
+              height: 20,
+              transform: 'rotate(-38deg)',
+              background: 'linear-gradient(180deg, rgb(232 214 166 / 0.38), rgb(206 186 138 / 0.28))',
+              boxShadow: '0 1px 2px rgb(4 2 1 / 0.35)',
+              clipPath: 'polygon(2% 0%, 100% 3%, 98% 100%, 0% 96%)',
+            }}
+          />
+          <span
+            aria-hidden
+            className="pointer-events-none absolute block"
+            style={{
+              right: -14,
+              bottom: 16,
+              width: 50,
+              height: 18,
+              transform: 'rotate(32deg)',
+              background: 'linear-gradient(180deg, rgb(232 214 166 / 0.3), rgb(206 186 138 / 0.22))',
+              boxShadow: '0 1px 2px rgb(4 2 1 / 0.3)',
+              clipPath: 'polygon(0% 4%, 98% 0%, 100% 97%, 3% 100%)',
+            }}
+          />
+        </>
+      )}
+
+      {/* The fastener: one brass tack, top centre. The string ties here. */}
       <span
         aria-hidden
         className="absolute block rounded-full"
         style={{
-          left: pinX,
-          top: -5,
-          width: 13,
-          height: 13,
-          background: 'radial-gradient(circle at 34% 30%, #e8cf94 0%, #a8823c 52%, #4a3413 100%)',
-          boxShadow: '0 3px 5px rgba(0,0,0,0.62), inset 0 -1px 2px rgba(0,0,0,0.45)',
+          left: '50%',
+          top: -6,
+          width: 14,
+          height: 14,
+          marginLeft: -7,
+          background:
+            'radial-gradient(circle at 34% 30%, var(--codex-brass-highlight) 0%, var(--codex-brass) 52%, var(--codex-thread) 100%)',
+          boxShadow: '0 3px 5px rgb(4 2 1 / 0.7), inset 0 -1px 2px rgb(0 0 0 / 0.5)',
         }}
       />
       {/* Its shadow on the paper. */}
@@ -196,23 +222,43 @@ export function Sheet({
         aria-hidden
         className="absolute block rounded-full"
         style={{
-          left: pinX + 3,
+          left: '50%',
+          marginLeft: -4,
           top: -1,
-          width: 13,
+          width: 14,
           height: 9,
-          background: 'rgba(70,45,20,0.28)',
+          background: 'rgb(70 45 20 / 0.3)',
           filter: 'blur(3px)',
         }}
       />
-    </button>
+
+      {/*
+        The button is the *whole sheet*, laid over the paper rather than wrapped
+        around it. A button may not contain headings or a table, and naming one
+        by every word of a ledger would read the entire page aloud. This way the
+        name is the sheet's name, the visible excerpt is a glance, and the
+        document waits in the reader.
+      */}
+      <button
+        type="button"
+        aria-label={label}
+        data-diagram-sheet={id}
+        onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        className="diagram-sheet absolute inset-0 z-20 cursor-pointer rounded-[2px] bg-transparent text-left focus-visible:outline-none"
+      />
+    </div>
   )
 }
 
 /** Cream, warmed and aged. Not white — white paper on a dark wall looks lit. */
 function paperBackground(large: boolean): string {
   return large
-    ? 'linear-gradient(152deg, #f0e6cf 0%, #e8dcc0 38%, #ded0ae 72%, #d4c49e 100%)'
-    : 'linear-gradient(152deg, #f2e9d4 0%, #eae0c8 40%, #e0d4b6 76%, #d6c8a6 100%)'
+    ? 'linear-gradient(152deg, var(--surface-page) 0%, var(--codex-page-block) 42%, var(--surface-page-inset) 100%)'
+    : 'linear-gradient(152deg, var(--surface-page) 0%, var(--codex-page-block) 55%, var(--surface-page-inset) 100%)'
 }
 
 /**

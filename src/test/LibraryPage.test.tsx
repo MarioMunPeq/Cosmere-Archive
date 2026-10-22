@@ -4,9 +4,9 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import LibraryPage from '@/pages/LibraryPage'
 
-function renderPage() {
+function renderPage(entry = '/library') {
   return render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries={[entry]}>
       <LibraryPage />
     </MemoryRouter>,
   )
@@ -30,9 +30,31 @@ describe('LibraryPage', () => {
     await user.click(screen.getByRole('button', { name: /^The Way of Kings\b/ }))
     const dialog = await screen.findByRole('dialog')
     expect(dialog).toHaveAttribute('aria-modal', 'true')
-    // "Synopsis" is both the page heading and its running head, so query the
-    // heading rather than the text.
-    expect(within(dialog).getByRole('heading', { level: 3, name: /synopsis/i })).toBeInTheDocument()
+    expect(within(dialog).getByRole('heading', { level: 2, name: /synopsis/i })).toBeInTheDocument()
+    expect(within(dialog).getByRole('button', { name: /return to shelf/i })).toBeInTheDocument()
+  })
+
+  it('returns the volume to the shelf with the printed control', async () => {
+    const user = userEvent.setup()
+    renderPage()
+
+    const spine = screen.getByRole('button', { name: /^The Way of Kings\b/ })
+    await user.click(spine)
+    const dialog = await screen.findByRole('dialog')
+    await user.click(within(dialog).getByRole('button', { name: /return to shelf/i }))
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument(), {
+      timeout: 3000,
+    })
+    // The volume is returned to its slot on the frame after the dialog
+    // releases it, so the focus restore is one rAF behind the unmount.
+    await waitFor(() => expect(spine).toHaveFocus(), { timeout: 3000 })
+  })
+
+  it('opens a volume from its deep link', async () => {
+    renderPage('/library?book=the_way_of_kings')
+    const dialog = await screen.findByRole('dialog', { name: /reading the way of kings/i })
+    expect(within(dialog).getByRole('heading', { level: 2, name: /synopsis/i })).toBeInTheDocument()
   })
 
   it('closes the book with Escape', async () => {

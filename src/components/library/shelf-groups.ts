@@ -21,7 +21,7 @@
  */
 
 import { BOOKS } from '@/data/static'
-import type { Book } from '@/types'
+import type { Book } from '@/data/static/books'
 
 export interface ShelfGroup {
   id: string

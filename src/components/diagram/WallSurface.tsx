@@ -1,322 +1,273 @@
 /**
- * The wall — Taravangian's study.
+ * The wall of the study, as one continuous surface.
  *
- * ## What this is now
+ * ## No tiles, no seam
  *
- * The first version was plaster with four cracks and a wainscot. It read as
- * a wall, but a clean one — the kind of wall a designer makes. This version
- * is the wall of a man who has been writing on it for years: patched plaster,
- * water stains, candle wax, nail holes from old papers, a darker band where
- * the light never reaches, and a strong vignette that pulls the eye to the
- * centre where the sheets hang.
+ * The previous wall painted two noise textures with `background-size` and a
+ * separate base gradient. Where the tiles met, the gradient underneath changed
+ * value and the seam became a vertical line down the room. This draws the whole
+ * room as a **single SVG at wall size** — one mottle, one wash, one set of
+ * boards — so there is nothing to repeat and therefore nothing to line up
+ * badly. The only repeating layer is the codex grain, at 180px, which is fine
+ * tooth rather than a patch and has no visible edge.
  *
- * Everything is procedural. No image files.
+ * Colour comes from the codex tokens: `--codex-desk` and friends for the room,
+ * `--codex-page-block` for the chalk-dust, `--codex-foxing` for the damp. The
+ * candle and the vignette are *not* here: they belong to the room, not to the
+ * wall, so they are painted by `CodexObject` and stay put while the wall is
+ * panned. See `DiagramCanvas`.
  */
+import { WALL_H, WALL_W } from './wall-docs'
+
 export function WallSurface() {
   return (
-    <div aria-hidden className="absolute inset-0 overflow-hidden" style={{ width: 5000, height: 5000 }}>
-      {/* The base: warm dark, not black. A room at night lit by candle. */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'linear-gradient(160deg, #2a1e14 0%, #1f160e 28%, #160f09 58%, #0d0906 82%, #080504 100%)',
-        }}
-      />
+    <div
+      data-diagram-bg
+      aria-hidden
+      className="absolute left-0 top-0 overflow-hidden"
+      style={{
+        width: WALL_W,
+        height: WALL_H,
+        background: 'var(--codex-desk)',
+      }}
+    >
+      <svg
+        width={WALL_W}
+        height={WALL_H}
+        viewBox={`0 0 ${WALL_W} ${WALL_H}`}
+        preserveAspectRatio="none"
+        style={{ position: 'absolute', inset: 0, display: 'block' }}
+        aria-hidden
+      >
+        <defs>
+          <linearGradient id="diagram-plaster" x1="0" y1="0" x2="0.35" y2="1">
+            <stop offset="0" stopColor="#32251a" />
+            <stop offset="0.42" stopColor="#271c12" />
+            <stop offset="0.78" stopColor="#1c130c" />
+            <stop offset="1" stopColor="#140d08" />
+          </linearGradient>
 
-      {/* Coarse patching: the plaster has been repaired in places. */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          opacity: 0.55,
-          backgroundImage: `url("data:image/svg+xml,${encodeURIComponent(coarsePlaster())}")`,
-          backgroundSize: '720px 720px',
-        }}
-      />
+          {/* One mottle for the whole room. No repeat, so no seam. */}
+          <filter id="diagram-mottle" x="0" y="0" width="100%" height="100%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.0045 0.0062" numOctaves="5" seed="17" />
+            <feColorMatrix type="matrix" values="0.22 0 0 0 0.14  0.16 0 0 0 0.10  0 0.12 0 0 0.07  0 0 0 0.55 0" />
+          </filter>
 
-      {/* Fine tooth: the surface the plaster has. */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          opacity: 0.4,
-          backgroundImage: `url("data:image/svg+xml,${encodeURIComponent(fineTooth())}")`,
-          backgroundSize: '260px 260px',
-        }}
-      />
+          <filter id="diagram-damp" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="26" />
+          </filter>
 
-      {/* Age: a yellowing wash over the whole wall, stronger in the corners
-          where the air is still. */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          background:
-            'radial-gradient(150% 130% at 50% 50%, rgba(180,130,70,0.0) 30%, rgba(120,80,40,0.12) 75%, rgba(80,50,24,0.22) 100%)',
-        }}
-      />
+          <linearGradient id="diagram-rail" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#7a5834" />
+            <stop offset="0.45" stopColor="#4a3120" />
+            <stop offset="1" stopColor="#24160d" />
+          </linearGradient>
 
-      {/* The candle, low and left: the warm pool everything is lit by. */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          background:
-            'radial-gradient(110% 85% at 6% 92%, rgba(232,172,96,0.26) 0%, rgba(196,132,64,0.14) 22%, rgba(140,88,40,0.06) 42%, rgba(0,0,0,0) 68%)',
-        }}
-      />
-      {/* A second source, upper right: a window or a lamp across the room. */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'radial-gradient(70% 60% at 92% 8%, rgba(140,160,190,0.09) 0%, rgba(0,0,0,0) 58%)',
-        }}
-      />
-      {/* A third, very faint, from below: the desk lamp or a brazier. */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'radial-gradient(90% 70% at 50% 108%, rgba(200,140,70,0.07) 0%, rgba(0,0,0,0) 55%)',
-        }}
-      />
+          <linearGradient id="diagram-board" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stopColor="#2b1c11" />
+            <stop offset="0.5" stopColor="#1a1009" />
+            <stop offset="1" stopColor="#24160d" />
+          </linearGradient>
+        </defs>
 
-      {/* Candle wax drips near the light. */}
-      <div
-        style={{
-          position: 'absolute',
-          left: 260,
-          top: 1580,
-          width: 110,
-          height: 60,
-          borderRadius: '0 0 50px 50px',
-          background: 'linear-gradient(180deg, rgba(232,206,158,0.18), rgba(232,206,158,0))',
-          filter: 'blur(3px)',
-        }}
-      />
-      <div
-        style={{
-          position: 'absolute',
-          left: 310,
-          top: 1560,
-          width: 18,
-          height: 40,
-          borderRadius: '0 0 9px 9px',
-          background: 'linear-gradient(180deg, rgba(232,206,158,0.22), rgba(232,206,158,0))',
-          filter: 'blur(2px)',
-        }}
-      />
+        <rect width={WALL_W} height={WALL_H} fill="url(#diagram-plaster)" />
+        <rect width={WALL_W} height={WALL_H} filter="url(#diagram-mottle)" opacity="0.85" />
 
-      {/* Water stains: where the plaster has been damp. */}
-      {WATER_STAINS.map((s, i) => (
-        <div
-          key={i}
-          style={{
-            position: 'absolute',
-            left: s.x,
-            top: s.y,
-            width: s.w,
-            height: s.h,
-            borderRadius: '50%',
-            background: 'radial-gradient(closest-side, rgba(60,40,20,0.35), rgba(60,40,20,0))',
-            filter: 'blur(18px)',
-          }}
-        />
-      ))}
-
-      {/* Nail holes: where old papers were pinned and removed. */}
-      {NAIL_HOLES.map((n, i) => (
-        <div
-          key={i}
-          style={{
-            position: 'absolute',
-            left: n.x,
-            top: n.y,
-            width: 6,
-            height: 6,
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(10,6,4,0.7) 0%, rgba(10,6,4,0.2) 60%, transparent 100%)',
-            boxShadow: '0 0 0 1px rgba(190,150,105,0.08)',
-          }}
-        />
-      ))}
-
-      {/* The wainscot rail. */}
-      <div
-        style={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          top: 2900,
-          height: 24,
-          background:
-            'linear-gradient(180deg, rgba(90,60,32,0.9) 0%, rgba(58,38,20,0.95) 50%, rgba(30,18,10,0.98) 100%)',
-          boxShadow:
-            '0 12px 30px rgba(0,0,0,0.55), inset 0 1px 0 rgba(190,150,100,0.16), inset 0 -1px 0 rgba(0,0,0,0.4)',
-        }}
-      />
-      {/* Panelling below the rail. */}
-      <div
-        style={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          top: 2924,
-          bottom: 0,
-          background: 'linear-gradient(180deg, rgba(58,38,21,0.97) 0%, rgba(38,24,13,0.98) 40%, rgba(24,15,8,1) 100%)',
-        }}
-      />
-      {[0, 1, 2, 3, 4].map((i) => (
-        <div
-          key={i}
-          style={{
-            position: 'absolute',
-            left: `${i * 1000 + 120}px`,
-            top: 2960,
-            width: 760,
-            height: 2400,
-            border: '1px solid rgba(150,110,64,0.14)',
-            borderRadius: 3,
-            boxShadow: 'inset 0 0 90px rgba(0,0,0,0.45), inset 0 1px 0 rgba(180,132,74,0.10)',
-          }}
-        />
-      ))}
-
-      {/* Cracks: hand-placed, each with its own character. */}
-      {CRACKS.map((c, i) => (
-        <svg
-          key={i}
-          className="absolute"
-          style={{ left: c.x, top: c.y, width: c.len, height: 300 }}
-          viewBox={`0 0 ${c.len} 300`}
-          fill="none"
-        >
-          <path d={c.d} stroke="rgba(10,6,4,0.55)" strokeWidth={1.6} strokeLinecap="round" />
-          <path
-            d={c.d}
-            stroke="rgba(190,150,105,0.08)"
-            strokeWidth={1.2}
-            strokeLinecap="round"
-            transform="translate(0,1.4)"
+        {/* Repaired patches: four soft blooms of lighter plaster. */}
+        {PATCHES.map((p) => (
+          <ellipse
+            key={p.id}
+            cx={p.x}
+            cy={p.y}
+            rx={p.rx}
+            ry={p.ry}
+            fill="#8a6a44"
+            opacity={p.opacity}
+            filter="url(#diagram-damp)"
           />
-        </svg>
-      ))}
+        ))}
 
-      {/* Dust motes on the surface. */}
-      {DUST.map((d, i) => (
-        <div
-          key={i}
-          style={{
-            position: 'absolute',
-            left: d.x,
-            top: d.y,
-            width: d.s,
-            height: d.s,
-            borderRadius: '50%',
-            background: 'rgba(190,150,105,0.18)',
-            filter: 'blur(0.5px)',
-          }}
-        />
-      ))}
+        {/* Damp: where the plaster has drawn water out of the air. */}
+        {STAINS.map((s) => (
+          <g key={s.id} opacity={s.opacity}>
+            <ellipse cx={s.x} cy={s.y} rx={s.rx} ry={s.ry} fill="#241608" filter="url(#diagram-damp)" />
+            <ellipse
+              cx={s.x}
+              cy={s.y}
+              rx={s.rx * 0.82}
+              ry={s.ry * 0.82}
+              fill="none"
+              stroke="#6b4a28"
+              strokeWidth={2}
+              opacity="0.25"
+              filter="url(#diagram-damp)"
+            />
+          </g>
+        ))}
 
-      {/* The vignette: a room has edges that fall away. Strong. */}
+        {/* The wainscot: boards, rail, and a shadow where the rail meets the plaster. */}
+        <rect x="0" y={WAINSCOT_Y - 16} width={WALL_W} height="16" fill="#0b0704" opacity="0.45" />
+        <rect x="0" y={WAINSCOT_Y} width={WALL_W} height="26" fill="url(#diagram-rail)" />
+        <rect x="0" y={WAINSCOT_Y + 1} width={WALL_W} height="2" fill="#c39a60" opacity="0.18" />
+        <rect x="0" y={WAINSCOT_Y + 26} width={WALL_W} height={WALL_H - WAINSCOT_Y - 26} fill="url(#diagram-board)" />
+        {BOARD_SEAMS.map((x) => (
+          <g key={x}>
+            <line x1={x} y1={WAINSCOT_Y + 26} x2={x} y2={WALL_H} stroke="#080503" strokeWidth="3" opacity="0.55" />
+            <line
+              x1={x + 3}
+              y1={WAINSCOT_Y + 26}
+              x2={x + 3}
+              y2={WALL_H}
+              stroke="#a5794a"
+              strokeWidth="1"
+              opacity="0.12"
+            />
+          </g>
+        ))}
+        {/* Grain, drawn rather than tiled: thirty deterministic strokes. */}
+        {BOARD_GRAIN.map((g, i) => (
+          <path
+            key={i}
+            d={g.d}
+            fill="none"
+            stroke={g.light ? '#a5794a' : '#080503'}
+            strokeWidth={g.w}
+            opacity={g.light ? 0.1 : 0.28}
+            strokeLinecap="round"
+          />
+        ))}
+
+        {/* Cracks: hand-placed, each with its own character. */}
+        {CRACKS.map((c) => (
+          <g key={c.id}>
+            <path d={c.d} fill="none" stroke="#080503" strokeWidth="2" strokeLinecap="round" opacity="0.7" />
+            <path
+              d={c.d}
+              fill="none"
+              stroke="#bd925e"
+              strokeWidth="1"
+              strokeLinecap="round"
+              opacity="0.1"
+              transform="translate(1.4,1.4)"
+            />
+          </g>
+        ))}
+
+        {/* Where old papers were pinned and taken down. */}
+        {NAIL_HOLES.map((n) => (
+          <g key={n.id}>
+            <circle cx={n.x} cy={n.y} r="3.4" fill="#070402" opacity="0.8" />
+            <circle
+              cx={n.x + 0.6}
+              cy={n.y + 0.6}
+              r="4.6"
+              fill="none"
+              stroke="#c39a60"
+              strokeWidth="0.8"
+              opacity="0.13"
+            />
+          </g>
+        ))}
+
+        {/* Chalk dust where a hand has rested. */}
+        {DUST.map((d, i) => (
+          <circle key={i} cx={d.x} cy={d.y} r={d.r} fill="#e6d2ae" opacity={d.o} />
+        ))}
+      </svg>
+
+      {/* Fine tooth. A repeat, but at hairline scale; it has no edge to see. */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
-          background:
-            'radial-gradient(130% 110% at 42% 48%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.45) 72%, rgba(0,0,0,0.78) 100%)',
-        }}
-      />
-      {/* Top darkening: the ceiling above. */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          background: 'linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 18%)',
+          backgroundImage: 'var(--codex-grain)',
+          backgroundSize: '180px 180px',
+          opacity: 0.3,
+          mixBlendMode: 'overlay',
         }}
       />
     </div>
   )
 }
 
-function coarsePlaster(): string {
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="720" height="720">
-  <defs>
-    <filter id="patch">
-      <feTurbulence type="fractalNoise" baseFrequency="0.006 0.010" numOctaves="6" stitchTiles="stitch"/>
-      <feColorMatrix type="matrix" values="0.18 0 0 0 0.11  0.14 0 0 0 0.09  0 0.11 0 0 0.07  0 0 0 0.6 0"/>
-    </filter>
-  </defs>
-  <rect width="720" height="720" fill="transparent"/>
-  <rect width="720" height="720" filter="url(#patch)"/>
-</svg>`
-}
+const WAINSCOT_Y = 1460
 
-function fineTooth(): string {
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="260" height="260">
-  <defs>
-    <filter id="tooth">
-      <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" stitchTiles="stitch"/>
-      <feColorMatrix type="saturate" values="0"/>
-      <feComponentTransfer><feFuncA type="linear" slope="0.12"/></feComponentTransfer>
-    </filter>
-  </defs>
-  <rect width="260" height="260" fill="transparent"/>
-  <rect width="260" height="260" filter="url(#tooth)" opacity="0.7"/>
-</svg>`
-}
+const BOARD_SEAMS = [0, 226, 468, 690, 924, 1150, 1382, 1618, 1846, 2074, 2304, 2538, 2762]
 
-const CRACKS = [
-  { x: 3120, y: 260, len: 420, d: 'M6 0 C40 60 22 96 58 148 C88 190 70 232 104 296' },
-  { x: 820, y: 620, len: 240, d: 'M0 40 C50 52 62 18 112 30 C150 40 148 84 196 96 M150 42 L176 8' },
-  { x: 2260, y: 900, len: 330, d: 'M10 300 C46 250 30 196 78 150 C118 112 100 70 148 20 C176 -8 168 24 204 34' },
-  { x: 4180, y: 760, len: 190, d: 'M0 120 C40 108 62 140 108 118 C140 104 158 132 186 150' },
-  { x: 1700, y: 1800, len: 280, d: 'M0 0 C30 40 15 80 55 120 C90 160 70 200 110 240 C140 270 120 290 160 300' },
-  { x: 3800, y: 2100, len: 160, d: 'M0 80 C25 60 50 90 80 70 C110 50 130 85 160 65' },
+const BOARD_GRAIN = [
+  { d: 'M 40 1520 C 90 1600 30 1700 90 1790', w: 1.4, light: true },
+  { d: 'M 130 1488 C 120 1560 150 1640 128 1780', w: 1, light: false },
+  { d: 'M 300 1500 C 340 1600 300 1690 350 1800', w: 1.6, light: false },
+  { d: 'M 420 1490 C 400 1580 440 1660 410 1770', w: 1.1, light: true },
+  { d: 'M 520 1540 C 560 1620 520 1710 570 1790', w: 1.2, light: false },
+  { d: 'M 640 1495 C 620 1580 660 1680 630 1800', w: 1.5, light: false },
+  { d: 'M 760 1520 C 800 1600 760 1700 805 1795', w: 1, light: true },
+  { d: 'M 880 1488 C 860 1580 900 1660 870 1780', w: 1.3, light: false },
+  { d: 'M 1000 1530 C 1040 1610 1000 1700 1045 1800', w: 1.1, light: false },
+  { d: 'M 1100 1492 C 1080 1580 1120 1680 1090 1790', w: 1.6, light: true },
+  { d: 'M 1220 1510 C 1260 1590 1220 1680 1265 1790', w: 1, light: false },
+  { d: 'M 1340 1488 C 1320 1580 1360 1660 1330 1800', w: 1.4, light: false },
+  { d: 'M 1470 1530 C 1510 1610 1470 1700 1515 1795', w: 1.2, light: true },
+  { d: 'M 1590 1495 C 1570 1580 1610 1680 1580 1790', w: 1.3, light: false },
+  { d: 'M 1710 1520 C 1750 1600 1710 1690 1755 1800', w: 1, light: false },
+  { d: 'M 1840 1490 C 1820 1580 1860 1660 1830 1790', w: 1.5, light: true },
+  { d: 'M 1960 1530 C 2000 1610 1960 1700 2005 1795', w: 1.1, light: false },
+  { d: 'M 2080 1495 C 2060 1580 2100 1680 2070 1800', w: 1.4, light: false },
+  { d: 'M 2210 1520 C 2250 1600 2210 1690 2255 1800', w: 1, light: false },
+  { d: 'M 2340 1488 C 2320 1580 2360 1660 2330 1790', w: 1.6, light: true },
+  { d: 'M 2460 1530 C 2500 1610 2460 1700 2505 1795', w: 1.2, light: false },
+  { d: 'M 2590 1495 C 2570 1580 2610 1680 2580 1800', w: 1.3, light: false },
+  { d: 'M 2710 1520 C 2750 1600 2710 1690 2755 1800', w: 1, light: true },
 ]
 
-const WATER_STAINS = [
-  { x: 540, y: 380, w: 320, h: 240 },
-  { x: 3900, y: 1200, w: 400, h: 300 },
-  { x: 1200, y: 2600, w: 260, h: 200 },
-  { x: 2800, y: 3400, w: 340, h: 260 },
+const PATCHES = [
+  { id: 'p1', x: 520, y: 350, rx: 300, ry: 220, opacity: 0.08 },
+  { id: 'p2', x: 1760, y: 300, rx: 360, ry: 240, opacity: 0.06 },
+  { id: 'p3', x: 980, y: 1250, rx: 420, ry: 260, opacity: 0.05 },
+  { id: 'p4', x: 2380, y: 820, rx: 260, ry: 300, opacity: 0.07 },
+]
+
+const STAINS = [
+  { id: 's1', x: 250, y: 560, rx: 170, ry: 130, opacity: 0.55 },
+  { id: 's2', x: 2480, y: 420, rx: 150, ry: 210, opacity: 0.42 },
+  { id: 's3', x: 640, y: 1400, rx: 210, ry: 110, opacity: 0.4 },
+  { id: 's4', x: 2050, y: 1420, rx: 260, ry: 120, opacity: 0.36 },
+  { id: 's5', x: 1210, y: 120, rx: 190, ry: 90, opacity: 0.3 },
+]
+
+const CRACKS = [
+  { id: 'c1', d: 'M 2600 60 C 2632 140 2610 196 2650 262 C 2680 316 2662 360 2698 430' },
+  { id: 'c2', d: 'M 120 980 C 160 1006 178 970 218 996 C 250 1018 246 1060 286 1082' },
+  { id: 'c3', d: 'M 1940 620 C 1972 590 2008 614 2040 586 C 2070 560 2100 580 2132 552' },
+  { id: 'c4', d: 'M 2380 1260 C 2410 1290 2396 1330 2430 1356 C 2460 1380 2448 1410 2482 1430' },
+  { id: 'c5', d: 'M 820 70 C 850 110 838 150 872 186 C 902 218 888 250 920 276' },
+  { id: 'c6', d: 'M 1520 1420 C 1552 1444 1540 1476 1574 1498' },
 ]
 
 const NAIL_HOLES = [
-  { x: 420, y: 380 },
-  { x: 1680, y: 420 },
-  { x: 2760, y: 520 },
-  { x: 3520, y: 460 },
-  { x: 620, y: 1480 },
-  { x: 1280, y: 1380 },
-  { x: 2100, y: 1560 },
-  { x: 3100, y: 1480 },
-  { x: 560, y: 2040 },
-  { x: 1580, y: 2320 },
-  { x: 2420, y: 2060 },
-  { x: 3200, y: 2240 },
+  { id: 'n1', x: 520, y: 640 },
+  { id: 'n2', x: 1680, y: 190 },
+  { id: 'n3', x: 2090, y: 620 },
+  { id: 'n4', x: 1030, y: 720 },
+  { id: 'n5', x: 380, y: 860 },
+  { id: 'n6', x: 860, y: 830 },
+  { id: 'n7', x: 1980, y: 1080 },
+  { id: 'n8', x: 2240, y: 1420 },
+  { id: 'n9', x: 1460, y: 1400 },
+  { id: 'n10', x: 1120, y: 620 },
 ]
 
 const DUST = [
-  { x: 600, y: 800, s: 2 },
-  { x: 1400, y: 600, s: 1.5 },
-  { x: 2200, y: 700, s: 2 },
-  { x: 3000, y: 500, s: 1.5 },
-  { x: 3800, y: 900, s: 2 },
-  { x: 900, y: 1600, s: 1.5 },
-  { x: 1800, y: 1800, s: 2 },
-  { x: 2600, y: 1700, s: 1.5 },
-  { x: 3400, y: 1900, s: 2 },
-  { x: 1200, y: 2400, s: 1.5 },
-  { x: 2000, y: 2600, s: 2 },
-  { x: 2800, y: 2500, s: 1.5 },
-  { x: 3600, y: 2700, s: 2 },
-  { x: 700, y: 3200, s: 1.5 },
-  { x: 1600, y: 3100, s: 2 },
-  { x: 2400, y: 3000, s: 1.5 },
-  { x: 3200, y: 3300, s: 2 },
-  { x: 4000, y: 3000, s: 1.5 },
+  { x: 420, y: 470, r: 1.6, o: 0.16 },
+  { x: 700, y: 560, r: 1.2, o: 0.12 },
+  { x: 980, y: 430, r: 1.8, o: 0.14 },
+  { x: 1230, y: 610, r: 1.3, o: 0.1 },
+  { x: 1600, y: 470, r: 1.7, o: 0.15 },
+  { x: 1880, y: 620, r: 1.2, o: 0.12 },
+  { x: 2180, y: 860, r: 1.9, o: 0.14 },
+  { x: 650, y: 1240, r: 1.4, o: 0.1 },
+  { x: 1550, y: 1320, r: 1.6, o: 0.13 },
+  { x: 2020, y: 1180, r: 1.2, o: 0.1 },
+  { x: 2460, y: 1180, r: 1.7, o: 0.12 },
+  { x: 320, y: 620, r: 1.3, o: 0.12 },
 ]

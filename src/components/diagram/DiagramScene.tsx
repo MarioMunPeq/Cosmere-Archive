@@ -3,11 +3,21 @@ import { DiagramCanvas } from './DiagramCanvas'
 import { WallSurface } from './WallSurface'
 import { Sheet } from './Sheet'
 import { SheetBody } from './SheetBodies'
+import { Chalk, Clipping } from './WallMarks'
 import { noteFor } from '@/data/static/diagram-notes'
-import { WALL_NOTES, WallNote } from './WallNote'
-import { WALL_DOCS, WALL_W, WALL_H, sheetSize, LARGE_SHEETS } from './wall-docs'
+import {
+  WALL_ANNOTATIONS,
+  WALL_CLIPPINGS,
+  WALL_DOCS,
+  WALL_H,
+  WALL_THREADS,
+  WALL_W,
+  docFor,
+  sheetSize,
+  threadPath,
+} from './wall-docs'
 
-/** How far a sheet may be crooked: 5.6.2's ±6, down from ±18-±22. */
+/** How far a sheet may be crooked: 5.6.2's ±6, and no further. */
 const MAX_ROTATION = 6
 
 function clampRotation(deg: number): number {
@@ -15,122 +25,94 @@ function clampRotation(deg: number): number {
 }
 
 export function DiagramScene({
-  /** Which sheet is being read, if any. */
-  activeDoc = null,
-  /** The wall chooses, the page listens. D-1/D-5. */
   onSelect,
-  /** Hover previews a title without changing the selection. */
+  activeDoc = null,
   onHover,
 }: {
+  onSelect?: (id: string, element: HTMLElement) => void
+  /** The sheet whose document is open; it stays raised while the panel is up. */
   activeDoc?: string | null
-  onSelect?: (id: string) => void
   onHover?: (id: string | null) => void
 }) {
-  const [focusedDoc, setFocusedDoc] = useState<string | null>(null)
+  const [hovered, setHovered] = useState<string | null>(null)
 
-  /** Clicking a sheet brings it forward; clicking it again puts it back. */
-  const handleDocClick = useCallback(
-    (id: string) => {
-      setFocusedDoc((prev) => (prev === id ? null : id))
-      onSelect?.(id)
+  const handleHover = useCallback(
+    (id: string | null) => {
+      setHovered(id)
+      onHover?.(id)
     },
-    [onSelect],
+    [onHover],
   )
 
-  const handleBackgroundClick = useCallback(() => {
-    setFocusedDoc(null)
-  }, [])
-
-  const current = activeDoc ?? focusedDoc
-
   return (
-    <DiagramCanvas>
+    <DiagramCanvas onActivate={(id, element) => onSelect?.(id, element)}>
       <WallSurface />
 
-      {/* Pins and string: the sheet is held to the wall by both. */}
-      <svg
-        width={WALL_W}
-        height={WALL_H}
-        className="pointer-events-none absolute inset-0"
-        style={{ left: 0, top: 0 }}
-        aria-hidden
-      >
-        {WALL_DOCS.flatMap((d, i) => {
-          const a = sheetSize(d.id)
-          const b = sheetSize(WALL_DOCS[(i + 3) % WALL_DOCS.length]!.id)
-          const e = WALL_DOCS[(i + 3) % WALL_DOCS.length]!
-          const x1 = d.x + a.w / 2
-          const y1 = d.y + 18
-          const x2 = e.x + b.w / 2
-          const y2 = e.y + 18
-          const sag = 40 + ((i * 37) % 70)
-          return [
-            <path
-              key={`s${i}`}
-              d={`M ${x1} ${y1} Q ${(x1 + x2) / 2} ${(y1 + y2) / 2 + sag} ${x2} ${y2}`}
-              fill="none"
-              stroke="rgba(24,14,8,0.55)"
-              strokeWidth={3}
-              strokeLinecap="round"
-            />,
-            <path
-              key={`h${i}`}
-              d={`M ${x1} ${y1} Q ${(x1 + x2) / 2} ${(y1 + y2) / 2 + sag} ${x2} ${y2}`}
-              fill="none"
-              stroke="rgba(196,150,104,0.30)"
-              strokeWidth={1.2}
-              strokeLinecap="round"
-            />,
-          ]
+      {/* String: dark ink under the sheets, with a warm catchlight so it reads. */}
+      <svg width={WALL_W} height={WALL_H} className="pointer-events-none absolute left-0 top-0" aria-hidden>
+        {WALL_THREADS.map((thread, i) => {
+          const from = docFor(thread.from)
+          const to = docFor(thread.to)
+          if (!from || !to) return null
+          const d = threadPath(from, to, thread.sag)
+          return (
+            <g key={`${thread.from}-${thread.to}-${i}`}>
+              <path d={d} fill="none" strokeWidth={3} strokeLinecap="round" style={{ stroke: 'var(--codex-thread)' }} />
+              <path
+                d={d}
+                fill="none"
+                strokeWidth={1}
+                strokeLinecap="round"
+                transform="translate(0.7, -0.7)"
+                style={{ stroke: 'rgb(196 150 104 / 0.22)' }}
+              />
+            </g>
+          )
         })}
       </svg>
 
-      <div onClick={handleBackgroundClick}>
-        {WALL_NOTES.map((n) => (
-          <WallNote key={n.id} {...n} />
-        ))}
-        {WALL_DOCS.map((d) => {
-          const size = sheetSize(d.id)
-          const note = noteFor(d.id)
-          const isCurrent = current === d.id
-          return (
-            <div
-              key={d.id}
-              style={{
-                position: 'absolute',
-                left: d.x,
-                top: d.y,
-                width: size.w,
-                height: size.h,
-                zIndex: isCurrent ? 20 : d.z,
-                transition: 'all var(--dur-base) ease',
-                transform: isCurrent ? 'translateY(-10px)' : undefined,
-              }}
+      {WALL_CLIPPINGS.map((clip) => (
+        <Clipping key={clip.id} clip={clip} />
+      ))}
+
+      {WALL_ANNOTATIONS.map((note) => (
+        <Chalk key={note.id} note={note} />
+      ))}
+
+      {WALL_DOCS.map((doc) => {
+        const size = sheetSize(doc.id)
+        const note = noteFor(doc.id)
+        const isHovered = hovered === doc.id || activeDoc === doc.id
+        return (
+          <div
+            key={doc.id}
+            style={{
+              position: 'absolute',
+              left: doc.x,
+              top: doc.y,
+              width: size.w,
+              height: size.h,
+              zIndex: isHovered ? 30 : doc.z,
+            }}
+            onMouseEnter={() => handleHover(doc.id)}
+            onMouseLeave={() => handleHover(null)}
+            onFocus={() => handleHover(doc.id)}
+            onBlur={() => handleHover(null)}
+          >
+            <Sheet
+              id={doc.id}
+              w={size.w}
+              h={size.h}
+              large={size.w > 300}
+              rotation={clampRotation(doc.rot)}
+              label={`Sheet ${note.numeral}: ${note.title}`}
+              raised={isHovered}
             >
-              <Sheet
-                id={d.id}
-                w={size.w}
-                h={size.h}
-                large={LARGE_SHEETS.has(d.id)}
-                rotation={clampRotation(d.rot)}
-                label={`Sheet ${note.numeral}: ${note.title}`}
-                raised={isCurrent}
-                dimmed={current !== null && !isCurrent}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  handleDocClick(d.id)
-                }}
-                onMouseEnter={() => onHover?.(d.id)}
-                onMouseLeave={() => onHover?.(null)}
-                onFocus={() => onHover?.(d.id)}
-                onBlur={() => onHover?.(null)}
-              >
-                <SheetBody id={d.id} />
-              </Sheet>
-            </div>
-          )
-        })}
-      </div>
+              <SheetBody id={doc.id} large={size.w > 300} />
+            </Sheet>
+          </div>
+        )
+      })}
     </DiagramCanvas>
   )
 }

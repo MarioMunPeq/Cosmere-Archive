@@ -1,0 +1,195 @@
+/* =============================================================================
+   THE DIAGRAM · a wall, an index strip, and a loose sheet
+
+   The wall is the room; the strip is the contents; the reader is one leaf laid
+   on the desk. Nothing here is a card, a pill or a floating toolbar. Motion is
+   transform and opacity only, and the global reduced-motion policy in
+   tokens.css collapses it to an instant state change.
+   ========================================================================== */
+
+.diagram-sheet:focus-visible {
+  outline: 2px solid var(--codex-brass-highlight);
+  outline-offset: 4px;
+}
+
+/* A pool of candlelight, not a room light. */
+.diagram-wall .codex-object__candle {
+  --candle-radius: 150px;
+}
+
+/* The ledger's ink strokes draw themselves down the page, one per row. */
+.diagram-bar {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: diagram-draw 720ms var(--ease-standard) forwards;
+}
+
+@keyframes diagram-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ---- The reader ---------------------------------------------------------- */
+
+.diagram-reader {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  color: var(--text-on-page-primary);
+}
+
+.diagram-reader .codex-object__candle {
+  --candle-radius: 170px;
+}
+
+.diagram-reader__paper {
+  height: min(78dvh, 800px);
+  /* Candle is up and to the left; paper throws its shadow down and right. */
+  filter: drop-shadow(18px 24px 30px rgb(4 2 1 / 0.62)) drop-shadow(3px 5px 8px rgb(4 2 1 / 0.4));
+  transform: rotate(-0.6deg);
+  animation: diagram-sheet-lift 460ms var(--ease-standard) both;
+}
+
+.diagram-reader__paper[data-leaving='true'] {
+  animation: diagram-sheet-return 280ms var(--ease-exit) both;
+}
+
+.diagram-reader__paper .codex-page {
+  height: 100%;
+}
+
+/* One leaf has no binding, so it has no gutter. */
+.diagram-reader__paper .codex-page__gutter-shade {
+  display: none;
+}
+
+.diagram-reader__paper .codex-page__running {
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+}
+
+.diagram-reader__paper .codex-page__folio {
+  font-size: 12px;
+}
+
+.diagram-reader__paper .codex-page__body {
+  scrollbar-gutter: stable;
+}
+
+@keyframes diagram-sheet-lift {
+  from {
+    transform: translate(var(--reader-dx, 0px), var(--reader-dy, 48px)) scale(var(--reader-scale, 0.82)) rotate(1.4deg);
+    opacity: 0.35;
+  }
+
+  to {
+    transform: rotate(-0.6deg);
+    opacity: 1;
+  }
+}
+
+@keyframes diagram-sheet-return {
+  from {
+    transform: rotate(-0.6deg);
+    opacity: 1;
+  }
+
+  to {
+    transform: translate(var(--reader-dx, 0px), var(--reader-dy, 48px)) scale(var(--reader-scale, 0.82)) rotate(1.4deg);
+    opacity: 0.25;
+  }
+}
+
+/* Clean paper over wet ink, drawn back off the leaf. */
+.diagram-reader__ink {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  background: linear-gradient(180deg, var(--surface-page) 0%, var(--surface-page-inset) 100%);
+  clip-path: var(--codex-deckle);
+  animation: diagram-ink-wipe 620ms 120ms var(--ease-standard) both;
+}
+
+@keyframes diagram-ink-wipe {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateY(-104%);
+    opacity: 0.85;
+  }
+}
+
+.diagram-reader__leaf {
+  animation: diagram-leaf-next 280ms var(--ease-standard) both;
+}
+
+.diagram-reader__leaf[data-direction='prev'] {
+  animation-name: diagram-leaf-prev;
+}
+
+@keyframes diagram-leaf-next {
+  from {
+    transform: translateX(26px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes diagram-leaf-prev {
+  from {
+    transform: translateX(-26px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.diagram-reader__control {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-hand);
+  font-size: 17px;
+  line-height: 1.1;
+  color: rgb(226 210 184 / 0.82);
+  text-shadow: 0 1px 0 rgb(4 2 1 / 0.6);
+  transition:
+    color var(--dur-fast) var(--ease-standard),
+    transform var(--dur-fast) var(--ease-standard);
+}
+
+.diagram-reader__control:hover {
+  color: var(--codex-brass-highlight);
+  transform: translateY(-1px);
+}
+
+.diagram-reader__control--close {
+  color: var(--codex-brass-highlight);
+}
+
+.diagram-reader__control:focus-visible {
+  outline: 2px solid var(--codex-brass-highlight);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.diagram-reader__prose p:first-child {
+  margin-top: 0;
+}

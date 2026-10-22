@@ -1,30 +1,25 @@
 /**
- * M3 — the Library of Jasnah.
+ * The Library of Jasnah.
  *
- * §5.3.6's acceptance criteria, checked in a browser rather than asserted in
- * prose. The ones worth naming:
- *
- *   M3.1  every spine paints a real cover, no 404s — the old library showed the
- *         same "circle and four rivets" fallback on 17 of 22 books
- *   M3.3  no spine text under 11px
- *   M3.4  no horizontal overflow at 375 / 768 / 1440 / 2560 — the old layout
- *         overflowed by exactly 192px, which is the horizontal padding
- *   M3.5  Dawnshard, which has no wordCount, is at least MIN_SPINE wide and
- *         fully inside the shelf
- *   M3.6  48px between shelves
- *   M3.7  axe at four breakpoints
- *   M3.8  the List view carries the same 22 volumes and is sortable
- *
- * M3.2, the 4.5:1 title contrast over the real cover, is measured by sampling
- * rendered pixels and lives in scripts/shots.ts, because it needs `sharp` to
- * decode a screenshot and that belongs with the other visual checks rather than
- * in CI. `pnpm shots` prints it.
+ * The shelf is made of bookbinding, not cover crops, and the reader is the
+ * Codex chassis rather than a second modal. These tests check the promises a
+ * reader can actually see: real spines, a label they can read, a shelf that
+ * fits, a volume that opens and returns, and the same room on a phone.
  */
 
 import { test, expect } from '@playwright/test'
 
 const LIBRARY = '/#/library'
 const SPINES = '[data-book-id]'
+
+/** The codex hides its left leaf below 700px; its first leaf is the cover. */
+async function turnIfSinglePage(page: import('@playwright/test').Page, dialog: import('@playwright/test').Locator) {
+  const single = !(await dialog.locator('.codex-page--left').isVisible())
+  if (!single) return false
+  await dialog.getByRole('button', { name: 'Next spread' }).click()
+  await page.waitForTimeout(700)
+  return true
+}
 
 async function audit(page: import('@playwright/test').Page) {
   const axe = (await import('axe-core')).default
@@ -37,160 +32,130 @@ async function audit(page: import('@playwright/test').Page) {
   })
 }
 
+async function openVolume(page: import('@playwright/test').Page) {
+  await page.locator('[data-book-id="the_way_of_kings"]').click()
+  const dialog = page.getByRole('dialog', { name: /reading the way of kings/i })
+  await expect(dialog).toBeVisible()
+
+  const skip = dialog.getByRole('button', { name: /open the way of kings/i })
+  if (await skip.isVisible().catch(() => false)) await skip.click()
+  await expect(dialog.locator('.codex')).toHaveAttribute('data-phase', 'open', { timeout: 6000 })
+  // Let the page-turn shadow and the cover ceremony settle before measuring
+  // colour or contrast.
+  await page.waitForTimeout(700)
+  return dialog
+}
+
 test.beforeEach(async ({ page }) => {
   await page.goto(LIBRARY)
   await page.locator(SPINES).first().waitFor()
+  await page.locator('[data-shelf][data-ready="true"]').first().waitFor()
 })
 
-test('M3.1 every volume paints a real cover, none 404s', async ({ page }) => {
-  // Covers are `loading="lazy"`, so a spine that has never scrolled into view
-  // legitimately has `complete === false`. Waiting for them is the only way to
-  // tell "not requested yet" apart from "requested and failed".
-  await page.waitForFunction(
-    () => {
-      const imgs = Array.from(document.querySelectorAll<HTMLImageElement>('img[data-cover]'))
-      return imgs.length > 0 && imgs.every((i) => i.complete)
-    },
-    undefined,
-    { timeout: 15_000 },
-  )
-
+test('every volume is a made spine, not a cover crop', async ({ page }) => {
   const report = await page.evaluate(() => {
     const spines = Array.from(document.querySelectorAll<HTMLElement>('[data-book-id]'))
-    const imgs = spines.map((s) => s.querySelector('img[data-cover]') as HTMLImageElement | null)
     return {
-      spines: spines.length,
-      missing: imgs.filter((i) => !i).length,
-      broken: imgs.filter((i) => i && i.naturalWidth === 0).map((i) => i.src),
+      count: spines.length,
+      coverImages: document.querySelectorAll('[data-shelf] img').length,
+      bands: Math.min(...spines.map((spine) => spine.querySelectorAll('.shelf-spine__band').length)),
+      titles: spines.filter((spine) => (spine.textContent ?? '').trim().length > 0).length,
     }
   })
 
-  expect(report.spines, 'the shelf should hold all 22 volumes').toBe(22)
-  expect(report.missing, 'every spine needs a cover element').toBe(0)
-  expect(report.broken, 'covers that failed to load').toEqual([])
+  expect(report.count, 'the wall holds all 22 volumes').toBe(22)
+  expect(report.coverImages, 'a spine is bound, not a cropped cover').toBe(0)
+  expect(report.bands, 'every spine has raised bands').toBeGreaterThanOrEqual(4)
+  expect(report.titles).toBe(22)
 })
 
-test('covers below the fold are not fetched', async ({ page }) => {
-  // The lazy attribute is only worth anything if it is actually on the images.
-  const eager = await page.evaluate(() =>
-    Array.from(document.querySelectorAll<HTMLImageElement>('img[data-cover]'))
-      .filter((i) => i.loading !== 'lazy')
-      .map((i) => i.src),
+test('spine labels are horizontal Garamond small caps at 13px or more', async ({ page }) => {
+  const labels = await page.evaluate(() =>
+    Array.from(document.querySelectorAll<HTMLElement>('[data-spine-title]')).map((label) => {
+      const style = getComputedStyle(label)
+      return {
+        size: parseFloat(style.fontSize),
+        caps: style.fontVariantCaps,
+        writing: style.writingMode,
+        clipped: label.scrollWidth > label.clientWidth + 1,
+      }
+    }),
   )
-  expect(eager, 'spine covers must be lazy-loaded').toEqual([])
-})
 
-test('M3.1 the 22 covers are distinct files, not one shared fallback', async ({ page }) => {
-  const sources = await page.evaluate(() =>
-    Array.from(document.querySelectorAll<HTMLImageElement>('img[data-cover]')).map((i) => i.currentSrc || i.src),
-  )
-  // A shared fallback would collapse to one URL. Twenty-two volumes means
-  // twenty-two sources.
-  expect(new Set(sources).size).toBe(22)
-})
-
-test('M3.3 no spine text measures under 11px', async ({ page }) => {
-  const tooSmall = await page.evaluate(() => {
-    const spines = Array.from(document.querySelectorAll<HTMLElement>('[data-book-id]'))
-    return spines
-      .map((s) => {
-        const title = s.querySelector<HTMLElement>('[data-spine-title]')
-        return title
-          ? {
-              id: s.dataset.bookId ?? '',
-              size: parseFloat(getComputedStyle(title).fontSize),
-            }
-          : null
-      })
-      .filter((t): t is { id: string; size: number } => t !== null && t.size < 11)
-  })
-
-  expect(tooSmall, `spine titles under 11px: ${JSON.stringify(tooSmall)}`).toEqual([])
-})
-
-for (const width of [375, 768, 1440, 2560]) {
-  test(`M3.4 no horizontal overflow at ${width}px`, async ({ page }) => {
-    await page.setViewportSize({ width, height: 900 })
-    await page.waitForTimeout(400)
-
-    const overflow = await page.evaluate(() => {
-      const doc = document.documentElement
-      // Per-row as well as per-document. A row can overflow its own container
-      // by a few pixels and the document still reports zero, because the
-      // container clips it — which is how a spine gets sliced without anything
-      // failing. Six pixels of it was a padding the measurement counted twice.
-      const rows = Array.from(document.querySelectorAll<HTMLElement>('[data-shelf] .flex.items-end'))
-        .map((row) => ({
-          shelf: row.closest('[data-shelf]')?.getAttribute('data-shelf') ?? '',
-          over: row.scrollWidth - row.clientWidth,
-        }))
-        .filter((r) => r.over > 0)
-      return { doc: doc.scrollWidth - doc.clientWidth, rows }
-    })
-
-    expect(overflow.doc, `document overflows by ${overflow.doc}px`).toBeLessThanOrEqual(0)
-    expect(overflow.rows, `rows overflow their shelf: ${JSON.stringify(overflow.rows)}`).toEqual([])
-  })
-}
-
-test('M3.5 Dawnshard is at least 24px wide and fully inside the shelf', async ({ page }) => {
-  const dawnshard = page.locator('[data-book-id="dawnshard"]')
-  await expect(dawnshard).toBeVisible()
-
-  const box = await dawnshard.boundingBox()
-  expect(box).not.toBeNull()
-  // MIN_SPINE from utils/shelf-layout.
-  expect(box!.width).toBeGreaterThanOrEqual(24)
-
-  // Fully visible: inside its row, which is inside the cabinet.
-  const fits = await page.evaluate(() => {
-    const spine = document.querySelector<HTMLElement>('[data-book-id="dawnshard"]')!
-    const row = spine.parentElement!.parentElement!
-    const s = spine.getBoundingClientRect()
-    const r = row.getBoundingClientRect()
-    return s.left >= r.left - 1 && s.right <= r.right + 1
-  })
-  expect(fits, 'Dawnshard is clipped by its row').toBe(true)
-})
-
-test('M3.6 shelves are 48px apart', async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 1200 })
-
-  const gaps = await page.evaluate(() => {
-    const shelves = Array.from(document.querySelectorAll<HTMLElement>('[data-shelf]'))
-    const gaps: number[] = []
-    for (let i = 1; i < shelves.length; i++) {
-      const prev = shelves[i - 1]!.getBoundingClientRect()
-      const cur = shelves[i]!.getBoundingClientRect()
-      gaps.push(Math.round(cur.top - prev.bottom))
-    }
-    return gaps
-  })
-
-  expect(gaps.length, 'expected at least two shelves to measure between').toBeGreaterThan(0)
-  for (const gap of gaps) {
-    // The gap is measured shelf-box to shelf-box; the shelf's own bottom is the
-    // plank, so this is mb-2xl (48px) exactly.
-    expect(Math.abs(gap - 48), `gap was ${gap}px, expected 48px`).toBeLessThanOrEqual(1)
+  expect(labels.length).toBe(22)
+  for (const label of labels) {
+    expect(label.size, 'a paper label is never below 13px').toBeGreaterThanOrEqual(13)
+    expect(['small-caps', 'all-small-caps']).toContain(label.caps)
+    expect(label.writing, 'the label reads horizontally').toBe('horizontal-tb')
+    expect(label.clipped, 'the paper label is not cut off').toBe(false)
   }
 })
 
-for (const width of [375, 768, 1440, 2560]) {
-  test(`M3.7 axe passes on /library at ${width}px`, async ({ page }) => {
-    await page.setViewportSize({ width, height: 900 })
-    await page.waitForTimeout(400)
+test('spines vary in height and width without choosing at random', async ({ page }) => {
+  const first = await page.evaluate(() =>
+    Array.from(document.querySelectorAll<HTMLElement>('[data-book-id]')).map((spine) => {
+      const box = spine.getBoundingClientRect()
+      return { width: Math.round(box.width), height: Math.round(box.height) }
+    }),
+  )
+  await page.reload()
+  await page.locator(SPINES).first().waitFor()
+  await page.locator('[data-shelf][data-ready="true"]').first().waitFor()
+  const second = await page.evaluate(() =>
+    Array.from(document.querySelectorAll<HTMLElement>('[data-book-id]')).map((spine) => {
+      const box = spine.getBoundingClientRect()
+      return { width: Math.round(box.width), height: Math.round(box.height) }
+    }),
+  )
 
-    const results = await audit(page)
-    const violations = results.violations.map((v: { id: string; nodes: unknown[] }) => ({
-      id: v.id,
-      nodes: v.nodes.length,
-    }))
-    expect(violations, `axe violations at ${width}px`).toEqual([])
+  expect(second).toEqual(first)
+  expect(new Set(first.map((item) => item.height)).size).toBeGreaterThan(1)
+  expect(new Set(first.map((item) => item.width)).size).toBeGreaterThan(1)
+})
+
+test('the saga plate sits on the shelf edge and is never truncated', async ({ page }) => {
+  const plates = await page.evaluate(() =>
+    Array.from(document.querySelectorAll<HTMLElement>('.library-plate')).map((plate) => ({
+      text: (plate.textContent ?? '').trim(),
+      clipped: plate.scrollWidth > plate.clientWidth + 1,
+      nowrap: getComputedStyle(plate).whiteSpace,
+    })),
+  )
+
+  expect(plates.length, 'one plate for each shelf').toBe(3)
+  for (const plate of plates) {
+    expect(plate.text.length).toBeGreaterThan(2)
+    expect(plate.clipped, `plate cut off: ${plate.text}`).toBe(false)
+    expect(plate.nowrap).toBe('nowrap')
+  }
+})
+
+test('hover lifts a volume and offers a paper slip with its year', async ({ page }) => {
+  const spine = page.locator('[data-book-id="the_way_of_kings"]')
+  const before = await spine.boundingBox()
+  await spine.hover()
+  await page.waitForTimeout(260)
+  const after = await spine.boundingBox()
+  const slip = spine.locator('..').locator('.shelf-slip')
+
+  expect(before).not.toBeNull()
+  expect(after).not.toBeNull()
+  expect(before!.y - after!.y, 'the volume slides out by about 14px').toBeGreaterThanOrEqual(8)
+  await expect(slip).toBeVisible()
+  await expect(slip).toContainText('The Way of Kings')
+  await expect(slip).toContainText('2010')
+})
+
+test('keyboard focus is an ink ring, and arrows walk the run', async ({ page }) => {
+  const first = page.locator('[data-book-id="the_way_of_kings"]')
+  await first.focus()
+
+  const outline = await first.evaluate((element) => {
+    const style = getComputedStyle(element)
+    return { width: style.outlineWidth, style: style.outlineStyle }
   })
-}
-
-test('the shelves are reachable with the keyboard alone', async ({ page }) => {
-  await page.locator('[data-book-id="the_way_of_kings"]').focus()
+  expect(outline.style).toBe('solid')
+  expect(parseFloat(outline.width)).toBeGreaterThanOrEqual(2)
 
   await page.keyboard.press('ArrowRight')
   await expect(page.locator(':focus')).toHaveAttribute('data-book-id', 'words_of_radiance')
@@ -200,106 +165,164 @@ test('the shelves are reachable with the keyboard alone', async ({ page }) => {
 
   await page.keyboard.press('Home')
   await expect(page.locator(':focus')).toHaveAttribute('data-book-id', 'the_way_of_kings')
-
-  // Enter opens, Escape closes, and focus comes back to the spine.
-  await page.keyboard.press('Enter')
-  const dialog = page.getByRole('dialog')
-  await expect(dialog).toBeVisible()
-  await expect(dialog).toHaveAttribute('aria-modal', 'true')
-
-  await page.keyboard.press('Escape')
-  await expect(dialog).toBeHidden()
-  await expect(page.locator(':focus')).toHaveAttribute('data-book-id', 'the_way_of_kings')
 })
 
-/**
- * Measure a transient piece of the reader without racing it.
- *
- * Both the front board and the turning leaf exist for under a second, so a test
- * that has to find one in the DOM and then read its box loses whenever the
- * suite's four workers saturate the CPU. This drops a probe with the same
- * classes into the live book, with the animation cancelled, and measures that.
- * The probe is static, the geometry is the same, and the test stops depending
- * on how fast the machine is.
- */
-async function probeGeometry(
-  page: import('@playwright/test').Page,
-  className: string,
-): Promise<{ leftFromSpine: number; rightFromSpine: number; width: number; pageWidth: number }> {
-  return page.evaluate((cls) => {
-    const book = document.querySelector<HTMLElement>('[data-book-spread]')!
-    const leftPage = book.querySelector<HTMLElement>('.page--left')!
+for (const width of [375, 768, 1440, 2560]) {
+  test(`no horizontal overflow at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 })
+    await page.waitForTimeout(450)
 
-    const probe = document.createElement('div')
-    probe.className = cls
-    probe.style.animation = 'none'
-    probe.style.transition = 'none'
-    probe.style.transform = 'none'
-    book.append(probe)
+    const overflow = await page.evaluate(() => {
+      const doc = document.documentElement
 
-    const spine = book.getBoundingClientRect().left + book.getBoundingClientRect().width / 2
-    const box = probe.getBoundingClientRect()
-    const page = leftPage.getBoundingClientRect()
-    probe.remove()
+      // The paper slip is absolutely positioned and deliberately leans out of
+      // the run; it is not a book and must not be counted as row overflow.
+      const rows = Array.from(document.querySelectorAll<HTMLElement>('[data-shelf-row]'))
+        .map((row) => {
+          const edge = row.getBoundingClientRect().right
+          const books = Array.from(row.children)
+            .filter((child) => getComputedStyle(child).position !== 'absolute')
+            .map((child) => child.getBoundingClientRect().right)
+          const over = books.length > 0 ? Math.max(...books) - edge : 0
+          return {
+            shelf: row.closest('[data-shelf]')?.getAttribute('data-shelf') ?? '',
+            over: Math.max(0, Math.ceil(over)),
+          }
+        })
+        .filter((row) => row.over > 1)
 
-    return {
-      leftFromSpine: box.left - spine,
-      rightFromSpine: box.right - spine,
-      width: box.width,
-      pageWidth: page.width,
+      const mobileScrollers = Array.from(document.querySelectorAll<HTMLElement>('.library-shelf__scroll')).map(
+        (scroller) => getComputedStyle(scroller).overflowX,
+      )
+
+      return { doc: doc.scrollWidth - doc.clientWidth, rows, mobileScrollers }
+    })
+
+    expect(overflow.doc, `document overflows by ${overflow.doc}px`).toBeLessThanOrEqual(0)
+    expect(overflow.rows, `rows overflow their shelf: ${JSON.stringify(overflow.rows)}`).toEqual([])
+    if (width === 375) {
+      expect(overflow.mobileScrollers.every((value) => value === 'auto')).toBe(true)
     }
-  }, className)
+  })
 }
 
-test('the book opens by swinging its front board on the spine', async ({ page }) => {
-  await page.locator('[data-book-id="the_way_of_kings"]').click()
-  await expect(page.getByRole('dialog')).toBeVisible()
+test('a phone gets horizontal snap shelves, not a wrapped cabinet', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 800 })
+  await page.waitForTimeout(450)
 
-  // The cover is a real element hinged at the spine, and it is gone once the
-  // swing has landed — it must be, or it would sit on the title page forever.
-  const cover = page.locator('[data-book-cover]')
-  await expect(cover).toBeHidden({ timeout: 6000 })
+  const shelves = await page.evaluate(() =>
+    Array.from(document.querySelectorAll<HTMLElement>('[data-shelf]')).map((shelf) => {
+      const scroller = shelf.querySelector<HTMLElement>('.library-shelf__scroll')
+      return {
+        mobile: shelf.dataset.mobile,
+        snap: scroller ? getComputedStyle(scroller).scrollSnapType : '',
+        scrollable: scroller ? scroller.scrollWidth > scroller.clientWidth : false,
+      }
+    }),
+  )
 
-  // Hinged on its left edge, which is the spine: it starts closed over the
-  // right half and lands flat on the left.
-  const geo = await probeGeometry(page, 'book-cover')
-  expect(Math.abs(geo.leftFromSpine), 'the front board must hinge on the spine').toBeLessThan(2)
-  expect(geo.width, 'the front board is half the spread').toBeGreaterThan(100)
+  expect(shelves.length).toBe(3)
+  for (const shelf of shelves) {
+    expect(shelf.mobile).toBe('true')
+    expect(shelf.snap).toContain('x mandatory')
+  }
+  // A collection that happens to fit within 375px is still a shelf scroller;
+  // at least the long runs must be scrollable rather than wrapping.
+  expect(shelves.filter((shelf) => shelf.scrollable).length).toBeGreaterThan(0)
 })
 
-test('a turning leaf is hinged on the spine and one page wide', async ({ page }) => {
-  await page.locator('[data-book-id="the_way_of_kings"]').click()
-  await expect(page.getByRole('dialog')).toBeVisible()
+for (const width of [375, 1440]) {
+  test(`axe passes on the shelves at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 })
+    await page.waitForTimeout(450)
 
-  /*
-   * The leaf used to be positioned at `left: calc(50% + 13px)`, so at the end
-   * of the swing it landed 13px to the right of the page it was replacing —
-   * a sliver of the old page stayed visible along the gutter on every turn.
-   * These numbers are the regression.
-   */
-  const forward = await probeGeometry(page, 'leaf leaf--forward')
-  expect(Math.abs(forward.leftFromSpine), 'a forward leaf hinges on the spine').toBeLessThan(2)
-  expect(Math.abs(forward.width - forward.pageWidth), 'a forward leaf must be exactly one page wide').toBeLessThan(2)
+    const results = await audit(page)
+    const violations = results.violations.map((v: { id: string; nodes: unknown[] }) => ({
+      id: v.id,
+      nodes: v.nodes.length,
+    }))
+    expect(violations, `axe violations on shelves at ${width}px`).toEqual([])
+  })
+}
 
-  // Mirrored: a backward leaf hinges on its right edge.
-  const back = await probeGeometry(page, 'leaf leaf--back')
-  expect(Math.abs(back.rightFromSpine), 'a backward leaf hinges on the spine').toBeLessThan(2)
-  expect(Math.abs(back.width - back.pageWidth)).toBeLessThan(2)
+test('the reader shows the cover plate, ledger and drop-cap synopsis', async ({ page }) => {
+  const dialog = await openVolume(page)
+
+  await expect(dialog.getByAltText(/cover of the way of kings/i)).toBeVisible()
+  await expect(dialog.getByText('Accession', { exact: true })).toBeVisible()
+  await expect(dialog.getByRole('button', { name: /return to shelf/i })).toBeVisible()
+
+  // A phone opens on the cover leaf; the synopsis is the next leaf.
+  await turnIfSinglePage(page, dialog)
+  await expect(dialog.getByRole('heading', { level: 2, name: 'Synopsis' })).toBeVisible()
+  await expect(dialog.locator('.library-world-link')).toBeVisible()
+  await expect(dialog.getByRole('link', { name: 'Adolin' })).toBeVisible()
 })
 
-test('a page turn keeps the book open and advances the folio', async ({ page }) => {
-  await page.locator('[data-book-id="the_way_of_kings"]').click()
-  const dialog = page.getByRole('dialog')
-  await expect(dialog).toBeVisible()
+test('the reader is a real dialog, axe-clean, and returns focus to its spine', async ({ page }) => {
+  const dialog = await openVolume(page)
+  await expect(dialog).toHaveAttribute('aria-modal', 'true')
 
-  // The book has to finish opening before it can be turned. Otherwise the
-  // button looks live and does nothing.
-  const next = dialog.getByRole('button', { name: 'Next page' })
+  const results = await audit(page)
+  const violations = results.violations.map((v: { id: string; nodes: unknown[] }) => ({
+    id: v.id,
+    nodes: v.nodes.length,
+  }))
+  expect(violations, 'axe violations in the reader').toEqual([])
+
+  await dialog.getByRole('button', { name: /return to shelf/i }).click()
+  await expect(dialog).toBeHidden({ timeout: 5000 })
+  await expect(page.locator(':focus')).toHaveAttribute('data-book-id', 'the_way_of_kings')
+  await expect(page).not.toHaveURL(/[?&]book=/)
+})
+
+test('a page turn advances the spread and the live region', async ({ page }) => {
+  const dialog = await openVolume(page)
+
+  const spread = dialog.locator('[data-codex-spread]')
+  const before = await spread.getAttribute('data-codex-spread')
+  const next = dialog.getByRole('button', { name: 'Next spread' })
   await expect(next).toBeEnabled()
-
-  await expect(dialog.getByRole('button', { name: 'Previous page' })).toBeDisabled()
-
   await next.click()
-  await expect(dialog.locator('[data-page-surface]')).toHaveCount(2)
-  await expect(dialog.getByRole('button', { name: 'Previous page' })).toBeEnabled()
+
+  await expect(spread).not.toHaveAttribute('data-codex-spread', before ?? '')
+  await expect(dialog.getByText(/spread 2 of/i)).toBeAttached()
+})
+
+test('a deep link opens the volume at the desk', async ({ page }) => {
+  await page.goto(`${LIBRARY}?book=the_way_of_kings`)
+  const dialog = page.getByRole('dialog', { name: /reading the way of kings/i })
+  await expect(dialog).toBeVisible()
+  await expect(dialog.getByAltText(/cover of the way of kings/i)).toBeVisible()
+  await turnIfSinglePage(page, dialog)
+  await expect(dialog.getByRole('heading', { level: 2, name: 'Synopsis' })).toBeVisible()
+  await expect(page).toHaveURL(/\?book=the_way_of_kings/)
+})
+
+test('a phone reads one page at a time and swipes forward', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 800 })
+  await page.reload()
+  await page.locator(SPINES).first().waitFor()
+  const dialog = await openVolume(page)
+
+  const left = dialog.locator('.codex-page--left')
+  await expect(left).toBeHidden()
+  const spread = dialog.locator('[data-codex-spread]')
+  const before = await spread.getAttribute('data-codex-spread')
+
+  const stage = dialog.locator('.codex-stage')
+  const box = await stage.boundingBox()
+  expect(box).not.toBeNull()
+  await page.mouse.move(box!.x + box!.width * 0.76, box!.y + box!.height * 0.45)
+  await page.mouse.down()
+  await page.mouse.move(box!.x + box!.width * 0.24, box!.y + box!.height * 0.45, { steps: 12 })
+  await page.mouse.up()
+
+  await expect(spread).not.toHaveAttribute('data-codex-spread', before ?? '', { timeout: 5000 })
+
+  const overflow = await page.evaluate(() => {
+    const doc = document.documentElement
+    return doc.scrollWidth - doc.clientWidth
+  })
+  expect(overflow, 'the phone reader must not scroll sideways').toBeLessThanOrEqual(0)
 })

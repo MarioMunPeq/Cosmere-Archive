@@ -61,7 +61,7 @@ function classificationOf(character: Character): string {
   return `CA-${letters}-${serial}`
 }
 
-function PlanetSigil({ planet }: { planet?: Planet }) {
+export function PlanetSigil({ planet }: { planet?: Planet }) {
   const seed = [...(planet?.id ?? 'unknown')].reduce((sum, character) => sum + character.charCodeAt(0), 0)
   const spokes = 6 + (seed % 5)
   const colour = planet?.color ?? 'var(--text-on-page-accent)'
