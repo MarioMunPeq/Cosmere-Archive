@@ -1992,21 +1992,42 @@ html {
 }
 
 .record-link {
-  color: var(--text-on-page-link);
+  color: var(--record-link-ink, #52634e);
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
+  text-decoration-color: rgb(82 99 78 / 0.48);
+  transition:
+    color 160ms var(--ease-standard),
+    text-decoration-color 160ms var(--ease-standard);
 }
 
 .record-link:hover {
-  color: var(--text-on-page-primary);
+  color: #293b2e;
+  text-decoration-color: currentColor;
+}
+
+.record-biography {
+  --record-link-ink: #52634e;
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+}
+
+.record-biography__summary {
+  flex: 0 0 auto;
+}
+
+.record-section-heading {
+  font-size: 11px;
+  letter-spacing: 0.14em;
 }
 
 .record-bio {
   color: var(--text-on-page-primary);
   font-family: var(--font-display);
-  font-size: 15px;
-  line-height: 1.62;
+  font-size: clamp(14px, 1.08vw, 16px);
+  line-height: 1.7;
   overflow-wrap: anywhere;
 }
 
@@ -2017,6 +2038,52 @@ html {
   font-family: var(--font-display);
   font-size: 3.1em;
   line-height: 0.82;
+}
+
+.record-reference-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid rgb(80 60 40 / 0.18);
+}
+
+.record-reference {
+  min-width: 0;
+  padding-left: 11px;
+  border-left: 1px solid rgb(126 96 28 / 0.3);
+}
+
+.record-empty-note {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 9px;
+  padding: 8px 10px;
+  border-left: 2px solid rgb(126 96 28 / 0.42);
+  background: linear-gradient(90deg, rgb(126 96 28 / 0.07), transparent 88%);
+  color: var(--text-on-page-secondary);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.record-empty-note span {
+  color: var(--text-on-page-accent);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-style: normal;
+}
+
+.record-relationship__name {
+  color: var(--text-on-page-primary);
+}
+
+.group:hover .record-relationship__name,
+.group:focus-visible .record-relationship__name {
+  color: var(--record-link-ink, #52634e);
 }
 
 .record-miniature {
@@ -2096,6 +2163,13 @@ html {
 
   .record-portrait {
     max-width: 170px;
+  }
+}
+
+@media (min-width: 1100px) {
+  .record-reference-grid {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 12px;
   }
 }
 

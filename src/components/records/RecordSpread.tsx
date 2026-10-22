@@ -70,7 +70,7 @@ export function PlanetSigil({ planet }: { planet?: Planet }) {
     <svg
       viewBox="0 0 40 40"
       className="size-9 shrink-0"
-      style={{ color: colour }}
+      style={{ color: `color-mix(in srgb, ${colour} 42%, #8a713a)` }}
       aria-hidden="true"
       focusable="false"
       data-record-sigil="true"
@@ -340,10 +340,10 @@ export function RecordRightPage({ character, locked = false, onUnlock }: RecordS
 
   return (
     <article className="record-biography">
-      <section aria-labelledby={`record-bio-${character.id}`}>
+      <section className="record-biography__summary" aria-labelledby={`record-bio-${character.id}`}>
         <h3
           id={`record-bio-${character.id}`}
-          className="text-[11px] uppercase tracking-[0.16em] [font-family:var(--font-ui)]"
+          className="record-section-heading text-[11px] uppercase tracking-[0.16em] [font-family:var(--font-ui)]"
           style={{ color: 'var(--text-on-page-tertiary)' }}
         >
           Biography
@@ -351,82 +351,78 @@ export function RecordRightPage({ character, locked = false, onUnlock }: RecordS
         <p className="record-bio mt-2">{character.description || 'No biography has been recorded.'}</p>
       </section>
 
-      <section
-        aria-labelledby={`record-books-${character.id}`}
-        className="mt-6 border-t pt-4"
-        style={{ borderColor: 'rgba(80,60,40,0.16)' }}
-      >
-        <h3
-          id={`record-books-${character.id}`}
-          className="text-[11px] uppercase tracking-[0.16em] [font-family:var(--font-ui)]"
-          style={{ color: 'var(--text-on-page-tertiary)' }}
-        >
-          Appears in
-        </h3>
-        {books.length > 0 ? (
-          <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
-            {books.map((book) =>
-              book ? (
-                <li key={book.id}>
-                  <Link to={`/books/${book.id}`} className="record-link text-[13px]">
-                    {book.title}
+      <div className="record-reference-grid">
+        <section aria-labelledby={`record-books-${character.id}`} className="record-reference">
+          <h3
+            id={`record-books-${character.id}`}
+            className="record-section-heading text-[11px] uppercase tracking-[0.16em] [font-family:var(--font-ui)]"
+            style={{ color: 'var(--text-on-page-tertiary)' }}
+          >
+            Appears in
+          </h3>
+          {books.length > 0 ? (
+            <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+              {books.map((book) =>
+                book ? (
+                  <li key={book.id}>
+                    <Link to={`/books/${book.id}`} className="record-link text-[13px]">
+                      {book.title}
+                    </Link>
+                  </li>
+                ) : null,
+              )}
+            </ul>
+          ) : (
+            <p className="record-empty-note">
+              <span aria-hidden="true">—</span>
+              No book references recorded.
+            </p>
+          )}
+        </section>
+
+        <section aria-labelledby={`record-rels-${character.id}`} className="record-reference">
+          <h3
+            id={`record-rels-${character.id}`}
+            className="record-section-heading text-[11px] uppercase tracking-[0.16em] [font-family:var(--font-ui)]"
+            style={{ color: 'var(--text-on-page-tertiary)' }}
+          >
+            Relationships
+          </h3>
+          {relationships.length > 0 ? (
+            <ul className="mt-3 grid grid-cols-1 gap-2">
+              {relationships.map((relationship) => (
+                <li key={relationship.otherId}>
+                  <Link
+                    to={`/characters?spread=${encodeURIComponent(recordSpreadId(relationship.otherId))}`}
+                    className="group flex min-w-0 items-center gap-2.5 focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring-on-page)]"
+                  >
+                    {relationshipPortrait(relationship.other)}
+                    <span className="min-w-0">
+                      <span
+                        className="record-relationship__name block truncate text-[13px] leading-snug transition-colors duration-150 [font-family:var(--font-display)]"
+                        style={{ color: 'var(--text-on-page-primary)' }}
+                      >
+                        {relationship.otherName}
+                      </span>
+                      <span
+                        className="mt-0.5 block truncate text-[11px] leading-snug [font-family:var(--font-ui)]"
+                        style={{ color: 'var(--text-on-page-tertiary)' }}
+                      >
+                        {relationship.label}
+                      </span>
+                    </span>
                   </Link>
                 </li>
-              ) : null,
-            )}
-          </ul>
-        ) : (
-          <p className="mt-2 text-[13px]" style={{ color: 'var(--text-on-page-secondary)' }}>
-            No book references recorded.
-          </p>
-        )}
-      </section>
-
-      <section
-        aria-labelledby={`record-rels-${character.id}`}
-        className="mt-6 border-t pt-4"
-        style={{ borderColor: 'rgba(80,60,40,0.16)' }}
-      >
-        <h3
-          id={`record-rels-${character.id}`}
-          className="text-[11px] uppercase tracking-[0.16em] [font-family:var(--font-ui)]"
-          style={{ color: 'var(--text-on-page-tertiary)' }}
-        >
-          Relationships
-        </h3>
-        {relationships.length > 0 ? (
-          <ul className="mt-3 grid grid-cols-1 gap-3 min-[480px]:grid-cols-2">
-            {relationships.map((relationship) => (
-              <li key={relationship.otherId}>
-                <Link
-                  to={`/characters?spread=${encodeURIComponent(recordSpreadId(relationship.otherId))}`}
-                  className="group flex min-w-0 items-center gap-2.5 focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring-on-page)]"
-                >
-                  {relationshipPortrait(relationship.other)}
-                  <span className="min-w-0">
-                    <span
-                      className="block truncate text-[13px] leading-snug transition-colors duration-150 group-hover:text-[color:var(--text-on-page-link)] [font-family:var(--font-display)]"
-                      style={{ color: 'var(--text-on-page-primary)' }}
-                    >
-                      {relationship.otherName}
-                    </span>
-                    <span
-                      className="mt-0.5 block truncate text-[11px] leading-snug [font-family:var(--font-ui)]"
-                      style={{ color: 'var(--text-on-page-tertiary)' }}
-                    >
-                      {relationship.label}
-                    </span>
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="mt-2 text-[13px]" style={{ color: 'var(--text-on-page-secondary)' }}>
-            No recorded relationships.
-          </p>
-        )}
-      </section>
+              ))}
+            </ul>
+          ) : (
+            <p className="record-empty-note">
+              <span aria-hidden="true">—</span>
+              No ties are indexed in this record.
+            </p>
+          )}
+        </section>
+      </div>
     </article>
   )
 }

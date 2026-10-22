@@ -87,7 +87,10 @@ export default defineConfig({
      * ceiling; anything larger is a regression and should fail loudly.
      */
     chunkSizeWarningLimit: 400,
-    sourcemap: process.env.CI ? 'hidden' : false,
+    // GitHub Pages publishes every file in dist. Hidden source maps are not
+    // referenced by the app or uploaded to an error tracker, so emitting them
+    // in CI only inflated the deployed artifact and broke the dist budget.
+    sourcemap: false,
     rollupOptions: {
       output: {
         /**
