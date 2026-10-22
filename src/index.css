@@ -1535,8 +1535,8 @@ html {
   }
 }
 
-/* Page-edge controls. They live on the fore-edge, not over the text, and the
-   only visual is a catchlight on the paper block when pointed at. */
+/* Page-edge controls stay on the fore-edge. A small paper tab marks the edge
+   without covering the reading surface. */
 .codex-edge {
   position: absolute;
   top: 10%;
@@ -1547,6 +1547,87 @@ html {
   border: 0;
   background: transparent;
   cursor: pointer;
+}
+
+.codex-edge::before {
+  position: absolute;
+  top: 50%;
+  width: 18px;
+  height: 40px;
+  transform: translateY(-50%);
+  border: 1px solid rgb(139 111 68 / 0.42);
+  border-radius: 2px 0 0 2px;
+  background: linear-gradient(90deg, #e3d5b8 0%, #f3ead7 52%, #d7c6a4 100%);
+  box-shadow:
+    inset 1px 0 0 rgb(255 252 239 / 0.7),
+    0 2px 6px rgb(37 25 13 / 0.2);
+  opacity: 0.7;
+  content: '';
+  pointer-events: none;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.codex-edge::after {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-52%);
+  color: #6d5738;
+  font-family: var(--font-display);
+  font-size: 20px;
+  line-height: 1;
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+.codex-edge--next::before,
+.codex-edge--next::after {
+  right: 2px;
+}
+
+.codex-edge--next::after {
+  content: '›';
+}
+
+.codex-edge--prev::before,
+.codex-edge--prev::after {
+  left: 2px;
+}
+
+.codex-edge--prev::before {
+  transform: translateY(-50%) scaleX(-1);
+  border-radius: 0 2px 2px 0;
+}
+
+.codex-edge--prev::after {
+  content: '‹';
+}
+
+.codex-edge--next:hover::before,
+.codex-edge--next:focus-visible::before {
+  transform: translate(4px, -50%);
+  opacity: 0.96;
+  box-shadow:
+    inset 1px 0 0 rgb(255 252 239 / 0.82),
+    0 3px 9px rgb(37 25 13 / 0.32),
+    0 0 10px rgb(216 187 126 / 0.28);
+}
+
+.codex-edge--prev:hover::before,
+.codex-edge--prev:focus-visible::before {
+  transform: translate(-4px, -50%) scaleX(-1);
+  opacity: 0.96;
+  box-shadow:
+    inset 1px 0 0 rgb(255 252 239 / 0.82),
+    0 3px 9px rgb(37 25 13 / 0.32),
+    0 0 10px rgb(216 187 126 / 0.28);
+}
+
+.codex-edge:hover::after,
+.codex-edge:focus-visible::after {
+  opacity: 1;
 }
 
 .codex-edge--prev {
@@ -1897,6 +1978,11 @@ html {
   }
 
   .codex-thumb {
+    transition: none;
+  }
+
+  .codex-edge::before,
+  .codex-edge::after {
     transition: none;
   }
 

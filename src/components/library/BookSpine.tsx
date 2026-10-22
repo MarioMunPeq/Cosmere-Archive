@@ -33,7 +33,7 @@ interface Props {
   registerRef: (el: HTMLButtonElement | null) => void
 }
 
-/** Vertical art windows for the jacket crops, chosen to keep most cover text out of the spine. */
+/** Focal height for each jacket, chosen to keep its illustration on the spine. */
 const SPINE_ART_ORIGIN: Record<string, number> = {
   arcanum_unbounded: 40,
   dawnshard: 75,
@@ -60,8 +60,8 @@ const SPINE_ART_ORIGIN: Record<string, number> = {
 }
 
 const SPINE_ART_ZOOM: Record<string, number> = {
-  arcanum_unbounded: 2.8,
-  tress_of_the_emerald_sea: 3,
+  arcanum_unbounded: 1.45,
+  tress_of_the_emerald_sea: 1.5,
 }
 
 /** A stable 0–1 from the book id. */
@@ -119,7 +119,7 @@ function BookSpineImpl({
     '--spine-settle': `${settle.toFixed(1)}px`,
     '--spine-label-size': `${labelSize.toFixed(1)}px`,
     '--spine-art-origin-y': `${SPINE_ART_ORIGIN[book.id] ?? 50}%`,
-    '--spine-art-zoom': SPINE_ART_ZOOM[book.id] ?? 2.5,
+    '--spine-art-zoom': SPINE_ART_ZOOM[book.id] ?? 1.35,
   } as CSSProperties
 
   return (

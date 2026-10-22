@@ -16,7 +16,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import BookSpine, { spineHash } from './BookSpine'
 import ShelfPlank from './ShelfPlank'
 import useMediaQuery from '@/hooks/useMediaQuery'
-import { fitShelf, GAP } from '@/utils/shelf-layout'
+import { fitShelf, GAP, MAX_SPINE, MIN_SPINE } from '@/utils/shelf-layout'
 import type { Book } from '@/data/static/books'
 
 interface Props {
@@ -47,6 +47,12 @@ interface RowBook {
   book: Book
   width: number
   height: number
+}
+
+/** Book thickness grows with length, with a floor for graphic novellas. */
+function thicknessFactor(book: Book): number {
+  const words = book.wordCount ?? 180_000
+  return Math.max(0.62, Math.min(1.38, Math.sqrt(words / 200_000)))
 }
 
 export default function Shelf({
@@ -88,32 +94,29 @@ export default function Shelf({
   const rows = useMemo<RowBook[][]>(() => {
     const baseWidth = mobile ? MOBILE_SPINE : layout.spineWidth
     const baseRowHeight = mobile ? MOBILE_HEIGHT : layout.height
-
-    let widths = books.map((book) => {
-      const variation = (spineHash(`${book.id}:width`) - 0.5) * 8
-      return Math.round((baseWidth + variation) * 10) / 10
-    })
-
-    // The variation must never make the row overflow the space it was measured
-    // against. If it would, the shelf keeps the exact fitted width and the
-    // variation survives only in height and tone.
-    if (!mobile && available > 0) {
-      const total = widths.reduce((sum, width) => sum + width, GAP * Math.max(0, widths.length - 1))
-      if (total > available - 4) widths = books.map(() => layout.spineWidth)
-    }
-
-    const all = books.map((book, index) => ({
-      book,
-      width: widths[index]!,
-      height: Math.round(baseRowHeight * (0.94 + spineHash(`${book.id}:height`) * 0.12)),
-    }))
-
-    if (mobile) return [all]
-
+    const booksPerRow = Math.max(1, mobile ? books.length : layout.perRow)
     const out: RowBook[][] = []
-    for (let index = 0; index < all.length; index += layout.perRow) {
-      out.push(all.slice(index, index + layout.perRow))
+
+    for (let start = 0; start < books.length; start += booksPerRow) {
+      const group = books.slice(start, start + booksPerRow)
+      const weights = group.map(thicknessFactor)
+      const meanWeight = weights.reduce((sum, weight) => sum + weight, 0) / Math.max(1, weights.length)
+      let widths = weights.map((weight) => Math.max(MIN_SPINE, Math.min(MAX_SPINE, (baseWidth * weight) / meanWeight)))
+      const total = widths.reduce((sum, width) => sum + width, GAP * Math.max(0, widths.length - 1))
+
+      // Keep the measured layout's fit guarantee on narrow screens. The
+      // mobile shelf scrolls horizontally, so its book widths can stay varied.
+      if (!mobile && available > 0 && total > available - 4) widths = group.map(() => layout.spineWidth)
+
+      out.push(
+        group.map((book, index) => ({
+          book,
+          width: Math.round(widths[index]! * 10) / 10,
+          height: Math.round(baseRowHeight * (0.94 + spineHash(`${book.id}:height`) * 0.12)),
+        })),
+      )
     }
+
     return out
   }, [available, books, layout.height, layout.perRow, layout.spineWidth, mobile])
 

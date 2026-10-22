@@ -56,14 +56,15 @@ function centreBox(): Box {
 
 function TravellingVolume({ book, from, to, mode }: { book: Book; from: Box; to: Box; mode: 'enter' | 'return' }) {
   const [moving, setMoving] = useState(false)
+  const volumeRef = useRef<HTMLSpanElement | null>(null)
   const series = SAGA_BY_ID.get(book.saga)?.name ?? book.saga
   const material = spineMaterial(book.saga)
   const accent = SAGA_BY_ID.get(book.saga)?.color ?? '#a8854e'
 
   useEffect(() => {
-    const frame = requestAnimationFrame(() => setMoving(true))
-    return () => cancelAnimationFrame(frame)
-  }, [])
+    const timer = window.setTimeout(() => setMoving(true), mode === 'return' ? 300 : 0)
+    return () => window.clearTimeout(timer)
+  }, [mode])
 
   const dx = to.left + to.width / 2 - (from.left + from.width / 2)
   const dy = to.top + to.height / 2 - (from.top + from.height / 2)
@@ -82,15 +83,64 @@ function TravellingVolume({ book, from, to, mode }: { book: Book; from: Box; to:
     transform: moving
       ? `translate3d(${dx.toFixed(2)}px, ${dy.toFixed(2)}px, 0) perspective(1400px) rotateY(${mode === 'enter' ? '0deg' : '-68deg'}) scale(${scaleX.toFixed(3)}, ${scaleY.toFixed(3)}) rotateZ(0deg)`
       : `translate3d(0, 0, 0) perspective(1400px) rotateY(${mode === 'enter' ? '-68deg' : '0deg'}) scale(1, 1) rotateZ(${mode === 'enter' ? '-2deg' : '0deg'})`,
-    opacity: moving ? (mode === 'enter' ? 0 : 0.92) : 1,
+    opacity: mode === 'return' ? (moving ? 1 : 0) : moving ? 0 : 1,
     transition:
-      mode === 'enter'
-        ? 'transform 920ms cubic-bezier(0.18, 0.86, 0.24, 1), opacity 220ms 700ms ease'
-        : 'transform 760ms cubic-bezier(0.55, 0.08, 0.68, 0.53), opacity 180ms 560ms ease',
+      mode === 'enter' ? 'transform 920ms cubic-bezier(0.18, 0.86, 0.24, 1), opacity 220ms 700ms ease' : 'none',
   } as React.CSSProperties
 
+  useEffect(() => {
+    const volume = volumeRef.current
+    if (mode !== 'return' || !moving || !volume || typeof volume.animate !== 'function') return
+
+    const arc = Math.min(58, window.innerHeight * 0.075)
+    const midpointX = dx * 0.52
+    const midpointY = dy * 0.52 - arc
+    const midpointScaleX = 1 + (scaleX - 1) * 0.52
+    const midpointScaleY = 1 + (scaleY - 1) * 0.52
+    const turn = to.left < from.left ? 22 : -22
+    const landingTurn = to.left < from.left ? 68 : -68
+
+    const animation = volume.animate(
+      [
+        {
+          offset: 0,
+          opacity: 0,
+          transform: 'translate3d(0, 0, 0) perspective(1400px) rotateY(0deg) scale(1, 1) rotateZ(0deg)',
+          boxShadow: '0 18px 30px -16px rgb(0 0 0 / 0.52), 0 6px 12px -8px rgb(0 0 0 / 0.34)',
+        },
+        {
+          offset: 0.12,
+          opacity: 1,
+          transform: `translate3d(${(dx * 0.12).toFixed(2)}px, ${(dy * 0.12 - arc * 0.32).toFixed(2)}px, 24px) perspective(1400px) rotateY(${(turn * 0.45).toFixed(1)}deg) scale(${(1 + (scaleX - 1) * 0.12).toFixed(3)}, ${(1 + (scaleY - 1) * 0.12).toFixed(3)}) rotateZ(-3deg)`,
+          boxShadow: '0 58px 64px -26px rgb(0 0 0 / 0.72), 0 16px 22px -10px rgb(0 0 0 / 0.5)',
+        },
+        {
+          offset: 0.58,
+          opacity: 1,
+          transform: `translate3d(${midpointX.toFixed(2)}px, ${midpointY.toFixed(2)}px, 72px) perspective(1400px) rotateY(${turn}deg) scale(${midpointScaleX.toFixed(3)}, ${midpointScaleY.toFixed(3)}) rotateZ(-4deg)`,
+          boxShadow: '0 64px 72px -28px rgb(0 0 0 / 0.78), 0 20px 26px -12px rgb(0 0 0 / 0.52)',
+        },
+        {
+          offset: 0.86,
+          opacity: 1,
+          transform: `translate3d(${(dx * 0.9).toFixed(2)}px, ${(dy * 0.9).toFixed(2)}px, 16px) perspective(1400px) rotateY(${(landingTurn * 0.72).toFixed(1)}deg) scale(${(1 + (scaleX - 1) * 0.9).toFixed(3)}, ${(1 + (scaleY - 1) * 0.9).toFixed(3)}) rotateZ(2deg)`,
+          boxShadow: '0 16px 22px -14px rgb(0 0 0 / 0.58), 0 4px 8px -5px rgb(0 0 0 / 0.44)',
+        },
+        {
+          offset: 1,
+          opacity: 0,
+          transform: `translate3d(${dx.toFixed(2)}px, ${dy.toFixed(2)}px, 0) perspective(1400px) rotateY(${landingTurn}deg) scale(${scaleX.toFixed(3)}, ${scaleY.toFixed(3)}) rotateZ(0deg)`,
+          boxShadow: '0 4px 8px -6px rgb(0 0 0 / 0.3)',
+        },
+      ],
+      { duration: 960, easing: 'cubic-bezier(0.22, 0.76, 0.22, 1)', fill: 'forwards' },
+    )
+
+    return () => animation.cancel()
+  }, [dx, dy, from.left, mode, moving, scaleX, scaleY, to.left])
+
   return (
-    <span className="library-traveller" data-mode={mode} style={style} aria-hidden="true">
+    <span ref={volumeRef} className="library-traveller" data-mode={mode} style={style} aria-hidden="true">
       <span className="library-traveller__pages" />
       <span className="library-traveller__cover">
         <img src={coverSrc} alt="" draggable={false} />
@@ -167,10 +217,13 @@ export default function LibraryReader({ book, origin, onClose }: Props) {
     setPhase('closing')
     if (target) setTravel({ from: centreBox(), to: target, mode: 'return' })
 
-    closeTimer.current = window.setTimeout(() => {
-      closeTimer.current = null
-      onClose()
-    }, 800)
+    closeTimer.current = window.setTimeout(
+      () => {
+        closeTimer.current = null
+        onClose()
+      },
+      target ? 1320 : 340,
+    )
   }, [book.id, onClose, origin, phase, reduced])
 
   useEffect(() => {
