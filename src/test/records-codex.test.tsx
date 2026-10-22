@@ -20,11 +20,11 @@ describe('RecordsCodex', () => {
     window.sessionStorage.setItem(CODEX_SESSION_KEY, '1')
   })
 
-  it('opens on the two closed volumes at the desk', () => {
+  it('opens on the three closed volumes at the desk', () => {
     const { container } = renderAt('/characters')
 
-    expect(screen.getByRole('heading', { level: 2, name: 'Two volumes rest on the desk' })).toBeInTheDocument()
-    expect(container.querySelectorAll('[data-testid^="volume-cover-"]')).toHaveLength(2)
+    expect(screen.getByRole('heading', { level: 2, name: 'Three volumes rest on the desk' })).toBeInTheDocument()
+    expect(container.querySelectorAll('[data-testid^="volume-cover-"]')).toHaveLength(3)
   })
 
   it('opens Volume II from its closed cover', async () => {
@@ -34,7 +34,14 @@ describe('RecordsCodex', () => {
     expect(await screen.findByRole('heading', { level: 2, name: 'Bloodlines & Connections' })).toBeInTheDocument()
   })
 
-  it('opens the Part II contents with all 93 records in eight ranges', () => {
+  it('opens Volume III from its closed cover', async () => {
+    renderAt('/characters')
+
+    await userEvent.click(screen.getByRole('button', { name: /^Open Volume III:/ }))
+    expect(await screen.findByRole('heading', { level: 1, name: /ARS\s*ARCANUM/i })).toBeInTheDocument()
+  })
+
+  it('opens the Volume I contents with all 93 records in eight ranges', () => {
     const { container } = renderAt('/characters?spread=records-contents')
 
     expect(screen.getByRole('heading', { level: 2, name: 'Biographical Records' })).toBeInTheDocument()

@@ -577,13 +577,14 @@ test.describe('connections', () => {
   })
 })
 
-test.describe('the two-volume desk', () => {
-  test('opens with both volumes closed', async ({ page }) => {
+test.describe('the three-volume desk', () => {
+  test('opens with all volumes closed', async ({ page }) => {
     await page.goto(CHARACTERS)
     await expect(page.locator('[data-records-library]')).toBeVisible()
-    await expect(page.locator('[data-testid^="volume-cover-"]')).toHaveCount(2)
+    await expect(page.locator('[data-testid^="volume-cover-"]')).toHaveCount(3)
     await expect(page.getByRole('button', { name: /^Open Volume I:/ })).toBeVisible()
     await expect(page.getByRole('button', { name: /^Open Volume II:/ })).toBeVisible()
+    await expect(page.getByRole('button', { name: /^Open Volume III:/ })).toBeVisible()
   })
 
   test('a cover opens its volume and the tabs switch between volumes', async ({ page }) => {
@@ -596,9 +597,20 @@ test.describe('the two-volume desk', () => {
     await expect(page).toHaveURL(/spread=records-contents/)
     await expect(page.locator('[data-codex-spread="records-contents"]')).toBeVisible()
 
+    await page.getByRole('button', { name: 'Volume III: Ars Arcanum' }).click()
+    await expect(page).toHaveURL(/spread=arcanum-contents/)
+    await expect(page.locator('[data-codex-spread="arcanum-contents"]')).toBeVisible()
+
     await page.getByRole('button', { name: 'All volumes' }).click()
     await expect(page).toHaveURL(/#\/characters$/)
     await expect(page.locator('[data-records-library]')).toBeVisible()
+  })
+
+  test('the legacy Ars Arcanum address opens the third volume', async ({ page }) => {
+    await page.goto('/#/magic')
+    await expect(page).toHaveURL(/\/characters\?spread=arcanum-contents/)
+    await expect(page.locator('[data-codex-spread="arcanum-contents"]')).toBeVisible()
+    await expect(page.getByRole('heading', { name: /ars\s*arcanum/i })).toBeVisible()
   })
 
   test('legacy bloodlines, connections and family links canonicalise into Volume II', async ({ page }) => {

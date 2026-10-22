@@ -17,6 +17,7 @@ import ThumbTabs, { type ThumbTab } from '@/components/codex/ThumbTabs'
 import { ALL_CHARACTERS } from '@/data/static'
 import { FAMILY_TREES } from '@/data/static/family-data'
 import { buildSpreads, spreadIndexById, type CodexSection } from '@/utils/codex-pages'
+import { ARCANUM_CONTENTS_ID, toArcanumSpreadId } from '@/utils/arcanum-pages'
 import { recordSpreadId } from '@/utils/codex-records'
 import { relationshipCounts } from '@/utils/relationships'
 import { RecordLeftPage } from './RecordSpread'
@@ -141,6 +142,11 @@ export default function LineagesCodex() {
   const openRecordsVolume = () => {
     const ribbon = readCodexRibbon('records')
     navigate(`/characters?spread=${encodeURIComponent(ribbon ?? 'records-contents')}`)
+  }
+  const openArcanumVolume = () => {
+    const ribbon = readCodexRibbon('investiture')
+    const spread = ribbon ? toArcanumSpreadId(ribbon) : ARCANUM_CONTENTS_ID
+    navigate(`/characters?spread=${encodeURIComponent(spread)}`)
   }
   const allVolumes = () => navigate('/characters')
 
@@ -269,6 +275,7 @@ export default function LineagesCodex() {
           current="lineages"
           onOpen={(volume) => {
             if (volume === 'records') openRecordsVolume()
+            else if (volume === 'arcanum') openArcanumVolume()
             else openContents()
           }}
           onAllVolumes={allVolumes}

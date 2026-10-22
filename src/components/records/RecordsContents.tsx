@@ -1,5 +1,5 @@
 /**
- * RecordsContents — the Part II table of contents.
+ * RecordsContents — Volume I's table of contents.
  *
  * The index is the same eight ranges as the fore-edge tabs, so a reader who
  * learns that K lives under J–M can use either surface. Search is local to this
@@ -17,7 +17,7 @@ interface Props {
   records: readonly Character[]
   onOpenRecord: (characterId: string) => void
   onOpenRange: (spreadId: string) => void
-  onOpenPartI: () => void
+  onOpenArcanum: () => void
   onOpenLineages: () => void
 }
 
@@ -26,7 +26,7 @@ function matches(record: Character, query: string): boolean {
   return haystack.includes(query)
 }
 
-export default function RecordsContents({ records, onOpenRecord, onOpenRange, onOpenPartI, onOpenLineages }: Props) {
+export default function RecordsContents({ records, onOpenRecord, onOpenRange, onOpenArcanum, onOpenLineages }: Props) {
   const [query, setQuery] = useState('')
   const trimmed = query.trim().toLowerCase()
 
@@ -39,7 +39,7 @@ export default function RecordsContents({ records, onOpenRecord, onOpenRange, on
 
   const part: ContentsPart = {
     id: 'records',
-    kicker: 'Part II',
+    kicker: 'Volume I',
     title: 'Biographical Records',
     description: 'Portraits, identities and biographies from across the Cosmere, ordered by the name on the plate.',
     total: filtered.length,
@@ -59,11 +59,11 @@ export default function RecordsContents({ records, onOpenRecord, onOpenRange, on
   }
 
   const companion: ContentsCompanion = {
-    kicker: 'Part I',
-    title: 'Investiture',
+    kicker: 'Volume III',
+    title: 'Ars Arcanum',
     count: ARCANUM_CHAPTERS.length,
-    countLabel: 'chapters',
-    onOpen: onOpenPartI,
+    countLabel: 'worlds',
+    onOpen: onOpenArcanum,
   }
 
   const emptyMessage = trimmed

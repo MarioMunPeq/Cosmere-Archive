@@ -21,7 +21,7 @@ import RouteFallback from '@/components/ui/RouteFallback'
 const LandingPage = lazy(() => import('@/pages/LandingPage'))
 const KhrissAtlas = lazy(() => import('@/pages/KhrissAtlas'))
 const About = lazy(() => import('@/pages/About'))
-const MagicSystemsPage = lazy(() => import('@/pages/MagicSystemsPage'))
+const ArcanumRedirect = lazy(() => import('@/pages/ArcanumRedirect'))
 const AharietiamPage = lazy(() => import('@/pages/AharietiamPage'))
 const BookPage = lazy(() => import('@/pages/BookPage'))
 const StandaloneBooksPage = lazy(() => import('@/pages/StandaloneBooksPage'))
@@ -52,7 +52,7 @@ const ROUTES = [
   { path: '/', element: page(<LandingPage />) },
   { path: '/celestial-charts', element: page(<KhrissAtlas />) },
   { path: '/about', element: page(<About />) },
-  { path: '/magic', element: page(<MagicSystemsPage />) },
+  { path: '/magic', element: page(<ArcanumRedirect />) },
   { path: '/aharietiam', element: page(<AharietiamPage />) },
   { path: '/books/:id', element: page(<BookPage />) },
   { path: '/books', element: page(<StandaloneBooksPage />) },

@@ -1,11 +1,11 @@
 /**
  * RecordsCodex — the desk at the entrance to the Biographical Archives.
  *
- * The archives are one room with two volumes. At the desk both volumes are
+ * The archives are one room with three volumes. At the desk all three are
  * closed and the reader chooses a cover; once a volume is open, the brass
- * volume tabs keep the other one a click away. `?character=` and the search
+ * volume tabs keep the others a click away. `?character=` and the search
  * palette's `/records/:id` links open Volume I directly, then the URL is
- * canonicalised to `?spread=`.
+ * canonicalised to `?spread=`. `/magic` resolves into Volume III.
  */
 
 import { useEffect, useMemo } from 'react'
@@ -21,10 +21,12 @@ import SpoilerControl from '@/components/records/SpoilerControl'
 import RecordsContents from '@/components/records/RecordsContents'
 import RecordsLibrary from '@/components/records/RecordsLibrary'
 import LineagesCodex from '@/components/records/LineagesCodex'
+import ArcanumCodex from '@/components/records/ArcanumCodex'
 import VolumeSwitcher, { type ArchiveVolume } from '@/components/records/VolumeSwitcher'
 import { buildRecordSpread } from '@/components/records/RecordSpread'
 import { ALL_CHARACTERS } from '@/data/static'
 import { ARCANUM_CHAPTERS } from '@/utils/ars-arcanum'
+import { ARCANUM_CONTENTS_ID, toArcanumSpreadId } from '@/utils/arcanum-pages'
 import { buildRecordRanges, buildRecordSections, recordSpreadId } from '@/utils/codex-records'
 import { buildSpreads, spreadIndexById, type CodexSection } from '@/utils/codex-pages'
 import type { Character } from '@/types/character'
@@ -38,10 +40,12 @@ function RecordsTitlePage({
   total,
   ranges,
   onOpenLineages,
+  onOpenArcanum,
 }: {
   total: number
   ranges: number
   onOpenLineages: () => void
+  onOpenArcanum: () => void
 }) {
   return (
     <div className="flex h-full flex-col items-center justify-center text-center" data-record-title>
@@ -49,7 +53,7 @@ function RecordsTitlePage({
         className="text-[11px] uppercase tracking-[0.22em] [font-family:var(--font-ui)]"
         style={{ color: 'var(--text-on-page-tertiary)' }}
       >
-        Part II
+        Volume I
       </p>
       <h2
         className="mt-3 max-w-[12ch] text-[clamp(30px,3.4vw,54px)] font-semibold leading-[1.02] tracking-[0.01em] [font-family:var(--font-display)]"
@@ -69,23 +73,44 @@ function RecordsTitlePage({
         className="mt-6 text-[11px] uppercase tracking-[0.12em] [font-family:var(--font-ui)]"
         style={{ color: 'var(--text-on-page-tertiary)' }}
       >
-        {total} records · {ranges} ranges · {ARCANUM_CHAPTERS.length} Investiture chapters in Part I
+        {total} records · {ranges} ranges
       </p>
-      <div className="mt-5 border-t pt-3" style={{ borderColor: 'rgba(80,60,40,0.16)' }}>
-        <p
-          className="text-[11px] uppercase tracking-[0.16em] [font-family:var(--font-ui)]"
-          style={{ color: 'var(--text-on-page-tertiary)' }}
-        >
-          Volume II
-        </p>
-        <button
-          type="button"
-          onClick={onOpenLineages}
-          className="mt-1 cursor-pointer border-0 bg-transparent p-0 text-[12px] underline underline-offset-2 [font-family:var(--font-display)]"
-          style={{ color: 'var(--text-on-page-link)' }}
-        >
-          Bloodlines &amp; Connections — houses and recorded bonds →
-        </button>
+      <div
+        className="mt-5 grid w-full max-w-[34ch] gap-3 border-t pt-3 text-left"
+        style={{ borderColor: 'rgba(80,60,40,0.16)' }}
+      >
+        <div>
+          <p
+            className="text-[11px] uppercase tracking-[0.16em] [font-family:var(--font-ui)]"
+            style={{ color: 'var(--text-on-page-tertiary)' }}
+          >
+            Volume II
+          </p>
+          <button
+            type="button"
+            onClick={onOpenLineages}
+            className="mt-1 cursor-pointer border-0 bg-transparent p-0 text-[12px] underline underline-offset-2 [font-family:var(--font-display)]"
+            style={{ color: 'var(--text-on-page-link)' }}
+          >
+            Bloodlines &amp; Connections — houses and recorded bonds →
+          </button>
+        </div>
+        <div>
+          <p
+            className="text-[11px] uppercase tracking-[0.16em] [font-family:var(--font-ui)]"
+            style={{ color: 'var(--text-on-page-tertiary)' }}
+          >
+            Volume III
+          </p>
+          <button
+            type="button"
+            onClick={onOpenArcanum}
+            className="mt-1 cursor-pointer border-0 bg-transparent p-0 text-[12px] underline underline-offset-2 [font-family:var(--font-display)]"
+            style={{ color: 'var(--text-on-page-link)' }}
+          >
+            Ars Arcanum — {ARCANUM_CHAPTERS.length} worlds and Investiture →
+          </button>
+        </div>
       </div>
     </div>
   )
@@ -168,6 +193,11 @@ function RecordsBook({ spoiler }: { spoiler: Spoiler }) {
     const ribbon = readCodexRibbon('lineages')
     navigate(`/characters?spread=${encodeURIComponent(ribbon ?? LINEAGES_CONTENTS_ID)}`)
   }
+  const openArcanumVolume = () => {
+    const ribbon = readCodexRibbon('investiture')
+    const spread = ribbon ? toArcanumSpreadId(ribbon) : ARCANUM_CONTENTS_ID
+    navigate(`/characters?spread=${encodeURIComponent(spread)}`)
+  }
   const allVolumes = () => navigate('/characters')
 
   const views: CodexSpreadView[] = spreads.map((entry) => {
@@ -180,12 +210,17 @@ function RecordsBook({ spoiler }: { spoiler: Spoiler }) {
             records={visibleCharacters}
             onOpenRecord={openRecord}
             onOpenRange={openRange}
-            onOpenPartI={() => navigate('/magic')}
+            onOpenArcanum={openArcanumVolume}
             onOpenLineages={openLineagesIndex}
           />
         ),
         right: (
-          <RecordsTitlePage total={ALL_CHARACTERS.length} ranges={ranges.length} onOpenLineages={openLineagesIndex} />
+          <RecordsTitlePage
+            total={ALL_CHARACTERS.length}
+            ranges={ranges.length}
+            onOpenLineages={openLineagesIndex}
+            onOpenArcanum={openArcanumVolume}
+          />
         ),
         leftFolio: entry.folios[0] ?? undefined,
         rightFolio: entry.folios[1] ?? undefined,
@@ -250,6 +285,7 @@ function RecordsBook({ spoiler }: { spoiler: Spoiler }) {
             current="records"
             onOpen={(volume) => {
               if (volume === 'lineages') openLineagesVolume()
+              else if (volume === 'arcanum') openArcanumVolume()
               else route.openSpread(CONTENTS_ID)
             }}
             onAllVolumes={allVolumes}
@@ -287,9 +323,26 @@ function requestedVolume(params: URLSearchParams): ArchiveVolume | null {
     ) {
       return 'lineages'
     }
+    if (
+      spread === ARCANUM_CONTENTS_ID ||
+      spread.startsWith('arcanum-') ||
+      spread === 'contents' ||
+      spread === 'title' ||
+      spread === 'index' ||
+      spread === 'index-world' ||
+      spread.startsWith('chapter-') ||
+      spread.startsWith('system-')
+    ) {
+      return 'arcanum'
+    }
   }
 
+  if (params.has('system')) return 'arcanum'
+
   const tab = params.get('tab')
+  if (tab === 'magic' || tab === 'investiture' || tab === 'arcanum') {
+    return 'arcanum'
+  }
   if (tab === 'bloodlines' || tab === 'connections' || tab === 'family' || tab === 'trees' || tab === 'relationships') {
     return 'lineages'
   }
@@ -314,18 +367,19 @@ export default function RecordsCodex() {
   const navigate = useViewTransitionNavigate()
   const requestedCharacter = params.get('character')
   const spoiler = useSpoilerMode()
+  const volume = requestedVolume(params)
 
   useSEOMeta({
-    title: 'Biographical Archives — Cosmere Archive',
+    title: volume === 'arcanum' ? 'Ars Arcanum — Cosmere Archive' : 'Biographical Archives — Cosmere Archive',
     description:
-      'Collected biographies, bloodlines and historical records of notable individuals throughout the Cosmere.',
+      volume === 'arcanum'
+        ? 'Collected observations concerning the manifestations of Investiture throughout the known Cosmere.'
+        : 'Collected biographies, bloodlines and historical records of notable individuals throughout the Cosmere.',
   })
 
   if (requestedCharacter && !CHARACTERS_BY_ID.has(requestedCharacter)) {
     return <RecordsMissing id={requestedCharacter} />
   }
-
-  const volume = requestedVolume(params)
 
   if (!volume) {
     return (
@@ -333,9 +387,19 @@ export default function RecordsCodex() {
         <h1 className="sr-only">Biographical Archives</h1>
         <RecordsLibrary
           onOpen={(next) => {
-            const fallback = next === 'records' ? CONTENTS_ID : LINEAGES_CONTENTS_ID
-            const ribbon = readCodexRibbon(next)
-            navigate(`/characters?spread=${encodeURIComponent(ribbon ?? fallback)}`)
+            if (next === 'records') {
+              const ribbon = readCodexRibbon('records')
+              navigate(`/characters?spread=${encodeURIComponent(ribbon ?? CONTENTS_ID)}`)
+              return
+            }
+            if (next === 'lineages') {
+              const ribbon = readCodexRibbon('lineages')
+              navigate(`/characters?spread=${encodeURIComponent(ribbon ?? LINEAGES_CONTENTS_ID)}`)
+              return
+            }
+            const ribbon = readCodexRibbon('investiture')
+            const spread = ribbon ? toArcanumSpreadId(ribbon) : ARCANUM_CONTENTS_ID
+            navigate(`/characters?spread=${encodeURIComponent(spread)}`)
           }}
         />
       </div>
@@ -347,6 +411,14 @@ export default function RecordsCodex() {
       <div data-records-main className="relative flex min-h-0 flex-1 flex-col">
         <h1 className="sr-only">Biographical Archives</h1>
         <LineagesCodex />
+      </div>
+    )
+  }
+
+  if (volume === 'arcanum') {
+    return (
+      <div data-records-main className="relative flex min-h-0 flex-1 flex-col">
+        <ArcanumCodex embedded />
       </div>
     )
   }

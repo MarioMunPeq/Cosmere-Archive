@@ -2239,7 +2239,7 @@ html {
   }
 }
 
-/* ---- Two-volume desk ------------------------------------------------------ */
+/* ---- Three-volume desk ---------------------------------------------------- */
 
 .codex[data-aside='true'] .codex-stage {
   padding-top: clamp(52px, 6.5vh, 76px);
@@ -2340,7 +2340,7 @@ html {
   outline-offset: 2px;
 }
 
-/* Compact cover used by the two closed volumes on the desk. */
+/* Compact cover used by the closed volumes on the desk. */
 .codex-cover[data-variant='volume'] .codex-cover__title {
   font-size: clamp(13px, 1.6vw, 22px);
   letter-spacing: 0.14em;
@@ -2391,8 +2391,10 @@ html {
     padding-top: 96px;
   }
 
-  /* Volume II has no reading-log control; its tabs need far less headroom. */
-  .codex[data-part='lineages'][data-aside='true'] .codex-stage {
+  /* Volumes II and III have no reading-log control; their tabs need far less
+     headroom than the records volume. */
+  .codex[data-part='lineages'][data-aside='true'] .codex-stage,
+  .codex[data-part='investiture'][data-aside='true'] .codex-stage {
     padding-top: 56px;
   }
 

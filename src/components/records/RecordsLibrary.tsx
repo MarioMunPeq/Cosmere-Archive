@@ -1,11 +1,12 @@
 /**
  * RecordsLibrary — the desk at the entrance to the Biographical Archives.
  *
- * Two closed volumes rest on the same walnut desk: the records of individual
- * lives and the houses-and-bonds companion. The reader chooses by touching a
- * cover, which is the most legible navigation we can offer and the only one
- * that needs no explanation. The covers are the real CodexCover, not a card
- * imitation, so the book that opens is visibly the book that was chosen.
+ * Three closed volumes rest on the same walnut desk: the records of individual
+ * lives, the houses-and-bonds companion, and Khrissalla's survey of Investiture.
+ * The reader chooses by touching a cover, which is the most legible navigation
+ * we can offer and the only one that needs no explanation. The covers are the
+ * real CodexCover, not a card imitation, so the book that opens is visibly the
+ * book that was chosen.
  */
 
 import CodexCover, { type CodexCoverDetails } from '@/components/codex/CodexCover'
@@ -35,6 +36,21 @@ const COVERS: Record<ArchiveVolume, CodexCoverDetails> = {
     byline: '7 houses · 25 people',
     openLabel: 'Open Volume II: Bloodlines & Connections — 7 houses · 25 people',
   },
+  arcanum: {
+    variant: 'volume',
+    testId: 'volume-cover-arcanum',
+    kicker: 'Volume III',
+    title: 'ARS ARCANUM',
+    subtitle: 'Investiture & Worlds',
+    byline: '11 worlds · 20 manifestations',
+    openLabel: 'Open Volume III: Ars Arcanum — 11 worlds · 20 manifestations',
+  },
+}
+
+const COVER_TILT: Record<ArchiveVolume, string> = {
+  records: '-rotate-[1.2deg]',
+  lineages: 'rotate-[0.4deg]',
+  arcanum: 'rotate-[1.2deg]',
 }
 
 export default function RecordsLibrary({ onOpen }: Props) {
@@ -55,25 +71,25 @@ export default function RecordsLibrary({ onOpen }: Props) {
             className="mt-2 text-balance text-[clamp(28px,4vw,54px)] font-semibold leading-[1.02] tracking-[0.01em] [font-family:var(--font-display)]"
             style={{ color: 'var(--codex-brass-ink)' }}
           >
-            Two volumes rest on the desk
+            Three volumes rest on the desk
           </h2>
           <p
-            className="mx-auto mt-3 max-w-[52ch] text-[13px] italic leading-relaxed [font-family:var(--font-display)]"
+            className="mx-auto mt-3 max-w-[56ch] text-[13px] italic leading-relaxed [font-family:var(--font-display)]"
             style={{ color: 'rgb(236 217 173 / 0.7)' }}
           >
-            Choose a cover. The records follow the name on the plate; its companion follows the blood in the veins and
-            the bonds recorded between them.
+            Choose a cover. The records follow the name on the plate; the second follows the blood in the veins and the
+            bonds recorded between them; the third follows the light of Investiture across the worlds.
           </p>
         </header>
 
-        <div className="flex w-full flex-wrap items-center justify-center gap-[clamp(26px,5vw,76px)]">
-          {(['records', 'lineages'] as const).map((volume, index) => (
-            <div key={volume} className="w-[clamp(224px,29vw,360px)]">
+        <div className="flex w-full flex-wrap items-center justify-center gap-[clamp(18px,3.8vw,56px)]">
+          {(['records', 'lineages', 'arcanum'] as const).map((volume) => (
+            <div key={volume} className="w-[clamp(196px,25vw,324px)]">
               <div
                 className={[
                   'records-library-cover group relative aspect-[1.46/1] transition-transform duration-300 ease-out',
                   'hover:-translate-y-2 hover:rotate-0 focus-within:-translate-y-2 focus-within:rotate-0',
-                  index === 0 ? '-rotate-[1.2deg]' : 'rotate-[1.2deg]',
+                  COVER_TILT[volume],
                 ].join(' ')}
               >
                 <span

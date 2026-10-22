@@ -1,14 +1,15 @@
 /**
- * VolumeSwitcher — the two leather bookmarks that sit above the open codex.
+ * VolumeSwitcher — the leather bookmarks that sit above the open codex.
  *
- * The Biographical Archives are one desk with two volumes. At the desk both
- * volumes are closed and the reader chooses a cover; once one is open, these
- * tabs keep the other volume one click away instead of forcing a trip back to
- * the library. They are deliberately physical: brass lettering on dark leather,
- * not a floating application toolbar.
+ * The Biographical Archives are one desk with three volumes: lives, bloodlines
+ * and the survey of Investiture. At the desk all three are closed and the
+ * reader chooses a cover; once one is open, these tabs keep the other volumes
+ * one click away instead of forcing a trip back to the library. They are
+ * deliberately physical: brass lettering on dark leather, not a floating
+ * application toolbar.
  */
 
-export type ArchiveVolume = 'records' | 'lineages'
+export type ArchiveVolume = 'records' | 'lineages' | 'arcanum'
 
 export const VOLUME_DETAILS: Record<
   ArchiveVolume,
@@ -26,6 +27,12 @@ export const VOLUME_DETAILS: Record<
     shortTitle: 'Bloodlines',
     meta: '7 houses · 25 people',
   },
+  arcanum: {
+    numeral: 'III',
+    title: 'Ars Arcanum',
+    shortTitle: 'Arcanum',
+    meta: '11 worlds · 20 manifestations',
+  },
 }
 
 interface Props {
@@ -35,7 +42,7 @@ interface Props {
 }
 
 export default function VolumeSwitcher({ current, onOpen, onAllVolumes }: Props) {
-  const volumes: ArchiveVolume[] = ['records', 'lineages']
+  const volumes: ArchiveVolume[] = ['records', 'lineages', 'arcanum']
 
   return (
     <nav className="codex-volumes" aria-label="Archive volumes" data-codex-interactive>
