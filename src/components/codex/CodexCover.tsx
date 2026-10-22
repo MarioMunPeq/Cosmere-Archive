@@ -11,9 +11,31 @@
 
 export type CoverPhase = 'closed' | 'opening'
 
+export interface CodexCoverDetails {
+  /** Small line above the title, e.g. `Volume I` or `Silverlight edition`. */
+  kicker?: string
+  title?: string
+  subtitle?: string
+  byline?: string
+  /** Accessible name for the whole-cover button. */
+  openLabel?: string
+  /** `volume` tightens the plate so two covers can rest side by side. */
+  variant?: 'codex' | 'volume'
+  testId?: string
+}
+
 interface Props {
   phase: CoverPhase
   onSkip: () => void
+  details?: CodexCoverDetails
+}
+
+const DEFAULT_DETAILS: Required<Omit<CodexCoverDetails, 'variant' | 'testId'>> = {
+  kicker: 'Silverlight edition',
+  title: 'ARS ARCANUM',
+  subtitle: 'Being an account of Investiture',
+  byline: 'Khrissalla of Taldain',
+  openLabel: 'Open the Ars Arcanum',
 }
 
 const SPOKES = Array.from({ length: 16 }, (_, index) => (index * 360) / 16)
@@ -68,9 +90,16 @@ function CosmereGlyph() {
 
 const BOSSES = ['tl', 'tr', 'bl', 'br'] as const
 
-export default function CodexCover({ phase, onSkip }: Props) {
+export default function CodexCover({ phase, onSkip, details }: Props) {
+  const d = { ...DEFAULT_DETAILS, ...details }
+
   return (
-    <div className="codex-cover" data-phase={phase} data-testid="codex-cover">
+    <div
+      className="codex-cover"
+      data-phase={phase}
+      data-variant={d.variant ?? 'codex'}
+      data-testid={d.testId ?? 'codex-cover'}
+    >
       <div className="codex-cover__leaf" aria-hidden="true">
         <div className="codex-cover__spine" />
         {Array.from({ length: 5 }, (_, index) => (
@@ -79,10 +108,10 @@ export default function CodexCover({ phase, onSkip }: Props) {
 
         <div className="codex-cover__frame" />
         <div className="codex-cover__plate">
-          <span className="codex-cover__kicker">Silverlight edition</span>
-          <span className="codex-cover__title">ARS ARCANUM</span>
-          <span className="codex-cover__subtitle">Being an account of Investiture</span>
-          <span className="codex-cover__byline">Khrissalla of Taldain</span>
+          <span className="codex-cover__kicker">{d.kicker}</span>
+          <span className="codex-cover__title">{d.title}</span>
+          <span className="codex-cover__subtitle">{d.subtitle}</span>
+          <span className="codex-cover__byline">{d.byline}</span>
         </div>
 
         <div className="codex-cover__sigil">
@@ -94,7 +123,7 @@ export default function CodexCover({ phase, onSkip }: Props) {
         ))}
       </div>
 
-      <button type="button" className="codex-cover__skip" onClick={onSkip} aria-label="Open the Ars Arcanum" />
+      <button type="button" className="codex-cover__skip" onClick={onSkip} aria-label={d.openLabel} />
     </div>
   )
 }

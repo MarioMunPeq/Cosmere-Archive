@@ -18,6 +18,7 @@ interface Props {
   onOpenRecord: (characterId: string) => void
   onOpenRange: (spreadId: string) => void
   onOpenPartI: () => void
+  onOpenLineages: () => void
 }
 
 function matches(record: Character, query: string): boolean {
@@ -25,7 +26,7 @@ function matches(record: Character, query: string): boolean {
   return haystack.includes(query)
 }
 
-export default function RecordsContents({ records, onOpenRecord, onOpenRange, onOpenPartI }: Props) {
+export default function RecordsContents({ records, onOpenRecord, onOpenRange, onOpenPartI, onOpenLineages }: Props) {
   const [query, setQuery] = useState('')
   const trimmed = query.trim().toLowerCase()
 
@@ -102,6 +103,23 @@ export default function RecordsContents({ records, onOpenRecord, onOpenRange, on
               </button>
             )}
           </div>
+        </div>
+
+        <div className="mb-5 border-t pt-3" style={{ borderColor: 'rgba(80,60,40,0.16)' }}>
+          <p
+            className="text-[11px] uppercase tracking-[0.16em] [font-family:var(--font-ui)]"
+            style={{ color: 'var(--text-on-page-tertiary)' }}
+          >
+            Volume II
+          </p>
+          <button
+            type="button"
+            onClick={onOpenLineages}
+            className="mt-1 cursor-pointer border-0 bg-transparent p-0 text-left text-[12px] underline underline-offset-2 [font-family:var(--font-display)]"
+            style={{ color: 'var(--text-on-page-link)' }}
+          >
+            Bloodlines &amp; Connections — houses and recorded bonds →
+          </button>
         </div>
 
         {emptyMessage && (

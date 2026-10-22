@@ -13,7 +13,7 @@
  * folio it carries, and which spread a legacy parameter meant.
  */
 
-export type CodexPartId = 'investiture' | 'records'
+export type CodexPartId = 'investiture' | 'records' | 'lineages'
 export type CodexEdition = 'working' | 'printed' | 'restricted'
 
 export interface CodexLeaf {

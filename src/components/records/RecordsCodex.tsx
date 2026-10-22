@@ -1,10 +1,11 @@
 /**
- * RecordsCodex — Part II of the Ars Arcanum.
+ * RecordsCodex — the desk at the entrance to the Biographical Archives.
  *
- * The contents spread is the entrance; every person is one spread, and the
- * eight fore-edge tabs point at the same letter ranges printed on the contents
- * page. `?character=` and the search palette's `/records/:id` links both resolve
- * to the record's own spread, then the URL is canonicalised to `?spread=`.
+ * The archives are one room with two volumes. At the desk both volumes are
+ * closed and the reader chooses a cover; once a volume is open, the brass
+ * volume tabs keep the other one a click away. `?character=` and the search
+ * palette's `/records/:id` links open Volume I directly, then the URL is
+ * canonicalised to `?spread=`.
  */
 
 import { useEffect, useMemo } from 'react'
@@ -12,12 +13,15 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useSEOMeta } from '@/hooks/useSEOMeta'
 import { useViewTransitionNavigate } from '@/hooks/useViewTransition'
 import { useCodexRoute } from '@/hooks/useCodexRoute'
-import { useCodexSession } from '@/hooks/useCodexSession'
+import { readCodexRibbon, useCodexSession } from '@/hooks/useCodexSession'
 import { useSpoilerMode } from '@/hooks/useSpoilerMode'
 import Codex, { type CodexSpreadView } from '@/components/codex/Codex'
 import ThumbTabs, { type ThumbTab } from '@/components/codex/ThumbTabs'
 import SpoilerControl from '@/components/records/SpoilerControl'
 import RecordsContents from '@/components/records/RecordsContents'
+import RecordsLibrary from '@/components/records/RecordsLibrary'
+import LineagesCodex from '@/components/records/LineagesCodex'
+import VolumeSwitcher, { type ArchiveVolume } from '@/components/records/VolumeSwitcher'
 import { buildRecordSpread } from '@/components/records/RecordSpread'
 import { ALL_CHARACTERS } from '@/data/static'
 import { ARCANUM_CHAPTERS } from '@/utils/ars-arcanum'
@@ -28,8 +32,17 @@ import type { Character } from '@/types/character'
 const CHARACTERS_BY_ID = new Map(ALL_CHARACTERS.map((character) => [character.id, character]))
 const CONTENTS_ID = 'records-contents'
 const TITLE_ID = 'records-title'
+const LINEAGES_CONTENTS_ID = 'lineages-contents'
 
-function RecordsTitlePage({ total, ranges }: { total: number; ranges: number }) {
+function RecordsTitlePage({
+  total,
+  ranges,
+  onOpenLineages,
+}: {
+  total: number
+  ranges: number
+  onOpenLineages: () => void
+}) {
   return (
     <div className="flex h-full flex-col items-center justify-center text-center" data-record-title>
       <p
@@ -58,6 +71,22 @@ function RecordsTitlePage({ total, ranges }: { total: number; ranges: number }) 
       >
         {total} records · {ranges} ranges · {ARCANUM_CHAPTERS.length} Investiture chapters in Part I
       </p>
+      <div className="mt-5 border-t pt-3" style={{ borderColor: 'rgba(80,60,40,0.16)' }}>
+        <p
+          className="text-[11px] uppercase tracking-[0.16em] [font-family:var(--font-ui)]"
+          style={{ color: 'var(--text-on-page-tertiary)' }}
+        >
+          Volume II
+        </p>
+        <button
+          type="button"
+          onClick={onOpenLineages}
+          className="mt-1 cursor-pointer border-0 bg-transparent p-0 text-[12px] underline underline-offset-2 [font-family:var(--font-display)]"
+          style={{ color: 'var(--text-on-page-link)' }}
+        >
+          Bloodlines &amp; Connections — houses and recorded bonds →
+        </button>
+      </div>
     </div>
   )
 }
@@ -74,7 +103,7 @@ function RecordsMissing({ id }: { id: string }) {
         >
           Archive error
         </p>
-        <h1 className="mt-2 font-[var(--font-display)] text-[var(--text-h2)] text-[var(--text-primary)]">
+        <h1 className="mt-2 text-[var(--text-h2)] text-[var(--text-primary)] [font-family:var(--font-display)]">
           No such record
         </h1>
         <p className="mt-3 text-[var(--text-body-s)] leading-relaxed text-[var(--text-secondary)]">
@@ -134,6 +163,12 @@ function RecordsBook({ spoiler }: { spoiler: Spoiler }) {
 
   const openRecord = (characterId: string) => route.openSpread(recordSpreadId(characterId))
   const openRange = (rangeId: string) => route.openSpread(rangeId)
+  const openLineagesIndex = () => navigate(`/characters?spread=${LINEAGES_CONTENTS_ID}`)
+  const openLineagesVolume = () => {
+    const ribbon = readCodexRibbon('lineages')
+    navigate(`/characters?spread=${encodeURIComponent(ribbon ?? LINEAGES_CONTENTS_ID)}`)
+  }
+  const allVolumes = () => navigate('/characters')
 
   const views: CodexSpreadView[] = spreads.map((entry) => {
     if (entry.id === CONTENTS_ID) {
@@ -146,13 +181,16 @@ function RecordsBook({ spoiler }: { spoiler: Spoiler }) {
             onOpenRecord={openRecord}
             onOpenRange={openRange}
             onOpenPartI={() => navigate('/magic')}
+            onOpenLineages={openLineagesIndex}
           />
         ),
-        right: <RecordsTitlePage total={ALL_CHARACTERS.length} ranges={ranges.length} />,
+        right: (
+          <RecordsTitlePage total={ALL_CHARACTERS.length} ranges={ranges.length} onOpenLineages={openLineagesIndex} />
+        ),
         leftFolio: entry.folios[0] ?? undefined,
         rightFolio: entry.folios[1] ?? undefined,
         leftHeader: 'Biographical Records',
-        rightHeader: 'Contents',
+        rightHeader: 'Title page',
       }
     }
 
@@ -206,10 +244,21 @@ function RecordsBook({ spoiler }: { spoiler: Spoiler }) {
         edition={session.edition}
         part="records"
         label="Biographical Records"
+        startOpen
+        aside={
+          <VolumeSwitcher
+            current="records"
+            onOpen={(volume) => {
+              if (volume === 'lineages') openLineagesVolume()
+              else route.openSpread(CONTENTS_ID)
+            }}
+            onAllVolumes={allVolumes}
+          />
+        }
         thumbs={<ThumbTabs label="Record ranges" tabs={tabs} />}
       />
       <div className="records-spoiler">
-        <SpoilerControl spoiler={spoiler} />
+        <SpoilerControl spoiler={spoiler} label />
       </div>
     </>
   )
@@ -219,8 +268,50 @@ function activeCharacterIdForSpread(id: string | undefined): Character | undefin
   return id ? CHARACTERS_BY_ID.get(id) : undefined
 }
 
+function requestedVolume(params: URLSearchParams): ArchiveVolume | null {
+  const spread = params.get('spread')
+  if (spread) {
+    if (
+      spread === CONTENTS_ID ||
+      spread === TITLE_ID ||
+      spread.startsWith('records-') ||
+      spread.startsWith('record-')
+    ) {
+      return 'records'
+    }
+    if (
+      spread === LINEAGES_CONTENTS_ID ||
+      spread.startsWith('lineages-') ||
+      spread.startsWith('lineage-') ||
+      spread.startsWith('connection-')
+    ) {
+      return 'lineages'
+    }
+  }
+
+  const tab = params.get('tab')
+  if (tab === 'bloodlines' || tab === 'connections' || tab === 'family' || tab === 'trees' || tab === 'relationships') {
+    return 'lineages'
+  }
+  if (params.has('family')) return 'lineages'
+  if (
+    tab === 'records' ||
+    tab === 'characters' ||
+    tab === 'search' ||
+    tab === 'toc' ||
+    tab === 'contents' ||
+    tab === 'index'
+  ) {
+    return 'records'
+  }
+  if (params.get('character') || params.get('q')) return 'records'
+
+  return null
+}
+
 export default function RecordsCodex() {
   const [params] = useSearchParams()
+  const navigate = useViewTransitionNavigate()
   const requestedCharacter = params.get('character')
   const spoiler = useSpoilerMode()
 
@@ -234,8 +325,34 @@ export default function RecordsCodex() {
     return <RecordsMissing id={requestedCharacter} />
   }
 
+  const volume = requestedVolume(params)
+
+  if (!volume) {
+    return (
+      <div data-records-main className="relative flex min-h-0 flex-1 flex-col">
+        <h1 className="sr-only">Biographical Archives</h1>
+        <RecordsLibrary
+          onOpen={(next) => {
+            const fallback = next === 'records' ? CONTENTS_ID : LINEAGES_CONTENTS_ID
+            const ribbon = readCodexRibbon(next)
+            navigate(`/characters?spread=${encodeURIComponent(ribbon ?? fallback)}`)
+          }}
+        />
+      </div>
+    )
+  }
+
+  if (volume === 'lineages') {
+    return (
+      <div data-records-main className="relative flex min-h-0 flex-1 flex-col">
+        <h1 className="sr-only">Biographical Archives</h1>
+        <LineagesCodex />
+      </div>
+    )
+  }
+
   return (
-    <div className="relative flex min-h-0 flex-1 flex-col">
+    <div data-records-main className="relative flex min-h-0 flex-1 flex-col">
       <h1 className="sr-only">Biographical Archives</h1>
       <RecordsBook spoiler={spoiler} />
     </div>

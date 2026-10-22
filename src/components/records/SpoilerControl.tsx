@@ -20,7 +20,13 @@ import type { Book } from '@/types'
 
 type Spoiler = ReturnType<typeof useSpoilerMode>
 
-export default function SpoilerControl({ spoiler }: { spoiler: Spoiler }) {
+interface Props {
+  spoiler: Spoiler
+  /** Adds the small `Reading log` caption used on the codex desk tab. */
+  label?: boolean
+}
+
+export default function SpoilerControl({ spoiler, label = false }: Props) {
   const {
     enabled,
     toggle,
@@ -41,10 +47,16 @@ export default function SpoilerControl({ spoiler }: { spoiler: Spoiler }) {
 
   return (
     <>
+      {label && (
+        <span className="records-spoiler__label" aria-hidden="true">
+          Reading log
+        </span>
+      )}
       <button
         type="button"
         onClick={toggle}
         aria-pressed={enabled}
+        aria-label={enabled ? 'Spoilers on. Turn off spoiler protection' : 'Spoilers off. Turn on spoiler protection'}
         data-spoiler-toggle
         className={[
           'inline-flex cursor-pointer items-center gap-2 rounded-[var(--radius-md)] px-3 py-2',
@@ -68,10 +80,11 @@ export default function SpoilerControl({ spoiler }: { spoiler: Spoiler }) {
           type="button"
           onClick={() => setPanelOpen(!panelOpen)}
           aria-expanded={panelOpen}
+          aria-label={`${readBooks.length} ${readBooks.length === 1 ? 'book' : 'books'} marked as read. ${panelOpen ? 'Close' : 'Open'} the reading log.`}
           data-spoiler-panel-toggle
-          className="cursor-pointer rounded-[var(--radius-md)] px-2 py-2 text-[var(--text-micro)] text-[var(--text-tertiary)] transition-colors hover:text-[var(--text-secondary)] focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)]"
+          className="cursor-pointer whitespace-nowrap rounded-[var(--radius-md)] px-2 py-2 text-[var(--text-micro)] text-[var(--text-tertiary)] transition-colors hover:text-[var(--text-secondary)] focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)]"
         >
-          {readBooks.length} read
+          Books read · {readBooks.length}
         </button>
       )}
 
@@ -116,7 +129,7 @@ export default function SpoilerControl({ spoiler }: { spoiler: Spoiler }) {
                       />
                       <span className="text-[var(--text-body-s)] text-[var(--text-primary)]">{b.title}</span>
                       {b.year && (
-                        <span className="ml-auto text-[var(--text-nano)] tabular-nums text-[var(--text-tertiary)]">
+                        <span className="ml-auto text-[var(--text-micro)] tabular-nums text-[var(--text-tertiary)]">
                           {b.year}
                         </span>
                       )}

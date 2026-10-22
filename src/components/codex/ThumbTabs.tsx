@@ -26,7 +26,7 @@ export default function ThumbTabs({ tabs, label }: Props) {
   if (tabs.length === 0) return null
 
   return (
-    <nav className="codex-thumbs" aria-label={label}>
+    <nav className="codex-thumbs" aria-label={label} data-codex-interactive>
       <ul className="codex-thumbs__list">
         {tabs.map((tab) => (
           <li key={tab.id}>

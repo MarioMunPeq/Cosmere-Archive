@@ -44,6 +44,12 @@ const WIDTH = {
   lg: 'max-w-3xl',
 } as const
 
+const MAX_WIDTH = {
+  sm: '28rem',
+  md: '36rem',
+  lg: '48rem',
+} as const
+
 export default function Dialog({
   open,
   onClose,
@@ -91,8 +97,9 @@ export default function Dialog({
         if (!inside) onClose()
       }}
       onClose={onClose}
+      style={{ width: `min(calc(100vw - 2rem), ${MAX_WIDTH[size]})` }}
       className={[
-        'fixed inset-0 z-[100] m-auto max-h-[85vh] w-[calc(100vw_-_2rem)] rounded-[var(--radius-lg)] p-0',
+        'fixed inset-0 z-[100] m-auto max-h-[85vh] rounded-[var(--radius-lg)] p-0',
         'border border-[var(--border-interactive)] bg-[var(--surface-raised)] text-[var(--text-primary)]',
         'shadow-[var(--shadow-3)] backdrop:bg-[color-mix(in_srgb,var(--surface-void)_78%,transparent)]',
         'backdrop:backdrop-blur-[3px]',

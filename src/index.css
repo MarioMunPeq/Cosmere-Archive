@@ -1136,13 +1136,17 @@ html {
 }
 
 .codex-object__candle {
+  --candle-radius: clamp(140px, 12vw, 180px);
+
   position: absolute;
-  inset: -12%;
+  inset: 0;
   background: radial-gradient(
-    42% 46% at var(--candle-x, 62%) var(--candle-y, 22%),
-    rgb(255 207 148 / 0.27) 0%,
-    rgb(255 176 104 / 0.1) 46%,
-    transparent 72%
+    circle var(--candle-radius) at var(--candle-x, 62%) var(--candle-y, 22%),
+    rgb(255 191 128 / 0.19) 0%,
+    rgb(255 176 108 / 0.11) 26%,
+    rgb(255 158 88 / 0.045) 52%,
+    rgb(255 146 76 / 0.012) 76%,
+    transparent 100%
   );
   mix-blend-mode: screen;
   animation: codex-candle-flicker 4s ease-in-out infinite;
@@ -1202,19 +1206,19 @@ html {
 @keyframes codex-candle-flicker {
   0%,
   100% {
-    opacity: 0.92;
+    opacity: 0.88;
   }
   22% {
-    opacity: 1;
+    opacity: 0.95;
   }
   47% {
-    opacity: 0.86;
+    opacity: 0.84;
   }
   68% {
-    opacity: 0.97;
+    opacity: 0.93;
   }
   84% {
-    opacity: 0.9;
+    opacity: 0.87;
   }
 }
 
@@ -1970,7 +1974,7 @@ html {
 
   .codex-object__candle {
     animation: none;
-    opacity: 0.95;
+    opacity: 0.9;
   }
 
   .codex-mote {
@@ -2232,5 +2236,385 @@ html {
   .record-portrait__image,
   .record-miniature__image {
     transition: none;
+  }
+}
+
+/* ---- Two-volume desk ------------------------------------------------------ */
+
+.codex[data-aside='true'] .codex-stage {
+  padding-top: clamp(52px, 6.5vh, 76px);
+}
+
+.codex-volumes {
+  position: absolute;
+  top: clamp(8px, 1.4vh, 16px);
+  left: 50%;
+  z-index: 4;
+  display: flex;
+  align-items: stretch;
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid rgb(236 217 173 / 0.18);
+  border-radius: 2px 2px 5px 5px;
+  background: linear-gradient(180deg, #3a2414, #24150a);
+  box-shadow:
+    0 10px 24px -14px rgb(0 0 0 / 0.9),
+    inset 0 1px 0 rgb(236 217 173 / 0.12);
+  transform: translateX(-50%);
+}
+
+.codex-volumes__label {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgb(236 217 173 / 0.64);
+  white-space: nowrap;
+}
+
+.codex-volumes__tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 96px;
+  padding: 5px 9px;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  color: rgb(236 217 173 / 0.62);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition:
+    background-color 160ms var(--ease-standard),
+    color 160ms var(--ease-standard);
+}
+
+.codex-volumes__tab:hover {
+  background: rgb(236 217 173 / 0.08);
+  color: var(--codex-brass-ink);
+}
+
+.codex-volumes__tab[data-active='true'] {
+  background: linear-gradient(180deg, #efe7d6, #d9cdb4);
+  color: #3a2414;
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.4),
+    0 1px 0 rgb(0 0 0 / 0.4);
+}
+
+.codex-volumes__numeral {
+  font-family: var(--font-display);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.codex-volumes__title {
+  line-height: 1;
+}
+
+.codex-volumes__all {
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  color: rgb(236 217 173 / 0.64);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.codex-volumes__all:hover {
+  color: var(--codex-brass-ink);
+}
+
+.codex-volumes__tab:focus-visible,
+.codex-volumes__all:focus-visible {
+  outline: 2px solid var(--codex-brass-ink);
+  outline-offset: 2px;
+}
+
+/* Compact cover used by the two closed volumes on the desk. */
+.codex-cover[data-variant='volume'] .codex-cover__title {
+  font-size: clamp(13px, 1.6vw, 22px);
+  letter-spacing: 0.14em;
+  text-indent: 0.14em;
+}
+
+.codex-cover[data-variant='volume'] .codex-cover__kicker {
+  letter-spacing: 0.28em;
+}
+
+.codex-cover[data-variant='volume'] .codex-cover__subtitle {
+  font-size: clamp(11px, 1vw, 14px);
+}
+
+.codex-cover[data-variant='volume'] .codex-cover__glyph {
+  width: clamp(36px, 16%, 80px);
+}
+
+.codex-cover[data-variant='volume'] .codex-cover__plate {
+  bottom: 9%;
+}
+
+.records-spoiler {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 232px;
+  padding: 4px 6px;
+}
+
+.records-spoiler__label {
+  padding: 0 6px;
+  color: var(--text-on-page-tertiary);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/*
+ * Below ~1000px the centred volume tabs and the reading log would meet in the
+ * same top row. Put the log on its own line before that happens, and hide its
+ * caption so the compact control fits beside the book on phones.
+ */
+@media (max-width: 1000px) {
+  .codex[data-aside='true'] .codex-stage {
+    padding-top: 96px;
+  }
+
+  /* Volume II has no reading-log control; its tabs need far less headroom. */
+  .codex[data-part='lineages'][data-aside='true'] .codex-stage {
+    padding-top: 56px;
+  }
+
+  .records-spoiler {
+    top: 52px;
+    min-width: 0;
+  }
+
+  .records-spoiler__label {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .codex-volumes__label {
+    display: none;
+  }
+
+  .codex-volumes__tab {
+    min-width: 84px;
+    justify-content: center;
+    padding: 6px 8px;
+  }
+}
+
+/* ---- Bloodline plate -----------------------------------------------------
+   An engraved fold-out, not a diagram. The medallions are the only solid
+   shapes; names are printed on the paper, branches are hand-inked curves, and
+   the scrollbar is replaced by pan/zoom so the tabs never sit over the chart. */
+.lineage-plate {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  /* The fore-edge slips are 26px wide and sit against the page edge, so the
+     printed column keeps 32px clear when the page margin is thinner than that.
+     This is what stops the rail from covering the chart or its controls. */
+  padding-right: max(0px, calc(32px - clamp(12px, 2.2vw, 46px)));
+}
+
+.lineage-plate__head {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 2px 3px;
+  border-bottom: 1px solid rgb(80 60 40 / 0.14);
+}
+
+.lineage-plate__kicker {
+  color: var(--text-on-page-secondary);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.lineage-plate__count {
+  color: var(--text-on-page-tertiary);
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-style: italic;
+}
+
+.lineage-plate[data-compact] .lineage-plate__head {
+  display: none;
+}
+
+.lineage-plate__viewport {
+  position: relative;
+  flex: 1 1 0%;
+  min-height: 0;
+  overflow: hidden;
+  overscroll-behavior: contain;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.lineage-plate__viewport[data-dragging='true'],
+.lineage-plate__viewport[data-dragging='true'] .lineage-node--interactive {
+  cursor: grabbing;
+}
+
+.lineage-plate__canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+.lineage-plate__ink {
+  display: block;
+  overflow: visible;
+}
+
+.lineage-medallion__photo {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--surface-page-inset);
+}
+
+.lineage-medallion__photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  filter: var(--lineage-engrave, sepia(0.35) contrast(1.03));
+  transition: filter 220ms var(--ease-standard);
+}
+
+.lineage-node--interactive {
+  cursor: pointer;
+}
+
+.lineage-node--interactive:hover .lineage-medallion__photo img,
+.lineage-node--interactive:focus-visible .lineage-medallion__photo img {
+  filter: none;
+}
+
+.lineage-node:focus-visible {
+  outline: none;
+}
+
+.lineage-medallion__focus {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 150ms var(--ease-standard);
+}
+
+.lineage-node--interactive:focus-visible .lineage-medallion__focus {
+  opacity: 1;
+}
+
+.lineage-branch {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: lineage-draw 900ms cubic-bezier(0.22, 0.7, 0.2, 1) forwards;
+  animation-delay: var(--lineage-delay, 0ms);
+}
+
+.lineage-branch--bleed {
+  animation-duration: 1000ms;
+}
+
+@keyframes lineage-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.lineage-plate__controls {
+  position: absolute;
+  right: 7px;
+  bottom: 4px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.lineage-plate__control {
+  display: grid;
+  place-items: center;
+  min-width: 24px;
+  min-height: 24px;
+  padding: 0 2px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-on-page-secondary);
+  font-family: var(--font-display);
+  font-size: 14px;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  text-shadow:
+    0 1px 0 rgb(255 250 235 / 0.5),
+    0 -1px 0 rgb(60 40 20 / 0.14);
+}
+
+.lineage-plate__control:hover {
+  color: var(--text-on-page-link);
+}
+
+.lineage-plate__control:focus-visible {
+  outline: 1.5px solid var(--text-on-page-link);
+  outline-offset: 2px;
+}
+
+/* The fore-edge rail moves outside the book at this width; the plate may use
+   the full printed column. */
+@media (max-width: 760px) {
+  .lineage-plate {
+    padding-right: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lineage-branch {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  .lineage-medallion__photo img,
+  .lineage-medallion__focus {
+    transition: none;
+  }
+
+  .codex-volumes__tab {
+    transition: none;
+  }
+
+  .records-library-cover {
+    transform: none !important;
+    transition: none !important;
   }
 }

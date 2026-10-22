@@ -18,7 +18,8 @@ import { test, expect } from '@playwright/test'
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 
-const RECORDS = '/#/characters'
+const CHARACTERS = '/#/characters'
+const RECORDS = `${CHARACTERS}?spread=records-contents`
 
 /** WCAG relative luminance from an `rgb()` string. */
 function luminance(css: string): number {
@@ -87,7 +88,7 @@ test('R.9 the index is ordered alphabetically', async ({ page }) => {
 })
 
 test('R.4 the planet label clears 4.5:1', async ({ page }) => {
-  await page.goto(`${RECORDS}?character=kaladin`)
+  await page.goto(`${CHARACTERS}?character=kaladin`)
   await page.locator('[data-record-planet]').waitFor()
 
   const [label, backdrop] = await page.evaluate(() => {
@@ -197,7 +198,7 @@ test('a character search result at /records/:id resolves to the record spread', 
 
 test.describe('the record card', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto(`${RECORDS}?character=kaladin`)
+    await page.goto(`${CHARACTERS}?character=kaladin`)
     await page.locator('[data-character-card]').waitFor()
   })
 
@@ -240,7 +241,7 @@ test.describe('the record card', () => {
     })
 
     for (const id of ['kaladin', 'vin', 'sazed', 'is-har', 'szeth', 'shallan']) {
-      await page.goto(`${RECORDS}?character=${id}`)
+      await page.goto(`${CHARACTERS}?character=${id}`)
       await page.waitForTimeout(200)
     }
     expect(failures, `image requests that 404'd: ${failures.join(', ')}`).toEqual([])
@@ -304,7 +305,7 @@ test.describe('the record card', () => {
      * asserted in records-data.test.ts; what this checks is that a record
      * which *does* have relationships renders them.
      */
-    await page.goto(`${RECORDS}?character=vin`)
+    await page.goto(`${CHARACTERS}?character=vin`)
     const section = page.locator('[data-character-card] section', { hasText: 'Relationships' })
     await expect(section).toBeVisible()
     await expect(section.locator('a').first()).toBeVisible()
@@ -318,7 +319,7 @@ test.describe('the record card', () => {
 
   test('a record with no relationships says so rather than showing an empty section', async ({ page }) => {
     // Dabbid is one of the sixty-eight with no recorded relationships.
-    await page.goto(`${RECORDS}?character=dabbid`)
+    await page.goto(`${CHARACTERS}?character=dabbid`)
     const section = page.locator('[data-character-card] section', { hasText: 'Relationships' })
     await expect(section).toBeVisible()
     await expect(section).toContainText('No recorded relationships.')
@@ -331,7 +332,7 @@ test.describe('the record card', () => {
       localStorage.setItem('cosmere-spoiler-mode', 'true')
       localStorage.setItem('cosmere-read-books', '[]')
     })
-    await page.goto(`${RECORDS}?character=kaladin`)
+    await page.goto(`${CHARACTERS}?character=kaladin`)
     await page.locator('[data-character-card]').waitFor()
 
     // Name, portrait slot and origin survive.
@@ -363,10 +364,10 @@ test.describe('the record card', () => {
       localStorage.setItem('cosmere-spoiler-mode', 'true')
       localStorage.setItem('cosmere-read-books', '[]')
     })
-    await page.goto(`${RECORDS}?character=kaladin`)
+    await page.goto(`${CHARACTERS}?character=kaladin`)
     await expect(page.locator('[data-locked]')).toBeVisible()
 
-    await page.getByRole('button', { name: 'Mark books as read' }).click()
+    await page.locator('[data-spoiler-panel-toggle]').click()
     await page.getByRole('button', { name: /^Mark all/ }).click()
     await page.waitForTimeout(300)
 
@@ -389,7 +390,7 @@ test.describe('the record card', () => {
   })
 
   test('an unknown record id is a 404 state, not an empty panel', async ({ page }) => {
-    await page.goto(`${RECORDS}?character=no-such-person`)
+    await page.goto(`${CHARACTERS}?character=no-such-person`)
     // The route is lazy, so wait for the screen itself and not for a card that
     // is never going to arrive.
     await page.locator('[data-records-main]').waitFor()
@@ -418,7 +419,7 @@ test.describe('the record card', () => {
 
 test.describe('bloodlines', () => {
   test('renders a family tree with keyboard-navigable nodes', async ({ page }) => {
-    await page.goto(`${RECORDS}?tab=bloodlines`)
+    await page.goto(`${CHARACTERS}?spread=lineage-kholin`)
     await page.locator('[data-bloodlines]').waitFor()
 
     // Nodes are focusable controls, not shapes with a click handler.
@@ -431,9 +432,10 @@ test.describe('bloodlines', () => {
     await expect(first).toHaveAttribute('aria-label', /.+/)
   })
 
-  test('arrow keys move along a generation', async ({ page }) => {
-    await page.goto(`${RECORDS}?tab=bloodlines`)
+  test('arrow keys move along a generation without turning the page', async ({ page }) => {
+    await page.goto(`${CHARACTERS}?spread=lineage-kholin`)
     await page.locator('[data-bloodlines]').waitFor()
+    const spreadUrl = page.url()
 
     /*
      * Start from a node that has a right-hand neighbour. The first generation
@@ -467,49 +469,71 @@ test.describe('bloodlines', () => {
 
     await page.keyboard.press('ArrowLeft')
     expect(await page.evaluate(() => document.activeElement?.id)).toBe(before)
+    expect(page.url()).toBe(spreadUrl)
   })
 
-  test('search highlights a lineage without moving the chart', async ({ page }) => {
-    await page.goto(`${RECORDS}?tab=bloodlines`)
-    await page.locator('[data-bloodlines]').waitFor()
+  test('the fold-out chart fits all twelve Kholin members inside the plate', async ({ page }) => {
+    await page.goto(`${CHARACTERS}?spread=lineage-kholin`)
+    const plate = page.locator('[data-lineage-plate]')
+    await plate.waitFor()
+    await expect(plate).toHaveAttribute('data-ready', 'true')
+    await expect(page.locator('[data-bloodlines] [data-lineage-node]')).toHaveCount(12)
 
-    // Search for a name that is actually in the chart on screen. Hardcoding
-    // "Navani" assumed a default family she belongs to, and the default is
-    // whatever FAMILY_TREES[0] happens to be.
-    const aMember = await page.locator('[data-bloodlines] g[role="button"]').first().getAttribute('aria-label')
-    const term = (aMember ?? '').split(',')[0]!.split(' ')[0]!
-    expect(term.length).toBeGreaterThan(2)
+    const region = page.locator('[data-bloodlines] [data-codex-interactive]')
+    const canvas = page.locator('[data-lineage-canvas]')
+    const fits = await page.evaluate(() => {
+      const area = document.querySelector<HTMLElement>('[data-bloodlines] [data-codex-interactive]')
+      const sheet = document.querySelector<HTMLElement>('[data-lineage-canvas]')
+      if (!area || !sheet) return false
+      const a = area.getBoundingClientRect()
+      const b = sheet.getBoundingClientRect()
+      return b.left >= a.left - 1 && b.top >= a.top - 1 && b.right <= a.right + 1 && b.bottom <= a.bottom + 1
+    })
+    expect(fits).toBe(true)
 
-    const geometryBefore = await page.locator('[data-bloodlines] g[role="button"]').first().getAttribute('transform')
+    const overflow = await region.evaluate((el) => getComputedStyle(el).overflow)
+    expect(overflow).toBe('hidden')
 
-    await page.getByPlaceholder('Find a member').fill(term)
-    await page.waitForTimeout(250)
+    const sheet = await canvas.boundingBox()
+    const tabs = await page.locator('.codex-thumbs').boundingBox()
+    expect(sheet).not.toBeNull()
+    expect(tabs).not.toBeNull()
+    if (sheet && tabs) expect(sheet.x + sheet.width).toBeLessThanOrEqual(tabs.x + 1)
+  })
 
-    // Positions are unchanged: a chart that reflows under a query cannot be
-    // read while you search it.
-    const geometryAfter = await page.locator('[data-bloodlines] g[role="button"]').first().getAttribute('transform')
-    expect(geometryAfter).toBe(geometryBefore)
+  test('uses the stored portraits and falls back without a missing request', async ({ page }) => {
+    const failures: string[] = []
+    page.on('response', (response) => {
+      const path = new URL(response.url()).pathname
+      if (/\/characters\/[^/]+\.webp$/.test(path) && response.status() >= 400) failures.push(path)
+    })
 
-    // And something is now dimmed. The opacity is an attribute on the <g>,
-    // not an inline style, so read the attribute.
-    const dimmed = await page.evaluate(
-      () =>
-        Array.from(document.querySelectorAll('[data-bloodlines] g[role="button"]')).filter(
-          (el) => Number(el.getAttribute('opacity') ?? '1') < 1,
-        ).length,
-    )
-    expect(dimmed).toBeGreaterThan(0)
+    await page.goto(`${CHARACTERS}?spread=lineage-kholin`)
+    await expect(page.locator('[data-lineage-plate]')).toHaveAttribute('data-ready', 'true')
+    await expect(page.locator('[data-bloodlines] .lineage-medallion__photo img')).toHaveCount(11)
+    await expect
+      .poll(() =>
+        page.evaluate(() =>
+          Array.from(
+            document.querySelectorAll<HTMLImageElement>('[data-bloodlines] .lineage-medallion__photo img'),
+          ).every((image) => image.complete),
+        ),
+      )
+      .toBe(true)
+    expect(failures).toEqual([])
   })
 
   test('every family in the index opens', async ({ page }) => {
-    await page.goto(`${RECORDS}?tab=bloodlines`)
-    await page.locator('[data-bloodlines]').waitFor()
+    await page.goto(`${CHARACTERS}?spread=lineages-bloodlines`)
+    await page.getByRole('navigation', { name: 'Families' }).waitFor()
     const families = page.getByRole('navigation', { name: 'Families' }).getByRole('button')
     const count = await families.count()
     expect(count).toBeGreaterThan(3)
 
     for (let i = 0; i < count; i++) {
-      await families.nth(i).click()
+      await page.goto(`${CHARACTERS}?spread=lineages-bloodlines`)
+      await page.getByRole('navigation', { name: 'Families' }).waitFor()
+      await page.getByRole('navigation', { name: 'Families' }).getByRole('button').nth(i).click()
       await expect(page.locator('[data-bloodlines]')).toBeVisible()
       const label = await page.locator('[data-bloodlines]').getAttribute('data-bloodlines')
       expect(label).toBeTruthy()
@@ -518,37 +542,75 @@ test.describe('bloodlines', () => {
 })
 
 test.describe('connections', () => {
-  test('lists a character relationships as links, not a mural', async ({ page }) => {
-    await page.goto(`${RECORDS}?tab=connections&character=vin`)
+  test('lists a character relationships as links into Volume I', async ({ page }) => {
+    await page.goto(`${CHARACTERS}?spread=connection-vin`)
     await page.locator('[data-connections]').waitFor()
 
     const links = page.locator('[data-connections] ul a')
     expect(await links.count()).toBeGreaterThan(1)
 
-    // Every row is an anchor that points at another record.
+    // Every row is an anchor that points at another record, not a mural.
     const href = await links.first().getAttribute('href')
-    expect(href).toContain('character=')
+    expect(href).toContain('spread=record-')
 
     await links.first().click()
-    await page.waitForTimeout(400)
-    expect(page.url()).toContain('tab=connections')
-    await expect(page.locator('[data-connections]')).toBeVisible()
+    await expect(page).toHaveURL(/spread=record-/)
+    await expect(page.locator('[data-character-card]')).toBeVisible()
   })
 
-  test('a character with no recorded links says so', async ({ page }) => {
-    await page.goto(`${RECORDS}?tab=connections&character=dabbid`)
-    await page.locator('[data-connections]').waitFor()
-    await expect(page.locator('[data-connections]')).toContainText('No recorded relationships.')
-    await expect(page.locator('[data-connections] ul')).toHaveCount(0)
+  test('the connection index lists only people with recorded links', async ({ page }) => {
+    await page.goto(`${CHARACTERS}?spread=lineages-connections`)
+    const index = page.getByRole('navigation', { name: 'Characters by connections' })
+    await index.waitFor()
+
+    expect(await index.getByRole('button').count()).toBeGreaterThan(10)
+    await expect(index).not.toContainText('Dabbid')
   })
 
   test('the connection index keeps the subject in the URL', async ({ page }) => {
-    await page.goto(`${RECORDS}?tab=connections`)
-    await page.locator('[data-connections], [data-records-main]').first().waitFor()
-    const entries = page.getByRole('navigation', { name: 'Characters by connections' }).getByRole('button')
-    await entries.first().click()
-    await expect(page).toHaveURL(/tab=connections/)
-    await expect(page).toHaveURL(/character=/)
+    await page.goto(`${CHARACTERS}?spread=lineages-connections`)
+    const index = page.getByRole('navigation', { name: 'Characters by connections' })
+    await index.waitFor()
+    await index.getByRole('button').first().click()
+    await expect(page).toHaveURL(/spread=connection-/)
+    await expect(page.locator('[data-connections]')).toBeVisible()
+  })
+})
+
+test.describe('the two-volume desk', () => {
+  test('opens with both volumes closed', async ({ page }) => {
+    await page.goto(CHARACTERS)
+    await expect(page.locator('[data-records-library]')).toBeVisible()
+    await expect(page.locator('[data-testid^="volume-cover-"]')).toHaveCount(2)
+    await expect(page.getByRole('button', { name: /^Open Volume I:/ })).toBeVisible()
+    await expect(page.getByRole('button', { name: /^Open Volume II:/ })).toBeVisible()
+  })
+
+  test('a cover opens its volume and the tabs switch between volumes', async ({ page }) => {
+    await page.goto(CHARACTERS)
+    await page.getByRole('button', { name: /^Open Volume II:/ }).click()
+    await expect(page).toHaveURL(/spread=lineages-contents/)
+    await expect(page.locator('[data-codex-spread="lineages-contents"]')).toBeVisible()
+
+    await page.getByRole('button', { name: 'Volume I: Biographical Records' }).click()
+    await expect(page).toHaveURL(/spread=records-contents/)
+    await expect(page.locator('[data-codex-spread="records-contents"]')).toBeVisible()
+
+    await page.getByRole('button', { name: 'All volumes' }).click()
+    await expect(page).toHaveURL(/#\/characters$/)
+    await expect(page.locator('[data-records-library]')).toBeVisible()
+  })
+
+  test('legacy bloodlines, connections and family links canonicalise into Volume II', async ({ page }) => {
+    await page.goto(`${CHARACTERS}?tab=bloodlines`)
+    await expect(page).toHaveURL(/spread=lineages-bloodlines/)
+
+    await page.goto(`${CHARACTERS}?tab=connections`)
+    await expect(page).toHaveURL(/spread=lineages-connections/)
+
+    await page.goto(`${CHARACTERS}?family=kholin`)
+    await expect(page).toHaveURL(/spread=lineage-kholin/)
+    await expect(page.locator('[data-family-plate="kholin"]')).toBeVisible()
   })
 })
 

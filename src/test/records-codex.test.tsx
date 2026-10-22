@@ -20,8 +20,22 @@ describe('RecordsCodex', () => {
     window.sessionStorage.setItem(CODEX_SESSION_KEY, '1')
   })
 
-  it('opens on the Part II contents with all 93 records in eight ranges', () => {
+  it('opens on the two closed volumes at the desk', () => {
     const { container } = renderAt('/characters')
+
+    expect(screen.getByRole('heading', { level: 2, name: 'Two volumes rest on the desk' })).toBeInTheDocument()
+    expect(container.querySelectorAll('[data-testid^="volume-cover-"]')).toHaveLength(2)
+  })
+
+  it('opens Volume II from its closed cover', async () => {
+    renderAt('/characters')
+
+    await userEvent.click(screen.getByRole('button', { name: /^Open Volume II:/ }))
+    expect(await screen.findByRole('heading', { level: 2, name: 'Bloodlines & Connections' })).toBeInTheDocument()
+  })
+
+  it('opens the Part II contents with all 93 records in eight ranges', () => {
+    const { container } = renderAt('/characters?spread=records-contents')
 
     expect(screen.getByRole('heading', { level: 2, name: 'Biographical Records' })).toBeInTheDocument()
     expect(container.querySelectorAll('[data-contents-kind="record"]')).toHaveLength(93)
@@ -30,7 +44,7 @@ describe('RecordsCodex', () => {
   })
 
   it('filters the index by name, description and world, then clears', async () => {
-    const { container } = renderAt('/characters')
+    const { container } = renderAt('/characters?spread=records-contents')
     const input = screen.getByLabelText('Search records')
 
     await userEvent.type(input, 'kaladin')
@@ -62,7 +76,7 @@ describe('RecordsCodex', () => {
   })
 
   it('turns from a contents entry to that person’s spread', async () => {
-    renderAt('/characters')
+    renderAt('/characters?spread=records-contents')
 
     await userEvent.click(screen.getByRole('button', { name: 'Adolin Kholin' }))
     expect(await screen.findByRole('heading', { level: 2, name: 'Adolin Kholin' })).toBeInTheDocument()

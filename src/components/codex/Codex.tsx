@@ -11,7 +11,7 @@ import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion'
 import { useCodexCover } from '@/hooks/useCodexSession'
 import type { CodexEdition, CodexPartId } from '@/utils/codex-pages'
 import CodexObject from './CodexObject'
-import CodexCover, { type CoverPhase } from './CodexCover'
+import CodexCover, { type CodexCoverDetails, type CoverPhase } from './CodexCover'
 import CodexFlip from './CodexFlip'
 import PageBlock from './PageBlock'
 import Spread from './Spread'
@@ -86,6 +86,12 @@ interface Props {
   edition?: CodexEdition
   /** Fore-edge thumb index, owned by the page so it can point at real spreads. */
   thumbs?: ReactNode
+  /** The reader already chose a closed volume on the desk; skip the cover. */
+  startOpen?: boolean
+  /** Cover text for the opening ceremony. Ignored when `startOpen`. */
+  cover?: CodexCoverDetails
+  /** Desk furniture beside the book, such as the volume tabs. */
+  aside?: ReactNode
 }
 
 interface FlipState {
@@ -149,7 +155,8 @@ function isEditable(target: EventTarget | null): boolean {
 
 function isInteractive(target: EventTarget | null): boolean {
   return (
-    target instanceof Element && Boolean(target.closest('a, button, input, textarea, select, [contenteditable="true"]'))
+    target instanceof Element &&
+    Boolean(target.closest('a, button, input, textarea, select, [contenteditable="true"], [data-codex-interactive]'))
   )
 }
 
@@ -169,10 +176,13 @@ export default function Codex({
   part,
   edition = 'working',
   thumbs,
+  startOpen = false,
+  cover,
+  aside,
 }: Props) {
   const reduced = usePrefersReducedMotion()
   const { coverSeen, markCoverSeen } = useCodexCover()
-  const [phase, setPhase] = useState<Phase>(() => (reduced || coverSeen ? 'open' : 'closed'))
+  const [phase, setPhase] = useState<Phase>(() => (reduced || startOpen || coverSeen ? 'open' : 'closed'))
 
   const fallback: CodexSpreadView = {
     id: 'single',
@@ -387,6 +397,9 @@ export default function Codex({
     const onKey = (event: KeyboardEvent) => {
       if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return
       if (isEditable(event.target)) return
+      // Fold-out charts own their arrow keys; without this, scrolling the
+      // Kholin tree would turn the page instead of revealing the next branch.
+      if (event.target instanceof Element && event.target.closest('[data-codex-interactive]')) return
       if (dragRef.current?.active) return
 
       const base = pendingRef.current ?? flipRef.current?.to ?? indexRef.current
@@ -562,6 +575,7 @@ export default function Codex({
       data-part={part}
       data-codex-spread={target.id}
       data-character-card={target.recordId}
+      data-aside={aside ? 'true' : undefined}
     >
       <CodexObject>
         <div
@@ -596,9 +610,10 @@ export default function Codex({
               />
             )}
 
-            {phase !== 'open' && <CodexCover phase={coverPhase} onSkip={skip} />}
+            {phase !== 'open' && <CodexCover phase={coverPhase} onSkip={skip} details={cover} />}
           </PageBlock>
         </div>
+        {aside}
       </CodexObject>
 
       <p className="sr-only" aria-live="polite" aria-atomic="true">

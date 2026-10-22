@@ -87,6 +87,11 @@ export function useCodexCover(): CodexCoverMemory {
   return { coverSeen, markCoverSeen }
 }
 
+/** Read a part's bookmark without mounting the session hook. */
+export function readCodexRibbon(part: CodexPartId = 'investiture'): string | null {
+  return readRibbons()[part] ?? null
+}
+
 export interface CodexSession extends CodexCoverMemory {
   part: CodexPartId
   /** Last spread left open in this part, if it still exists. */

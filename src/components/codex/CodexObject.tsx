@@ -1,14 +1,15 @@
 import { useEffect, useRef, type CSSProperties, type PointerEvent, type ReactNode } from 'react'
+import usePrefersReducedMotion from '@/hooks/usePrefersReducedMotion'
 import { buildDustMotes } from './codex-dust'
 
 /**
  * CodexObject — the desk the book rests on.
  *
  * Three layers, no images: walnut, a candle whose pool of light follows the
- * pointer, and sparse dust. The candle position is written straight to the
- * element's custom properties inside a rAF, never through React state, so
- * moving the mouse costs one style write per frame instead of a re-render of
- * the whole book.
+ * pointer (unless the reader prefers reduced motion), and sparse dust. The
+ * candle position is written straight to the element's custom properties
+ * inside a rAF, never through React state, so moving the mouse costs one style
+ * write per frame instead of a re-render of the whole book.
  */
 
 const MOTES = buildDustMotes()
@@ -21,12 +22,26 @@ export default function CodexObject({ children }: Props) {
   const desk = useRef<HTMLDivElement>(null)
   const frame = useRef<number | null>(null)
   const pointer = useRef({ x: 62, y: 22 })
+  const reduced = usePrefersReducedMotion()
 
   useEffect(() => {
     return () => {
       if (frame.current !== null) window.cancelAnimationFrame(frame.current)
     }
   }, [])
+
+  // With reduced motion the pool stays where the CSS default puts it, and any
+  // in-flight pointer paint is cancelled rather than left to land.
+  useEffect(() => {
+    if (!reduced) return
+    if (frame.current !== null) {
+      window.cancelAnimationFrame(frame.current)
+      frame.current = null
+    }
+    const node = desk.current
+    node?.style.removeProperty('--candle-x')
+    node?.style.removeProperty('--candle-y')
+  }, [reduced])
 
   const paintCandle = () => {
     frame.current = null
@@ -37,6 +52,7 @@ export default function CodexObject({ children }: Props) {
   }
 
   const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    if (reduced) return
     const node = desk.current
     if (!node) return
     const rect = node.getBoundingClientRect()
