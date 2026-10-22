@@ -1,10 +1,6 @@
 # Cosmere Archive
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/MarioMunPeq/Cosmere-Archive/main/public/screenshots/home.png" alt="Cosmere Archive Home" width="900"/>
-</p>
-
-<p align="center">
   Interactive visual archive for Brandon Sanderson's Cosmere universe.
 </p>
 
@@ -26,22 +22,6 @@ Durante el desarrollo he explorado diferentes áreas como:
 - Automatización de despliegues con GitHub Actions
 
 El proyecto está basado en uno de mis universos de ficción favoritos: el Cosmere de Brandon Sanderson, utilizando esa temática como motivación para crear una herramienta visual e interactiva.
-
----
-
-## Screenshots
-
-### Home / Galaxy Map
-
-<img src="https://raw.githubusercontent.com/MarioMunPeq/Cosmere-Archive/main/public/screenshots/home.png" alt="Cosmere Archive Home" width="900"/>
-
-### Characters
-
-<img src="https://raw.githubusercontent.com/MarioMunPeq/Cosmere-Archive/main/public/screenshots/characters.png" alt="Characters" width="900"/>
-
-### Timeline
-
-<img src="https://raw.githubusercontent.com/MarioMunPeq/Cosmere-Archive/main/public/screenshots/timeline.png" alt="Timeline" width="900"/>
 
 ---
 

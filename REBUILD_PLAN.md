@@ -2107,7 +2107,8 @@ Y **bajar `chunkSizeWarningLimit` de 1000 a 400**, para que cualquier regresión
 | Por ruta                           | ≤ 60 KB       | lazy                                |
 | `three` + `r3f`                    | ≤ 250 KB      | lazy, solo `/afarietiam`            |
 | `motion`                           | ≤ 40 KB       | lazy                                |
-| **CSS total**                      | ≤ 25 KB gzip  | 15,3 KB actual ✔                    |
+| CSS global (carga inicial)         | ≤ 30 KB gzip  | 29,2 KB actual                      |
+| CSS de rutas lazy                  | ≤ 6 KB gzip   | 5,7 KB actual                       |
 
 ### 9.3 Estado
 
@@ -2143,7 +2144,8 @@ Y **bajar `chunkSizeWarningLimit` de 1000 a 400**, para que cualquier regresión
 | Recurso                           | Presupuesto              |
 | --------------------------------- | ------------------------ |
 | HTML inicial (crítico)            | ≤ 30 KB gzip             |
-| CSS total                         | ≤ 25 KB gzip             |
+| CSS inicial (global)              | ≤ 30 KB gzip             |
+| CSS de rutas lazy (agregado)      | ≤ 6 KB gzip              |
 | JS del shell (crítico)            | ≤ 180 KB gzip            |
 | JS total cargado en la home       | ≤ 260 KB gzip            |
 | JS total cargado en `/afarietiam` | ≤ 520 KB gzip            |

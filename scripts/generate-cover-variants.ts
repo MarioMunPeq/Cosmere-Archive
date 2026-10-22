@@ -24,7 +24,7 @@
  * Run: pnpm covers:build
  */
 
-import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import sharp from 'sharp'
@@ -39,24 +39,17 @@ const CEILING_KB = 220
 const WIDTH = 640
 
 /**
- * Quality ladders, one per format.
- *
- * The two formats do not share a quality scale. AVIF quality 50 lands at about
- * the same place as WebP 76 and is roughly 35% smaller. A single shared ladder
- * produced AVIF files *larger* than their WebP siblings, which is worse than
- * not shipping AVIF at all. Measured on the two densest covers in the set.
+ * The shipped format is WebP. The former AVIF copies were only used by one
+ * landing-page illustration while all other AVIF files were never requested.
+ * Keeping one format avoids shipping duplicate cover artwork and keeps the
+ * landing and library on the exact same generated image.
  *
  * The floors are deliberate. Below WebP 60 the title on the White Sand covers
  * starts to smear, and a spine title that cannot be read is a worse outcome than
  * a large file. If a floor is reached and the ceiling is still missed, the build
  * fails loudly rather than shipping something unreadable.
  */
-const LADDER = {
-  webp: [76, 72, 68, 64, 60],
-  avif: [50, 44, 38, 32, 28],
-} as const
-
-type Format = keyof typeof LADDER
+const WEBP_QUALITY_LADDER = [76, 72, 68, 64, 60] as const
 
 /**
  * Encodes at the highest quality on the format's ladder that fits under the
@@ -66,19 +59,12 @@ type Format = keyof typeof LADDER
  * of a pipeline, and on Windows that makes writing over the same path fail with
  * EPERM. The 22 covers come to about 6 MB in memory once.
  */
-async function encodeUnderCeiling(
-  source: Buffer,
-  width: number,
-  format: Format,
-): Promise<{ buffer: Buffer; quality: number }> {
-  const ladder = LADDER[format]
+async function encodeUnderCeiling(source: Buffer, width: number): Promise<{ buffer: Buffer; quality: number }> {
+  const ladder = WEBP_QUALITY_LADDER
   let best: Buffer | null = null
   for (const quality of ladder) {
     const pipeline = sharp(source).resize({ width, withoutEnlargement: true })
-    const buffer =
-      format === 'webp'
-        ? await pipeline.webp({ quality, effort: 6 }).toBuffer()
-        : await pipeline.avif({ quality, effort: 6 }).toBuffer()
+    const buffer = await pipeline.webp({ quality, effort: 6 }).toBuffer()
     best = buffer
     if (buffer.length / 1024 <= CEILING_KB) return { buffer, quality }
   }
@@ -92,7 +78,6 @@ interface Row {
   sourceH: number
   sourceKb: number
   webpKb: number
-  avifKb: number
   quality: number
 }
 
@@ -106,11 +91,11 @@ for (const file of sources) {
   const source = readFileSync(join(SOURCE, file))
   const meta = await sharp(source).metadata()
 
-  const webp = await encodeUnderCeiling(source, WIDTH, 'webp')
-  const avif = await encodeUnderCeiling(source, WIDTH, 'avif')
+  const webp = await encodeUnderCeiling(source, WIDTH)
 
   writeFileSync(join(COVERS, file), webp.buffer)
-  writeFileSync(join(COVERS, `${id}.avif`), avif.buffer)
+  const obsoleteAvif = join(COVERS, `${id}.avif`)
+  if (existsSync(obsoleteAvif)) unlinkSync(obsoleteAvif)
 
   rows.push({
     id,
@@ -118,7 +103,6 @@ for (const file of sources) {
     sourceH: meta.height ?? 0,
     sourceKb: source.length / 1024,
     webpKb: webp.buffer.length / 1024,
-    avifKb: avif.buffer.length / 1024,
     quality: webp.quality,
   })
 }
@@ -126,20 +110,16 @@ for (const file of sources) {
 /* report ------------------------------------------------------------------- */
 
 const sum = (pick: (r: Row) => number) => rows.reduce((a, r) => a + pick(r), 0) / 1024
-const over = rows.filter((r) => r.webpKb > CEILING_KB || r.avifKb > CEILING_KB)
+const over = rows.filter((r) => r.webpKb > CEILING_KB)
 const fmt = (kb: number) => `${kb.toFixed(0).padStart(5)} KB`
 
 console.log(`covers: ${rows.length} encoded from assets/covers-source/ at ${WIDTH}px\n`)
-console.log('  id                              source      webp  q      avif')
+console.log('  id                              source      webp  q')
 for (const r of rows.sort((a, b) => b.sourceKb - a.sourceKb)) {
-  console.log(
-    `  ${r.id.padEnd(30)} ${fmt(r.sourceKb)} ${fmt(r.webpKb)} ${String(r.quality).padStart(3)} ${fmt(r.avifKb)}`,
-  )
+  console.log(`  ${r.id.padEnd(30)} ${fmt(r.sourceKb)} ${fmt(r.webpKb)} ${String(r.quality).padStart(3)}`)
 }
 
-console.log(
-  `\n  source ${sum((r) => r.sourceKb).toFixed(2)} MB -> shipped ${sum((r) => r.webpKb).toFixed(2)} MB webp + ${sum((r) => r.avifKb).toFixed(2)} MB avif`,
-)
+console.log(`\n  source ${sum((r) => r.sourceKb).toFixed(2)} MB -> shipped ${sum((r) => r.webpKb).toFixed(2)} MB webp`)
 
 if (over.length > 0) {
   console.error(
@@ -161,18 +141,15 @@ Every shipped cover is re-encoded at ${WIDTH}px from the pristine files in
 \`assets/covers-source/\`, which are not published. Re-encoding is lossy; the
 dimensions below are what the archive received.
 
-| Cover | Source | Shipped webp | Shipped avif |
-| ----- | ------ | ------------ | ------------ |
+| Cover | Source | Shipped webp |
+| ----- | ------ | ------------ |
 ${rows
   .sort((a, b) => a.id.localeCompare(b.id))
-  .map(
-    (r) =>
-      `| \`${r.id}\` | ${r.sourceW}x${r.sourceH}, ${fmt(r.sourceKb).trim()} | ${fmt(r.webpKb).trim()} | ${fmt(r.avifKb).trim()} |`,
-  )
+  .map((r) => `| \`${r.id}\` | ${r.sourceW}x${r.sourceH}, ${fmt(r.sourceKb).trim()} | ${fmt(r.webpKb).trim()} |`)
   .join('\n')}
 
-No shipped file exceeds ${CEILING_KB} KB (criterion B.9). AVIF is preferred where
-the browser supports it; WebP is the universal fallback.
+No shipped file exceeds ${CEILING_KB} KB (criterion B.9). The landing and library
+share these WebP files so no duplicate cover format needs to be shipped.
 `
 
 const next = existing.includes(marker)

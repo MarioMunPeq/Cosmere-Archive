@@ -2,22 +2,26 @@
 <html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="16x16 24x24 32x32 48x48 64x64 128x128 256x256" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/icon-512.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#030712" />
-    <meta name="description" content="Interactive visual encyclopedia of the Cosmere universe by Brandon Sanderson. Explore planets, characters, magic systems, and more." />
+    <meta name="theme-color" content="#24170f" />
+    <meta
+      name="description"
+      content="Interactive visual encyclopedia of the Cosmere universe by Brandon Sanderson. Explore planets, characters, magic systems, and more."
+    />
     <meta name="author" content="Cosmere Archive" />
     <title>Cosmere Archive</title>
     <script>
-      (function () {
+      ;(function () {
         try {
-          var theme = localStorage.getItem('cosmere-theme');
+          var theme = localStorage.getItem('cosmere-theme')
           if (theme === 'light' || theme === 'dark') {
-            document.documentElement.setAttribute('data-theme', theme);
+            document.documentElement.setAttribute('data-theme', theme)
           }
         } catch (e) {}
-      })();
+      })()
     </script>
   </head>
   <body>

@@ -45,8 +45,8 @@ export default function BottomNav() {
       style={{
         height: 'calc(var(--bottom-nav-h) + env(safe-area-inset-bottom))',
         paddingBottom: 'env(safe-area-inset-bottom)',
-        background: 'linear-gradient(180deg, #3a2414 0%, #2a180c 60%, #1a0e06 100%)',
-        boxShadow: 'inset 0 1px 0 rgba(190,150,100,0.12), 0 -2px 0 rgba(0,0,0,0.5)',
+        background: 'linear-gradient(180deg, rgba(34,39,35,.98) 0%, rgba(24,29,27,.99) 100%)',
+        boxShadow: 'inset 0 1px 0 rgba(230,224,204,.06), 0 -1px 0 rgba(183,165,121,.2), 0 -6px 20px rgba(0,0,0,.3)',
       }}
     >
       <ul className="mx-auto grid h-[var(--bottom-nav-h)] max-w-[560px] grid-cols-5">
@@ -91,7 +91,20 @@ function BarItem({ to, icon, label, active }: ItemProps) {
           active ? 'text-[var(--text-accent)]' : 'text-[var(--text-tertiary)] hover:text-[var(--text-primary)]',
         ].join(' ')}
       >
-        <DestinationIcon name={icon} size={24} />
+        {icon === 'home' ? (
+          <span
+            aria-hidden
+            className={`grid h-[26px] w-[26px] place-items-center rounded-full border bg-[#d4c69f] p-[2px] shadow-[inset_0_1px_0_rgba(255,255,255,.55),0_2px_5px_rgba(0,0,0,.4)] ${active ? 'border-[#e9ddbc]' : 'border-[#8f907b]'}`}
+          >
+            <img
+              src={`${import.meta.env.BASE_URL}images/brand/cosmere-mark.png`}
+              alt=""
+              className="h-full w-full object-contain"
+            />
+          </span>
+        ) : (
+          <DestinationIcon name={icon} size={24} />
+        )}
         {/* The bar only exists below 768px, where there is no room for a label
             under every icon. It stays in the accessibility tree so the link is
             not announced as an unlabelled target. */}

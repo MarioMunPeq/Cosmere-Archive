@@ -26,14 +26,12 @@ informational and non-commercial purposes only. The software source code is MIT-
 
 | File                                  | Size     | Dimensions | Source                                                        | Licence       | Status       |
 | ------------------------------------- | -------- | ---------- | ------------------------------------------------------------- | ------------- | ------------ |
-| `images/decorations/wood-pattern.png` | 110.9 KB | 203×317    | Texturize.app — seamless dark walnut, no attribution required | Public domain | **VERIFIED** |
-
-> Note: this file is 203×317 px but is stretched to ~2700 px wide by the library shelves.
-> It is scheduled for replacement by a procedural 512×512 SVG in M3.
+The previously documented `images/decorations/wood-pattern.png` is no longer shipped; no
+runtime code references it.
 
 ---
 
-## 2. UNKNOWN — book covers (22 files, 5.6 MB)
+## 2. UNKNOWN — book covers (22 source files, 5.5 MB; 1.45 MB shipped)
 
 The repository has never documented where these came from. **They are the highest legal risk
 in the project**, because official book covers are copyrighted by their publisher.
@@ -68,29 +66,20 @@ the site is publicly promoted. M3 will add a fallback so the library still works
 
 ---
 
-## 3. UNKNOWN — character portraits (34 files, 2.4 MB)
+## 3. UNKNOWN — character portraits (24 files, 1.52 MB)
 
 Same situation: origin undocumented.
 
 | File                        | Dimensions | Size     | Source  | Licence |
 | --------------------------- | ---------- | -------- | ------- | ------- |
 | `characters/Adolin.webp`    | 554×599    | 32.2 KB  | UNKNOWN | UNKNOWN |
-| `characters/Aesudan.webp`   | 829×829    | 75.5 KB  | UNKNOWN | UNKNOWN |
-| `characters/Balat.webp`     | 350×559    | 38.3 KB  | UNKNOWN | UNKNOWN |
 | `characters/Dalinar.webp`   | 194×194    | 10.2 KB  | UNKNOWN | UNKNOWN |
-| `characters/Davar.webp`     | 1440×1800  | 115.8 KB | UNKNOWN | UNKNOWN |
-| `characters/Dedelin.webp`   | 1324×1316  | 59.2 KB  | UNKNOWN | UNKNOWN |
 | `characters/Elend.webp`     | 300×300    | 20.2 KB  | UNKNOWN | UNKNOWN |
 | `characters/Elhokar.webp`   | 1280×1384  | 106.8 KB | UNKNOWN | UNKNOWN |
-| `characters/Evi.webp`       | 810×1063   | 202.8 KB | UNKNOWN | UNKNOWN |
 | `characters/Gavilar.webp`   | 1280×1384  | 186.0 KB | UNKNOWN | UNKNOWN |
-| `characters/Gavinor.webp`   | 1080×1192  | 42.4 KB  | UNKNOWN | UNKNOWN |
-| `characters/Helaran.webp`   | 813×913    | 79.7 KB  | UNKNOWN | UNKNOWN |
 | `characters/Jasnah.webp`    | 554×599    | 33.4 KB  | UNKNOWN | UNKNOWN |
-| `characters/Jushu.webp`     | 422×545    | 41.8 KB  | UNKNOWN | UNKNOWN |
 | `characters/Kaladin.webp`   | 500×500    | 21.1 KB  | UNKNOWN | UNKNOWN |
 | `characters/Kelsier.webp`   | 450×450    | 23.6 KB  | UNKNOWN | UNKNOWN |
-| `characters/Lin.webp`       | 800×1013   | 197.1 KB | UNKNOWN | UNKNOWN |
 | `characters/Marasi.webp`    | 500×625    | 50.8 KB  | UNKNOWN | UNKNOWN |
 | `characters/Mare.webp`      | 1080×1192  | 60.6 KB  | UNKNOWN | UNKNOWN |
 | `characters/Marsh.webp`     | 300×300    | 13.2 KB  | UNKNOWN | UNKNOWN |
@@ -106,44 +95,43 @@ Same situation: origin undocumented.
 | `characters/Vivenna.webp`   | 599×600    | 37.5 KB  | UNKNOWN | UNKNOWN |
 | `characters/Waxillium.webp` | 1080×1350  | 180.1 KB | UNKNOWN | UNKNOWN |
 | `characters/Wayne.webp`     | 1080×1350  | 179.2 KB | UNKNOWN | UNKNOWN |
-| `characters/Wikim.webp`     | 367×531    | 28.9 KB  | UNKNOWN | UNKNOWN |
 | `characters/Zane.webp`      | 501×501    | 17.8 KB  | UNKNOWN | UNKNOWN |
 
-**Known defect (not a licence issue):** only 24 of the 93 characters in the dataset resolve to
-one of these files. 10 files are orphaned (no character maps to them: `Aesudan`, `Balat`,
-`Davar`, `Dedelin`, `Evi`, `Gavinor`, `Helaran`, `Jushu`, `Lin`, `Wikim`), and
-`public/characters/placeholder.webp` is referenced by the code but **does not exist**, so 69
-portrait slots currently produce a 404. M1 Blocks 5–6 fix this with generated monograms.
+**Current behavior:** all 24 remaining files map to at least one of the 93 character records.
+The other 69 characters use generated monograms; no placeholder image request is made.
 
 ---
 
-## 4. UNKNOWN — book emblems (3 files, 175 KB)
+## 4. Removed assets
 
-| File                              | Dimensions | Size    | Source  | Licence |
-| --------------------------------- | ---------- | ------- | ------- | ------- |
-| `images/emblems/mistborn.webp`    | 1156×1000  | 12.3 KB | UNKNOWN | UNKNOWN |
-| `images/emblems/stormlight.webp`  | 620×778    | 68.0 KB | UNKNOWN | UNKNOWN |
-| `images/emblems/stormlight2.webp` | 455×455    | 94.5 KB | UNKNOWN | UNKNOWN |
-
-**Known defect:** the code references seven emblem filenames but only these three exist
-(`elantris.webp`, `warbreaker.webp`, `white-sand.webp`, `arcanum.webp`, `secret-projects.webp`
-are missing), and `stormlight2.webp` is referenced by nothing. M3 replaces this whole mechanism
-with the real book covers.
+The unused wood texture, all legacy book emblems, the unused icon sprite, and a temporary cover
+file were removed after confirming there are no runtime references. Book spines now use the book
+covers directly.
 
 ---
 
-## 5. Icons and meta
+## 5. User-provided decorative art
 
-| File           | Size    | Source                     | Licence                                         | Status  |
-| -------------- | ------- | -------------------------- | ----------------------------------------------- | ------- |
-| `favicon.svg`  | 0.3 KB  | UNKNOWN (project's own)    | assume MIT                                      | UNKNOWN |
-| `icon-192.png` | 7.2 KB  | UNKNOWN (project's own)    | assume MIT                                      | UNKNOWN |
-| `icon-512.png` | 23.4 KB | UNKNOWN (project's own)    | assume MIT                                      | UNKNOWN |
-| `icons.svg`    | 4.9 KB  | Bluesky logo path included | **UNKNOWN** — check the Bluesky trademark terms | UNKNOWN |
+| File                                        | Size   | Source                      | Licence         | Status       |
+| ------------------------------------------- | ------ | --------------------------- | --------------- | ------------ |
+| `images/decorations/oathbringer-blade-reference.png` | 91.6 KB | Image attached by the owner | User-provided | Current |
 
 ---
 
-## 6. Removed in M1
+## 6. Icons and meta
+
+| File                       | Size    | Source                           | Licence                          | Status                 |
+| -------------------------- | ------- | -------------------------------- | -------------------------------- | ---------------------- |
+| `favicon.ico`              | 42.8 KB | Multi-size composite of user mark | User-provided                    | Current                |
+| `favicon.svg`              | 0.4 KB  | User mark on Cosmere Archive seal | User-provided                    | Current                |
+| `apple-touch-icon.png`     | 14.9 KB | User mark on Cosmere Archive seal | User-provided                    | Current                |
+| `icon-192.png`             | 16.4 KB | User mark on Cosmere Archive seal | User-provided                    | Current                |
+| `icon-512.png`             | 56.9 KB | User mark on Cosmere Archive seal | User-provided                    | Current                |
+| `images/brand/cosmere-mark.png` | 57.7 KB | User-provided transparent PNG   | User-provided                    | Current                |
+
+---
+
+## 7. Removed in M1
 
 | Path                                            | Reason                                                                                                                                 |
 | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
@@ -156,10 +144,8 @@ with the real book covers.
 ## TODO for the owner
 
 - [ ] Fill in `Source` and `Licence` for the 22 book covers.
-- [ ] Fill in `Source` and `Licence` for the 34 character portraits.
-- [ ] Fill in `Source` and `Licence` for the 3 emblems.
+- [ ] Fill in `Source` and `Licence` for the 24 character portraits.
 - [ ] Confirm the icons are the project's own work.
-- [ ] Check the Bluesky trademark terms for `icons.svg`.
 - [ ] Once filled in, set every `Status` to `VERIFIED` and delete this warning banner.
 
 <!-- M3 covers:generated - do not edit, regenerate with `pnpm covers:build` -->
@@ -170,30 +156,30 @@ Every shipped cover is re-encoded at 640px from the pristine files in
 `assets/covers-source/`, which are not published. Re-encoding is lossy; the
 dimensions below are what the archive received.
 
-| Cover | Source | Shipped webp | Shipped avif |
-| ----- | ------ | ------------ | ------------ |
-| `arcanum_unbounded` | 658x1000, 116 KB | 62 KB | 39 KB |
-| `dawnshard` | 1542x2428, 353 KB | 63 KB | 39 KB |
-| `elantris` | 600x876, 46 KB | 28 KB | 21 KB |
-| `oathbringer` | 394x599, 60 KB | 47 KB | 25 KB |
-| `rhythm_of_war` | 394x600, 64 KB | 51 KB | 29 KB |
-| `shadows_of_self` | 1000x1510, 324 KB | 51 KB | 35 KB |
-| `the_alloy_of_law` | 387x600, 48 KB | 35 KB | 21 KB |
-| `the_bands_of_mourning` | 1000x1510, 399 KB | 65 KB | 39 KB |
-| `the_final_empire` | 900x1357, 308 KB | 69 KB | 46 KB |
-| `the_hero_of_ages` | 900x1357, 437 KB | 99 KB | 61 KB |
-| `the_lost_metal` | 397x600, 50 KB | 37 KB | 23 KB |
-| `the_sunlit_man` | 1080x1920, 883 KB | 67 KB | 37 KB |
-| `the_way_of_kings` | 1400x2100, 394 KB | 63 KB | 43 KB |
-| `the_well_of_ascension` | 397x599, 62 KB | 49 KB | 27 KB |
-| `tress_of_the_emerald_sea` | 1600x2487, 208 KB | 57 KB | 37 KB |
-| `warbreaker` | 663x1000, 100 KB | 60 KB | 39 KB |
-| `white_sand_vol_1` | 600x900, 169 KB | 152 KB | 88 KB |
-| `white_sand_vol_2` | 1200x1875, 427 KB | 128 KB | 79 KB |
-| `white_sand_vol_3` | 1200x1800, 260 KB | 95 KB | 60 KB |
-| `wind_and_truth` | 1327x2048, 307 KB | 68 KB | 44 KB |
-| `words_of_radiance` | 1400x2162, 350 KB | 70 KB | 44 KB |
-| `yumi_and_the_nightmare_painter` | 1604x2493, 264 KB | 65 KB | 48 KB |
+| Cover | Source | Shipped webp |
+| ----- | ------ | ------------ |
+| `arcanum_unbounded` | 658x1000, 116 KB | 62 KB |
+| `dawnshard` | 1542x2428, 353 KB | 63 KB |
+| `elantris` | 600x876, 46 KB | 28 KB |
+| `oathbringer` | 394x599, 60 KB | 47 KB |
+| `rhythm_of_war` | 394x600, 64 KB | 51 KB |
+| `shadows_of_self` | 1000x1510, 324 KB | 51 KB |
+| `the_alloy_of_law` | 387x600, 48 KB | 35 KB |
+| `the_bands_of_mourning` | 1000x1510, 399 KB | 65 KB |
+| `the_final_empire` | 900x1357, 308 KB | 69 KB |
+| `the_hero_of_ages` | 900x1357, 437 KB | 99 KB |
+| `the_lost_metal` | 397x600, 50 KB | 37 KB |
+| `the_sunlit_man` | 1080x1920, 883 KB | 67 KB |
+| `the_way_of_kings` | 1400x2100, 394 KB | 63 KB |
+| `the_well_of_ascension` | 397x599, 62 KB | 49 KB |
+| `tress_of_the_emerald_sea` | 1600x2487, 208 KB | 57 KB |
+| `warbreaker` | 663x1000, 100 KB | 60 KB |
+| `white_sand_vol_1` | 600x900, 169 KB | 152 KB |
+| `white_sand_vol_2` | 1200x1875, 427 KB | 128 KB |
+| `white_sand_vol_3` | 1200x1800, 260 KB | 95 KB |
+| `wind_and_truth` | 1327x2048, 307 KB | 68 KB |
+| `words_of_radiance` | 1400x2162, 350 KB | 70 KB |
+| `yumi_and_the_nightmare_painter` | 1604x2493, 264 KB | 65 KB |
 
-No shipped file exceeds 220 KB (criterion B.9). AVIF is preferred where
-the browser supports it; WebP is the universal fallback.
+No shipped file exceeds 220 KB (criterion B.9). The landing and library
+share these WebP files so no duplicate cover format needs to be shipped.

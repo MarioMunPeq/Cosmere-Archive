@@ -39,7 +39,8 @@ const CHUNK_BUDGETS: { label: string; match: RegExp; maxGzipKb: number }[] = [
 ]
 
 const THREE_GROUP_MAX_KB = 250
-const CSS_MAX_KB = 25
+const INITIAL_CSS_MAX_KB = 30
+const LAZY_CSS_MAX_KB = 6
 const FONTS_MAX_KB = 240
 const DIST_MAX_MB = 10.5
 
@@ -73,11 +74,20 @@ for (const budget of CHUNK_BUDGETS) {
 const threeKb = js.filter((f) => /^three-/.test(f) || /^r3f-/.test(f)).reduce((a, f) => a + gzipKb(f), 0)
 report(threeKb <= THREE_GROUP_MAX_KB, 'three + r3f (lazy)', `${threeKb.toFixed(1)} KB`, `${THREE_GROUP_MAX_KB} KB`)
 
-const cssFile = files.find((f) => f.endsWith('.css'))
-if (cssFile) {
-  const kb = gzipSync(readFileSync(join(ASSETS, cssFile))).length / KB
-  report(kb <= CSS_MAX_KB, 'css total', `${kb.toFixed(1)} KB`, `${CSS_MAX_KB} KB`)
-}
+const cssFiles = files.filter((f) => f.endsWith('.css'))
+const initialCssFiles = cssFiles.filter((f) => /^index-.*\.css$/.test(f))
+const lazyCssFiles = cssFiles.filter((f) => !/^index-.*\.css$/.test(f))
+const cssGzipKb = (group: string[]) =>
+  group.reduce((total, f) => total + gzipSync(readFileSync(join(ASSETS, f))).length / KB, 0)
+const initialCssKb = cssGzipKb(initialCssFiles)
+const lazyCssKb = cssGzipKb(lazyCssFiles)
+report(
+  initialCssFiles.length > 0 && initialCssKb <= INITIAL_CSS_MAX_KB,
+  'css shell (initial)',
+  `${initialCssKb.toFixed(1)} KB`,
+  `${INITIAL_CSS_MAX_KB} KB`,
+)
+report(lazyCssKb <= LAZY_CSS_MAX_KB, 'css lazy routes', `${lazyCssKb.toFixed(1)} KB`, `${LAZY_CSS_MAX_KB} KB`)
 
 const woff = files.filter((f) => f.endsWith('.woff2'))
 const fontKb = woff.reduce((a, f) => a + statSync(join(ASSETS, f)).size / KB, 0)

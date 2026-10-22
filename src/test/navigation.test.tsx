@@ -77,7 +77,7 @@ describe('navigation registry', () => {
 
   it('groups the four core pieces and five historical sections per §5.1', () => {
     expect(CORE_DESTINATIONS).toHaveLength(4)
-    expect(HISTORICAL_DESTINATIONS).toHaveLength(5)
+    expect(HISTORICAL_DESTINATIONS).toHaveLength(4)
     expect(SECONDARY_DESTINATIONS.length).toBeGreaterThan(0)
   })
 

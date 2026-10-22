@@ -1,9 +1,8 @@
 /**
  * M1 · Block 7 — asset reference check
  *
- * Scans src/ for references to files under public/ and asserts each one exists.
- * This is the check that would have caught the 69 missing character portraits and
- * the 5 missing book emblems that shipped before M1.
+ * Scans src/ for literal references to files under public/ and asserts each one exists.
+ * Convention-based and dynamic references are checked separately where possible.
  *
  * Covered patterns:
  *   `${import.meta.env.BASE_URL}<path>` and `<BASE_URL><path>` literals
@@ -20,18 +19,6 @@ const here = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(here, '..')
 const PUBLIC = join(ROOT, 'public')
 const SRC = join(ROOT, 'src')
-
-/** Folders under public/ that assets may live in. */
-const ASSET_DIRS = ['images', 'characters', 'content', 'models']
-
-/**
- * Pre-existing breakage that needs a human, not a code change. Listed
- * explicitly so the check still fails on anything NEW while these stay visible.
- */
-const KNOWN_MISSING: Record<string, string> = {
-  'images/about/signature.png':
-    'Author signature, referenced by src/components/about/Signature.tsx. Not present in the repo. Supply the image, or drop the <img> in M7 when /about moves to Historical.',
-}
 
 function walk(dir: string, out: string[] = []): string[] {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -65,14 +52,14 @@ for (const file of files) {
     add(m[1]!)
   }
   // 2. Quoted literal that already starts with an asset folder and ends in a file
-  //    extension, so a bare folder such as 'images/emblems/' is not matched.
+  //    extension, so a bare folder prefix is not matched.
   for (const m of source.matchAll(
     /['"]((?:images|characters|models|content)\/[\w./-]+\.(?:webp|png|jpg|jpeg|svg|woff2|glb|mp3))['"]/g,
   )) {
     add(m[1]!)
   }
-  // 3. Template-interpolated emblem folder: images/emblems/${x}
-  for (const m of source.matchAll(/['"]((?:images|characters|models|content)\/[a-z-]+)\/\$\{/g)) {
+  // 3. Template-interpolated asset paths (including BASE_URL template strings).
+  for (const m of source.matchAll(/((?:images|characters|models|content)\/[\w./-]+)\/\$\{/g)) {
     add(`${m[1]}/<dynamic>`)
   }
 }
@@ -97,31 +84,15 @@ console.log(`  ${referenced.size - dynamic.size} concrete asset references`)
 console.log(`  ${dynamic.size} dynamic folder prefixes (skipped): ${[...dynamic].join(', ') || 'none'}`)
 
 if (dynamic.size > 0) {
-  console.log('\n  NOTE: dynamic prefixes need a manual check. Known case:')
-  console.log('    images/emblems/${emblem} — 5 of the 7 declared emblems do not exist')
-  console.log('    on disk, which is why BookSpine falls back to a placeholder glyph.')
-  console.log('    M3 replaces this whole mechanism with the real book covers.')
+  console.log('\n  Dynamic asset prefixes checked by conventions/content validation:')
+  for (const prefix of dynamic) console.log(`    ${prefix}`)
 }
 
 if (missing.length > 0) {
-  const unknown = missing.filter((m) => !(m.split('  <- ')[0] in KNOWN_MISSING))
-  const known = missing.filter((m) => m.split('  <- ')[0] in KNOWN_MISSING)
-
-  if (known.length > 0) {
-    console.log(`\n  KNOWN MISSING (${known.length}, listed in KNOWN_MISSING — not failing the build):`)
-    for (const m of known) {
-      const asset = m.split('  <- ')[0]!
-      console.log(`    ${asset}`)
-      console.log(`      -> ${KNOWN_MISSING[asset]}`)
-    }
-  }
-
-  if (unknown.length > 0) {
-    console.log(`\n  MISSING (${unknown.length}):`)
-    for (const m of unknown) console.log(`    ${m}`)
-    console.error('\nasset check FAILED')
-    process.exit(1)
-  }
+  console.log(`\n  MISSING (${missing.length}):`)
+  for (const m of missing) console.log(`    ${m}`)
+  console.error('\nasset check FAILED')
+  process.exit(1)
 }
 
 /**
@@ -136,17 +107,21 @@ if (missing.length > 0) {
  * removes that dependency, and the check is extended there.
  */
 console.log('\nconvention check · images/covers/{book.id}.webp\n')
-const booksSource = readFileSync(join(SRC, 'data/static/books.ts'), 'utf8')
-const bookIds = [...booksSource.matchAll(/^\s*id:\s*'([a-z0-9_]+)',/gm)].map((m) => m[1]!)
+const booksDir = join(ROOT, 'content/books')
+const bookCovers = readdirSync(booksDir)
+  .filter((file) => file.endsWith('.json') && file !== 'index.json')
+  .map((file) => JSON.parse(readFileSync(join(booksDir, file), 'utf8')) as { cover?: string })
+  .map((book) => book.cover)
+  .filter((cover): cover is string => Boolean(cover))
 let coversMissing = 0
-for (const id of bookIds) {
-  const p = join(PUBLIC, 'images/covers', `${id}.webp`)
+for (const cover of bookCovers) {
+  const p = join(PUBLIC, ...cover.split('/'))
   if (!existsSync(p)) {
     coversMissing++
-    console.log(`    MISSING images/covers/${id}.webp`)
+    console.log(`    MISSING ${cover}`)
   }
 }
-console.log(`  ${bookIds.length} books checked, ${coversMissing} missing covers`)
+console.log(`  ${bookCovers.length} books checked, ${coversMissing} missing covers`)
 if (coversMissing > 0) {
   console.error('\nasset check FAILED (book covers)')
   process.exit(1)

@@ -130,7 +130,7 @@ export default defineConfig({
       : []),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'icon-192.png', 'icon-512.png', 'screenshots/*.png'],
+      includeAssets: ['favicon.ico', 'favicon.svg', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png'],
       manifest: {
         name: 'Cosmere Archive',
         short_name: 'Cosmere Archive',
@@ -138,27 +138,15 @@ export default defineConfig({
         start_url: '/Cosmere-Archive/',
         scope: '/Cosmere-Archive/',
         display: 'standalone',
-        background_color: '#030712',
-        theme_color: '#a855f7',
+        background_color: '#24170f',
+        theme_color: '#c6aa70',
         icons: [
-          { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
-          { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },
-        ],
-        screenshots: [
-          { src: '/screenshots/home.png', sizes: '1080x720', type: 'image/png', form_factor: 'wide' },
-          { src: '/screenshots/characters.png', sizes: '1080x720', type: 'image/png', form_factor: 'wide' },
-          { src: '/screenshots/timeline.png', sizes: '1080x720', type: 'image/png', form_factor: 'wide' },
+          { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'icon-512.png', sizes: '512x512', type: 'image/png' },
         ],
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,json,png,svg,ico,woff2}'],
-        runtimeCaching: [
-          {
-            urlPattern: /\/screenshots\//,
-            handler: 'CacheFirst',
-            options: { cacheName: 'screenshots', expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 30 } },
-          },
-        ],
       },
     }),
   ],

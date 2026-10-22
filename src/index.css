@@ -1,4 +1,6 @@
-@import 'tailwindcss';
+@import 'tailwindcss' source(none);
+@source '../index.html';
+@source './**/*.{ts,tsx}';
 @import './design/fonts.css';
 @import './design/tokens.css';
 
@@ -46,15 +48,6 @@
   animation: ink-drying 2.4s ease-in-out infinite;
 }
 
-@keyframes dust-drift {
-  from {
-    transform: translate(0, 0);
-  }
-  to {
-    transform: translate(var(--dx, 3px), var(--dy, 3px));
-  }
-}
-
 @media (prefers-reduced-motion: no-preference) {
   @keyframes page-enter {
     from {
@@ -82,70 +75,8 @@
     }
   }
 
-  @keyframes scale-in {
-    from {
-      opacity: 0;
-      transform: scale(0.9);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-
   .animate-fade-in-up {
     animation: fade-in-up 0.35s ease-out both;
-    will-change: transform, opacity;
-  }
-
-  .animate-scale-in {
-    animation: scale-in 0.25s ease-out both;
-    will-change: transform, opacity;
-  }
-
-  @keyframes parchment-unfold {
-    from {
-      clip-path: inset(0 0 100% 0);
-    }
-    to {
-      clip-path: inset(0 0 0 0);
-    }
-  }
-
-  .animate-parchment-unfold {
-    animation: parchment-unfold 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
-    will-change: clip-path;
-  }
-
-  @keyframes manuscript-enter {
-    0% {
-      opacity: 0;
-      transform: translateY(28px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .animate-manuscript-enter {
-    animation: manuscript-enter 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both;
-    will-change: transform, opacity;
-  }
-
-  @keyframes title-reveal {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .animate-title-reveal {
-    animation: title-reveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) 1.5s both;
     will-change: transform, opacity;
   }
 
@@ -163,84 +94,6 @@
 
   .animate-twinkle-slow {
     animation: twinkle-slow 4s ease-in-out infinite;
-  }
-
-  @keyframes breathe {
-    0%,
-    100% {
-      opacity: 0.85;
-    }
-    50% {
-      opacity: 1;
-    }
-  }
-
-  .animate-breathe {
-    animation: breathe 6s ease-in-out infinite;
-  }
-
-  @keyframes genea-draw {
-    to {
-      stroke-dashoffset: 0;
-    }
-  }
-
-  @keyframes ink-reveal {
-    from {
-      clip-path: inset(0 100% 0 0);
-    }
-    to {
-      clip-path: inset(0 0 0 0);
-    }
-  }
-
-  @keyframes genea-node {
-    from {
-      opacity: 0;
-      transform: scale(0.85);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-
-  @keyframes genea-label {
-    from {
-      opacity: 0;
-      transform: translateY(4px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes slide-up {
-    from {
-      transform: translateY(100%);
-    }
-    to {
-      transform: translateY(0);
-    }
-  }
-
-  .animate-slide-up {
-    animation: slide-up 0.35s ease-out both;
-  }
-
-  @keyframes twinkle {
-    0%,
-    100% {
-      opacity: 0.05;
-    }
-    50% {
-      opacity: 0.6;
-    }
-  }
-
-  .animate-twinkle {
-    animation: twinkle 4s ease-in-out infinite;
   }
 }
 

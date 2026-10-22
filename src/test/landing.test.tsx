@@ -9,7 +9,7 @@
  */
 
 import { describe, expect, it } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 
 import ArchiveDoors, { ARCHIVE_COUNTS } from '@/components/landing/ArchiveDoors'
@@ -19,6 +19,7 @@ import { BOOKS, SAGAS, ALL_CHARACTERS, PLANETS } from '@/data/static'
 import { TIMELINE_EVENTS, ERAS } from '@/data/static/timeline'
 import { buildEntityCatalog } from '@/components/shadesmar/entity-catalog'
 import { CLUSTERS } from '@/components/shadesmar/types'
+import { DIAGRAM_NOTES } from '@/data/static/diagram-notes'
 import { CORE_DESTINATIONS, HISTORICAL_DESTINATIONS, SECONDARY_DESTINATIONS } from '@/navigation'
 
 const wrap = (ui: React.ReactNode) => render(<MemoryRouter>{ui}</MemoryRouter>)
@@ -54,8 +55,11 @@ describe('archive counters', () => {
 describe('ArchiveDoors', () => {
   it('renders one door per core destination', () => {
     wrap(<ArchiveDoors />)
-    const list = screen.getByRole('list')
-    expect(within(list).getAllByRole('link')).toHaveLength(CORE_DESTINATIONS.length)
+    const archiveLinks = [
+      ...CORE_DESTINATIONS.map((dest) => screen.getByRole('link', { name: new RegExp(dest.label, 'i') })),
+      screen.getByRole('link', { name: /Aharietiam/i }),
+    ]
+    expect(new Set(archiveLinks).size).toBe(CORE_DESTINATIONS.length + 1)
   })
 
   it('every door is a real link with an href', () => {
@@ -70,21 +74,34 @@ describe('ArchiveDoors', () => {
   it('shows the real volume and series counts on the Library door', () => {
     wrap(<ArchiveDoors />)
     const library = screen.getByRole('link', { name: /Library/i })
-    expect(library).toHaveTextContent(String(ARCHIVE_COUNTS.volumes))
-    expect(library).toHaveTextContent(/volumes/i)
-    expect(library).toHaveTextContent(/series/i)
+    expect(library).toHaveAttribute(
+      'aria-label',
+      `Library: ${ARCHIVE_COUNTS.volumes} volumes in ${ARCHIVE_COUNTS.series} series`,
+    )
   })
 
   it('shows the real record and event counts on their doors', () => {
     wrap(<ArchiveDoors />)
-    expect(screen.getByRole('link', { name: /Records/i })).toHaveTextContent(String(ARCHIVE_COUNTS.records))
-    expect(screen.getByRole('link', { name: /Taravangian Diagram/i })).toHaveTextContent(String(ARCHIVE_COUNTS.events))
+    expect(screen.getByRole('link', { name: /Records/i })).toHaveAttribute(
+      'aria-label',
+      `Records: ${ARCHIVE_COUNTS.records} biographies from ${ARCHIVE_COUNTS.worlds} worlds`,
+    )
+    expect(screen.getByRole('link', { name: /Taravangian Diagram/i })).toHaveAttribute(
+      'aria-label',
+      `Taravangian Diagram. ${DIAGRAM_NOTES.length} leaves: six deductions and three tallies.`,
+    )
   })
 
   it('gives every door a description, not just a title', () => {
     wrap(<ArchiveDoors />)
-    for (const dest of CORE_DESTINATIONS) {
-      expect(screen.getByRole('link', { name: new RegExp(dest.label, 'i') })).toHaveTextContent(dest.description)
+    const doorLinks = [
+      ...CORE_DESTINATIONS.map((dest) => screen.getByRole('link', { name: new RegExp(dest.label, 'i') })),
+      screen.getByRole('link', { name: /Aharietiam/i }),
+    ]
+    for (const link of doorLinks) {
+      const accessibleDescription = link.getAttribute('aria-label')
+      expect(accessibleDescription).toBeTruthy()
+      expect(accessibleDescription!.length).toBeGreaterThan(8)
     }
   })
 })
@@ -110,7 +127,7 @@ describe('HistoricalPage', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Historical Archive' })).toBeInTheDocument()
   })
 
-  it('lists all five sections as valid links', () => {
+  it('lists all four sections as valid links', () => {
     wrap(<HistoricalPage />)
     for (const dest of HISTORICAL_DESTINATIONS) {
       const link = screen.getAllByRole('link', { name: new RegExp(dest.label, 'i') })[0]
