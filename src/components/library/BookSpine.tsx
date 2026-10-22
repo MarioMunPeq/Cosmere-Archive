@@ -1,11 +1,9 @@
 /**
- * BookSpine — a volume as a made object, not a crop of its cover.
+ * BookSpine — a cover-art panel with the title set like a bound volume.
  *
- * The shelf is the first thing a visitor reads, and a row of cover crops reads
- * as a row of thumbnails. A spine is a piece of bookbinding: cloth or leather,
- * raised bands, a paper label, a gilt rule and the volume number stamped at the
- * foot. Everything below is made from those parts, in CSS, so nothing is
- * fetched and nothing is cut off.
+ * The cover art runs edge to edge, cropped to the narrow face of the book.
+ * A small title plate, raised bands and gilt volume number keep the treatment
+ * close to a physical spine without repeating the cover's author line.
  *
  * Variation is deterministic. A book must lean, sit and catch the light the
  * same way on every render and every reload, so the per-volume numbers come
@@ -33,6 +31,37 @@ interface Props {
   onBlurBook: () => void
   onKeyDown: (e: React.KeyboardEvent) => void
   registerRef: (el: HTMLButtonElement | null) => void
+}
+
+/** Vertical art windows for the jacket crops, chosen to keep most cover text out of the spine. */
+const SPINE_ART_ORIGIN: Record<string, number> = {
+  arcanum_unbounded: 40,
+  dawnshard: 75,
+  elantris: 55,
+  oathbringer: 65,
+  rhythm_of_war: 72,
+  shadows_of_self: 0,
+  the_alloy_of_law: 0,
+  the_bands_of_mourning: 0,
+  the_final_empire: 0,
+  the_hero_of_ages: 0,
+  the_lost_metal: 0,
+  the_sunlit_man: 38,
+  the_way_of_kings: 100,
+  the_well_of_ascension: 0,
+  tress_of_the_emerald_sea: 60,
+  warbreaker: 0,
+  white_sand_vol_1: 20,
+  white_sand_vol_2: 20,
+  white_sand_vol_3: 20,
+  wind_and_truth: 76,
+  words_of_radiance: 100,
+  yumi_and_the_nightmare_painter: 44,
+}
+
+const SPINE_ART_ZOOM: Record<string, number> = {
+  arcanum_unbounded: 2.8,
+  tress_of_the_emerald_sea: 3,
 }
 
 /** A stable 0–1 from the book id. */
@@ -73,10 +102,10 @@ function BookSpineImpl({
   const leatherHigh = `color-mix(in srgb, ${leather} 86%, #d8c6a8)`
   const gilt = `color-mix(in srgb, ${accent} 42%, #d9bd82)`
 
-  // The spine is a shelf object, not a poster: the label stays at 13px even
-  // when the title is long, and never breaks a word that can fit on one line.
+  // Keep the hand-set spine title restrained and legible at shelf scale.
   const labelSize = Math.max(13, Math.min(15, width * 0.145))
   const label = `${book.title} — ${seriesLabel}, volume ${index + 1} of ${total}`
+  const coverSrc = `${import.meta.env.BASE_URL}${book.cover}`
 
   const style = {
     width,
@@ -89,6 +118,8 @@ function BookSpineImpl({
     '--spine-lean': `${lean.toFixed(3)}deg`,
     '--spine-settle': `${settle.toFixed(1)}px`,
     '--spine-label-size': `${labelSize.toFixed(1)}px`,
+    '--spine-art-origin-y': `${SPINE_ART_ORIGIN[book.id] ?? 50}%`,
+    '--spine-art-zoom': SPINE_ART_ZOOM[book.id] ?? 2.5,
   } as CSSProperties
 
   return (
@@ -111,6 +142,9 @@ function BookSpineImpl({
       >
         <span className="shelf-spine__leather" aria-hidden="true" />
         <span className="shelf-spine__grain" aria-hidden="true" />
+        <span className="shelf-spine__cover" aria-hidden="true">
+          <img src={coverSrc} alt="" loading="lazy" draggable={false} />
+        </span>
         <span className="shelf-spine__band shelf-spine__band--one" aria-hidden="true" />
         <span className="shelf-spine__band shelf-spine__band--two" aria-hidden="true" />
         <span className="shelf-spine__band shelf-spine__band--three" aria-hidden="true" />

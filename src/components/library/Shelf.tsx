@@ -39,8 +39,8 @@ export interface ShelfApi {
   handleKey: (e: React.KeyboardEvent, index: number) => void
 }
 
-const MOBILE_SPINE = 88
-const MOBILE_HEIGHT = 330
+const MOBILE_SPINE = 100
+const MOBILE_HEIGHT = 360
 const BOOKEND_SPACE = 44
 
 interface RowBook {

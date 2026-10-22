@@ -19,7 +19,7 @@
  */
 
 /** Widest a spine may be, so a single volume never fills a shelf. */
-export const MAX_SPINE = 92
+export const MAX_SPINE = 132
 /** Narrowest. Below 24px the title cannot be read (criterion B.5). */
 export const MIN_SPINE = 24
 /** Space between spines. */

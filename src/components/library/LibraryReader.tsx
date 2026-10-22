@@ -69,6 +69,7 @@ function TravellingVolume({ book, from, to, mode }: { book: Book; from: Box; to:
   const dy = to.top + to.height / 2 - (from.top + from.height / 2)
   const scaleX = to.width / Math.max(1, from.width)
   const scaleY = to.height / Math.max(1, from.height)
+  const coverSrc = `${import.meta.env.BASE_URL}${book.cover}`
 
   const style = {
     left: `${from.left}px`,
@@ -79,22 +80,22 @@ function TravellingVolume({ book, from, to, mode }: { book: Book; from: Box; to:
     '--traveller-gilt': `color-mix(in srgb, ${accent} 42%, #d9bd82)`,
     '--traveller-foil': material.foil,
     transform: moving
-      ? `translate3d(${dx.toFixed(2)}px, ${dy.toFixed(2)}px, 0) scale(${scaleX.toFixed(3)}, ${scaleY.toFixed(3)})`
-      : 'translate3d(0, 0, 0) scale(1, 1)',
-    opacity: moving ? 0 : 1,
+      ? `translate3d(${dx.toFixed(2)}px, ${dy.toFixed(2)}px, 0) perspective(1400px) rotateY(${mode === 'enter' ? '0deg' : '-68deg'}) scale(${scaleX.toFixed(3)}, ${scaleY.toFixed(3)}) rotateZ(0deg)`
+      : `translate3d(0, 0, 0) perspective(1400px) rotateY(${mode === 'enter' ? '-68deg' : '0deg'}) scale(1, 1) rotateZ(${mode === 'enter' ? '-2deg' : '0deg'})`,
+    opacity: moving ? (mode === 'enter' ? 0 : 0.92) : 1,
     transition:
       mode === 'enter'
-        ? 'transform 700ms cubic-bezier(0.33, 0.8, 0.2, 1), opacity 180ms 520ms linear'
-        : 'transform 600ms cubic-bezier(0.33, 0.8, 0.2, 1), opacity 160ms 430ms linear',
+        ? 'transform 920ms cubic-bezier(0.18, 0.86, 0.24, 1), opacity 220ms 700ms ease'
+        : 'transform 760ms cubic-bezier(0.55, 0.08, 0.68, 0.53), opacity 180ms 560ms ease',
   } as React.CSSProperties
 
   return (
     <span className="library-traveller" data-mode={mode} style={style} aria-hidden="true">
-      <span className="library-traveller__leather" />
-      <span className="library-traveller__band library-traveller__band--one" />
-      <span className="library-traveller__band library-traveller__band--two" />
-      <span className="library-traveller__label">{book.title}</span>
-      <span className="library-traveller__volume">{series}</span>
+      <span className="library-traveller__pages" />
+      <span className="library-traveller__cover">
+        <img src={coverSrc} alt="" draggable={false} />
+        <span className="library-traveller__foil">{series}</span>
+      </span>
     </span>
   )
 }
@@ -149,7 +150,7 @@ export default function LibraryReader({ book, origin, onClose }: Props) {
       setPhase('reading')
       setTravel(null)
       enterTimer.current = null
-    }, 760)
+    }, 980)
     return clearEnterTimer
   }, [phase, clearEnterTimer])
 
@@ -169,7 +170,7 @@ export default function LibraryReader({ book, origin, onClose }: Props) {
     closeTimer.current = window.setTimeout(() => {
       closeTimer.current = null
       onClose()
-    }, 660)
+    }, 800)
   }, [book.id, onClose, origin, phase, reduced])
 
   useEffect(() => {

@@ -62,6 +62,15 @@
   color: #cdbb9b;
 }
 
+.library-sign__author {
+  margin: 0;
+  color: #a99472;
+  font-family: var(--font-ui);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
 /* ---- The hall ------------------------------------------------------------ */
 
 .library-hall {
@@ -310,6 +319,35 @@
   mix-blend-mode: overlay;
 }
 
+/* Let the jacket's illustration fill the volume. Scaling the original cover
+   into a narrow crop avoids turning the whole shelf into miniature posters. */
+.shelf-spine__cover {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--spine-leather-low);
+  pointer-events: none;
+}
+
+.shelf-spine__cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transform: scale(var(--spine-art-zoom, 2.5));
+  transform-origin: 50% var(--spine-art-origin-y, 50%);
+  filter: saturate(0.9) contrast(1.02) brightness(0.78);
+}
+
+.shelf-spine__cover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgb(0 0 0 / 0.36), transparent 18%, transparent 82%, rgb(0 0 0 / 0.34)),
+    linear-gradient(180deg, rgb(0 0 0 / 0.12), transparent 34%, rgb(0 0 0 / 0.14));
+}
 .shelf-spine__band {
   position: absolute;
   right: 5%;
@@ -327,43 +365,43 @@
 }
 
 .shelf-spine__band--one {
-  top: 5%;
+  top: 3%;
 }
 .shelf-spine__band--two {
-  top: 8%;
+  top: 69%;
 }
 .shelf-spine__band--three {
-  bottom: 8%;
+  bottom: 3%;
 }
 .shelf-spine__band--four {
-  bottom: 5%;
+  bottom: 6%;
 }
 
 .shelf-spine__label {
   position: absolute;
-  top: 24%;
+  top: 36%;
   left: 50%;
   width: calc(100% - 4px);
-  padding: 7px 2px 6px;
+  padding: 10px 4px;
   transform: translateX(-50%);
-  border-top: 1px solid var(--spine-gilt);
-  border-bottom: 1px solid var(--spine-gilt);
-  background: linear-gradient(180deg, #f1e7d0 0%, #e6d8ba 56%, #dac9a7 100%);
+  border-top: 1px solid color-mix(in srgb, var(--spine-gilt) 88%, #f6e8c7);
+  border-bottom: 1px solid color-mix(in srgb, var(--spine-gilt) 88%, #f6e8c7);
+  background: linear-gradient(180deg, rgb(38 25 14 / 0.92), rgb(20 13 8 / 0.96));
   box-shadow:
-    inset 0 0 12px rgb(120 90 50 / 0.14),
-    0 1px 0 rgb(255 248 228 / 0.8),
-    0 2px 4px rgb(0 0 0 / 0.26);
-  color: #241a12;
+    inset 0 1px 0 rgb(255 244 216 / 0.18),
+    0 3px 8px rgb(0 0 0 / 0.38);
+  color: #f1e3c6;
   font-family: var(--font-display);
   font-size: var(--spine-label-size, 13px);
   font-variant-caps: small-caps;
   font-weight: 600;
   line-height: 1.12;
-  letter-spacing: 0.025em;
+  letter-spacing: 0.035em;
   text-align: center;
   text-wrap: balance;
   overflow-wrap: anywhere;
   hyphens: auto;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.8);
 }
 
 .shelf-spine__volume {
@@ -463,8 +501,9 @@
   min-height: 0;
   overflow: hidden;
   padding-top: clamp(52px, 7vh, 64px);
-  background: var(--codex-desk);
+  background: radial-gradient(ellipse at 50% 42%, rgb(220 190 132 / 0.12), transparent 48%), var(--codex-desk);
   isolation: isolate;
+  animation: library-room-arrive 680ms cubic-bezier(0.2, 0.72, 0.2, 1) both;
 }
 
 .library-reader__book {
@@ -472,7 +511,7 @@
   display: flex;
   flex: 1 1 0%;
   min-height: 0;
-  transition: opacity 260ms ease 240ms;
+  transition: opacity 420ms cubic-bezier(0.2, 0.7, 0.2, 1) 340ms;
 }
 
 .library-reader[data-phase='entering'] .library-reader__book {
@@ -481,7 +520,18 @@
 
 .library-reader[data-phase='closing'] .library-reader__book {
   opacity: 0;
-  transition: opacity 220ms ease;
+  transition: opacity 180ms ease;
+}
+
+.library-reader[data-phase='entering'] .library-return {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.library-return {
+  transition:
+    opacity 360ms ease 420ms,
+    transform 420ms cubic-bezier(0.2, 0.7, 0.2, 1) 420ms;
 }
 
 .library-return {
@@ -514,84 +564,88 @@
   outline-offset: 3px;
 }
 
-/* The volume in flight. Only transform and opacity are animated. */
+/* The lifted volume turns toward the reader as it grows from its shelf slot. */
 .library-traveller {
   position: fixed;
   z-index: 80;
   display: block;
-  overflow: hidden;
-  border-radius: 2px 2px 1px 1px;
-  background: linear-gradient(
-    90deg,
-    #2a170b 0%,
-    var(--traveller-leather) 30%,
-    color-mix(in srgb, var(--traveller-leather) 86%, #d8c6a8) 50%,
-    var(--traveller-leather) 70%,
-    #2a170b 100%
-  );
+  overflow: visible;
+  border-radius: 2px 5px 5px 2px;
+  background: linear-gradient(90deg, #21150d 0%, #8f7755 5%, #eee2c9 10%, #d7c6a7 14%, #21150d 18%, #160e08 100%);
   box-shadow:
-    0 24px 36px -20px #000,
+    0 48px 64px -28px rgb(0 0 0 / 0.78),
+    0 12px 20px -10px rgb(0 0 0 / 0.52),
     inset 1px 0 0 rgb(255 238 204 / 0.12);
   pointer-events: none;
-  transform-origin: 50% 50%;
+  transform-origin: 0% 50%;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
 }
 
-.library-traveller__leather {
+.library-traveller__cover {
+  position: absolute;
+  inset: 0 3px 0 0;
+  overflow: hidden;
+  border: 1px solid rgb(214 184 125 / 0.6);
+  border-radius: 1px 4px 4px 1px;
+  background: var(--traveller-leather);
+  box-shadow:
+    inset 0 0 0 5px rgb(26 17 10 / 0.3),
+    inset 0 0 28px rgb(0 0 0 / 0.25);
+  transform: translateZ(2px);
+}
+
+.library-traveller__cover img {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgb(255 238 204 / 0.1) 0%,
-    transparent 14%,
-    transparent 86%,
-    rgb(0 0 0 / 0.3) 100%
-  );
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+  filter: saturate(0.88) contrast(1.04) brightness(0.85);
 }
 
-.library-traveller__band {
+.library-traveller__cover::after {
   position: absolute;
-  right: 6%;
-  left: 6%;
-  height: 3px;
-  background: var(--traveller-gilt);
+  inset: 0;
+  border: 7px solid rgb(36 22 11 / 0.36);
+  content: '';
+  box-shadow:
+    inset 0 0 0 1px rgb(222 191 133 / 0.7),
+    inset 0 0 38px rgb(0 0 0 / 0.38);
 }
 
-.library-traveller__band--one {
-  top: 7%;
-}
-.library-traveller__band--two {
-  bottom: 7%;
-}
-
-.library-traveller__label {
+.library-traveller__pages {
   position: absolute;
-  top: 22%;
-  left: 50%;
-  width: calc(100% - 12px);
-  padding: 8px 5px 7px;
-  transform: translateX(-50%);
-  border-top: 1px solid var(--traveller-gilt);
-  border-bottom: 1px solid var(--traveller-gilt);
-  background: #e9dcc1;
-  color: #241a12;
+  inset: 3px 0 3px auto;
+  width: 8px;
+  transform: translateX(5px) translateZ(-1px);
+  background: repeating-linear-gradient(180deg, #e8d9b9 0 2px, #bbaa88 2.5px 3px);
+  box-shadow: 3px 2px 5px rgb(0 0 0 / 0.5);
+}
+
+.library-traveller__foil {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  left: 14px;
+  color: #f0d9a5;
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: clamp(11px, 1.1vw, 16px);
   font-variant-caps: small-caps;
-  font-weight: 600;
-  line-height: 1.12;
+  letter-spacing: 0.15em;
   text-align: center;
+  text-shadow: 0 1px 4px #160e08;
+  z-index: 1;
 }
 
-.library-traveller__volume {
-  position: absolute;
-  right: 0;
-  bottom: 10%;
-  left: 0;
-  color: var(--traveller-foil);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  text-align: center;
+@keyframes library-room-arrive {
+  from {
+    background-color: transparent;
+  }
+  to {
+    background-color: var(--codex-desk);
+  }
 }
 
 /* ---- Leaf content -------------------------------------------------------- */
@@ -1166,8 +1220,11 @@
   .shelf-spine__glow,
   .shelf-slip,
   .library-reader__book,
+  .library-reader,
+  .library-return,
   .library-cover-plate__image {
     transition: none;
+    animation: none;
   }
 
   .library-traveller {

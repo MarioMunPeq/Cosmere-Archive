@@ -61,6 +61,7 @@ export default function CosmereLibrary({ onOpen }: Props) {
             <h1 className="library-sign__title">The Library of Jasnah</h1>
           </div>
           <p className="library-sign__count">{BOOKS.length} volumes · three shelves · one candle</p>
+          <p className="library-sign__author">by Brandon Sanderson</p>
         </header>
 
         <div className="library-hall" data-library-hall>
@@ -82,7 +83,7 @@ export default function CosmereLibrary({ onOpen }: Props) {
                   label={shelf.label}
                   note={shelf.note}
                   books={shelf.books}
-                  baseHeight={370}
+                  baseHeight={390}
                   shadowed={index > 0}
                   shelfIndex={index}
                   onOpen={onOpen}
