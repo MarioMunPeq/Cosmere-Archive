@@ -156,12 +156,17 @@ export default function SearchDialog({ open, onClose }: Props) {
         if (!inside) onClose()
       }}
       className={[
-        'm-0 mt-[10vh] w-[min(640px,calc(100vw-32px))] max-w-none p-0',
-        'border border-[#5a3e1e] text-[#241a12]',
-        'shadow-[0_12px_40px_rgba(0,0,0,0.6)]',
-        'backdrop:bg-[color-mix(in_srgb,var(--surface-void)_85%,transparent)] backdrop:backdrop-blur-[3px]',
+        'fixed left-1/2 top-[clamp(24px,10vh,96px)] m-0 max-h-[min(80vh,720px)] w-[min(600px,calc(100vw-40px))] max-w-none overflow-hidden rounded-[3px] p-0',
+        'border border-[#8b6a3c] text-[#241a12]',
+        'shadow-[0_28px_90px_rgba(0,0,0,0.72),0_4px_18px_rgba(0,0,0,0.35)]',
+        'backdrop:bg-[color-mix(in_srgb,var(--surface-void)_82%,transparent)] backdrop:backdrop-blur-[5px]',
       ].join(' ')}
       style={{
+        position: 'fixed',
+        insetInlineStart: '50%',
+        insetBlockStart: 'clamp(24px, 10vh, 96px)',
+        transform: 'translateX(-50%)',
+        maxHeight: 'min(80vh, 720px)',
         background: 'linear-gradient(152deg, #f2e9d4 0%, #eae0c8 40%, #e0d4b6 76%, #d6c8a6 100%)',
       }}
     >

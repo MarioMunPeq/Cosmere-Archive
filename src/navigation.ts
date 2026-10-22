@@ -194,13 +194,6 @@ export const HISTORICAL_DESTINATIONS: Destination[] = [
     icon: 'herald',
   },
   {
-    id: 'ars-arcanum',
-    label: 'Ars Arcanum',
-    description: 'The recorded magic of every shard and world.',
-    to: '/magic',
-    icon: 'magic',
-  },
-  {
     id: 'chronology',
     label: 'Chronology',
     description: 'Eleven eras of history, from Adonalsium onward.',
