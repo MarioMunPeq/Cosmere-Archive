@@ -7,7 +7,6 @@ import { SelectionSystem } from './SelectionSystem'
 import { PhysicsSystem } from './PhysicsSystem'
 import { CameraController } from './Camera'
 import { createPointerTracker } from './Pointers'
-import ShadesmarHud from './ShadesmarHud'
 import ShadesmarOverlay from './ShadesmarOverlay'
 import { drawBackground, drawSouls, drawConnectionLines, getScreenPos } from './Renderer'
 import { shadesmarStore, describeSoul, registerRealms } from './store'
@@ -32,6 +31,7 @@ export function Canvas() {
   const selectionRef = useRef(new SelectionSystem())
   const cameraRef = useRef(new CameraController())
   const focusActiveRef = useRef(false)
+  const focusedRealmRef = useRef<string | null>(null)
 
   const mouseRef = useRef({ x: -9999, y: -9999 })
   const rAFRef = useRef(0)
@@ -50,7 +50,6 @@ export function Canvas() {
    * time a second finger lands the world may already have panned under it.
    */
   const pinchMidRef = useRef<{ x: number; y: number } | null>(null)
-  const [focusedRealm, setFocusedRealm] = useState<string | null>(null)
 
   /**
    * Zoom about the canvas centre, for the HUD and the keyboard.
@@ -72,18 +71,17 @@ export function Canvas() {
   function setFocusMode(clusterId: string | null) {
     const model = modelRef.current
     const camera = cameraRef.current
+    focusedRealmRef.current = clusterId
     shadesmarStore.setFocusedRealm(clusterId)
     if (clusterId) {
       model.enterFocus(clusterId)
       const { w, h } = sizeRef.current
-      if (w > 0 && h > 0) camera.flyToFit(soulsRef.current, clusterId, w, h)
+      if (w > 0 && h > 0) camera.flyToFit(soulsRef.current, clusterId, w, h, !focusActiveRef.current)
       focusActiveRef.current = true
-      setFocusedRealm(clusterId)
     } else {
       model.exitFocus()
       camera.restoreState()
       focusActiveRef.current = false
-      setFocusedRealm(null)
     }
   }
 
@@ -113,6 +111,9 @@ export function Canvas() {
       cameraRef.current.resize(rect.width, rect.height)
     }
     resize()
+    // The first crossing opens on Roshar, where the bead sea and living flames
+    // have their clearest identity. The field index still opens the wider ocean.
+    setFocusMode('roshar')
     window.addEventListener('resize', resize)
 
     /*
@@ -242,7 +243,7 @@ export function Canvas() {
       ctx.save()
       ctx.scale(dpr, dpr)
 
-      drawBackground(ctx, w, h, selection.state.bgDim, time, camera)
+      drawBackground(ctx, w, h, selection.state.bgDim, time, camera, focusedRealmRef.current, mouseRef.current)
       drawSouls(ctx, souls, camera, w, h, time, dt, selection.state.soulId, model.hoveredId, 0)
       drawConnectionLines(ctx, selection.state, souls, time)
 
@@ -481,15 +482,16 @@ export function Canvas() {
     // same frame as the reset that was supposed to replace it.
     modelRef.current.exitFocus()
     focusActiveRef.current = false
-    setFocusedRealm(null)
+    focusedRealmRef.current = null
     shadesmarStore.setFocusedRealm(null)
     cameraRef.current.resetToOverview()
   }, [])
 
-  const leaveFocus = useCallback(() => setFocusMode(null), [])
-
   /** The legend's `flyToFit`, and its own way back out. */
-  const focusRealm = useCallback((id: string | null) => setFocusMode(id), [])
+  const focusRealm = useCallback((id: string | null) => {
+    if (!id || modelRef.current.focusPlanet === id) return
+    setFocusMode(id)
+  }, [])
 
   return (
     <>
@@ -505,10 +507,10 @@ export function Canvas() {
         onWheel={onWheel}
         onContextMenu={(e) => e.preventDefault()}
       />
-      <ShadesmarHud onOverview={goToOverview} onBack={leaveFocus} focusedRealm={focusedRealm} />
       <ShadesmarOverlay
         souls={soulList}
         onFocusRealm={focusRealm}
+        onOverview={goToOverview}
         onCloseInspector={() => {
           selectionRef.current.deselect()
           shadesmarStore.setSelected(null)

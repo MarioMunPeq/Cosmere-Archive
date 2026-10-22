@@ -1,7 +1,7 @@
 import type { Soul } from './types'
 import type { SelectionState } from './types'
 import type { CameraController } from './Camera'
-import { FOG_PARTICLES, LOD_DOT, LOD_BEAD, GLOW_MIN, GLOW_MAX_VISIBLE, CLUSTERS, WORLD_W, WORLD_H } from './types'
+import { FOG_PARTICLES, LOD_DOT, GLOW_MAX_VISIBLE, CLUSTERS, WORLD_W, WORLD_H } from './types'
 import { getSoulTexture } from './TextureCache'
 
 interface FogDot {
@@ -11,6 +11,16 @@ interface FogDot {
   vy: number
   size: number
   opacity: number
+}
+
+interface SeaBead {
+  x: number
+  y: number
+  depth: number
+  radius: number
+  opacity: number
+  phase: number
+  tone: number
 }
 
 /**
@@ -42,6 +52,87 @@ function mulberry32(seed: number): () => number {
 const fogDots: FogDot[] = []
 let fogFor: { w: number; h: number } | null = null
 const screenPos = new Map<string, { x: number; y: number }>()
+const seaBeads: SeaBead[] = []
+let seaFor: { w: number; h: number } | null = null
+const beadTextures = new Map<string, HTMLCanvasElement>()
+
+function initSea(w: number, h: number, horizon: number): void {
+  if (seaFor && seaFor.w === w && seaFor.h === h) return
+  seaFor = { w, h }
+  seaBeads.length = 0
+  const rand = mulberry32(0xbead5ea)
+  const count = Math.min(620, Math.max(130, Math.floor((w * h) / 2700)))
+  for (let i = 0; i < count; i++) {
+    const depth = Math.sqrt(rand())
+    seaBeads.push({
+      x: rand() * w,
+      y: horizon + depth * h * 0.37,
+      depth,
+      radius: 0.9 + depth * depth * Math.min(w, h) * 0.025,
+      opacity: 0.26 + rand() * 0.32,
+      phase: rand() * Math.PI * 2,
+      tone: rand(),
+    })
+  }
+  seaBeads.sort((a, b) => a.depth - b.depth)
+}
+
+function getBeadTexture(radius: number, tint: string): HTMLCanvasElement {
+  const bucket = Math.max(2, Math.min(22, Math.round(radius)))
+  const key = `${bucket}:${tint}`
+  const cached = beadTextures.get(key)
+  if (cached) return cached
+
+  const size = 72
+  const c = document.createElement('canvas')
+  c.width = size
+  c.height = size
+  const g = c.getContext('2d')!
+  const cx = size / 2
+  const cy = size / 2
+  const r = 27
+  const sphere = g.createRadialGradient(cx - 10, cy - 12, 1, cx, cy, r)
+  sphere.addColorStop(0, 'rgba(244,250,231,.95)')
+  sphere.addColorStop(0.09, `rgba(219,239,224,.88)`)
+  sphere.addColorStop(0.27, `rgba(${tint},.78)`)
+  sphere.addColorStop(0.63, 'rgba(101,139,146,.72)')
+  sphere.addColorStop(0.9, 'rgba(35,57,66,.68)')
+  sphere.addColorStop(1, 'rgba(13,24,31,.78)')
+  g.fillStyle = sphere
+  g.beginPath()
+  g.arc(cx, cy, r, 0, Math.PI * 2)
+  g.fill()
+
+  const fresnel = g.createRadialGradient(cx, cy, r * 0.72, cx, cy, r)
+  fresnel.addColorStop(0, 'rgba(190,226,215,0)')
+  fresnel.addColorStop(0.72, 'rgba(183,220,209,.03)')
+  fresnel.addColorStop(1, 'rgba(211,235,222,.32)')
+  g.fillStyle = fresnel
+  g.beginPath()
+  g.arc(cx, cy, r, 0, Math.PI * 2)
+  g.fill()
+
+  // A broad reflected sky window and a pin of direct light make the beads
+  // read as polished glass rather than flat colored circles.
+  g.save()
+  g.translate(cx - 8, cy - 12)
+  g.rotate(-0.46)
+  const windowGlow = g.createLinearGradient(-7, -5, 7, 8)
+  windowGlow.addColorStop(0, 'rgba(255,255,238,.36)')
+  windowGlow.addColorStop(1, 'rgba(222,245,231,0)')
+  g.fillStyle = windowGlow
+  g.beginPath()
+  g.ellipse(0, 0, 6, 2.6, 0, 0, Math.PI * 2)
+  g.fill()
+  g.restore()
+  g.fillStyle = 'rgba(255,255,246,.62)'
+  g.beginPath()
+  g.arc(cx - 10, cy - 14, 1.25, 0, Math.PI * 2)
+  g.fill()
+
+  beadTextures.set(key, c)
+  return c
+}
 
 function initFog(w: number, h: number): void {
   // Regenerated whenever the viewport changes shape, so the fog is always
@@ -69,93 +160,252 @@ export function drawBackground(
   dim: number,
   time: number,
   camera?: CameraController,
+  realmId?: string | null,
+  pointer?: { x: number; y: number },
 ): void {
-  ctx.fillStyle = '#030308'
+  // Shadesmar should read as a place with a horizon and a surface, not as
+  // outer space. The sea and shore are screen-space: camera movement only
+  // moves the souls above this landscape.
+  ctx.fillStyle = '#080b10'
   ctx.fillRect(0, 0, w, h)
-
-  // Nebulae and stars are drawn in world space via the camera transform.
-
-  // Deep space gradient: darker at edges, slightly warmer at center.
   const cx = w / 2
   const cy = h / 2
-  const r = Math.max(w, h) * 0.7
-  const bgGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r)
-  bgGrad.addColorStop(0, `rgba(8, 12, 24, ${0.6 * (1 - dim)})`)
-  bgGrad.addColorStop(0.5, `rgba(5, 8, 18, ${0.4 * (1 - dim)})`)
-  bgGrad.addColorStop(1, 'rgba(3, 3, 8, 0)')
+  const horizon = h * 0.52
+  const parallaxX = pointer && pointer.x > -1000 ? (pointer.x / w - 0.5) * 18 : 0
+  const parallaxY = pointer && pointer.y > -1000 ? (pointer.y / h - 0.5) * 10 : 0
+  const cameraDriftX = camera ? (WORLD_W / 2 - camera.x) * camera.zoom * Math.min(w, h) * 0.045 : 0
+  const cameraDriftY = camera ? (WORLD_H / 2 - camera.y) * camera.zoom * Math.min(w, h) * 0.035 : 0
+  const sky = ctx.createLinearGradient(0, 0, 0, h)
+  sky.addColorStop(0, '#07090e')
+  sky.addColorStop(0.4, '#111820')
+  sky.addColorStop(0.53, '#34464a')
+  sky.addColorStop(1, '#080b10')
+  const bgGrad = ctx.createRadialGradient(cx, horizon, 0, cx, horizon, Math.max(w, h) * 0.74)
+  bgGrad.addColorStop(0, `rgba(119, 163, 166, ${0.19 * (1 - dim)})`)
+  bgGrad.addColorStop(0.4, `rgba(75, 107, 118, ${0.1 * (1 - dim)})`)
+  bgGrad.addColorStop(1, 'rgba(8, 11, 16, 0)')
+  ctx.fillStyle = sky
+  ctx.fillRect(0, 0, w, h)
   ctx.fillStyle = bgGrad
   ctx.fillRect(0, 0, w, h)
 
-  // Nebulae: each realm is a colored cloud. Drawn in world space via camera.
-  for (const cluster of CLUSTERS) {
-    let sx: number, sy: number, nr: number
-    if (camera) {
-      const sp = camera.worldToScreen(cluster.cx, cluster.cy, w, h)
-      sx = sp.x
-      sy = sp.y
-      nr = cluster.radius * camera.zoom * Math.min(w, h) * 1.4
-    } else {
-      const scale = Math.min(w / WORLD_W, h / WORLD_H) * 0.85
-      const offsetX = (w - WORLD_W * scale) / 2
-      const offsetY = (h - WORLD_H * scale) / 2
-      sx = cluster.cx * scale + offsetX
-      sy = cluster.cy * scale + offsetY
-      nr = cluster.radius * scale * 1.4
-    }
-    const color = cluster.color
-    const pulse = 0.85 + Math.sin(time * 0.15 + cluster.cx * 3) * 0.15
-    const nebula = ctx.createRadialGradient(sx, sy, 0, sx, sy, nr)
-    nebula.addColorStop(0, `rgba(${color}, ${0.07 * pulse * (1 - dim)})`)
-    nebula.addColorStop(0.4, `rgba(${color}, ${0.035 * pulse * (1 - dim)})`)
-    nebula.addColorStop(0.7, `rgba(${color}, ${0.012 * (1 - dim)})`)
-    nebula.addColorStop(1, `rgba(${color}, 0)`)
-    ctx.fillStyle = nebula
-    ctx.fillRect(sx - nr, sy - nr, nr * 2, nr * 2)
+  // Each perpendicularity leaves its own trace on the cognitive sky. The hue
+  // is taken from the realm atlas so the scene and its navigation stay in sync.
+  const realm = CLUSTERS.find((cluster) => cluster.id === realmId)
+  if (realm) {
+    const tint = ctx.createRadialGradient(cx, horizon, 0, cx, horizon, Math.max(w, h) * 0.58)
+    tint.addColorStop(0, `rgba(${realm.color}, ${0.12 * (1 - dim)})`)
+    tint.addColorStop(0.48, `rgba(${realm.color}, ${0.045 * (1 - dim)})`)
+    tint.addColorStop(1, `rgba(${realm.color}, 0)`)
+    ctx.fillStyle = tint
+    ctx.fillRect(0, 0, w, h)
   }
 
-  // The Cosmere at center: a subtle warm glow.
-  let cosmereX: number, cosmereY: number, cosmereR: number
-  if (camera) {
-    const sp = camera.worldToScreen(WORLD_W / 2, WORLD_H / 2, w, h)
-    cosmereX = sp.x
-    cosmereY = sp.y
-    cosmereR = camera.zoom * Math.min(w, h) * 0.15
-  } else {
-    const scale = Math.min(w / WORLD_W, h / WORLD_H) * 0.85
-    const offsetX = (w - WORLD_W * scale) / 2
-    const offsetY = (h - WORLD_H * scale) / 2
-    cosmereX = (WORLD_W / 2) * scale + offsetX
-    cosmereY = (WORLD_H / 2) * scale + offsetY
-    cosmereR = scale * 0.3
-  }
-  const cosmereGlow = ctx.createRadialGradient(cosmereX, cosmereY, 0, cosmereX, cosmereY, cosmereR)
-  cosmereGlow.addColorStop(0, `rgba(100,150,200, ${0.1 * (1 - dim)})`)
-  cosmereGlow.addColorStop(0.5, `rgba(100,150,200, ${0.04 * (1 - dim)})`)
-  cosmereGlow.addColorStop(1, 'rgba(100,150,200, 0)')
-  ctx.fillStyle = cosmereGlow
-  ctx.fillRect(cosmereX - cosmereR, cosmereY - cosmereR, cosmereR * 2, cosmereR * 2)
+  // A low, distant sun gives the sea its cold, almost metallic glint.
+  const sunX = w * 0.69 - parallaxX * 0.24 - cameraDriftX
+  const sunY = horizon - h * 0.105 - parallaxY * 0.24 - cameraDriftY
+  const sunRadius = Math.max(6, Math.min(w, h) * 0.018)
+  const sunGlow = ctx.createRadialGradient(sunX, sunY, 1, sunX, sunY, Math.min(w, h) * 0.31)
+  sunGlow.addColorStop(0, `rgba(224, 238, 221, ${0.88 * (1 - dim)})`)
+  sunGlow.addColorStop(0.08, `rgba(191, 218, 213, ${0.32 * (1 - dim)})`)
+  sunGlow.addColorStop(1, 'rgba(156, 199, 202, 0)')
+  ctx.fillStyle = sunGlow
+  ctx.fillRect(sunX - h * 0.31, sunY - h * 0.31, h * 0.62, h * 0.62)
+  ctx.fillStyle = `rgba(230, 243, 232, ${0.9 * (1 - dim)})`
+  ctx.beginPath()
+  ctx.arc(sunX, sunY, sunRadius, 0, Math.PI * 2)
+  ctx.fill()
 
-  // Stars: tiny bright points scattered across the canvas.
-  const starSeed = 0x9e3779b9
-  let starA = starSeed >>> 0
-  function starRand() {
-    starA = (starA + 0x6d2b79f5) | 0
-    let t = Math.imul(starA ^ (starA >>> 15), 1 | starA)
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  // Distance bands and broken reflections make the bead-sea legible as water.
+  ctx.save()
+  ctx.beginPath()
+  ctx.moveTo(0, horizon)
+  ctx.lineTo(w, horizon)
+  ctx.lineTo(w, h)
+  ctx.lineTo(0, h)
+  ctx.closePath()
+  ctx.clip()
+  const sea = ctx.createLinearGradient(0, horizon, 0, h)
+  sea.addColorStop(0, '#26373c')
+  sea.addColorStop(0.1, '#18262d')
+  sea.addColorStop(0.46, '#111920')
+  sea.addColorStop(1, '#080b10')
+  ctx.fillStyle = sea
+  ctx.fillRect(0, horizon, w, h - horizon)
+
+  // The far sun breaks into a soft, widening path across the glass surface.
+  // This low contrast wash sits below the individual spheres, tying their
+  // highlights together without turning the ocean into a neon stripe.
+  const reflection = ctx.createLinearGradient(sunX - w * 0.06, 0, sunX + w * 0.06, 0)
+  reflection.addColorStop(0, 'rgba(213, 231, 216, 0)')
+  reflection.addColorStop(0.5, `rgba(192, 219, 207, ${0.12 * (1 - dim)})`)
+  reflection.addColorStop(1, 'rgba(213, 231, 216, 0)')
+  ctx.globalAlpha = 0.9
+  ctx.fillStyle = reflection
+  ctx.fillRect(sunX - w * 0.06, horizon, w * 0.12, h - horizon)
+
+  // A distant broken silhouette at the horizon, kept as a contour so the
+  // bead-water reads as one continuous sea rather than a boxed-in pool.
+  ctx.strokeStyle = `rgba(195, 219, 208, ${0.24 * (1 - dim)})`
+  ctx.lineWidth = 1.2
+  ctx.beginPath()
+  ctx.moveTo(0, horizon + h * 0.025)
+  ctx.lineTo(w * 0.08, horizon - h * 0.012)
+  ctx.lineTo(w * 0.16, horizon + h * 0.016)
+  ctx.lineTo(w * 0.24, horizon - h * 0.032)
+  ctx.lineTo(w * 0.31, horizon - h * 0.008)
+  ctx.lineTo(w * 0.4, horizon - h * 0.022)
+  ctx.lineTo(w * 0.48, horizon + h * 0.014)
+  ctx.lineTo(w * 0.58, horizon - h * 0.02)
+  ctx.lineTo(w * 0.67, horizon + h * 0.008)
+  ctx.lineTo(w * 0.79, horizon - h * 0.03)
+  ctx.lineTo(w * 0.89, horizon - h * 0.004)
+  ctx.lineTo(w, horizon - h * 0.025)
+  ctx.stroke()
+
+  initSea(w, h, horizon)
+  const seaTint = realm?.color ?? '149, 190, 184'
+  for (const bead of seaBeads) {
+    const { depth, phase } = bead
+    const swell = Math.sin(time * 0.00022 + phase) * (0.35 + depth * 1.45)
+    const x =
+      bead.x - parallaxX * depth * 1.2 - cameraDriftX * depth * 0.68 + Math.sin(time * 0.00012 + phase) * depth * 2
+    const y = bead.y + swell - parallaxY * depth * 0.62 - cameraDriftY * depth * 0.28
+    const radius = bead.radius * (0.96 + Math.sin(time * 0.00018 + phase) * 0.035)
+    const texture = getBeadTexture(radius, seaTint)
+    const shimmer = 0.62 + Math.max(0, Math.sin(time * 0.00065 + phase * 1.7)) * 0.38
+    ctx.globalAlpha = bead.opacity * shimmer * (1 - dim) * (0.56 + depth * 0.44)
+    ctx.drawImage(texture, x - radius, y - radius, radius * 2, radius * 2)
   }
-  const starCount = Math.floor((w * h) / 4000)
-  for (let i = 0; i < starCount; i++) {
-    const sx = starRand() * w
-    const sy = starRand() * h
-    const brightness = 0.15 + starRand() * 0.5
-    const twinkle = 0.6 + Math.sin(time * (0.5 + starRand() * 1.5) + starRand() * Math.PI * 2) * 0.4
-    const size = starRand() < 0.85 ? 0.5 : 1.2
-    ctx.globalAlpha = brightness * twinkle * (1 - dim)
-    ctx.fillStyle = `rgba(200, 215, 240, 1)`
+  ctx.globalAlpha = 1
+
+  // Broken vertical glints connect the sun to the near water. Their spacing
+  // follows a loose sine instead of a grid, so the reflected path feels alive.
+  for (let i = 0; i < 28; i++) {
+    const depth = i / 27
+    const y = horizon + 5 + depth * depth * (h - horizon) * 0.73
+    const center = sunX + Math.sin(i * 2.17 + time * 0.00016) * (w * (0.018 + depth * 0.035))
+    const streakWidth = w * (0.006 + depth * 0.027) * (0.24 + (i % 5) * 0.17)
+    const alpha = (0.035 + depth * 0.09) * (1 - dim)
+    ctx.strokeStyle = `rgba(210, 230, 216, ${alpha})`
+    ctx.lineWidth = 0.6 + depth * 1.25
     ctx.beginPath()
-    ctx.arc(sx, sy, size, 0, Math.PI * 2)
+    ctx.moveTo(center - streakWidth / 2, y)
+    ctx.quadraticCurveTo(center, y + Math.sin(time * 0.0003 + i) * (0.8 + depth * 2), center + streakWidth / 2, y)
+    ctx.stroke()
+  }
+  // A few oblique wavelets catch light between the beads; they are sparse and
+  // irregular so the surface remains tactile rather than becoming a pattern.
+  for (let i = 0; i < 13; i++) {
+    const depth = 0.18 + ((i * 0.371) % 0.78)
+    const x = ((i * 0.6180339887 + 0.14) % 1) * w - parallaxX * depth
+    const y = horizon + 12 + depth * depth * (h - horizon) * 0.68 + Math.sin(time * 0.00024 + i * 1.8) * depth * 2
+    const length = w * (0.012 + depth * 0.022)
+    ctx.strokeStyle = `rgba(176, 207, 202, ${(0.045 + depth * 0.045) * (1 - dim)})`
+    ctx.lineWidth = 0.55 + depth * 0.55
+    ctx.beginPath()
+    ctx.moveTo(x, y)
+    ctx.quadraticCurveTo(x + length * 0.48, y - 1.2 * depth, x + length, y + 0.8 * depth)
+    ctx.stroke()
+  }
+  ctx.restore()
+
+  // Jagged obsidian shore in the foreground, with a thin cold edge-light.
+  ctx.beginPath()
+  ctx.moveTo(0, h * 0.88)
+  ctx.lineTo(w * 0.12, h * 0.84)
+  ctx.lineTo(w * 0.2, h * 0.87)
+  ctx.lineTo(w * 0.31, h * 0.82)
+  ctx.lineTo(w * 0.4, h * 0.86)
+  ctx.lineTo(w * 0.54, h * 0.83)
+  ctx.lineTo(w * 0.65, h * 0.87)
+  ctx.lineTo(w * 0.77, h * 0.81)
+  ctx.lineTo(w * 0.9, h * 0.85)
+  ctx.lineTo(w, h * 0.82)
+  ctx.lineTo(w, h)
+  ctx.lineTo(0, h)
+  ctx.closePath()
+  const shore = ctx.createLinearGradient(0, h * 0.81, 0, h)
+  shore.addColorStop(0, '#35434a')
+  shore.addColorStop(0.07, '#1d272d')
+  shore.addColorStop(0.25, '#11171c')
+  shore.addColorStop(1, '#080a0d')
+  ctx.fillStyle = shore
+  ctx.fill()
+  ctx.strokeStyle = `rgba(188, 218, 211, ${0.32 * (1 - dim)})`
+  ctx.lineWidth = 1.2
+  ctx.beginPath()
+  ctx.moveTo(0, h * 0.88)
+  ctx.lineTo(w * 0.12, h * 0.84)
+  ctx.lineTo(w * 0.2, h * 0.87)
+  ctx.lineTo(w * 0.31, h * 0.82)
+  ctx.lineTo(w * 0.4, h * 0.86)
+  ctx.lineTo(w * 0.54, h * 0.83)
+  ctx.lineTo(w * 0.65, h * 0.87)
+  ctx.lineTo(w * 0.77, h * 0.81)
+  ctx.lineTo(w * 0.9, h * 0.85)
+  ctx.lineTo(w, h * 0.82)
+  ctx.stroke()
+
+  // Near-field obsidian shelves frame the crossing like black glass cliffs.
+  // Their facets are intentionally asymmetrical and stay clear of the centre,
+  // where the souls and the bead sea remain readable.
+  const drawCliff = (right: boolean) => {
+    ctx.save()
+    if (right) {
+      ctx.translate(w, 0)
+      ctx.scale(-1, 1)
+    }
+    ctx.beginPath()
+    ctx.moveTo(0, h * 0.61)
+    ctx.lineTo(w * 0.045, h * 0.65)
+    ctx.lineTo(w * 0.07, h * 0.64)
+    ctx.lineTo(w * 0.105, h * 0.71)
+    ctx.lineTo(w * 0.13, h * 0.735)
+    ctx.lineTo(w * 0.17, h * 0.82)
+    ctx.lineTo(w * 0.2, h * 0.855)
+    ctx.lineTo(w * 0.18, h)
+    ctx.lineTo(0, h)
+    ctx.closePath()
+    const facet = ctx.createLinearGradient(0, h * 0.65, w * 0.19, h * 0.96)
+    facet.addColorStop(0, '#28343a')
+    facet.addColorStop(0.32, '#171e24')
+    facet.addColorStop(1, '#080b0f')
+    ctx.fillStyle = facet
     ctx.fill()
+    ctx.strokeStyle = `rgba(171, 203, 196, ${0.3 * (1 - dim)})`
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.moveTo(0, h * 0.61)
+    ctx.lineTo(w * 0.045, h * 0.65)
+    ctx.lineTo(w * 0.07, h * 0.64)
+    ctx.lineTo(w * 0.105, h * 0.71)
+    ctx.lineTo(w * 0.13, h * 0.735)
+    ctx.lineTo(w * 0.17, h * 0.82)
+    ctx.stroke()
+    ctx.strokeStyle = `rgba(165, 192, 188, ${0.11 * (1 - dim)})`
+    ctx.beginPath()
+    ctx.moveTo(w * 0.045, h * 0.65)
+    ctx.lineTo(w * 0.12, h * 0.84)
+    ctx.lineTo(w * 0.18, h)
+    ctx.moveTo(w * 0.105, h * 0.71)
+    ctx.lineTo(w * 0.055, h * 0.82)
+    ctx.stroke()
+    ctx.restore()
+  }
+  drawCliff(false)
+  drawCliff(true)
+
+  // Sparse stars remain above the horizon; the foreground is a real surface.
+  const starCount = Math.floor((w * Math.min(h, 900)) / 9500)
+  for (let i = 0; i < starCount; i++) {
+    const seed = i * 127.1 + 311.7
+    const x = ((((Math.sin(seed) * 43758.5453) % 1) + 1) % 1) * w
+    const y = ((((Math.sin(seed * 1.37) * 24634.6345) % 1) + 1) % 1) * horizon * 0.9
+    const twinkle = 0.3 + 0.7 * (0.5 + 0.5 * Math.sin(time * 0.001 + seed))
+    ctx.globalAlpha = twinkle * (1 - dim) * 0.55
+    ctx.fillStyle = '#d7e4de'
+    ctx.fillRect(x, y, i % 13 === 0 ? 1.5 : 0.8, i % 13 === 0 ? 1.5 : 0.8)
   }
   ctx.globalAlpha = 1
 
@@ -170,7 +420,7 @@ export function drawBackground(
     if (f.y > h + 10) f.y = -10
     ctx.beginPath()
     ctx.arc(f.x, f.y, f.size, 0, Math.PI * 2)
-    ctx.fillStyle = `rgba(100, 120, 160, ${f.opacity * 2 * (1 - dim)})`
+    ctx.fillStyle = `rgba(168, 196, 194, ${f.opacity * 2 * (1 - dim)})`
     ctx.fill()
   }
 
@@ -222,7 +472,6 @@ export function drawSouls(
 
   /* One decision for the whole frame rather than per soul. */
   const asDots = camera.zoom < LOD_DOT
-  const withRim = camera.zoom >= LOD_BEAD
   const glowAffordable = visible.length < GLOW_MAX_VISIBLE
 
   for (const s of visible) {
@@ -260,34 +509,39 @@ export function drawSouls(
 
     const tex = getSoulTexture(s.kind, Math.round(displayR))
 
-    if (selected) {
+    const beadScale = selected ? 1.1 : hovered ? 1.05 : 1
+    const beadR = displayR * 0.76 * beadScale
+
+    // Every soul is a bead in this subastral. Give it an actual glass body;
+    // focus changes its light and scale, never its silhouette into a flame.
+    if ((selected || hovered) && glowAffordable) {
+      const halo = ctx.createRadialGradient(px, py, beadR * 0.68, px, py, beadR * (selected ? 3.4 : 2.8))
+      halo.addColorStop(0, `rgba(${s.glowColor},${selected ? 0.13 : 0.08})`)
+      halo.addColorStop(0.42, `rgba(${s.glowColor},${selected ? 0.045 : 0.025})`)
+      halo.addColorStop(1, `rgba(${s.glowColor},0)`)
       ctx.globalAlpha = Math.min(1, alpha)
-      ctx.drawImage(tex, px - displayR * 1.3, py - displayR * 1.3, displayR * 2.6, displayR * 2.6)
-    } else if (hovered) {
-      ctx.globalAlpha = Math.min(1, alpha)
-      ctx.drawImage(tex, px - displayR * 1.15, py - displayR * 1.15, displayR * 2.3, displayR * 2.3)
-    } else {
-      ctx.globalAlpha = Math.min(1, alpha)
-      ctx.drawImage(tex, px - displayR, py - displayR, displayR * 2, displayR * 2)
-      /* Level three: the fresnel rim. */
-      if (withRim) {
-        ctx.globalAlpha = Math.min(1, alpha) * 0.5
-        ctx.strokeStyle = s.rimStroke
-        ctx.lineWidth = 1
-        ctx.beginPath()
-        ctx.arc(px, py, displayR * 0.86, 0, Math.PI * 2)
-        ctx.stroke()
-      }
+      ctx.fillStyle = halo
+      ctx.beginPath()
+      ctx.arc(px, py, beadR * (selected ? 3.4 : 2.8), 0, Math.PI * 2)
+      ctx.fill()
+    }
+
+    ctx.globalAlpha = Math.min(1, alpha)
+    ctx.drawImage(tex, px - beadR, py - beadR, beadR * 2, beadR * 2)
+
+    if (!asDots && (selected || hovered)) {
+      ctx.globalAlpha = Math.min(1, alpha) * (selected ? 0.42 : 0.3)
+      ctx.strokeStyle = selected ? 'rgba(226,233,215,.8)' : s.rimStroke
+      ctx.lineWidth = 0.7
+      ctx.beginPath()
+      ctx.arc(px, py, beadR * 1.06, -Math.PI * 0.72, Math.PI * 0.48)
+      ctx.stroke()
     }
 
     /*
      * The 6x glow, once. §5.5.4's own conditions: the bead has to be glowing,
      * and the scene has to be small enough that the overdraw is affordable.
      */
-    if ((selected || hovered) && s.glow > GLOW_MIN && glowAffordable) {
-      ctx.globalAlpha = (selected ? 0.08 : 0.05) * s.glow
-      ctx.drawImage(tex, px - displayR * 3, py - displayR * 3, displayR * 6, displayR * 6)
-    }
   }
 
   if (rippleProgress > 0 && rippleProgress < 1 && hoveredId) {

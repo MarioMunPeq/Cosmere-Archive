@@ -279,7 +279,7 @@ export class CameraController {
     this.flyTime = 0
   }
 
-  flyToFit(souls: Soul[], clusterId: string, _screenW: number, _screenH: number) {
+  flyToFit(souls: Soul[], clusterId: string, _screenW: number, _screenH: number, storeCurrentView = true) {
     const cluster = CLUSTER_BY_ID.get(clusterId)
     if (!cluster) return
 
@@ -293,7 +293,9 @@ export class CameraController {
       if (dist > maxDist) maxDist = dist
       count++
     }
-    if (count === 0 || maxDist < 0.001) return
+    // A world without catalogued characters still has a place in the atlas;
+    // fly to its perpendicularity rather than leaving the previous world on screen.
+    if (count === 0 || maxDist < 0.001) maxDist = cluster.radius * 0.75
 
     const expandedRadius = maxDist * (1 + FOCUS_EXPANSION_AMPLITUDE)
     const extent = expandedRadius * 2
@@ -303,7 +305,7 @@ export class CameraController {
     // by `zoom * min(w, h)`, so the two cancel and the fraction is exact.
     const targetZoom = FOCUS_VIEWPORT_FRACTION / extent
 
-    this.storeState()
+    if (storeCurrentView) this.storeState()
     this.flyTo(cluster.cx, cluster.cy, targetZoom, FOCUS_FLY_DURATION)
   }
 

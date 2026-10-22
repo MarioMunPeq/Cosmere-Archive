@@ -3,16 +3,20 @@ import type { EntityKind } from './types'
 
 const cache = new Map<string, HTMLCanvasElement>()
 
-function key(kind: EntityKind, radius: number): string {
-  return `${kind}_${radius}`
+function seaGlass(color: string, saturation = 0.34): string {
+  const source = color.split(',').map(Number)
+  const sea = [113, 157, 157]
+  return source.map((channel, i) => Math.round((sea[i] ?? 113) * (1 - saturation) + channel * saturation)).join(',')
 }
 
-function renderGlowTexture(kind: EntityKind, radius: number): HTMLCanvasElement {
-  const ev = ENTITY_VISUALS[kind]
-  const { color, glow, core } = ev
+function renderBeadTexture(kind: EntityKind, radius: number): HTMLCanvasElement {
+  const visual = ENTITY_VISUALS[kind]
+  const color = seaGlass(visual.color, 0.4)
+  const glow = seaGlass(visual.glow, 0.35)
+  const core = seaGlass(visual.core, 0.24)
   const dpr = 2
-  const margin = radius * 3
-  const size = (radius + margin) * 2 * dpr
+  const r = Math.max(2, radius) * dpr
+  const size = Math.ceil(r * 2 + 8 * dpr)
   const canvas = document.createElement('canvas')
   canvas.width = size
   canvas.height = size
@@ -20,55 +24,59 @@ function renderGlowTexture(kind: EntityKind, radius: number): HTMLCanvasElement 
   const cx = size / 2
   const cy = size / 2
 
-  const halo = ctx.createRadialGradient(cx, cy, radius * 0.5 * dpr, cx, cy, radius * 3 * dpr)
-  halo.addColorStop(0, `rgba(${glow}, 0.04)`)
-  halo.addColorStop(0.5, `rgba(${glow}, 0.015)`)
-  halo.addColorStop(1, `rgba(${glow}, 0)`)
-  ctx.fillStyle = halo
+  // A contained glass sphere, lit from above and left. The dark lower rim and
+  // fine fresnel edge give the soul volume even when it is only a few pixels
+  // wide; the bright heart remains readable against the Cognitive Sea.
+  const sphere = ctx.createRadialGradient(cx - r * 0.32, cy - r * 0.4, r * 0.04, cx, cy, r)
+  sphere.addColorStop(0, `rgba(${core},.86)`)
+  sphere.addColorStop(0.12, `rgba(${glow},.82)`)
+  sphere.addColorStop(0.34, `rgba(${color},.72)`)
+  sphere.addColorStop(0.72, `rgba(${color},.48)`)
+  sphere.addColorStop(0.94, 'rgba(22,42,46,.72)')
+  sphere.addColorStop(1, 'rgba(6,14,20,.88)')
+  ctx.fillStyle = sphere
   ctx.beginPath()
-  ctx.arc(cx, cy, radius * 3 * dpr, 0, Math.PI * 2)
+  ctx.arc(cx, cy, r, 0, Math.PI * 2)
   ctx.fill()
 
-  const outer = ctx.createRadialGradient(cx, cy, radius * 0.6 * dpr, cx, cy, radius * 2 * dpr)
-  outer.addColorStop(0, `rgba(${color}, 0.15)`)
-  outer.addColorStop(0.4, `rgba(${color}, 0.08)`)
-  outer.addColorStop(0.7, `rgba(${glow}, 0.03)`)
-  outer.addColorStop(1, `rgba(${glow}, 0)`)
-  ctx.fillStyle = outer
+  const rim = ctx.createRadialGradient(cx, cy, r * 0.76, cx, cy, r)
+  rim.addColorStop(0, 'rgba(220,248,242,0)')
+  rim.addColorStop(0.82, 'rgba(183,232,236,.02)')
+  rim.addColorStop(1, `rgba(${glow},.48)`)
+  ctx.fillStyle = rim
   ctx.beginPath()
-  ctx.arc(cx, cy, radius * 2 * dpr, 0, Math.PI * 2)
+  ctx.arc(cx, cy, r, 0, Math.PI * 2)
   ctx.fill()
 
-  const inner = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius * 1.5 * dpr)
-  inner.addColorStop(0, `rgba(${core}, 0.9)`)
-  inner.addColorStop(0.15, `rgba(${color}, 0.6)`)
-  inner.addColorStop(0.4, `rgba(${color}, 0.2)`)
-  inner.addColorStop(0.7, `rgba(${glow}, 0.05)`)
-  inner.addColorStop(1, `rgba(${glow}, 0)`)
-  ctx.fillStyle = inner
+  // Two restrained reflections make the surface read as glass, not a flat
+  // diagram node or a flame.
+  ctx.save()
+  ctx.translate(cx - r * 0.34, cy - r * 0.42)
+  ctx.rotate(-0.48)
+  const highlight = ctx.createLinearGradient(-r * 0.3, 0, r * 0.3, r * 0.5)
+  highlight.addColorStop(0, 'rgba(255,255,245,.76)')
+  highlight.addColorStop(1, 'rgba(231,255,248,0)')
+  ctx.fillStyle = highlight
   ctx.beginPath()
-  ctx.arc(cx, cy, radius * 1.5 * dpr, 0, Math.PI * 2)
+  ctx.ellipse(0, 0, r * 0.29, r * 0.1, 0, 0, Math.PI * 2)
   ctx.fill()
-
-  const coreG = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius * 0.4 * dpr)
-  coreG.addColorStop(0, `rgba(255,255,255,0.5)`)
-  coreG.addColorStop(0.5, `rgba(${core}, 0.3)`)
-  coreG.addColorStop(1, `rgba(${core}, 0)`)
-  ctx.fillStyle = coreG
+  ctx.restore()
+  ctx.fillStyle = 'rgba(255,255,246,.92)'
   ctx.beginPath()
-  ctx.arc(cx, cy, radius * 0.4 * dpr, 0, Math.PI * 2)
+  ctx.arc(cx - r * 0.39, cy - r * 0.48, Math.max(0.75, r * 0.07), 0, Math.PI * 2)
   ctx.fill()
 
   return canvas
 }
 
 export function getSoulTexture(kind: EntityKind, radius: number): HTMLCanvasElement {
-  const k = key(kind, radius)
-  let tex = cache.get(k)
-  if (tex) return tex
-  tex = renderGlowTexture(kind, radius)
-  cache.set(k, tex)
-  return tex
+  const roundedRadius = Math.max(2, Math.round(radius))
+  const key = `${kind}_${roundedRadius}`
+  let texture = cache.get(key)
+  if (texture) return texture
+  texture = renderBeadTexture(kind, roundedRadius)
+  cache.set(key, texture)
+  return texture
 }
 
 export function clearTextureCache(): void {
@@ -79,9 +87,9 @@ const PREWARM_RADII = [3, 5, 7, 9, 11, 14, 16, 18, 22, 26, 30, 35, 40]
 const PREWARM_KINDS: EntityKind[] = ['character', 'important_character', 'herald']
 
 export function prewarmTextures(): void {
-  for (const k of PREWARM_KINDS) {
-    for (const r of PREWARM_RADII) {
-      getSoulTexture(k, r)
+  for (const kind of PREWARM_KINDS) {
+    for (const radius of PREWARM_RADII) {
+      getSoulTexture(kind, radius)
     }
   }
 }

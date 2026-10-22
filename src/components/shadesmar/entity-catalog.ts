@@ -63,7 +63,9 @@ const IMPORTANT_CHAR_IDS = new Set([
  * fills the disc instead of drawing a circle.
  */
 const ORBIT_LAYER = {
-  HERALD: 0.16,
+  // Keep the ten Heralds distinct as a small inner constellation rather than
+  // stacking their flames into one white flare at the exact centre.
+  HERALD: 0.32,
   IMPORTANT_CHAR: 0.46,
   CHAR: 0.82,
 }
