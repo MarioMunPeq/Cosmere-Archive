@@ -418,7 +418,7 @@ export function RecordRightPage({ character, locked = false, onUnlock }: RecordS
           ) : (
             <p className="record-empty-note">
               <span aria-hidden="true">—</span>
-              No ties are indexed in this record.
+              No recorded relationships.
             </p>
           )}
         </section>
