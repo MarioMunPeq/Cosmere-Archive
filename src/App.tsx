@@ -68,7 +68,7 @@ const ROUTES = [
   { path: '/shadesmar', element: page(<ShadesmarPage />) },
   { path: '/compare', element: page(<ComparePage />) },
   { path: '/mind-map', element: page(<MindMapPage />) },
-  // D-HIST: one index route for the archived sections, not five loose ones.
+  // D-HIST: one index route for the archived sections, not a route per section.
   { path: '/historical', element: page(<HistoricalPage />) },
 ] as const
 

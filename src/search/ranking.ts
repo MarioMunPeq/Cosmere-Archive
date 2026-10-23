@@ -103,6 +103,7 @@ export function search(
         type: (stored.type as SearchType) ?? 'character',
         title,
         subtitle: String(stored.subtitle ?? ''),
+        icon: stored.icon as SearchResult['icon'] | undefined,
         score: base + bonus,
       }
     })

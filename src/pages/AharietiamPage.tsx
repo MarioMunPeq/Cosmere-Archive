@@ -6,7 +6,7 @@ export default memo(function AharietiamPage() {
   useSEOMeta({
     title: 'Aharietiam — Cosmere Archive',
     description:
-      'The ceremonial stone circle of Aharietiam, where nine Honorblades were abandoned and one remains empty.',
+      'The rockbed at Aharietiam at dusk, where all ten Honorblades stand planted in a broken circle of stone.',
   })
 
   return <Scene />

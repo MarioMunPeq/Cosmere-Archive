@@ -32,7 +32,7 @@ const CHUNK_BUDGETS: { label: string; match: RegExp; maxGzipKb: number }[] = [
   { label: 'vendor (react + router)', match: /^vendor-.*\.js$/, maxGzipKb: 75 },
   { label: 'route /library', match: /^LibraryPage-/, maxGzipKb: 60 },
   { label: 'route /characters', match: /^BiographicalArchivesPage-/, maxGzipKb: 60 },
-  { label: 'route /afarietiam', match: /^AharietiamPage-/, maxGzipKb: 60 },
+  { label: 'route /aharietiam', match: /^AharietiamPage-/, maxGzipKb: 60 },
   { label: 'route /celestial-charts', match: /^KhrissAtlas-/, maxGzipKb: 60 },
   { label: 'route /stats', match: /^StatsPage-/, maxGzipKb: 60 },
   { label: 'route /shadesmar', match: /^ShadesmarPage-/, maxGzipKb: 60 },
@@ -77,8 +77,41 @@ for (const budget of CHUNK_BUDGETS) {
   }
 }
 
-const threeKb = js.filter((f) => /^three-/.test(f) || /^r3f-/.test(f)).reduce((a, f) => a + gzipKb(f), 0)
+const runtimeChunks = js.filter((f) => /^three-/.test(f) || /^r3f-/.test(f))
+const threeKb = runtimeChunks.reduce((a, f) => a + gzipKb(f), 0)
 report(threeKb <= THREE_GROUP_MAX_KB, 'three + r3f (lazy)', `${threeKb.toFixed(1)} KB`, `${THREE_GROUP_MAX_KB} KB`)
+
+/*
+ * Size alone does not prove that Three/R3F are route-exclusive. Walk the
+ * built import graph: only the Aharietiam chunk may mention a runtime chunk,
+ * and the document shell must never pull one in.
+ */
+const aharietiamChunk = js.find((f) => /^AharietiamPage-/.test(f))
+const allowedRuntimeImporters = new Set([aharietiamChunk, ...runtimeChunks].filter((f): f is string => Boolean(f)))
+const staticImport = (runtime: string) =>
+  new RegExp(`(?:from\\s*["']\\.\\/|import\\s*["']\\.\\/)${runtime.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["']`)
+const runtimeLeaks: string[] = []
+for (const file of js) {
+  if (allowedRuntimeImporters.has(file)) continue
+  const source = readFileSync(join(ASSETS, file), 'utf8')
+  for (const runtime of runtimeChunks) {
+    if (staticImport(runtime).test(source)) runtimeLeaks.push(`${file} → ${runtime}`)
+  }
+}
+const html = readFileSync(join(DIST, 'index.html'), 'utf8')
+const htmlLeaks = runtimeChunks.filter((runtime) => html.includes(runtime))
+const importsRuntime =
+  Boolean(aharietiamChunk) &&
+  runtimeChunks.some((runtime) => staticImport(runtime).test(readFileSync(join(ASSETS, aharietiamChunk!), 'utf8')))
+report(
+  importsRuntime && runtimeLeaks.length === 0 && htmlLeaks.length === 0,
+  'three + r3f route isolation',
+  runtimeLeaks.length || htmlLeaks.length ? `${runtimeLeaks.length + htmlLeaks.length} leaks` : 'Aharietiam only',
+  'Aharietiam only',
+)
+if (runtimeLeaks.length || htmlLeaks.length) {
+  console.error('  runtime import leaks:', [...runtimeLeaks, ...htmlLeaks].join(', '))
+}
 
 const cssFiles = files.filter((f) => f.endsWith('.css'))
 const initialCssFiles = cssFiles.filter((f) => /^index-.*\.css$/.test(f))

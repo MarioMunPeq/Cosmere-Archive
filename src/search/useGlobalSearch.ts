@@ -50,7 +50,7 @@ function loadIndex(): Promise<LoadedIndex> {
     return {
       index: MiniSearch.loadJSON(JSON.stringify(file.index), {
         fields: ['title', 'subtitle', 'body', 'aliases'],
-        storeFields: ['title', 'subtitle', 'type', 'route'],
+        storeFields: ['title', 'subtitle', 'type', 'route', 'icon'],
       }),
       typeBoost: file.typeBoost ?? {},
     }

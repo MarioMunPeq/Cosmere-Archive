@@ -1,42 +1,43 @@
 'use client'
 import { memo } from 'react'
 
-export default memo(function SceneLights() {
+interface Props {
+  light: boolean
+}
+
+/**
+ * Late amber sun from one side, cold blue sky from the other. The blades need
+ * both: warm metal on the lit edge, and a blue edge to prove they are polished.
+ */
+export default memo(function SceneLights({ light }: Props) {
+  const shadowMap = light ? 1024 : 2048
+
   return (
     <>
-      {/* Cold blue moonlight — primary directional */}
       <directionalLight
-        position={[10, 18, -8]}
-        intensity={2.0}
-        color="#8899cc"
-        castShadow
-        shadow-mapSize-width={2048}
-        shadow-mapSize-height={2048}
-        shadow-camera-far={40}
-        shadow-camera-left={-15}
-        shadow-camera-right={15}
-        shadow-camera-top={15}
-        shadow-camera-bottom={-15}
-        shadow-bias={-0.002}
+        position={[-16, 15, 12]}
+        intensity={2.5}
+        color="#ffd2a2"
+        castShadow={!light}
+        shadow-mapSize-width={shadowMap}
+        shadow-mapSize-height={shadowMap}
+        shadow-camera-near={1}
+        shadow-camera-far={70}
+        shadow-camera-left={-26}
+        shadow-camera-right={26}
+        shadow-camera-top={26}
+        shadow-camera-bottom={-26}
+        shadow-bias={-0.0004}
+        shadow-normalBias={0.022}
       />
 
-      {/* Warm stone bounce — secondary fill from below */}
-      <directionalLight position={[-3, -2, 4]} intensity={0.5} color="#c8a882" />
+      <directionalLight position={[14, 10, -16]} intensity={1.6} color="#93b9de" />
 
-      {/* Cool fill from the side */}
-      <directionalLight position={[-6, 4, 10]} intensity={0.25} color="#99aacc" />
+      <directionalLight position={[2, 3, 17]} intensity={0.5} color="#bccbd8" />
 
-      {/* Rim light — back edge of blades */}
-      <directionalLight position={[0, 5, -12]} intensity={0.3} color="#aabbdd" />
+      <hemisphereLight args={['#9fb4cc', '#3a2a1e', 0.58]} />
 
-      {/* Ambient — very soft */}
-      <ambientLight intensity={0.08} color="#443322" />
-
-      {/* Hemisphere — sky/ground separation */}
-      <hemisphereLight args={['#8899bb', '#1a1510', 0.15]} />
-
-      {/* Volumetric fog glow — center point */}
-      <pointLight position={[0, 0.5, 0]} intensity={0.04} color="#6688aa" distance={12} decay={1.5} />
+      <ambientLight intensity={0.32} color="#5c6a7e" />
     </>
   )
 })

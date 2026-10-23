@@ -14,8 +14,6 @@ import { HISTORICAL_DESTINATIONS, SECONDARY_DESTINATIONS } from '@/navigation'
 import type { Destination } from '@/navigation'
 
 const STATUS: Record<string, { note: string; tone: 'maintained' | 'legacy' }> = {
-  aharietiam: { note: 'Legacy. Rebuilt in M6.', tone: 'legacy' },
-  'ars-arcanum': { note: 'Maintained.', tone: 'maintained' },
   chronology: { note: 'Legacy. Rebuilt in M6.', tone: 'legacy' },
   'mind-map': { note: 'Legacy. Rebuilt in M6.', tone: 'legacy' },
   about: { note: 'Maintained.', tone: 'maintained' },
@@ -24,7 +22,7 @@ const STATUS: Record<string, { note: string; tone: 'maintained' | 'legacy' }> = 
 export default function HistoricalPage() {
   useSEOMeta({
     title: 'Historical Archive — Cosmere Archive',
-    description: 'Preserved sections of the Cosmere Archive: Aharietiam, Ars Arcanum, Chronology, Mind Map and About.',
+    description: 'Preserved sections of the Cosmere Archive: Chronology, Mind Map and About.',
   })
 
   return (

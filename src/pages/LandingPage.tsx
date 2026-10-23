@@ -6,7 +6,7 @@ export default function LandingPage() {
   useSEOMeta({
     title: 'Cosmere Archive',
     description:
-      'An archive of worlds, histories and shattered ideals from the Cosmere. Explore the Library, Biographical Records, Shadesmar, and the Taravangian Diagram.',
+      'An archive of worlds, histories and shattered ideals from the Cosmere. Explore the Library, Biographical Records, Shadesmar, the Taravangian Diagram and Aharietiam.',
   })
 
   return (

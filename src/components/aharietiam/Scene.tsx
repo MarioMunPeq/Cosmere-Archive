@@ -1,296 +1,350 @@
 'use client'
-import { memo, useState, useCallback, useRef, useEffect } from 'react'
-import SceneCanvas from './SceneCanvas'
-import Platform3D from './Platform3D'
-import BladeRing from './BladeRing'
-import SceneLights from './SceneLights'
-import Atmosphere from './Atmosphere'
-import Particles from './Particles'
-import InfoMonolith from './InfoMonolith'
-import HeraldSymbol from './HeraldSymbol'
-import ControlsLegend from './ControlsLegend'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useFrame } from '@react-three/fiber'
+import ErrorBoundary from '@/components/common/ErrorBoundary'
 import { HONORBLADES } from '@/data/static/aharietiam'
+import BladeField, { bladePlacement } from './BladeField'
 import CameraRig from './CameraRig'
-import type { FocusTarget } from './CameraRig'
-import type { SoundEvents } from './CameraRig'
-import type { HonorbladeData } from '@/types/aharietiam'
-import { playFocus, playLeave, playHover, playReturn } from './sound-engine'
+import Dust from './Dust'
+import FogVolumes from './FogVolumes'
+import Ground from './Ground'
+import InfoMonolith from './InfoMonolith'
+import Ridges from './Ridges'
+import SceneCanvas from './SceneCanvas'
+import SceneFallback from './SceneFallback'
+import SceneLights from './SceneLights'
+import SkyDome from './SkyDome'
+import StormlightSeep from './StormlightSeep'
+import useSceneQuality from './useSceneQuality'
 
-/** Procedural circle placement — single source of truth */
-const RING_RADIUS = 6.5
-const BLADE_COUNT = 10
-const BLADE_Y = 2.02
+let webglSupport: boolean | null = null
 
-function circlePosition(index: number): [number, number, number] {
-  const angle = (index / BLADE_COUNT) * Math.PI * 2 - Math.PI / 2
-  return [RING_RADIUS * Math.cos(angle), BLADE_Y, RING_RADIUS * Math.sin(angle)]
+function canUseWebGL(): boolean {
+  if (webglSupport !== null) return webglSupport
+  if (typeof document === 'undefined') return false
+  try {
+    const probe = document.createElement('canvas')
+    const context = probe.getContext('webgl2') ?? probe.getContext('webgl')
+    webglSupport = context !== null
+    if (!context) return false
+    context.getExtension('WEBGL_lose_context')?.loseContext()
+    probe.width = 1
+    probe.height = 1
+    return true
+  } catch {
+    webglSupport = false
+    return false
+  }
 }
 
-function getBladePos(id: string): [number, number, number] {
-  return BLADE_POS_MAP.get(id) ?? [0, 0, 0]
+/**
+ * Signals after the first frame has actually been painted, rather than when
+ * the renderer is created. Shader compilation can take several seconds on a
+ * cold phone; starting the hint timer earlier would consume its window before
+ * the reader ever sees the field.
+ */
+function SceneReadySignal({ onReady }: { onReady: () => void }) {
+  const fired = useRef(false)
+  const frame = useRef(0)
+
+  useEffect(
+    () => () => {
+      if (frame.current) cancelAnimationFrame(frame.current)
+    },
+    [],
+  )
+
+  useFrame(() => {
+    if (fired.current) return
+    fired.current = true
+    frame.current = requestAnimationFrame(() => {
+      frame.current = 0
+      onReady()
+    })
+  })
+
+  return null
 }
 
-const BLADE_POS_MAP = new Map<string, [number, number, number]>()
-const SORTED = [...HONORBLADES].sort((a, b) => a.positionIndex - b.positionIndex)
-SORTED.forEach((h, i) => {
-  BLADE_POS_MAP.set(h.id, circlePosition(i))
-})
-
-const SOUND_EVENTS: SoundEvents = {
-  onFocusSword: playFocus,
-  onLeaveSword: playLeave,
-  onHoverSword: playHover,
-  onReturnOverview: playReturn,
-}
+const HINT_TIMEOUT = 7200
+const SWIPE_DISTANCE = 52
 
 export default memo(function Scene() {
-  const [hoveredId, setHoveredId] = useState<string | null>(null)
+  const { light, reducedMotion, maxDpr } = useSceneQuality()
+  const [unsupported] = useState(() => !canUseWebGL())
+  const [contextLost, setContextLost] = useState(false)
+  const [sceneReady, setSceneReady] = useState(false)
+  const [hintVisible, setHintVisible] = useState(true)
   const [selectedId, setSelectedId] = useState<string | null>(null)
-  const [focusedId, setFocusedId] = useState<string | null>(null)
-  const [inspectPhase, setInspectPhase] = useState<'idle' | 'entering' | 'inspecting' | 'exiting'>('idle')
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [announcement, setAnnouncement] = useState('')
+  const swipeStart = useRef<{ x: number; y: number } | null>(null)
+  const sceneRootRef = useRef<HTMLDivElement>(null)
+  const rootReleaseTimerRef = useRef<number | null>(null)
 
-  const [focusTarget, setFocusTarget] = useState<FocusTarget | null>(null)
-  const inspectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const ordered = useMemo(() => [...HONORBLADES].sort((a, b) => a.positionIndex - b.positionIndex), [])
+  const selected = useMemo(() => ordered.find((blade) => blade.id === selectedId) ?? null, [ordered, selectedId])
+  const focus = useMemo(() => {
+    if (!selectedId) return null
+    const index = ordered.findIndex((blade) => blade.id === selectedId)
+    if (index < 0) return null
+    const [x, , z] = bladePlacement(index)
+    return { x, z }
+  }, [ordered, selectedId])
 
-  const prevHoveredRef = useRef<string | null>(null)
-  const handleHover = useCallback((id: string | null) => {
-    setHoveredId(id)
-    if (id && id !== prevHoveredRef.current) {
-      SOUND_EVENTS.onHoverSword?.()
-    }
-    prevHoveredRef.current = id
+  const handleContextLost = useCallback(() => setContextLost(true), [])
+  const handleSceneReady = useCallback(() => setSceneReady(true), [])
+  const handleInteract = useCallback(() => setHintVisible(false), [])
+
+  const selectBlade = useCallback(
+    (id: string) => {
+      const index = ordered.findIndex((blade) => blade.id === id)
+      if (index < 0) return
+      const blade = ordered[index]
+      if (!blade) return
+      setActiveIndex(index)
+      setSelectedId(id)
+      setHintVisible(false)
+      setAnnouncement(
+        `${blade.name}, ${blade.title}. ${blade.order}. Blade ${index + 1} of ${ordered.length}. Press Escape to step back.`,
+      )
+    },
+    [ordered],
+  )
+
+  const stepBack = useCallback(() => {
+    setSelectedId(null)
+    setAnnouncement('You have stepped back. The ten blades remain in the ring.')
   }, [])
 
-  const handleSelect = useCallback((id: string | null) => {
-    if (!id) return
-    const pos = getBladePos(id)
-    setSelectedId(id)
-    setFocusTarget({ id, position: pos, slow: id === 'talenel' })
-    setInspectPhase('entering')
-  }, [])
+  const cycleBlades = useCallback(
+    (direction: 1 | -1) => {
+      if (!selectedId) {
+        const index = direction > 0 ? 0 : ordered.length - 1
+        const blade = ordered[index]
+        if (blade) selectBlade(blade.id)
+        return
+      }
+      const index = ordered.findIndex((blade) => blade.id === selectedId)
+      if (index < 0) return
+      const next = (index + direction + ordered.length) % ordered.length
+      const blade = ordered[next]
+      if (blade) selectBlade(blade.id)
+    },
+    [ordered, selectBlade, selectedId],
+  )
 
-  const handleFlySettled = useCallback(() => {
-    setFocusedId(selectedId)
-    setInspectPhase('inspecting')
-  }, [selectedId])
-
-  const handleClose = useCallback(() => {
-    if (focusedId && focusedId !== 'talenel') {
-      SOUND_EVENTS.onLeaveSword?.()
-    }
-    setInspectPhase('exiting')
-    /* Delay clearing state to allow exit animation */
-    setTimeout(() => {
-      setFocusedId(null)
-      setSelectedId(null)
-      setFocusTarget(null)
-      setInspectPhase('idle')
-    }, 300)
-  }, [focusedId])
-
-  /* Cleanup timer on unmount */
   useEffect(() => {
-    const timer = inspectTimerRef.current
+    if (!sceneReady) return
+    const timer = window.setTimeout(() => setHintVisible(false), HINT_TIMEOUT)
+    return () => window.clearTimeout(timer)
+  }, [sceneReady])
+
+  /*
+   * R3F/WebGL can leave its detached canvas container attached to the scene
+   * root until a later GC. The page itself is already gone at this point; drop
+   * the retained descendants so only an empty host remains.
+   */
+  useEffect(() => {
+    if (rootReleaseTimerRef.current !== null) {
+      window.clearTimeout(rootReleaseTimerRef.current)
+      rootReleaseTimerRef.current = null
+    }
+    const root = sceneRootRef.current
     return () => {
-      if (timer) clearTimeout(timer)
+      if (!root) return
+      /* Let R3F finish its own 500 ms teardown first. */
+      rootReleaseTimerRef.current = window.setTimeout(() => {
+        rootReleaseTimerRef.current = null
+        if (root.isConnected) return
+        root.replaceChildren()
+        root.removeAttribute('class')
+        root.removeAttribute('style')
+      }, 700)
     }
   }, [])
 
-  const selectedBlade: HonorbladeData | null = selectedId
-    ? (HONORBLADES.find((h) => h.id === selectedId) ?? null)
-    : null
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.metaKey || event.ctrlKey || event.altKey) return
 
-  const isFocusMode = !!(focusedId !== null)
-  const isTalnFocus = focusedId === 'talenel'
-  const showInspectUI = !!(inspectPhase === 'inspecting' && focusedId && focusedId === selectedId)
+      const target = event.target
+      if (target instanceof HTMLElement) {
+        if (target.isContentEditable) return
+        const tag = target.tagName
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return
+        const onControl = target.closest('button, a, [role="button"]')
+        if (onControl && (event.key === 'Enter' || event.key === ' ')) return
+      }
+
+      switch (event.key) {
+        case 'ArrowLeft':
+          event.preventDefault()
+          cycleBlades(-1)
+          break
+        case 'ArrowRight':
+          event.preventDefault()
+          cycleBlades(1)
+          break
+        case 'Enter':
+          if (!selectedId) {
+            event.preventDefault()
+            const blade = ordered[activeIndex] ?? ordered[0]
+            if (blade) selectBlade(blade.id)
+          }
+          break
+        case 'Escape':
+          if (selectedId) {
+            event.preventDefault()
+            stepBack()
+          }
+          break
+        default:
+          break
+      }
+    }
+
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [activeIndex, cycleBlades, ordered, selectBlade, selectedId, stepBack])
+
+  if (unsupported || contextLost) {
+    return <SceneFallback reason="WebGL is unavailable in this browser, so the field remains a sketch." />
+  }
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden" style={{ background: '#030205' }}>
-      {/* Atmosphere — stars, nebula, mountains, ash */}
-      <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 1 }}>
-        <Atmosphere />
-      </div>
-
-      {/* 3D Scene */}
-      <div className="fixed inset-0" style={{ zIndex: 2 }}>
-        <SceneCanvas onPointerMissed={handleClose}>
-          <CameraRig focusTarget={focusTarget} onFlySettled={handleFlySettled} soundEvents={SOUND_EVENTS} />
-          <SceneLights />
-          <Platform3D />
-          <BladeRing
-            hoveredId={hoveredId}
-            selectedId={selectedId}
-            focusedId={focusedId}
-            onHover={handleHover}
-            onSelect={handleSelect}
-          />
-
-          {/* Herald symbol projection behind focused blade */}
-          {selectedBlade && (
-            <HeraldSymbol
-              id={selectedBlade.id}
-              color={selectedBlade.color}
-              bladePosition={getBladePos(selectedBlade.id)}
-              focused={showInspectUI}
-            />
-          )}
-        </SceneCanvas>
-      </div>
-
-      {/* Particles overlay — slows down in focus mode */}
+    <ErrorBoundary fallback={<SceneFallback reason="The field could not be drawn on this device." />}>
       <div
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          zIndex: 3,
-          opacity: isFocusMode ? 0.3 : 1,
-          transition: 'opacity 1.5s ease',
-        }}
+        ref={sceneRootRef}
+        data-aharietiam-scene="live"
+        data-scene-quality={light ? 'light' : 'full'}
+        data-scene-ready={sceneReady ? 'true' : 'false'}
+        className="fixed inset-0 overflow-hidden bg-[#141922]"
       >
-        <Particles />
-      </div>
-
-      {/* Focus dimmer — darkens scene */}
-      <div
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          zIndex: 4,
-          background: 'rgba(0,0,0,0.3)',
-          opacity: isFocusMode ? 1 : 0,
-          transition: 'opacity 0.8s ease',
-          pointerEvents: isFocusMode ? 'auto' : 'none',
-        }}
-      />
-
-      {/* Left side — carved stone manuscript */}
-      {showInspectUI && !isTalnFocus && selectedBlade && <InfoMonolith blade={selectedBlade} onClose={handleClose} />}
-
-      {/* Right side — large serif quote */}
-      {showInspectUI && !isTalnFocus && selectedBlade && (
-        <div
-          className="fixed pointer-events-none select-none"
-          style={{
-            zIndex: 44,
-            right: 'clamp(32px, 5vw, 64px)',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            maxWidth: 'clamp(240px, 22vw, 340px)',
-            textAlign: 'right',
-            fontFamily: "'Times New Roman', 'Georgia', serif",
-            opacity: 0,
-            animation: 'quoteReveal 1.2s ease 1.0s forwards',
-          }}
-        >
-          <div
-            style={{
-              fontSize: 'clamp(20px, 1.8vw, 28px)',
-              lineHeight: 1.4,
-              color: 'rgba(200, 185, 165, 0.35)',
-              fontStyle: 'italic',
-              letterSpacing: '0.02em',
+        <div className="absolute inset-0" style={{ zIndex: 1 }}>
+          <SceneCanvas
+            light={light}
+            maxDpr={maxDpr}
+            onContextLost={handleContextLost}
+            onPointerMissed={() => {
+              if (selectedId) stepBack()
             }}
           >
-            &ldquo;{selectedBlade.quote}&rdquo;
-          </div>
+            <SceneReadySignal onReady={handleSceneReady} />
+            <color attach="background" args={['#141922']} />
+            <fog attach="fog" args={['#5c4f43', 18, 88]} />
+            <CameraRig light={light} reducedMotion={reducedMotion} focus={focus} onInteract={handleInteract} />
+            <SceneLights light={light} />
+            <SkyDome />
+            <Ground light={light} />
+            <Ridges light={light} />
+            <StormlightSeep reducedMotion={reducedMotion} />
+            <BladeField light={light} selectedId={selectedId} onSelect={selectBlade} />
+            <FogVolumes light={light} reducedMotion={reducedMotion} />
+            <Dust light={light} reducedMotion={reducedMotion} />
+          </SceneCanvas>
         </div>
-      )}
 
-      {/* Taln special message */}
-      {isTalnFocus && <TalnMessage />}
-
-      {/* Controls legend */}
-      <ControlsLegend />
-      {isFocusMode && <ReturnButton onClose={handleClose} />}
-    </div>
-  )
-})
-
-/* Return button — top-right during focus */
-function ReturnButton({ onClose }: { onClose: () => void }) {
-  return (
-    <button
-      onClick={onClose}
-      className="fixed cursor-pointer pointer-events-auto select-none z-50"
-      style={{
-        top: 'clamp(16px, 2.5vw, 28px)',
-        right: 'clamp(16px, 2.5vw, 28px)',
-        background: 'rgba(170,140,100,0.06)',
-        border: '1px solid rgba(170,140,100,0.12)',
-        color: 'rgba(200,185,165,0.4)',
-        padding: '6px 16px',
-        borderRadius: 4,
-        fontFamily: "'Times New Roman', serif",
-        fontSize: 'clamp(11px, 0.7vw, 13px)',
-        letterSpacing: '0.06em',
-        textTransform: 'uppercase',
-        transition: 'all 0.3s ease',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.background = 'rgba(170,140,100,0.12)'
-        e.currentTarget.style.color = 'rgba(200,185,165,0.6)'
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.background = 'rgba(170,140,100,0.06)'
-        e.currentTarget.style.color = 'rgba(200,185,165,0.4)'
-      }}
-    >
-      Return
-    </button>
-  )
-}
-
-/* Taln — two sentences, silent reverence */
-function TalnMessage() {
-  const [showFirst, setShowFirst] = useState(false)
-  const [showSecond, setShowSecond] = useState(false)
-
-  useEffect(() => {
-    const t1 = setTimeout(() => setShowFirst(true), 1000)
-    const t2 = setTimeout(() => setShowSecond(true), 4000)
-    return () => {
-      clearTimeout(t1)
-      clearTimeout(t2)
-    }
-  }, [])
-
-  return (
-    <div
-      className="fixed inset-0 flex items-center justify-center pointer-events-none select-none"
-      style={{ zIndex: 45 }}
-    >
-      <div
-        style={{
-          fontFamily: "'Times New Roman', serif",
-          textAlign: 'center',
-          maxWidth: 400,
-          lineHeight: 1.6,
-          letterSpacing: '0.04em',
-          textShadow: '0 0 60px rgba(0,0,0,0.9)',
-        }}
-      >
         <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0"
           style={{
-            fontSize: 'clamp(18px, 2vw, 26px)',
-            color: 'rgba(200, 185, 165, 0.5)',
-            fontStyle: 'italic',
-            opacity: showFirst ? 1 : 0,
-            transition: 'opacity 1.5s ease',
-            marginBottom: 16,
+            zIndex: 2,
+            background: `
+              radial-gradient(ellipse at 50% 46%, transparent 36%, rgba(8, 8, 12, 0.16) 70%, rgba(8, 8, 12, 0.6) 100%),
+              linear-gradient(180deg, rgba(48, 67, 92, 0.14) 0%, transparent 24%, transparent 74%, rgba(132, 86, 50, 0.1) 100%)
+            `,
+          }}
+        />
+
+        {selected && light ? (
+          <div
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              top: 'var(--nav-h, 56px)',
+              left: 0,
+              right: 0,
+              height: '46vh',
+              zIndex: 20,
+              touchAction: 'none',
+              userSelect: 'none',
+            }}
+            onPointerDown={(event) => {
+              swipeStart.current = { x: event.clientX, y: event.clientY }
+              event.currentTarget.setPointerCapture(event.pointerId)
+            }}
+            onPointerUp={(event) => {
+              const start = swipeStart.current
+              swipeStart.current = null
+              if (!start) return
+              const dx = event.clientX - start.x
+              const dy = event.clientY - start.y
+              if (Math.abs(dx) > SWIPE_DISTANCE && Math.abs(dx) > Math.abs(dy) * 1.25) {
+                cycleBlades(dx < 0 ? 1 : -1)
+              }
+            }}
+            onPointerCancel={() => {
+              swipeStart.current = null
+            }}
+          />
+        ) : null}
+
+        <p
+          aria-hidden="true"
+          className="pointer-events-none absolute bottom-24 left-4 text-[16px] sm:left-8 md:bottom-8"
+          style={{
+            zIndex: 3,
+            maxWidth: 'min(78vw, 620px)',
+            padding: '3px 16px 4px 8px',
+            marginLeft: -8,
+            borderRadius: 2,
+            background:
+              'linear-gradient(90deg, rgba(7, 8, 11, 0.62) 0%, rgba(7, 8, 11, 0.38) 70%, rgba(7, 8, 11, 0) 100%)',
+            fontFamily: 'var(--font-hand)',
+            color: 'rgba(246, 236, 220, 0.96)',
+            letterSpacing: '0.015em',
+            lineHeight: 1.4,
+            textShadow: '0 1px 14px rgba(5, 6, 9, 0.95)',
+            opacity: hintVisible ? 1 : 0,
+            transition: reducedMotion ? 'none' : 'opacity 900ms ease',
           }}
         >
-          His blade was never abandoned.
+          {light ? 'tap a blade · swipe to turn the ring' : 'drag to look · arrow keys choose · enter opens'}
+        </p>
+
+        {selected ? (
+          <InfoMonolith
+            key={selected.id}
+            blade={selected}
+            light={light}
+            reducedMotion={reducedMotion}
+            onClose={stepBack}
+          />
+        ) : null}
+
+        <div aria-live="polite" aria-atomic="true" className="sr-only">
+          {announcement}
         </div>
-        <div
-          style={{
-            fontSize: 'clamp(16px, 1.8vw, 24px)',
-            color: 'rgba(200, 185, 165, 0.35)',
-            fontStyle: 'italic',
-            opacity: showSecond ? 1 : 0,
-            transition: 'opacity 1.5s ease',
-          }}
-        >
-          The bearer never broke.
+
+        <div className="sr-only">
+          <h1>Aharietiam — The Ten Blades</h1>
+          <p>
+            Ten Honorblades stand planted in a ring on a cracked stone rockbed at dusk. The scene may be turned by
+            dragging, scrolling, or with plus and minus. Use the left and right arrow keys to choose a blade, Enter to
+            open its record, and Escape to step back.
+          </p>
+          {/*
+           * A plain paragraph rather than a named list: Chromium keeps detached
+           * named lists alive in its accessibility tree, which retained the
+           * whole page after a route change. The names remain fully readable
+           * to assistive technology, just without list semantics.
+           */}
+          <p>
+            The ten Honorblades: {ordered.map((blade) => `${blade.name}, ${blade.order}, ${blade.title}`).join('; ')}.
+          </p>
         </div>
       </div>
-    </div>
+    </ErrorBoundary>
   )
-}
+})

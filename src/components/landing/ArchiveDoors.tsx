@@ -109,7 +109,7 @@ export default function ArchiveDoors() {
           </Link>
 
           <Link
-            to={historical('aharietiam', '/aharietiam')}
+            to={destination('aharietiam', '/aharietiam')}
             aria-label={`Aharietiam: ${HONORBLADES.length} Honorblades`}
             className="group relative col-span-2 mx-auto block w-full max-w-[330px] focus-visible:outline focus-visible:outline-1 focus-visible:outline-[#e5c582] lg:absolute lg:left-[4%] lg:bottom-[4%] lg:w-[clamp(220px,17vw,280px)] lg:max-w-none"
           >

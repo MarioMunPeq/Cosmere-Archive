@@ -28,8 +28,10 @@ import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import MiniSearch from 'minisearch'
 
+import { CORE_DESTINATIONS } from '../src/navigation'
 import { search } from '../src/search/ranking'
 import { TYPE_BOOST } from '../src/search/types'
+import type { IconName } from '../src/navigation'
 import type { SearchType } from '../src/search/types'
 
 const here = dirname(fileURLToPath(import.meta.url))
@@ -45,6 +47,8 @@ interface IndexedDoc {
   aliases: string[]
   route: string
   type: SearchType
+  /** Set only on the section documents, so the dialog can show the same glyph. */
+  icon?: IconName
 }
 
 /**
@@ -57,9 +61,9 @@ const ROUTES = {
   planet: (id: string) => `/shadesmar?realm=${id}`,
   book: (id: string) => `/library?book=${id}`,
   series: (id: string) => `/library?series=${id}`,
-  magic: (id: string) => `/historical/ars-arcanum?system=${id}`,
-  event: (id: string) => `/historical/chronology?event=${id}`,
-  hero: (id: string) => `/historical/aharietiam?h=${id}`,
+  magic: (id: string) => `/magic?system=${id}`,
+  event: (id: string) => `/chronology?event=${id}`,
+  hero: (id: string) => `/aharietiam?h=${id}`,
   shard: (id: string) => `/records/shards/${id}`,
 } as const
 
@@ -196,9 +200,28 @@ for (const h of readAll<{ id: string; name: string; title: string; summary: stri
   })
 }
 
+/**
+ * The navigation destinations themselves, so the command palette can find a
+ * section by name as well as a record inside it. The registry is plain data
+ * that can be imported from Node, which is why this stays a one-line change
+ * when a sixth core piece is added.
+ */
+for (const d of CORE_DESTINATIONS) {
+  docs.push({
+    id: `page:${d.id}`,
+    title: d.label,
+    subtitle: d.description,
+    body: '',
+    aliases: [d.id],
+    route: d.to,
+    type: 'page',
+    icon: d.icon,
+  })
+}
+
 const index = new MiniSearch<IndexedDoc>({
   fields: ['title', 'subtitle', 'body', 'aliases'],
-  storeFields: ['title', 'subtitle', 'type', 'route'],
+  storeFields: ['title', 'subtitle', 'type', 'route', 'icon'],
 })
 index.addAll(docs)
 
@@ -232,7 +255,7 @@ for (const [type, n] of Object.entries(byType).sort()) console.log(`  ${type.pad
 const written = JSON.parse(readFileSync(OUT, 'utf8'))
 const loaded = MiniSearch.loadJSON(JSON.stringify(written.index), {
   fields: ['title', 'subtitle', 'body', 'aliases'],
-  storeFields: ['title', 'subtitle', 'type', 'route'],
+  storeFields: ['title', 'subtitle', 'type', 'route', 'icon'],
 })
 
 /** §5.8 Q.1. */

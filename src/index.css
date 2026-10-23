@@ -19,17 +19,6 @@
   }
 }
 
-@keyframes quoteReveal {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 /* Ink drying: a subtle shimmer that sweeps left-to-right, as if the ink is
    still wet and the light catches it. Replaces animate-pulse for loading states. */
 @keyframes ink-drying {

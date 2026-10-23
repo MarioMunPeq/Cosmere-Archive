@@ -89,6 +89,17 @@ test.describe('M2.4 search', () => {
     }
   })
 
+  test('Q.1 Aharietiam is a searchable section and opens its page', async ({ page }) => {
+    const input = await openSearch(page)
+    await input.fill('aharietiam')
+    const option = page.getByRole('option', { name: /Aharietiam/i }).first()
+    await expect(option).toBeVisible()
+    expect(await option.getAttribute('data-route')).toBe('/aharietiam')
+    await option.click()
+    await page.waitForTimeout(400)
+    expect(page.url()).toContain('#/aharietiam')
+  })
+
   test('Q.2 results are grouped under labelled categories', async ({ page }) => {
     const input = await openSearch(page)
     await input.fill('s')
@@ -158,7 +169,15 @@ test.describe('M2.4 search', () => {
     const expected = await first.getAttribute('data-route')
     await first.click()
     await page.waitForTimeout(400)
-    expect(page.url()).toContain(expected ?? '#')
+    if (expected?.startsWith('/records/')) {
+      // Character search results are published as /records/:id and redirected
+      // into the codex spread. The id must survive the redirect even though the
+      // path changes.
+      expect(page.url()).toContain('#/characters')
+      expect(page.url().toLowerCase()).toContain(expected.split('/').pop()!.toLowerCase())
+    } else {
+      expect(page.url()).toContain(expected ?? '#')
+    }
   })
 
   test('Q.7 arrow keys move the highlight and Enter navigates', async ({ page }) => {

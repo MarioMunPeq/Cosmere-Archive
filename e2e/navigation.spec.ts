@@ -6,11 +6,11 @@
  * Chromium against the production build.
  *
  * Covered here:
- *   N.1  the four core destinations plus Historical are real, keyboard-reachable
+ *   N.1  the five core destinations plus Historical are real, keyboard-reachable
  *        links, with aria-current on the active one
  *   N.2  every navigation label clears 4.5:1 on the bar background
  *   N.3  every interactive target in the bar is at least 44x44
- *   N.4  the bottom bar has five destinations and no horizontal scroll at 320px
+ *   N.4  the bottom bar has seven destinations and no horizontal scroll at 320px
  *   M2.4 no horizontal overflow on /, /about or /404 at 320px
  */
 
@@ -102,7 +102,7 @@ test.describe('M2.2 navigation', () => {
 
   test('N.1 the core destinations are real links', async ({ page }) => {
     const nav = page.getByRole('navigation', { name: 'Main' })
-    for (const label of ['Library', 'Records', 'Shadesmar', 'Taravangian Diagram']) {
+    for (const label of ['Library', 'Records', 'Shadesmar', 'Taravangian Diagram', 'Aharietiam']) {
       const link = nav.getByRole('link', { name: label, exact: true })
       await expect(link).toBeVisible()
       const href = await link.getAttribute('href')
@@ -121,6 +121,40 @@ test.describe('M2.2 navigation', () => {
     await expect(current).toHaveAttribute('href', '#/library')
   })
 
+  test('N.1 an Aharietiam deep link resolves and marks the shelf', async ({ page }) => {
+    await page.goto('/#/aharietiam?h=jezrien')
+    const nav = page.getByRole('navigation', { name: 'Main' })
+    await expect(nav).toBeVisible()
+    await expect(nav.getByRole('link', { name: 'Aharietiam', exact: true })).toHaveAttribute('aria-current', 'page')
+    await expect(page.getByText('ARCHIVE RECORD LOST')).toHaveCount(0)
+  })
+
+  test('N.1 all five spines fit at every shelf breakpoint', async ({ page }) => {
+    const labels = ['Library', 'Records', 'Shadesmar', 'Taravangian Diagram', 'Aharietiam']
+    for (const width of [1280, 1024, 768]) {
+      await page.setViewportSize({ width, height: 900 })
+      await page.goto('/#/library')
+      const nav = page.getByRole('navigation', { name: 'Main' })
+      await nav.waitFor()
+
+      const navBox = await nav.boundingBox()
+      expect(navBox, `${width}px nav`).not.toBeNull()
+
+      for (const label of labels) {
+        const link = nav.getByRole('link', { name: label, exact: true })
+        await expect(link, `${label} at ${width}px`).toBeVisible()
+        const box = await link.boundingBox()
+        expect(box, `${label} at ${width}px`).not.toBeNull()
+        expect(box!.x + box!.width, `${label} overflows the ${width}px viewport`).toBeLessThanOrEqual(
+          navBox!.x + navBox!.width + 1,
+        )
+      }
+
+      const overflow = await nav.evaluate((el) => el.scrollWidth - el.clientWidth)
+      expect(overflow, `${width}px shelf overflows by ${overflow}px`).toBeLessThanOrEqual(0)
+    }
+  })
+
   test('N.1 everything is reachable by keyboard from /', async ({ page }) => {
     // Tab through and collect where focus lands.
     await page.keyboard.press('Tab') // skip to content
@@ -134,7 +168,7 @@ test.describe('M2.2 navigation', () => {
       await page.keyboard.press('Tab')
     }
     const joined = seen.join(' | ')
-    for (const label of ['Skip to content', 'Library', 'Records', 'Historical']) {
+    for (const label of ['Skip to content', 'Library', 'Records', 'Aharietiam', 'Historical']) {
       expect(joined, `tab order should reach "${label}"`).toContain(label)
     }
   })
@@ -147,6 +181,7 @@ test.describe('M2.2 navigation', () => {
       nav.getByRole('link', { name: 'Records', exact: true }),
       nav.getByRole('link', { name: 'Shadesmar', exact: true }),
       nav.getByRole('link', { name: 'Taravangian Diagram', exact: true }),
+      nav.getByRole('link', { name: 'Aharietiam', exact: true }),
       nav.getByRole('button', { name: 'Historical' }),
     ]
 
@@ -189,11 +224,24 @@ test.describe('M2.2 navigation', () => {
 test.describe('M2.2 bottom bar', () => {
   test.use({ viewport: { width: 375, height: 800 } })
 
-  test('N.4 it has five destinations below 768px', async ({ page }) => {
+  test('N.4 it has seven destinations below 768px', async ({ page }) => {
     await page.goto('/')
     const nav = page.getByRole('navigation', { name: 'Primary' })
     await expect(nav).toBeVisible()
-    await expect(nav.locator('a[href]')).toHaveCount(5)
+    await expect(nav.locator('a[href]')).toHaveCount(7)
+  })
+
+  test('N.4 the five core destinations fit at 375px with 44px targets', async ({ page }) => {
+    await page.goto('/')
+    const nav = page.getByRole('navigation', { name: 'Primary' })
+    for (const label of ['Library', 'Records', 'Shadesmar', 'Taravangian Diagram', 'Aharietiam']) {
+      const link = nav.getByRole('link', { name: label, exact: true })
+      await expect(link, `${label} must be visible in the bottom bar`).toBeVisible()
+      const box = await link.boundingBox()
+      expect(box, `${label} target`).not.toBeNull()
+      expect(box!.width, `${label} target width`).toBeGreaterThanOrEqual(44)
+      expect(box!.x + box!.width, `${label} overflows 375px`).toBeLessThanOrEqual(375)
+    }
   })
 
   test('N.4 no horizontal scroll at 320px', async ({ page }) => {

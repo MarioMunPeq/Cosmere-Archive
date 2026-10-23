@@ -85,7 +85,7 @@ export default function NavBar({ onSearch }: Props) {
         className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#b7a579]/30 to-transparent"
       />
 
-      <div className="relative mx-auto flex h-full max-w-page items-center gap-2 px-[var(--gutter-md)] max-md:px-[var(--gutter)] sm:gap-3">
+      <div className="relative mx-auto flex h-full max-w-page items-center gap-2 px-[var(--gutter-md)] max-md:px-[var(--gutter)] sm:gap-3 md:px-6 lg:px-[var(--gutter-md)]">
         {/* The attached Cosmere mark, mounted like a brass archive seal. */}
         <Link
           to="/"
@@ -150,7 +150,8 @@ export default function NavBar({ onSearch }: Props) {
               aria-expanded={menuOpen}
               aria-haspopup="true"
               aria-controls="historical-menu"
-              className="relative flex h-[38px] items-center gap-2 border-l border-[#a8a28a]/25 px-3 font-[var(--font-mono)] text-[9px] tracking-[.14em] text-[#c4b894] transition-all duration-300 focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)] hover:text-[#f0e5c9]"
+              aria-label="Historical"
+              className="relative flex h-11 items-center gap-2 border-l border-[#a8a28a]/25 px-3 font-[var(--font-mono)] text-[12px] tracking-[.14em] text-[#c4b894] transition-all duration-300 focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)] hover:text-[#f0e5c9]"
               style={{
                 background:
                   menuOpen || historicalActive
@@ -164,7 +165,7 @@ export default function NavBar({ onSearch }: Props) {
               }}
             >
               <span aria-hidden className="h-3 w-px bg-[#b6a77e]/55" />
-              Historical
+              <span className="hidden lg:inline">Historical</span>
               <DestinationIcon
                 name="chevron"
                 size={14}
@@ -189,13 +190,13 @@ export default function NavBar({ onSearch }: Props) {
               type="button"
               onClick={onSearch}
               aria-label="Search"
-              className="relative ml-1 flex h-[38px] min-w-[38px] items-center justify-center border-l border-[#a8a28a]/25 px-2 text-[#c8bd9f] transition-all duration-300 hover:text-[#f2e9d4] focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)]"
+              className="relative ml-1 flex h-11 min-w-11 items-center justify-center border-l border-[#a8a28a]/25 px-2 text-[#c8bd9f] transition-all duration-300 hover:text-[#f2e9d4] focus-visible:outline-none focus-visible:[box-shadow:var(--focus-ring)]"
             >
               <DestinationIcon name="search" size={18} />
               <span className="sr-only">Search</span>
               <kbd
                 data-hint="⌘K"
-                className="search-hint hidden rounded-[2px] border border-[#5a3e1e] px-1.5 py-0.5 font-[var(--font-mono)] text-[11px] text-[#5a3e1e] xl:inline"
+                className="search-hint hidden rounded-[2px] border border-[#5a3e1e] px-1.5 py-0.5 font-[var(--font-mono)] text-[12px] text-[#5a3e1e] xl:inline"
               />
             </button>
           )}
@@ -217,6 +218,10 @@ function SpineLink({ dest, pathname }: { dest: (typeof CORE_DESTINATIONS)[number
     records: ['#655a4b', '#39342c', '#c9b995'],
     shadesmar: ['#4c625d', '#2e403d', '#bdc9b3'],
     diagram: ['#625a62', '#39343c', '#c8bca5'],
+    // Cold steel with an ember foil: the stone circle at dusk. Measured
+    // 5.62:1 at the top of the spine and 7.84:1 at the bottom, so the label
+    // clears AA even on the lightest part of the gradient.
+    aharietiam: ['#3b4b56', '#28353d', '#e8c79a'],
   }
   const [top, bottom, foil] = materials[dest.id] ?? ['#504b40', '#302e29', '#c6c1a8']
   return (
@@ -235,7 +240,7 @@ function SpineLink({ dest, pathname }: { dest: (typeof CORE_DESTINATIONS)[number
     >
       <span
         aria-hidden
-        className="relative flex h-[31px] items-center border-l px-3"
+        className="relative flex h-[31px] items-center border-l px-2 lg:px-3"
         style={{
           background: `linear-gradient(180deg, ${top} 0%, ${bottom} 100%)`,
           borderColor: active ? foil : 'rgba(201,166,105,.18)',
@@ -246,7 +251,7 @@ function SpineLink({ dest, pathname }: { dest: (typeof CORE_DESTINATIONS)[number
           className="absolute inset-x-2 top-0 h-px bg-gradient-to-r from-transparent via-[#e2d7b7]/35 to-transparent"
         />
         <span
-          className="whitespace-nowrap font-[var(--font-display)] text-[11px] tracking-[0.08em]"
+          className="whitespace-nowrap font-[var(--font-display)] text-[12px] tracking-[0.08em]"
           style={{ color: active ? '#f3dfae' : foil }}
         >
           {dest.label}

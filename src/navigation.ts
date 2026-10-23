@@ -62,8 +62,10 @@ export interface Destination {
 }
 
 /**
- * The four core pieces (D-D1..D-D4). These are the destinations the archive is
- * for, and they are the only ones in the top bar.
+ * The five core pieces. These are the destinations the archive is for, and they
+ * are the only ones in the top bar. Aharietiam joins them here rather than
+ * sitting in the Historical drawer: it is a place the archive is about, not a
+ * preserved annex.
  */
 export const CORE_DESTINATIONS: Destination[] = [
   {
@@ -95,6 +97,13 @@ export const CORE_DESTINATIONS: Destination[] = [
     description: 'The shapes the Thirteenth Shard left behind.',
     to: '/taravangian',
     icon: 'shard',
+  },
+  {
+    id: 'aharietiam',
+    label: 'Aharietiam',
+    description: 'Ten honorblades, still standing where they were set.',
+    to: '/aharietiam',
+    icon: 'herald',
   },
 ]
 
@@ -182,17 +191,14 @@ export function spineMaterial(seriesId: string): SpineMaterial {
 }
 
 /**
- * The Historical Archive (D-HIST). One route with an index, not five loose
- * routes. Each keeps its current implementation; only the container changes.
+ * The Historical Archive (D-HIST). One route with an index, not a loose route
+ * per section. Each keeps its current implementation; only the container
+ * changes.
+ *
+ * Aharietiam used to live here. It was promoted to the core shelf when the
+ * honorblades became one of the five places the archive exists to show.
  */
 export const HISTORICAL_DESTINATIONS: Destination[] = [
-  {
-    id: 'aharietiam',
-    label: 'Aharietiam',
-    description: 'Ten honorblades, still standing where they were set.',
-    to: '/aharietiam',
-    icon: 'herald',
-  },
   {
     id: 'chronology',
     label: 'Chronology',
@@ -217,7 +223,7 @@ export const HISTORICAL_DESTINATIONS: Destination[] = [
 ]
 
 /**
- * Routes that are real and live but are not one of the four core pieces and do
+ * Routes that are real and live but are not one of the five core pieces and do
  * not belong under Historical.
  *
  * `/books` is the standalone volume index; it is absorbed into the Library in

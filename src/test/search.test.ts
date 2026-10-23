@@ -21,18 +21,28 @@ const file = indexFile as unknown as SearchIndexFile
 
 const index = MiniSearch.loadJSON(JSON.stringify(file.index), {
   fields: ['title', 'subtitle', 'body', 'aliases'],
-  storeFields: ['title', 'subtitle', 'type', 'route'],
+  storeFields: ['title', 'subtitle', 'type', 'route', 'icon'],
 })
 
 const top = (q: string) => search(index, q, file.typeBoost)[0]
 
 describe('search index', () => {
   it('covers the whole archive', () => {
-    // 462 validated entities in content/, 289 searchable records. The
-    // difference is families and relationships, which have no page to send
-    // someone to.
-    expect(file.documentCount).toBe(289)
+    // 462 validated entities in content/, 289 searchable records, plus the
+    // five core navigation sections. The difference is families and
+    // relationships, which have no page to send someone to.
+    expect(file.documentCount).toBe(294)
     expect(file.documentCount).toBeLessThan(400)
+  })
+
+  it('finds every core section, including Aharietiam', () => {
+    for (const section of ['Library', 'Records', 'Shadesmar', 'Taravangian Diagram', 'Aharietiam']) {
+      const hit = search(index, section, file.typeBoost).find((r) => r.type === 'page' && r.title === section)
+      expect(hit, section).toBeDefined()
+    }
+    // Aharietiam is also the exact title, so it comes first and opens the page.
+    expect(top('aharietiam')?.type).toBe('page')
+    expect(top('aharietiam')?.route).toBe('/aharietiam')
   })
 
   it('ships the type weights it was built with', () => {

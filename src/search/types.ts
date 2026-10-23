@@ -5,7 +5,9 @@
  * build rather than the search box at runtime.
  */
 
-export type SearchType = 'character' | 'planet' | 'book' | 'magic' | 'event' | 'hero' | 'series' | 'shard'
+import type { IconName } from '../navigation'
+
+export type SearchType = 'character' | 'planet' | 'book' | 'magic' | 'event' | 'hero' | 'series' | 'shard' | 'page'
 
 export interface SearchResult {
   id: string
@@ -15,6 +17,8 @@ export interface SearchResult {
   title: string
   subtitle: string
   score: number
+  /** Section glyph, when the result is a navigation destination. */
+  icon?: IconName
 }
 
 /** Shape of src/data/search-index.json, as written by the generator. */
@@ -44,6 +48,7 @@ export const TYPE_BOOST: Record<SearchType, number> = {
   magic: 1.5,
   hero: 1.5,
   event: 1,
+  page: 1,
 }
 
 /**
@@ -63,6 +68,7 @@ export const CATEGORY_LABEL: Record<SearchType, string> = {
   magic: 'Magic',
   hero: 'Heralds',
   event: 'Events',
+  page: 'Sections',
 }
 
 /** §5.8: at most 12 results, grouped by type with separators. */

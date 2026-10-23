@@ -41,6 +41,7 @@ const GLYPH: Record<string, IconName> = {
   magic: 'magic',
   hero: 'herald',
   event: 'event',
+  page: 'info',
 }
 
 /** Flat index of a result inside the combined list, for aria-activedescendant. */
@@ -258,7 +259,7 @@ export default function SearchDialog({ open, onClose }: Props) {
                           aria-hidden
                           className={selected ? 'text-[var(--text-accent)]' : 'text-[var(--text-tertiary)]'}
                         >
-                          <DestinationIcon name={GLYPH[result.type] ?? 'book'} size={18} />
+                          <DestinationIcon name={result.icon ?? GLYPH[result.type] ?? 'book'} size={18} />
                         </span>
                         <span className="min-w-0 flex-1">
                           <span className="block truncate font-[var(--fw-medium)]">{result.title}</span>

@@ -75,14 +75,15 @@ describe('navigation registry', () => {
     }
   })
 
-  it('groups the four core pieces and five historical sections per §5.1', () => {
-    expect(CORE_DESTINATIONS).toHaveLength(4)
-    expect(HISTORICAL_DESTINATIONS).toHaveLength(4)
+  it('groups the five core pieces and three historical sections', () => {
+    expect(CORE_DESTINATIONS).toHaveLength(5)
+    expect(HISTORICAL_DESTINATIONS).toHaveLength(3)
     expect(SECONDARY_DESTINATIONS.length).toBeGreaterThan(0)
   })
 
   it('resolves a destination by id', () => {
     expect(getDestination('library')?.to).toBe('/library')
+    expect(getDestination('aharietiam')?.to).toBe('/aharietiam')
     expect(getDestination('nope')).toBeUndefined()
   })
 
@@ -110,7 +111,7 @@ describe('NavBar', () => {
     expect(screen.getByRole('navigation', { name: 'Main' })).toBeInTheDocument()
   })
 
-  it('renders the four core destinations and Historical as real links', () => {
+  it('renders the five core destinations and Historical as real links', () => {
     at('/', <NavBar />)
     const nav = screen.getByRole('navigation', { name: 'Main' })
     for (const dest of CORE_DESTINATIONS) {
@@ -166,7 +167,7 @@ describe('NavBar', () => {
     expect(trigger).toHaveFocus()
   })
 
-  it('lists the five historical sections as links with descriptions', () => {
+  it('lists the three historical sections as links with descriptions', () => {
     at('/', <HistoricalMenu id="m" items={HISTORICAL_DESTINATIONS} pathname="/" onNavigate={() => {}} />)
     for (const dest of HISTORICAL_DESTINATIONS) {
       const link = screen.getByRole('link', { name: new RegExp(dest.label, 'i') })
@@ -197,10 +198,20 @@ describe('NavBar', () => {
 })
 
 describe('BottomNav', () => {
-  it('has five destinations below 768px (N.4)', () => {
+  it('has seven destinations below 768px (N.4)', () => {
     at('/', <BottomNav />)
     const nav = screen.getByRole('navigation', { name: 'Primary' })
-    expect(within(nav).getAllByRole('link')).toHaveLength(5)
+    expect(within(nav).getAllByRole('link')).toHaveLength(7)
+  })
+
+  it('includes every core destination, not just the first three', () => {
+    at('/', <BottomNav />)
+    const nav = screen.getByRole('navigation', { name: 'Primary' })
+    for (const dest of CORE_DESTINATIONS) {
+      expect(within(nav).getByRole('link', { name: dest.label })).toHaveAttribute('href', dest.to)
+    }
+    expect(within(nav).getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/')
+    expect(within(nav).getByRole('link', { name: 'More' })).toHaveAttribute('href', '/historical')
   })
 
   it('labels every icon-only link for assistive tech', () => {

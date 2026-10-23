@@ -22,7 +22,7 @@ const ROUTES: { hash: string; name: string; heading: RegExp }[] = [
   // M4: the page now has a real <h1>. It used to render a table-of-contents
   // screen whose first heading was "Contents", which is a section, not a title.
   { hash: '/characters', name: 'records', heading: /biographical archives/i },
-  { hash: '/shadesmar', name: 'shadesmar', heading: /shadesmar|souls/i },
+  { hash: '/shadesmar', name: 'shadesmar', heading: /roshar|shadesmar|souls/i },
   { hash: '/taravangian', name: 'diagram', heading: /diagram|taravangian/i },
   { hash: '/aharietiam', name: 'aharietiam', heading: /aharietiam|honorblade/i },
   { hash: '/magic', name: 'ars arcanum', heading: /contents/i },
@@ -69,7 +69,7 @@ for (const { hash, name, heading } of ROUTES) {
  * overlay header, so the page finally has a heading of its own. The other three
  * still have none.
  */
-const PAGES_WITHOUT_A_TITLE: string[] = ['/aharietiam', '/mind-map']
+const PAGES_WITHOUT_A_TITLE: string[] = ['/mind-map']
 
 for (const { hash, name, heading } of ROUTES) {
   if (PAGES_WITHOUT_A_TITLE.includes(hash)) {
@@ -87,59 +87,64 @@ for (const { hash, name, heading } of ROUTES) {
 }
 
 test.describe('M2.3 landing', () => {
-  test('D-HOME the four doors are real links with real counters', async ({ page }) => {
+  test('D-HOME the five doors are real links with real counters', async ({ page }) => {
     await page.goto('/')
 
-    // Scope to the doors: the page also has the Historical band's list, so a
-    // bare `main ul` matches both.
-    const doors = page.getByRole('list', { name: 'Core sections' })
-    await expect(doors.locator('a[href]')).toHaveCount(4)
+    // The doors are artifacts rather than a list, so scope by the section that
+    // owns them. The About link in the header is outside this section.
+    const doors = page.locator('section[aria-labelledby="archive-title"]')
+    const core = ['#/library', '#/characters', '#/shadesmar', '#/taravangian', '#/aharietiam']
+    for (const href of core) {
+      await expect(doors.locator(`a[href="${href}"]`)).toHaveCount(1)
+    }
 
     // Every door must be an anchor, not a button.
     expect(await doors.locator('button').count()).toBe(0)
 
-    for (const href of ['#/library', '#/characters', '#/shadesmar', '#/taravangian']) {
-      await expect(doors.locator(`a[href="${href}"]`)).toHaveCount(1)
-    }
-
     // Counters come from the data, so each door shows two numbers.
     const library = doors.locator('a[href="#/library"]')
     await expect(library).toContainText('22')
-    await expect(library).toContainText('volumes')
+    await expect(library).toContainText(/volumes/i)
   })
 
-  test('D-HOME the title is 36px on mobile and 48px on desktop', async ({ page }) => {
+  test('D-HOME the archive title is 18px on mobile and 25px on desktop', async ({ page }) => {
     await page.goto('/')
     const h1 = page.getByRole('heading', { level: 1 })
 
     await page.setViewportSize({ width: 375, height: 800 })
-    expect(await h1.evaluate((el) => parseFloat(getComputedStyle(el).fontSize))).toBeCloseTo(36, 0)
+    expect(await h1.evaluate((el) => parseFloat(getComputedStyle(el).fontSize))).toBeCloseTo(18, 0)
 
     await page.setViewportSize({ width: 1280, height: 900 })
-    expect(await h1.evaluate((el) => parseFloat(getComputedStyle(el).fontSize))).toBeCloseTo(48, 0)
+    expect(await h1.evaluate((el) => parseFloat(getComputedStyle(el).fontSize))).toBeCloseTo(25, 0)
   })
 
-  test('D-HOME the doors reflow 1 / 2 / 4 columns', async ({ page }) => {
+  test('D-HOME the five doors fit at 375 and 1280', async ({ page }) => {
     await page.goto('/')
-    const list = page.getByRole('list', { name: 'Core sections' })
+    const doors = page.locator('section[aria-labelledby="archive-title"]')
+    const core = ['#/library', '#/characters', '#/shadesmar', '#/taravangian', '#/aharietiam']
 
-    const columnsAt = async (width: number) => {
+    for (const width of [375, 1280]) {
       await page.setViewportSize({ width, height: 900 })
       await page.waitForTimeout(200)
-      return list.evaluate((el) => getComputedStyle(el).gridTemplateColumns.split(' ').length)
+      for (const href of core) {
+        const door = doors.locator(`a[href="${href}"]`)
+        await expect(door, `${href} at ${width}px`).toBeVisible()
+        const box = await door.boundingBox()
+        expect(box, `${href} at ${width}px`).not.toBeNull()
+        expect(box!.x, `${href} starts left of the viewport`).toBeGreaterThanOrEqual(0)
+        expect(box!.x + box!.width, `${href} overflows ${width}px`).toBeLessThanOrEqual(width + 1)
+      }
     }
-
-    expect(await columnsAt(375)).toBe(1)
-    expect(await columnsAt(768)).toBe(2)
-    expect(await columnsAt(1280)).toBe(2)
   })
 
-  test('D-HIST /historical lists the five archived sections', async ({ page }) => {
+  test('D-HIST /historical lists the three archived sections', async ({ page }) => {
     await page.goto('/#/historical')
     await expect(page.getByRole('heading', { level: 1, name: 'Historical Archive' })).toBeVisible()
-    for (const href of ['#/aharietiam', '#/magic', '#/chronology', '#/mind-map', '#/about']) {
+    for (const href of ['#/chronology', '#/mind-map', '#/about']) {
       await expect(page.locator(`main a[href="${href}"]`).first()).toHaveCount(1)
     }
+    // Aharietiam is a core destination now, not a folder in this cabinet.
+    await expect(page.locator('main a[href="#/aharietiam"]')).toHaveCount(0)
   })
 
   test('the More slot in the bottom bar resolves', async ({ page }) => {

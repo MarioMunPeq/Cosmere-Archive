@@ -55,11 +55,10 @@ describe('archive counters', () => {
 describe('ArchiveDoors', () => {
   it('renders one door per core destination', () => {
     wrap(<ArchiveDoors />)
-    const archiveLinks = [
-      ...CORE_DESTINATIONS.map((dest) => screen.getByRole('link', { name: new RegExp(dest.label, 'i') })),
-      screen.getByRole('link', { name: /Aharietiam/i }),
-    ]
-    expect(new Set(archiveLinks).size).toBe(CORE_DESTINATIONS.length + 1)
+    const archiveLinks = CORE_DESTINATIONS.map((dest) =>
+      screen.getByRole('link', { name: new RegExp(dest.label, 'i') }),
+    )
+    expect(new Set(archiveLinks).size).toBe(CORE_DESTINATIONS.length)
   })
 
   it('every door is a real link with an href', () => {
@@ -94,10 +93,7 @@ describe('ArchiveDoors', () => {
 
   it('gives every door a description, not just a title', () => {
     wrap(<ArchiveDoors />)
-    const doorLinks = [
-      ...CORE_DESTINATIONS.map((dest) => screen.getByRole('link', { name: new RegExp(dest.label, 'i') })),
-      screen.getByRole('link', { name: /Aharietiam/i }),
-    ]
+    const doorLinks = CORE_DESTINATIONS.map((dest) => screen.getByRole('link', { name: new RegExp(dest.label, 'i') }))
     for (const link of doorLinks) {
       const accessibleDescription = link.getAttribute('aria-label')
       expect(accessibleDescription).toBeTruthy()
@@ -127,7 +123,7 @@ describe('HistoricalPage', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Historical Archive' })).toBeInTheDocument()
   })
 
-  it('lists all four sections as valid links', () => {
+  it('lists all three sections as valid links', () => {
     wrap(<HistoricalPage />)
     for (const dest of HISTORICAL_DESTINATIONS) {
       const link = screen.getAllByRole('link', { name: new RegExp(dest.label, 'i') })[0]

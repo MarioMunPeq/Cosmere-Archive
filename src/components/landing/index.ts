@@ -2,7 +2,7 @@
  * landing/ — the landing page and the Historical band.
  *
  * M2 · Block 3. The page that used to live here as Manuscript.tsx is gone; its
- * ten-chapter list is now four doors and one band, with the destinations read
+ * ten-chapter list is now five doors and one band, with the destinations read
  * from `@/navigation` like everything else.
  */
 

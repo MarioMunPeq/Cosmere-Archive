@@ -1,8 +1,11 @@
 /**
  * BottomNav — the fixed bar below 768px. §5.1.
  *
- * Five destinations, 56×56 each, with env(safe-area-inset-bottom) so the last
- * row is not under the home indicator on iOS.
+ * Seven slots: Home, the five core destinations, and More. Every core piece is
+ * present, including the Diagram and Aharietiam, so the mobile bar mirrors the
+ * five spines on the desktop shelf. At 320px each slot is 45.7px wide, which
+ * still clears the 44px target; the labels are `sr-only` so the icons are not
+ * squeezed by text.
  *
  * The labels are `sr-only` rather than hidden with `display: none`, because the
  * icons carry the meaning visually and the label has to reach the accessibility
@@ -15,28 +18,8 @@ import { CORE_DESTINATIONS, isDestinationActive } from '@/navigation'
 import type { IconName } from '@/navigation'
 import DestinationIcon from './DestinationIcon'
 
-/**
- * Five slots, per §5.1: Home, the first three core pieces, and More.
- *
- * The Taravangian Diagram is the fourth core piece but is deliberately absent
- * from the bottom bar rather than displacing More: a 56px slot cannot carry
- * six destinations at 320px without the labels becoming unreadable, and More
- * leads to a page that lists everything. Nothing is unreachable.
- */
-/**
- * Five slots, per §5.1: Home, three of the four core pieces, and More.
- *
- * The Taravangian Diagram is the fourth core piece but is deliberately absent
- * rather than displacing More: six 56px slots at 320px leaves each one under
- * the 44px minimum once the safe area is subtracted. More leads to the
- * Historical Archive index, which lists every destination, so nothing becomes
- * unreachable.
- */
 export default function BottomNav() {
   const { pathname } = useLocation()
-
-  // The three that fit. Diagram is reachable from More and from the top bar.
-  const slots = CORE_DESTINATIONS.filter((d) => d.id !== 'diagram')
 
   return (
     <nav
@@ -49,9 +32,9 @@ export default function BottomNav() {
         boxShadow: 'inset 0 1px 0 rgba(230,224,204,.06), 0 -1px 0 rgba(183,165,121,.2), 0 -6px 20px rgba(0,0,0,.3)',
       }}
     >
-      <ul className="mx-auto grid h-[var(--bottom-nav-h)] max-w-[560px] grid-cols-5">
+      <ul className="mx-auto grid h-[var(--bottom-nav-h)] max-w-[560px] grid-cols-7">
         <BarItem to="/" icon="home" label="Home" active={pathname === '/'} />
-        {slots.map((dest) => (
+        {CORE_DESTINATIONS.map((dest) => (
           <BarItem
             key={dest.id}
             to={dest.to}
@@ -61,8 +44,8 @@ export default function BottomNav() {
           />
         ))}
 
-        {/* "More" leads to the Historical Archive index, which lists every
-            destination including the Taravangian Diagram. A real link, not a
+        {/* "More" leads to the Historical Archive index, which lists the
+            preserved sections and the secondary routes. A real link, not a
             button that opens a sheet, so it can be opened in a new tab. */}
         <BarItem to="/historical" icon="more" label="More" active={pathname.startsWith('/historical')} />
       </ul>
