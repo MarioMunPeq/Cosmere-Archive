@@ -189,7 +189,10 @@ for (const p of previous) {
 const heroIndex = JSON.parse(readFileSync(join(CONTENT_HEROES, 'index.json'), 'utf8')) as { ids: string[] }
 const heroIds = new Set(heroIndex.ids)
 const heroById = new Map<string, Record<string, unknown>>(
-  heroIndex.ids.map((id) => [id, JSON.parse(readFileSync(join(CONTENT_HEROES, `${id}.json`), 'utf8')) as Record<string, unknown>]),
+  heroIndex.ids.map((id) => [
+    id,
+    JSON.parse(readFileSync(join(CONTENT_HEROES, `${id}.json`), 'utf8')) as Record<string, unknown>,
+  ]),
 )
 const bookGen = JSON.parse(readFileSync(join(GENERATED_DIR, 'books.json'), 'utf8')) as { id: string }[]
 const bookIdSet = new Set(bookGen.map((b) => b.id))
@@ -200,7 +203,9 @@ const heroCharacterAliases: Record<string, string> = { talenel: 'taln', shalash:
 const carriedById = new Map(carried.map((c) => [c.id, c]))
 for (const heroId of heroIndex.ids) {
   const hero = heroById.get(heroId)!
-  const heroName = String(hero.name ?? '').trim().toLowerCase()
+  const heroName = String(hero.name ?? '')
+    .trim()
+    .toLowerCase()
   const expectedCharId = heroCharacterAliases[heroId] ?? heroId
   if (fromContent.has(expectedCharId)) continue
   if (carriedById.has(expectedCharId)) {
@@ -210,14 +215,17 @@ for (const heroId of heroIndex.ids) {
     } else {
       const carriedName = String(carried.name).trim().toLowerCase()
       if (carriedName !== heroName && carriedName !== expectedCharId && carriedName !== heroId) {
-        carriedProblems.push(`hero "${heroId}" expects character projection "${expectedCharId}" with name "${hero.name}" (got "${carried.name}")`)
+        carriedProblems.push(
+          `hero "${heroId}" expects character projection "${expectedCharId}" with name "${hero.name}" (got "${carried.name}")`,
+        )
       }
     }
     if (!planetIdsContent.has(String(carried.planet ?? ''))) {
       carriedProblems.push(`carried character "${expectedCharId}" has unknown origin "${carried.planet}"`)
     }
     for (const b of (carried.requiredBooks as string[]) ?? []) {
-      if (!bookIdSet.has(b)) carriedProblems.push(`carried character "${expectedCharId}" references unknown book "${b}"`)
+      if (!bookIdSet.has(b))
+        carriedProblems.push(`carried character "${expectedCharId}" references unknown book "${b}"`)
     }
     continue
   }
@@ -250,7 +258,10 @@ const shape = (c: ContentCharacter) => ({
 if (carriedProblems.length > 0) {
   console.error(
     `\n  ! ${carriedProblems.length} hero projections are missing or invalid:\n` +
-      carriedProblems.slice(0, 20).map((p) => `      ${p}`).join('\n') +
+      carriedProblems
+        .slice(0, 20)
+        .map((p) => `      ${p}`)
+        .join('\n') +
       (carriedProblems.length > 20 ? `\n      ... and ${carriedProblems.length - 20} more` : '') +
       '\n    Write the character projection into content/characters/ or fix the hero record.\n',
   )

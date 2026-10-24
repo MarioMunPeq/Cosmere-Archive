@@ -15,9 +15,9 @@ export interface ShardData {
   reviewed?: boolean
 }
 
-export const SHARDS: ShardData[] = (shardsData as ShardData[]).slice().sort((a, b) =>
-  a.name.localeCompare(b.name, 'en'),
-)
+export const SHARDS: ShardData[] = (shardsData as ShardData[])
+  .slice()
+  .sort((a, b) => a.name.localeCompare(b.name, 'en'))
 
 export function getShardById(id: string): ShardData | undefined {
   return SHARDS.find((s) => s.id === id)

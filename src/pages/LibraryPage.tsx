@@ -172,7 +172,9 @@ export default function LibraryPage() {
               </button>
             ))}
             {seriesBooks.length === 0 && (
-              <p className="font-serif text-sm italic text-amber-100/45">No volumes are catalogued for this series yet.</p>
+              <p className="font-serif text-sm italic text-amber-100/45">
+                No volumes are catalogued for this series yet.
+              </p>
             )}
           </div>
         </section>

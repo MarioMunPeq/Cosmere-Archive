@@ -46,7 +46,11 @@ export default function ShardPage() {
           <div className="flex flex-wrap gap-2">
             {planets.length === 0 && <span className="text-slate-500">No linked planets.</span>}
             {planets.map((p) => (
-              <Link key={p.id} to={`/celestial-charts?planet=${p.id}`} className="border border-slate-700 px-3 py-1 hover:border-cyan-500/60">
+              <Link
+                key={p.id}
+                to={`/celestial-charts?planet=${p.id}`}
+                className="border border-slate-700 px-3 py-1 hover:border-cyan-500/60"
+              >
                 {p.name}
               </Link>
             ))}
@@ -57,7 +61,11 @@ export default function ShardPage() {
           <div className="flex flex-wrap gap-2">
             {magic.length === 0 && <span className="text-slate-500">No linked systems.</span>}
             {magic.map((m) => (
-              <Link key={m.id} to={`/magic?system=${m.id}`} className="border border-slate-700 px-3 py-1 hover:border-cyan-500/60">
+              <Link
+                key={m.id}
+                to={`/magic?system=${m.id}`}
+                className="border border-slate-700 px-3 py-1 hover:border-cyan-500/60"
+              >
                 {m.name}
               </Link>
             ))}
@@ -68,7 +76,11 @@ export default function ShardPage() {
           <div className="flex flex-wrap gap-2">
             {books.length === 0 && <span className="text-slate-500">No linked books.</span>}
             {books.map((b) => (
-              <Link key={b.id} to={`/library?book=${b.id}`} className="border border-slate-700 px-3 py-1 hover:border-cyan-500/60">
+              <Link
+                key={b.id}
+                to={`/library?book=${b.id}`}
+                className="border border-slate-700 px-3 py-1 hover:border-cyan-500/60"
+              >
                 {b.title}
               </Link>
             ))}

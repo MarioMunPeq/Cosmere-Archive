@@ -116,7 +116,7 @@ export default defineConfig({
             },
             { name: 'd3', priority: 35, test: /node_modules[\\/]d3-(force|dispatch|quadtree|timer)[\\/]/ },
             { name: 'gsap', priority: 35, test: /node_modules[\\/]gsap[\\/]/ },
-            { name: 'three', priority: 30, test: /node_modules[\\/]three[\\/]/, maxSize: 380 * 1024 },
+            { name: 'three', priority: 50, test: /node_modules[\\/]three[\\/]/ },
             { name: 'r3f', priority: 30, test: /node_modules[\\/]@react-three[\\/]/ },
             { name: 'vendor-misc', priority: 10, test: /node_modules[\\/]/ },
           ],
