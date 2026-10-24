@@ -25,12 +25,10 @@
     ],
     "status": "fallen",
     "connections": [
-      "jasnah",
-      "ivory"
+      "jasnah"
     ],
     "positionIndex": 6,
-    "color": "#f472b6",
-    "assetPath": "aharietiam/battar.webp"
+    "color": "#f472b6"
   },
   {
     "id": "chanarach",
@@ -61,8 +59,7 @@
       "shallan"
     ],
     "positionIndex": 2,
-    "color": "#fb923c",
-    "assetPath": "aharietiam/chanarach.webp"
+    "color": "#fb923c"
   },
   {
     "id": "ishar",
@@ -90,13 +87,10 @@
     ],
     "status": "fallen",
     "connections": [
-      "dalinar",
-      "nightwatcher",
-      "the_sibling"
+      "dalinar"
     ],
     "positionIndex": 9,
-    "color": "#eab308",
-    "assetPath": "aharietiam/ishar.webp"
+    "color": "#eab308"
   },
   {
     "id": "jezrien",
@@ -126,11 +120,13 @@
     ],
     "status": "fallen",
     "connections": [
-      "shalash"
+      "shalash",
+      "szeth",
+      "gavilar",
+      "moash"
     ],
     "positionIndex": 0,
-    "color": "#60a5fa",
-    "assetPath": "aharietiam/jezrien.webp"
+    "color": "#60a5fa"
   },
   {
     "id": "kalak",
@@ -163,8 +159,7 @@
       "hoid"
     ],
     "positionIndex": 7,
-    "color": "#fbbf24",
-    "assetPath": "aharietiam/kalak.webp"
+    "color": "#fbbf24"
   },
   {
     "id": "nale",
@@ -195,12 +190,10 @@
     "status": "fallen",
     "connections": [
       "szeth",
-      "nightblood",
-      "nin"
+      "nightblood"
     ],
     "positionIndex": 1,
-    "color": "#f87171",
-    "assetPath": "aharietiam/nale.webp"
+    "color": "#f87171"
   },
   {
     "id": "pailiah",
@@ -228,12 +221,10 @@
     ],
     "status": "fallen",
     "connections": [
-      "jasnah",
-      "glys"
+      "jasnah"
     ],
     "positionIndex": 4,
-    "color": "#2dd4bf",
-    "assetPath": "aharietiam/pailiah.webp"
+    "color": "#2dd4bf"
   },
   {
     "id": "shalash",
@@ -263,11 +254,12 @@
     ],
     "status": "fallen",
     "connections": [
-      "jezrien"
+      "jezrien",
+      "taln",
+      "hoid"
     ],
     "positionIndex": 5,
-    "color": "#a78bfa",
-    "assetPath": "aharietiam/shalash.webp"
+    "color": "#a78bfa"
   },
   {
     "id": "talenel",
@@ -298,11 +290,11 @@
     ],
     "status": "standing",
     "connections": [
-      "shalash"
+      "shalash",
+      "dalinar"
     ],
     "positionIndex": 8,
-    "color": "#f97316",
-    "assetPath": "aharietiam/talenel.webp"
+    "color": "#f97316"
   },
   {
     "id": "vedel",
@@ -330,11 +322,9 @@
     ],
     "status": "fallen",
     "connections": [
-      "lift",
-      "wyndle"
+      "lift"
     ],
     "positionIndex": 3,
-    "color": "#34d399",
-    "assetPath": "aharietiam/vedel.webp"
+    "color": "#34d399"
   }
 ]

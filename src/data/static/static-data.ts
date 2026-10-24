@@ -21,12 +21,13 @@ export const SHORTCUTS: Shortcut[] = [
   { keys: 'Alt+S', label: 'Shadesmar page' },
 ]
 
+import relationshipsData from '@/data/generated/relationships.json'
 import type { CharacterRelationship } from '@/types/relationships'
 
 // ── Character Relationships ──
 
 /**
- * The relationship table.
+ * The relationship table, generated from `content/relationships/`.
  *
  * Two rules, enforced by `src/utils/relationships.ts` and its tests:
  *
@@ -37,55 +38,24 @@ import type { CharacterRelationship } from '@/types/relationships'
  *      `['kelsier', 'sazed']` row that had no label was removed; the surviving
  *      row says "Allies" and is symmetric.
  *
- * Before this, labels were authored from whichever side the writer had in
- * mind, so Adolin's card listed Shallan twice (once as Wife, once as Husband,
- * the second being Adolin's own role) and Vin's card called Elend her wife.
- * The labels below are written from the first character's point of view and
- * `inverseLabel` covers the reverse where the neutral type word would be
- * false.
+ * `inverseLabel` covers the reverse where the neutral type word would be false
+ * ("Uncle", "Mentor", "Liege"). The content collection is the single source;
+ * `scripts/generate-relationships.ts` emits this runtime shape and refuses a
+ * duplicate id.
  */
-export const CHARACTER_RELATIONSHIPS: CharacterRelationship[] = [
-  { characters: ['kelsier', 'mare'], type: 'spouse', label: 'Husband' },
-  { characters: ['kelsier', 'vin'], type: 'mentor', label: 'Mentor' },
-  { characters: ['kelsier', 'sazed'], type: 'ally', label: 'Allies' },
-  { characters: ['vin', 'elend'], type: 'spouse', label: 'Wife' },
-  { characters: ['vin', 'reene'], type: 'sibling', label: 'Sister', inverseLabel: 'Brother' },
-  { characters: ['vin', 'kelsier'], type: 'mentee', label: 'Student' },
-  { characters: ['sazed', 'tindwyl'], type: 'spouse', label: 'Husband' },
-  { characters: ['sazed', 'kelsier'], type: 'ally', label: 'Allies' },
-  { characters: ['kaladin', 'syl'], type: 'bonded', label: 'Nahel bond' },
-  { characters: ['kaladin', 'shallan'], type: 'ally', label: 'Allies' },
-  { characters: ['kaladin', 'dalinar'], type: 'allegiance', label: 'Sworn to' },
-  { characters: ['kaladin', 'teft'], type: 'ally', label: 'Bridge Four' },
-  { characters: ['kaladin', 'moash'], type: 'rival', label: 'Betrayed' },
-  { characters: ['shallan', 'adolin'], type: 'spouse', label: 'Wife' },
-  { characters: ['shallan', 'kaladin'], type: 'ally', label: 'Allies' },
-  { characters: ['dalinar', 'sadeas'], type: 'rival', label: 'Political rivals' },
-  { characters: ['dalinar', 'navani'], type: 'spouse', label: 'Husband' },
-  { characters: ['dalinar', 'kaladin'], type: 'allegiance', label: 'Commands' },
-  { characters: ['elend', 'vin'], type: 'spouse', label: 'Husband' },
-  { characters: ['elend', 'sazed'], type: 'ally', label: 'Allies' },
-  { characters: ['raoden', 'sarene'], type: 'spouse', label: 'Husband' },
-  { characters: ['hoid', 'kelsier'], type: 'rival', label: 'Adversaries' },
-  { characters: ['hoid', 'dalinar'], type: 'ally', label: 'Advisor' },
-  { characters: ['hoid', 'kaladin'], type: 'mentor', label: 'Philosophical guide', inverseLabel: 'Student' },
-  { characters: ['vasher', 'nightblood'], type: 'creator', label: 'Awakener' },
-  { characters: ['vasher', 'vivenna'], type: 'ally', label: 'Fellow Returned' },
-  { characters: ['sarene', 'raoden'], type: 'spouse', label: 'Wife' },
-  { characters: ['sarene', 'kiin'], type: 'parent', label: 'Niece', inverseLabel: 'Uncle' },
-  { characters: ['spook', 'kelsier'], type: 'mentee', label: 'Student', inverseLabel: 'Mentor' },
-  { characters: ['spook', 'vin'], type: 'ally', label: 'Crewmate' },
-  { characters: ['teft', 'kaladin'], type: 'ally', label: 'Bridge Four' },
-  { characters: ['moash', 'kaladin'], type: 'rival', label: 'Betrayer' },
-  { characters: ['adolin', 'shallan'], type: 'spouse', label: 'Husband' },
-  { characters: ['navani', 'dalinar'], type: 'spouse', label: 'Wife' },
-  { characters: ['syl', 'kaladin'], type: 'bonded', label: 'Nahel bond' },
-  { characters: ['nightblood', 'vasher'], type: 'creation', label: 'Created by' },
-  { characters: ['nightblood', 'szeth'], type: 'wielder', label: 'Sword' },
-  { characters: ['szeth', 'nightblood'], type: 'wields', label: 'Wielder' },
-  { characters: ['szeth', 'dalinar'], type: 'allegiance', label: 'Sworn to', inverseLabel: 'Liege' },
-  { characters: ['mare', 'kelsier'], type: 'spouse', label: 'Wife' },
-]
+export const CHARACTER_RELATIONSHIPS: CharacterRelationship[] = (
+  relationshipsData as {
+    characters: [string, string]
+    type: string
+    label?: string
+    inverseLabel?: string
+  }[]
+).map((rel) => ({
+  characters: rel.characters,
+  type: rel.type as CharacterRelationship['type'],
+  ...(rel.label ? { label: rel.label } : {}),
+  ...(rel.inverseLabel ? { inverseLabel: rel.inverseLabel } : {}),
+}))
 
 // ── Colors ──
 export const FALLBACK_COLOR = '#6b7280'

@@ -13,7 +13,6 @@ export interface HonorbladeData {
   books: string[]
   status: 'fallen' | 'standing' | 'missing'
   connections: string[]
-  assetPath: string
   positionIndex: number
   color: string
   pronunciation?: string

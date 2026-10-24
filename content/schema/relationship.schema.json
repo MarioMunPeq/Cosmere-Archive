@@ -36,6 +36,7 @@
       ]
     },
     "label": { "type": ["string", "null"], "maxLength": 60 },
+    "inverseLabel": { "type": ["string", "null"], "maxLength": 60 },
     "kind": { "enum": ["character", "concept", "family", "planet", "book", "group"] }
   }
 }

@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { SAGAS, TAILWIND_TO_HEX, FALLBACK_COLOR } from '@/data/static'
 import { TIMELINE_EVENTS, ERAS } from '@/data/static/timeline'
 import { MAX_FORK_SAGAS } from '@/constants'
@@ -21,6 +22,8 @@ for (const event of TIMELINE_EVENTS) {
 }
 
 export default function ChronologyPage() {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const eventParam = searchParams.get('event')
   const [selectedSagas, setSelectedSagas] = useState<string[]>([])
   const [selectedEra, setSelectedEra] = useState<string | null>(null)
   const [hoveredEvent, setHoveredEvent] = useState<{
@@ -75,13 +78,42 @@ export default function ChronologyPage() {
       if (!eventId || !event) {
         setExpandedEvent(null)
         setHoveredEvent(null)
-        return
+      } else {
+        setExpandedEvent({ event, line: line ?? 'main', forkSaga })
+        setHoveredEvent(null)
       }
-      setExpandedEvent({ event, line: line ?? 'main', forkSaga })
-      setHoveredEvent(null)
+      setSearchParams(
+        (current) => {
+          const next = new URLSearchParams(current)
+          if (eventId) next.set('event', eventId)
+          else next.delete('event')
+          return next
+        },
+        { replace: true },
+      )
     },
-    [],
+    [setSearchParams],
   )
+
+  /*
+   * `?event=` is a deep link from search and from a shared URL. The timeline
+   * renders every event on the main line, so a single click target is enough;
+   * the overlay itself supplies the archive record. Scrolling happens once the
+   * overlay is open, after layout has settled.
+   */
+  useEffect(() => {
+    if (!eventParam) return
+    const event = TIMELINE_EVENTS.find((candidate) => candidate.id === eventParam)
+    if (event) setExpandedEvent({ event, line: 'main' })
+  }, [eventParam])
+
+  useEffect(() => {
+    if (!expandedEvent) return
+    const el = scrollRef.current
+    if (!el) return
+    const x = yearToX(expandedEvent.event.year)
+    el.scrollTo({ left: Math.max(0, x - el.clientWidth / 2), behavior: 'smooth' })
+  }, [expandedEvent])
 
   const getEventPosition = useCallback(
     (ev: { event: TimelineEvent; line: 'main' | 'fork'; forkSaga?: string }) => {
@@ -123,11 +155,11 @@ export default function ChronologyPage() {
   useEffect(() => {
     if (!expandedEvent) return
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setExpandedEvent(null)
+      if (e.key === 'Escape') handleClick(null)
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [expandedEvent])
+  }, [expandedEvent, handleClick])
 
   return (
     <div className="relative flex min-h-0 flex-1 flex-col">
@@ -209,7 +241,7 @@ export default function ChronologyPage() {
             event={expandedEvent.event}
             x={getEventPosition(expandedEvent).x}
             y={getEventPosition(expandedEvent).y}
-            onClose={() => setExpandedEvent(null)}
+            onClose={() => handleClick(null)}
             toViewport={getViewportPosition}
           />
         )}

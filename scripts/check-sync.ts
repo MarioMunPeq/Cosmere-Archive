@@ -48,6 +48,7 @@ run('npx', ['tsx', 'scripts/generate-books.ts'])
 run('npx', ['tsx', '--tsconfig', 'tsconfig.scripts.json', 'scripts/generate-taxonomies.ts'])
 run('npx', ['tsx', '--tsconfig', 'tsconfig.scripts.json', 'scripts/generate-timeline.ts'])
 run('npx', ['tsx', '--tsconfig', 'tsconfig.scripts.json', 'scripts/generate-worlds.ts'])
+run('npx', ['tsx', '--tsconfig', 'tsconfig.scripts.json', 'scripts/generate-relationships.ts'])
 
 /* ---- 2. and they must not have moved anything ---- */
 
@@ -84,8 +85,21 @@ const characters = JSON.parse(readFileSync(join(process.cwd(), 'src/data/generat
   id: string
   requiredBooks: string[]
 }[]
+const relationships = JSON.parse(
+  readFileSync(join(process.cwd(), 'src/data/generated/relationships.json'), 'utf8'),
+) as {
+  characters: [string, string]
+  type: string
+}[]
 
 const problems: string[] = []
+
+const characterIds = new Set(characters.map((c) => c.id))
+for (const rel of relationships) {
+  for (const id of rel.characters) {
+    if (!characterIds.has(id)) problems.push(`relationship links to "${id}", which is not a character`)
+  }
+}
 
 const bookIds = new Set(books.map((b) => b.id))
 for (const c of characters) {

@@ -9,7 +9,7 @@
     "search:index": "tsx scripts/generate-search-index.ts",
     "portraits:build": "tsx scripts/generate-portrait-index.ts",
     "covers:build": "tsx scripts/generate-cover-variants.ts",
-    "data:build": "tsx scripts/generate-characters.ts && tsx scripts/generate-books.ts && tsx --tsconfig tsconfig.scripts.json scripts/generate-taxonomies.ts && tsx --tsconfig tsconfig.scripts.json scripts/generate-timeline.ts && tsx --tsconfig tsconfig.scripts.json scripts/generate-worlds.ts",
+    "data:build": "tsx scripts/generate-characters.ts && tsx scripts/generate-books.ts && tsx --tsconfig tsconfig.scripts.json scripts/generate-taxonomies.ts && tsx --tsconfig tsconfig.scripts.json scripts/generate-timeline.ts && tsx --tsconfig tsconfig.scripts.json scripts/generate-worlds.ts && tsx --tsconfig tsconfig.scripts.json scripts/generate-relationships.ts && tsx --tsconfig tsconfig.scripts.json scripts/generate-shards.ts",
     "build": "pnpm search:index && pnpm data:build && tsc -b && vite build",
     "typecheck": "tsc -b",
     "lint": "eslint . --max-warnings 0",

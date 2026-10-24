@@ -6,15 +6,30 @@
   "kind": "herald",
   "pronunciation": null,
   "summary": "The patron of the Lightweavers. Daughter of Jezrien, Shalash wandered Roshar destroying artwork and sculptures that depicted her, driven by an intense self-loathing. She believed the Heralds were unworthy of the reverence humanity gave them.",
-  "surges": ["Illumination", "Transformation"],
-  "attributes": ["Creative", "Honest"],
+  "surges": [
+    "Illumination",
+    "Transformation"
+  ],
+  "attributes": [
+    "Creative",
+    "Honest"
+  ],
   "essence": "Lucent",
   "soulcasting": "Crystal",
   "honorbladeGrants": "Illumination and Transformation — the power to create illusions and to transform one substance into another.",
   "quote": "\"Erase me from your memory. Burn my image. I am not worthy of worship.\"",
-  "books": ["words-of-radiance", "oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "books": [
+    "words-of-radiance",
+    "oathbringer",
+    "rhythm-of-war",
+    "wind-and-truth"
+  ],
   "status": "fallen",
-  "connections": ["jezrien"],
+  "connections": [
+    "jezrien",
+    "taln",
+    "hoid"
+  ],
   "positionIndex": 5,
   "color": "#a78bfa"
 }

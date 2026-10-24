@@ -60,18 +60,6 @@ const write = (name: string, value: unknown) =>
 const bookId = (id: string) => id.replace(/-/g, '_')
 
 /** The previous runtime values, for the few fields that live only there. */
-function readRuntime<T>(rel: string, marker: string): Map<string, T> {
-  const src = readFileSync(join(process.cwd(), rel), 'utf8')
-  const at = src.indexOf(marker)
-  const map = new Map<string, T>()
-  if (at < 0) return map
-  // Rather than parse the literal, take ids and the following line pairs by
-  // brace matching. Cheap, and it only ever supplies three fields.
-  const re = /id:\s*'([^']+)'/g
-  let m: RegExpExecArray | null
-  while ((m = re.exec(src)) !== null) map.set(m[1]!, {} as T)
-  return map
-}
 
 const problems: string[] = []
 const carried: string[] = []
@@ -381,26 +369,11 @@ const heroes = readDir('heroes').map((h) => ({
   quote: h.quote,
   books: ((h.books as string[]) ?? []).map(bookId),
   status: h.status,
-  // Empty in seven of ten records. The runtime had them; keeping the runtime
-  // value and saying so is better than dropping a reader's link to Szeth.
-  connections: ((h.connections as string[]) ?? []).length
-    ? ((h.connections as string[]) ?? []).map((c) => c.replace(/-/g, '_'))
-    : runtimeConnections(h.id),
+  connections: ((h.connections as string[]) ?? []).map((c) => c.replace(/-/g, '_')),
   positionIndex: h.positionIndex,
   color: h.color,
-  assetPath: `aharietiam/${h.id}.webp`,
 }))
 write('heroes', heroes)
-
-function runtimeConnections(id: string): string[] {
-  const src = readFileSync(join(process.cwd(), 'src/data/static/aharietiam.ts'), 'utf8')
-  const at = src.indexOf(`id: '${id}'`)
-  if (at < 0) return []
-  const block = src.slice(at, at + 2000)
-  const m = /connections:\s*\[([^\]]*)\]/.exec(block)
-  if (!m) return []
-  return [...m[1]!.matchAll(/'([^']+)'/g)].map((x) => x[1]!)
-}
 
 /* ======================================================== field notes */
 
@@ -506,6 +479,7 @@ write('character-spans', spans)
 const planetIds = new Set(planets.map((p) => p.id))
 const bookIds = new Set(books.map((b) => b.id))
 const characterIds = new Set(characters.map((c) => c.id))
+const heroIds = new Set(heroes.map((h) => h.id))
 
 for (const p of planets) {
   if (!p.description?.trim()) problems.push(`planet "${p.id}" has no summary`)
@@ -543,22 +517,8 @@ for (const f of families) {
 for (const h of heroes) {
   for (const b of h.books) if (!bookIds.has(b)) problems.push(`hero "${h.id}" names book "${b}"`)
   for (const c of h.connections) {
-    if (characterIds.has(c)) continue
-    /*
-     * A warning, not an error — and the distinction is not a convenience.
-     *
-     * `content/heroes/` has `connections: []` for seven of ten records, so these
-     * eight names came out of the runtime file where they already were, and
-     * they already pointed at characters that do not exist: Shalash, Nin, Glys,
-     * Wyndle, Ivory, the Sibling, the Nightwatcher. Eight dead links on the
-     * site, before this file existed.
-     *
-     * Failing the build over them would mean the refactor could not land until
-     * eight characters were written, and the eight dead links would still be
-     * there afterwards. So they are named, loudly, as a content backfill — and
-     * anything `content/` itself names wrongly is still a hard error.
-     */
-    dangling.push(`hero "${h.id}" links to "${c}", which is not a character`)
+    if (characterIds.has(c) || heroIds.has(c)) continue
+    problems.push(`hero "${h.id}" links to "${c}", which is neither a character nor a hero`)
   }
 }
 

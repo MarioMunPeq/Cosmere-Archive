@@ -6,15 +6,28 @@
   "kind": "herald",
   "pronunciation": null,
   "summary": "The patron of the Willshapers. One of the few Heralds seen interacting in modern Roshar, Kalak was known to have met with Jasnah Kholin. He carries the weariness of millennia and seeks escape from the burden of immortality.",
-  "surges": ["Transportation", "Cohesion"],
-  "attributes": ["Resolute", "Builder"],
+  "surges": [
+    "Transportation",
+    "Cohesion"
+  ],
+  "attributes": [
+    "Resolute",
+    "Builder"
+  ],
   "essence": "Tallow",
   "soulcasting": "Wax",
   "honorbladeGrants": "Transportation and Cohesion — the power to move between realms and to alter the molecular bonds of matter.",
   "quote": "\"I have walked through worlds and watched them burn. I am tired.\"",
-  "books": ["oathbringer", "rhythm-of-war", "wind-and-truth"],
+  "books": [
+    "oathbringer",
+    "rhythm-of-war",
+    "wind-and-truth"
+  ],
   "status": "fallen",
-  "connections": [],
+  "connections": [
+    "jasnah",
+    "hoid"
+  ],
   "positionIndex": 7,
   "color": "#fbbf24"
 }

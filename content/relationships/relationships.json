@@ -36,7 +36,8 @@
     "from": "vin",
     "to": "reene",
     "type": "sibling",
-    "label": "Brother",
+    "label": "Sister",
+    "inverseLabel": "Brother",
     "kind": "character"
   },
   {
@@ -84,7 +85,7 @@
     "from": "kaladin",
     "to": "dalinar",
     "type": "allegiance",
-    "label": "Leads",
+    "label": "Sworn to",
     "kind": "character"
   },
   {
@@ -189,6 +190,7 @@
     "to": "kaladin",
     "type": "mentor",
     "label": "Philosophical guide",
+    "inverseLabel": "Student",
     "kind": "character"
   },
   {
@@ -221,6 +223,7 @@
     "to": "kiin",
     "type": "parent",
     "label": "Niece",
+    "inverseLabel": "Uncle",
     "kind": "character"
   },
   {
@@ -229,6 +232,7 @@
     "to": "kelsier",
     "type": "mentee",
     "label": "Student",
+    "inverseLabel": "Mentor",
     "kind": "character"
   },
   {
@@ -252,7 +256,7 @@
     "from": "moash",
     "to": "kaladin",
     "type": "rival",
-    "label": "Betrayed",
+    "label": "Betrayer",
     "kind": "character"
   },
   {
@@ -292,7 +296,7 @@
     "from": "nightblood",
     "to": "szeth",
     "type": "wielder",
-    "label": "Wields",
+    "label": "Sword",
     "kind": "character"
   },
   {
@@ -300,7 +304,7 @@
     "from": "szeth",
     "to": "nightblood",
     "type": "wields",
-    "label": "Sword",
+    "label": "Wielder",
     "kind": "character"
   },
   {
@@ -309,14 +313,7 @@
     "to": "dalinar",
     "type": "allegiance",
     "label": "Sworn to",
-    "kind": "character"
-  },
-  {
-    "id": "rel-kelsier-sazed",
-    "from": "kelsier",
-    "to": "sazed",
-    "type": "ally",
-    "label": null,
+    "inverseLabel": "Liege",
     "kind": "character"
   },
   {

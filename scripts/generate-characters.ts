@@ -51,6 +51,8 @@ const CONTENT_BOOK_IDS = new Set(
 )
 
 const CONTENT = join(process.cwd(), 'content', 'characters')
+const CONTENT_HEROES = join(process.cwd(), 'content', 'heroes')
+const GENERATED_DIR = join(process.cwd(), 'src', 'data', 'generated')
 const OUT = join(process.cwd(), 'src', 'data', 'generated', 'characters.json')
 
 /**
@@ -145,10 +147,10 @@ try {
 /**
  * The union of the two sources is not a set — it is a set with duplicates in it.
  *
- * `content/characters/` normalises ids to hyphens (rule V15), so Miles Hundredlives
- * is `miles-dagouter` there and `miles_dagouter` in the runtime file. Joining by
- * id alone produced 98 records for 93 characters: five people counted twice
- * under two ids, once from each layer.
+ * `content/characters/` normalises ids to hyphens (rule V15: `the-way-of-kings`),
+ * so Miles Hundredlives is `miles-dagouter` there and `miles_dagouter` in the
+ * runtime file. Joining by id alone produced 98 records for 93 characters:
+ * five people counted twice under two ids, once from each layer.
  *
  * So a carried-over record is only carried if no content record already
  * describes the same character, matched on the normalised id *and* on the
@@ -166,6 +168,7 @@ const contentNames = new Set(records.map((c) => c.name.trim().toLowerCase()))
 
 const carried: PreviousRecord[] = []
 const mergedDuplicates: string[] = []
+const carriedProblems: string[] = []
 
 for (const p of previous) {
   const duplicate =
@@ -175,6 +178,50 @@ for (const p of previous) {
     continue
   }
   carried.push(p)
+}
+
+/**
+ * Carried Heralds are projections that exist only in the runtime layer. They must
+ * resolve to a canonical hero in `content/heroes/` (or be mapped by alias) and
+ * reference valid books and a known origin. The gap is reported, but these
+ * projections are validated here rather than treated as unvalidated noise.
+ */
+const heroIndex = JSON.parse(readFileSync(join(CONTENT_HEROES, 'index.json'), 'utf8')) as { ids: string[] }
+const heroIds = new Set(heroIndex.ids)
+const heroById = new Map<string, Record<string, unknown>>(
+  heroIndex.ids.map((id) => [id, JSON.parse(readFileSync(join(CONTENT_HEROES, `${id}.json`), 'utf8')) as Record<string, unknown>]),
+)
+const bookGen = JSON.parse(readFileSync(join(GENERATED_DIR, 'books.json'), 'utf8')) as { id: string }[]
+const bookIdSet = new Set(bookGen.map((b) => b.id))
+const planetIdsContent = new Set(
+  (JSON.parse(readFileSync(join(process.cwd(), 'content', 'planets', 'index.json'), 'utf8')) as { ids: string[] }).ids,
+)
+const heroCharacterAliases: Record<string, string> = { talenel: 'taln', shalash: 'asha' }
+const carriedById = new Map(carried.map((c) => [c.id, c]))
+for (const heroId of heroIndex.ids) {
+  const hero = heroById.get(heroId)!
+  const heroName = String(hero.name ?? '').trim().toLowerCase()
+  const expectedCharId = heroCharacterAliases[heroId] ?? heroId
+  if (fromContent.has(expectedCharId)) continue
+  if (carriedById.has(expectedCharId)) {
+    const carried = carriedById.get(expectedCharId)!
+    if (!carried.name) {
+      carriedProblems.push(`hero "${heroId}" expects character projection "${expectedCharId}" with name "${hero.name}"`)
+    } else {
+      const carriedName = String(carried.name).trim().toLowerCase()
+      if (carriedName !== heroName && carriedName !== expectedCharId && carriedName !== heroId) {
+        carriedProblems.push(`hero "${heroId}" expects character projection "${expectedCharId}" with name "${hero.name}" (got "${carried.name}")`)
+      }
+    }
+    if (!planetIdsContent.has(String(carried.planet ?? ''))) {
+      carriedProblems.push(`carried character "${expectedCharId}" has unknown origin "${carried.planet}"`)
+    }
+    for (const b of (carried.requiredBooks as string[]) ?? []) {
+      if (!bookIdSet.has(b)) carriedProblems.push(`carried character "${expectedCharId}" references unknown book "${b}"`)
+    }
+    continue
+  }
+  carriedProblems.push(`hero "${heroId}" has no character projection in content or runtime carryover`)
 }
 
 /**
@@ -199,6 +246,16 @@ const shape = (c: ContentCharacter) => ({
   // Only when it differs from `requiredBooks`, so the common case costs nothing.
   spoilers: c.unlockAt.length !== c.books.length ? runtimeBooks(c.unlockAt) : undefined,
 })
+
+if (carriedProblems.length > 0) {
+  console.error(
+    `\n  ! ${carriedProblems.length} hero projections are missing or invalid:\n` +
+      carriedProblems.slice(0, 20).map((p) => `      ${p}`).join('\n') +
+      (carriedProblems.length > 20 ? `\n      ... and ${carriedProblems.length - 20} more` : '') +
+      '\n    Write the character projection into content/characters/ or fix the hero record.\n',
+  )
+  process.exit(1)
+}
 
 const output = [
   ...records.map(shape),

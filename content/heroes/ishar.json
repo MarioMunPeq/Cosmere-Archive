@@ -6,15 +6,26 @@
   "kind": "herald",
   "pronunciation": null,
   "summary": "The first and oldest of the Heralds, founder of the Oathpact and patron of the Bondsmiths. In his madness, Ishar became capable of manipulating Connection itself — stealing investiture and forging unnatural bonds. He is considered the most dangerous of all the Heralds.",
-  "surges": ["Tension", "Adhesion"],
-  "attributes": ["Pious", "Guiding"],
+  "surges": [
+    "Tension",
+    "Adhesion"
+  ],
+  "attributes": [
+    "Pious",
+    "Guiding"
+  ],
   "essence": "Foam",
   "soulcasting": "Water",
   "honorbladeGrants": "Tension and Adhesion — the power to alter the stiffness of objects and to bind things together at a fundamental level.",
   "quote": "\"I was the first. I will be the last. And in between, I have become something terrible.\"",
-  "books": ["rhythm-of-war", "wind-and-truth"],
+  "books": [
+    "rhythm-of-war",
+    "wind-and-truth"
+  ],
   "status": "fallen",
-  "connections": [],
+  "connections": [
+    "dalinar"
+  ],
   "positionIndex": 9,
   "color": "#eab308"
 }

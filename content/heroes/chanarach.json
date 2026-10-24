@@ -6,15 +6,26 @@
   "kind": "herald",
   "pronunciation": null,
   "summary": "The patron of the Dustbringers. One of the more mysterious Heralds, theorized to have been the mother of a notable Cosmere figure. Her current whereabouts remain unknown, and her role in the Oathpact is shrouded in speculation.",
-  "surges": ["Division", "Abrasion"],
-  "attributes": ["Brave", "Obedient"],
+  "surges": [
+    "Division",
+    "Abrasion"
+  ],
+  "attributes": [
+    "Brave",
+    "Obedient"
+  ],
   "essence": "Spark",
   "soulcasting": "Fire",
   "honorbladeGrants": "Division and Abrasion — the power to break bonds and to alter the friction of surfaces.",
   "quote": "\"Destruction is not the opposite of creation — it is the prelude.\"",
-  "books": ["oathbringer", "rhythm-of-war"],
+  "books": [
+    "oathbringer",
+    "rhythm-of-war"
+  ],
   "status": "fallen",
-  "connections": [],
+  "connections": [
+    "shallan"
+  ],
   "positionIndex": 2,
   "color": "#fb923c"
 }

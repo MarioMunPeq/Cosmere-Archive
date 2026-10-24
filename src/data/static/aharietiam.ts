@@ -1,211 +1,53 @@
+/**
+ * The ten Heralds, generated from `content/heroes/`.
+ *
+ * `generated/heroes.json` is the only copy of the blade data. This module is a
+ * typed view over it, not a second table: the old handwritten array had already
+ * drifted from the content collection by an asset path that pointed at a
+ * directory the site never shipped.
+ */
+import heroesData from '@/data/generated/heroes.json'
 import type { HonorbladeData } from '@/types/aharietiam'
 
-export const HONORBLADES: HonorbladeData[] = [
-  {
-    id: 'jezrien',
-    name: 'Jezrien',
-    title: 'King of Heralds',
-    order: 'Windrunners',
-    surges: ['Adhesion', 'Gravitation'],
-    attributes: ['Leading', 'Protecting'],
-    essence: 'Zephyr',
-    soulcasting: 'Air',
-    honorbladeGrants:
-      'Adhesion and Gravitation — the power to bind objects together and to alter the direction of gravity itself.',
-    quote: '"I have given you the sky. The rest you must earn."',
-    description:
-      'The patron of the Windrunners and the king of the Heralds. His Honorblade was stolen by Szeth, who used it to murder Gavilar Kholin. Jezrien was later killed by Moash with a dagger infused with anti-light — the first true death of a Herald in millennia.',
-    books: ['the_way_of_kings', 'words_of_radiance', 'oathbringer', 'rhythm_of_war'],
-    status: 'fallen',
-    connections: ['shalash', 'szeth', 'gavilar', 'moash'],
-    assetPath: 'aharietiam/jezrien.webp',
-    positionIndex: 0,
-    color: '#60a5fa',
-  },
-  {
-    id: 'nale',
-    name: 'Nale (Nalan)',
-    title: 'Herald of Justice',
-    order: 'Skybreakers',
-    surges: ['Gravitation', 'Division'],
-    attributes: ['Just', 'Confident'],
-    essence: 'Sinew',
-    soulcasting: 'Blood',
-    honorbladeGrants:
-      'Gravitation and Division — the power to control gravity and to destroy the bonds between objects.',
-    quote: '"The law is not a suggestion. It is the foundation upon which civilization rests."',
-    description:
-      'The patron of the Skybreakers and the only Herald to actively lead his order. For millennia he hunted surgebinders, believing it would prevent another Desolation. His rigid adherence to law masked a deep fear of the return of the Voidbringers.',
-    books: ['words_of_radiance', 'oathbringer', 'rhythm_of_war', 'wind_and_truth'],
-    status: 'fallen',
-    connections: ['szeth', 'nightblood', 'nin'],
-    assetPath: 'aharietiam/nale.webp',
-    positionIndex: 1,
-    color: '#f87171',
-  },
-  {
-    id: 'chanarach',
-    name: 'Chanarach',
-    title: 'Herald of Flames',
-    order: 'Dustbringers',
-    surges: ['Division', 'Abrasion'],
-    attributes: ['Brave', 'Obedient'],
-    essence: 'Spark',
-    soulcasting: 'Fire',
-    honorbladeGrants: 'Division and Abrasion — the power to break bonds and to alter the friction of surfaces.',
-    quote: '"Destruction is not the opposite of creation — it is the prelude."',
-    description:
-      'The patron of the Dustbringers. One of the more mysterious Heralds, theorized to have been the mother of a notable Cosmere figure. Her current whereabouts remain unknown, and her role in the Oathpact is shrouded in speculation.',
-    books: ['oathbringer', 'rhythm_of_war'],
-    status: 'fallen',
-    connections: ['shallan'],
-    assetPath: 'aharietiam/chanarach.webp',
-    positionIndex: 2,
-    color: '#fb923c',
-  },
-  {
-    id: 'vedel',
-    name: 'Vedel',
-    title: 'Herald of Healers',
-    order: 'Edgedancers',
-    surges: ['Abrasion', 'Progression'],
-    attributes: ['Loving', 'Healing'],
-    essence: 'Vine',
-    soulcasting: 'Grass',
-    honorbladeGrants:
-      'Abrasion and Progression — the power to alter friction and to accelerate the healing of living things.',
-    quote: '"The deepest wounds are those the eye cannot see."',
-    description:
-      'The patron of the Edgedancers. Associated with healing, growth, and the restorative arts. Known for her compassion during the ages of the Heralds, Vedel has not been seen in modern times on Roshar.',
-    books: ['oathbringer', 'rhythm_of_war'],
-    status: 'fallen',
-    connections: ['lift', 'wyndle'],
-    assetPath: 'aharietiam/vedel.webp',
-    positionIndex: 3,
-    color: '#34d399',
-  },
-  {
-    id: 'pailiah',
-    name: 'Pailiah',
-    title: 'Herald of the Learned',
-    order: 'Truthwatchers',
-    surges: ['Progression', 'Illumination'],
-    attributes: ['Learned', 'Giving'],
-    essence: 'Marble',
-    soulcasting: 'Stone',
-    honorbladeGrants: 'Progression and Illumination — the power to heal and to create illusions of light and sound.',
-    quote: '"To know is to bear a burden. Ignorance is the lighter path, but not the truer one."',
-    description:
-      'The patron of the Truthwatchers. A seeker of knowledge and truth, she hid herself away for millennia in the depths of the Palanaeum, guarding secrets that predate the Oathpact itself.',
-    books: ['words_of_radiance', 'oathbringer'],
-    status: 'fallen',
-    connections: ['jasnah', 'glys'],
-    assetPath: 'aharietiam/pailiah.webp',
-    positionIndex: 4,
-    color: '#2dd4bf',
-  },
-  {
-    id: 'shalash',
-    name: 'Shalash (Ash)',
-    title: 'Herald of Beauty',
-    order: 'Lightweavers',
-    surges: ['Illumination', 'Transformation'],
-    attributes: ['Creative', 'Honest'],
-    essence: 'Lucent',
-    soulcasting: 'Crystal',
-    honorbladeGrants:
-      'Illumination and Transformation — the power to create illusions and to transform one substance into another.',
-    quote: '"Erase me from your memory. Burn my image. I am not worthy of worship."',
-    description:
-      'The patron of the Lightweavers. Daughter of Jezrien, Shalash wandered Roshar destroying artwork and sculptures that depicted her, driven by an intense self-loathing. She believed the Heralds were unworthy of the reverence humanity gave them.',
-    books: ['words_of_radiance', 'oathbringer', 'rhythm_of_war', 'wind_and_truth'],
-    status: 'fallen',
-    connections: ['jezrien', 'taln', 'hoid'],
-    assetPath: 'aharietiam/shalash.webp',
-    positionIndex: 5,
-    color: '#a78bfa',
-  },
-  {
-    id: 'battar',
-    name: 'Battar',
-    title: 'Herald of Wisdom',
-    order: 'Elsecallers',
-    surges: ['Transformation', 'Transportation'],
-    attributes: ['Wise', 'Careful'],
-    essence: 'Talus',
-    soulcasting: 'Clay',
-    honorbladeGrants: 'Transformation and Transportation — the power to alter matter and to move between realms.',
-    quote: '"Wisdom is knowing what questions to ask — not knowing the answers."',
-    description:
-      'The patron of the Elsecallers. Associated with wisdom, counsel, and guidance. Battar served as an advisor to the Heralds and the Radiants of old. Her current status and location are unknown.',
-    books: ['oathbringer', 'rhythm_of_war'],
-    status: 'fallen',
-    connections: ['jasnah', 'ivory'],
-    assetPath: 'aharietiam/battar.webp',
-    positionIndex: 6,
-    color: '#f472b6',
-  },
-  {
-    id: 'kalak',
-    name: 'Kalak',
-    title: 'Herald of the Willshapers',
-    order: 'Willshapers',
-    surges: ['Transportation', 'Cohesion'],
-    attributes: ['Resolute', 'Builder'],
-    essence: 'Tallow',
-    soulcasting: 'Wax',
-    honorbladeGrants:
-      'Transportation and Cohesion — the power to move between realms and to alter the molecular bonds of matter.',
-    quote: '"I have walked through worlds and watched them burn. I am tired."',
-    description:
-      'The patron of the Willshapers. One of the few Heralds seen interacting in modern Roshar, Kalak was known to have met with Jasnah Kholin. He carries the weariness of millennia and seeks escape from the burden of immortality.',
-    books: ['oathbringer', 'rhythm_of_war', 'wind_and_truth'],
-    status: 'fallen',
-    connections: ['jasnah', 'hoid'],
-    assetPath: 'aharietiam/kalak.webp',
-    positionIndex: 7,
-    color: '#fbbf24',
-  },
-  {
-    id: 'talenel',
-    name: 'Talenel (Taln)',
-    title: 'Herald of War',
-    order: 'Stonewards',
-    surges: ['Cohesion', 'Tension'],
-    attributes: ['Dependable', 'Resourceful'],
-    essence: 'Loam',
-    soulcasting: 'Soil',
-    honorbladeGrants:
-      'Cohesion and Tension — the power to alter the strength of molecular bonds and to change the stiffness of objects.',
-    quote: '"I did not break. They could not make me break."',
-    description:
-      'The patron of the Stonewards. Endured over four thousand years of torture on Braize without breaking the Oathpact. When he finally arrived on Roshar at the start of The Way of Kings, he believed he had returned to warn humanity — but the Desolation had already begun. The only Herald to hold true.',
-    books: ['the_way_of_kings', 'words_of_radiance', 'oathbringer', 'rhythm_of_war', 'wind_and_truth'],
-    status: 'standing',
-    connections: ['shalash', 'dalinar', 'ash'],
-    assetPath: 'aharietiam/taln.webp',
-    positionIndex: 8,
-    color: '#f97316',
-  },
-  {
-    id: 'ishar',
-    name: 'Ishar',
-    title: 'Herald of the Bondsmiths',
-    order: 'Bondsmiths',
-    surges: ['Tension', 'Adhesion'],
-    attributes: ['Pious', 'Guiding'],
-    essence: 'Foam',
-    soulcasting: 'Water',
-    honorbladeGrants:
-      'Tension and Adhesion — the power to alter the stiffness of objects and to bind things together at a fundamental level.',
-    quote: '"I was the first. I will be the last. And in between, I have become something terrible."',
-    description:
-      'The first and oldest of the Heralds, founder of the Oathpact and patron of the Bondsmiths. In his madness, Ishar became capable of manipulating Connection itself — stealing investiture and forging unnatural bonds. He is considered the most dangerous of all the Heralds.',
-    books: ['rhythm_of_war', 'wind_and_truth'],
-    status: 'fallen',
-    connections: ['dalinar', 'nightwatcher', 'the_sibling'],
-    assetPath: 'aharietiam/ishar.webp',
-    positionIndex: 9,
-    color: '#eab308',
-  },
-]
+interface GeneratedHero {
+  id: string
+  name: string
+  title: string
+  order: string
+  pronunciation: string | null
+  description: string
+  surges: string[]
+  attributes: string[]
+  essence: string
+  soulcasting: string
+  honorbladeGrants: string
+  quote: string
+  books: string[]
+  status: 'fallen' | 'standing' | 'missing'
+  connections: string[]
+  positionIndex: number
+  color: string
+}
+
+export const HONORBLADES: HonorbladeData[] = (heroesData as GeneratedHero[])
+  .slice()
+  .sort((a, b) => a.positionIndex - b.positionIndex)
+  .map((hero) => ({
+    id: hero.id,
+    name: hero.name,
+    title: hero.title,
+    order: hero.order,
+    surges: [hero.surges[0]!, hero.surges[1]!],
+    attributes: hero.attributes,
+    essence: hero.essence,
+    soulcasting: hero.soulcasting,
+    honorbladeGrants: hero.honorbladeGrants,
+    quote: hero.quote,
+    description: hero.description,
+    books: hero.books,
+    status: hero.status,
+    connections: hero.connections,
+    positionIndex: hero.positionIndex,
+    color: hero.color,
+    ...(hero.pronunciation ? { pronunciation: hero.pronunciation } : {}),
+  }))

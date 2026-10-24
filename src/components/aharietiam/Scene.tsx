@@ -1,6 +1,7 @@
 'use client'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { useSearchParams } from 'react-router-dom'
 import ErrorBoundary from '@/components/common/ErrorBoundary'
 import { HONORBLADES } from '@/data/static/aharietiam'
 import BladeField, { bladePlacement } from './BladeField'
@@ -71,6 +72,7 @@ const SWIPE_DISTANCE = 52
 
 export default memo(function Scene() {
   const { light, reducedMotion, maxDpr } = useSceneQuality()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [unsupported] = useState(() => !canUseWebGL())
   const [contextLost, setContextLost] = useState(false)
   const [sceneReady, setSceneReady] = useState(false)
@@ -92,6 +94,22 @@ export default memo(function Scene() {
     return { x, z }
   }, [ordered, selectedId])
 
+  /*
+   * `?h=` is the shareable address of one Herald. Search and a pasted URL both
+   * arrive here; Back/Forward re-selects the blade the reader left. The param is
+   * written by `selectBlade` and removed by `stepBack` so the URL always matches
+   * the inspection state.
+   */
+  useEffect(() => {
+    const id = searchParams.get('h')
+    if (!id) return
+    const index = ordered.findIndex((blade) => blade.id === id)
+    if (index < 0) return
+    setActiveIndex(index)
+    setSelectedId(id)
+    setHintVisible(false)
+  }, [ordered, searchParams])
+
   const handleContextLost = useCallback(() => setContextLost(true), [])
   const handleSceneReady = useCallback(() => setSceneReady(true), [])
   const handleInteract = useCallback(() => setHintVisible(false), [])
@@ -108,14 +126,30 @@ export default memo(function Scene() {
       setAnnouncement(
         `${blade.name}, ${blade.title}. ${blade.order}. Blade ${index + 1} of ${ordered.length}. Press Escape to step back.`,
       )
+      setSearchParams(
+        (current) => {
+          const next = new URLSearchParams(current)
+          next.set('h', id)
+          return next
+        },
+        { replace: true },
+      )
     },
-    [ordered],
+    [ordered, setSearchParams],
   )
 
   const stepBack = useCallback(() => {
     setSelectedId(null)
     setAnnouncement('You have stepped back. The ten blades remain in the ring.')
-  }, [])
+    setSearchParams(
+      (current) => {
+        const next = new URLSearchParams(current)
+        next.delete('h')
+        return next
+      },
+      { replace: true },
+    )
+  }, [setSearchParams])
 
   const cycleBlades = useCallback(
     (direction: 1 | -1) => {

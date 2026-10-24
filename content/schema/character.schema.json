@@ -30,6 +30,7 @@
       "items": { "enum": ["radiant", "scadrian", "elantrian", "nalthian", "taldaini", "other"] },
       "uniqueItems": true
     },
-    "titles": { "type": "array", "items": { "type": "string", "maxLength": 60 }, "uniqueItems": true }
+    "titles": { "type": "array", "items": { "type": "string", "maxLength": 60 }, "uniqueItems": true },
+    "heroId": { "$ref": "common#/$defs/id", "description": "When a character record is a Records projection of a Herald in content/heroes/." }
   }
 }

@@ -58,7 +58,7 @@ interface IndexedDoc {
  */
 const ROUTES = {
   character: (id: string) => `/records/${id}`,
-  planet: (id: string) => `/shadesmar?realm=${id}`,
+  planet: (id: string) => `/celestial-charts?planet=${id}`,
   book: (id: string) => `/library?book=${id}`,
   series: (id: string) => `/library?series=${id}`,
   magic: (id: string) => `/magic?system=${id}`,

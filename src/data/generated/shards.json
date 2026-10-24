@@ -1,0 +1,100 @@
+[
+  {
+    "id": "adonalsium",
+    "name": "Adonalsium",
+    "color": "#b08ce8",
+    "summary": "Adonalsium is one of the Shards created when Adonalsium was Shattered. Its nature and its Intent are recorded in the Ars Arcanum.",
+    "reviewed": false
+  },
+  {
+    "id": "ambition",
+    "name": "Ambition",
+    "color": "#7a8798",
+    "summary": "Ambition is one of the Shards created when Adonalsium was Shattered. Its nature and its Intent are recorded in the Ars Arcanum.",
+    "reviewed": false
+  },
+  {
+    "id": "autonomy",
+    "name": "Autonomy",
+    "color": "#c74bc8",
+    "summary": "Autonomy is one of the Shards created when Adonalsium was Shattered. Its nature and its Intent are recorded in the Ars Arcanum.",
+    "reviewed": false
+  },
+  {
+    "id": "cultivation",
+    "name": "Cultivation",
+    "color": "#59c08a",
+    "summary": "Cultivation is one of the Shards created when Adonalsium was Shattered. Its nature and its Intent are recorded in the Ars Arcanum.",
+    "reviewed": false
+  },
+  {
+    "id": "devotion",
+    "name": "Devotion",
+    "color": "#7a8798",
+    "summary": "Devotion is one of the Shards created when Adonalsium was Shattered. Its nature and its Intent are recorded in the Ars Arcanum.",
+    "reviewed": false
+  },
+  {
+    "id": "dominion",
+    "name": "Dominion",
+    "color": "#7a8798",
+    "summary": "Dominion is one of the Shards created when Adonalsium was Shattered. Its nature and its Intent are recorded in the Ars Arcanum.",
+    "reviewed": false
+  },
+  {
+    "id": "endowment",
+    "name": "Endowment",
+    "color": "#7a8798",
+    "summary": "Endowment is one of the Shards created when Adonalsium was Shattered. Its nature and its Intent are recorded in the Ars Arcanum.",
+    "reviewed": false
+  },
+  {
+    "id": "harmony",
+    "name": "Harmony",
+    "color": "#d9a441",
+    "summary": "Harmony is one of the Shards created when Adonalsium was Shattered. Its nature and its Intent are recorded in the Ars Arcanum.",
+    "reviewed": false
+  },
+  {
+    "id": "honor",
+    "name": "Honor",
+    "color": "#5aa9e6",
+    "summary": "Honor is one of the Shards created when Adonalsium was Shattered. Its nature and its Intent are recorded in the Ars Arcanum.",
+    "reviewed": false
+  },
+  {
+    "id": "mercy",
+    "name": "Mercy",
+    "color": "#7a8798",
+    "summary": "Mercy is one of the Shards created when Adonalsium was Shattered. Its nature and its Intent are recorded in the Ars Arcanum.",
+    "reviewed": false
+  },
+  {
+    "id": "odium",
+    "name": "Odium",
+    "color": "#d9534f",
+    "summary": "Odium is one of the Shards created when Adonalsium was Shattered. Its nature and its Intent are recorded in the Ars Arcanum.",
+    "reviewed": false
+  },
+  {
+    "id": "preservation",
+    "name": "Preservation",
+    "color": "#3d7dd6",
+    "summary": "Preservation is one of the Shards created when Adonalsium was Shattered. Its nature and its Intent are recorded in the Ars Arcanum.",
+    "reviewed": false
+  },
+  {
+    "id": "ruin",
+    "name": "Ruin",
+    "color": "#c2703a",
+    "summary": "Ruin is one of the Shards created when Adonalsium was Shattered. Its nature and its Intent are recorded in the Ars Arcanum.",
+    "reviewed": false
+  },
+  {
+    "id": "virtuosity",
+    "name": "Virtuosity",
+    "color": "#7a8798",
+    "summary": "Virtuosity is one of the Shards created when Adonalsium was Shattered. Its nature and its Intent are recorded in the Ars Arcanum.",
+    "reviewed": false
+  }
+]
