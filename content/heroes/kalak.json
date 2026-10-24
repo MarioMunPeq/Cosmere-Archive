@@ -24,10 +24,7 @@
     "wind-and-truth"
   ],
   "status": "fallen",
-  "connections": [
-    "jasnah",
-    "hoid"
-  ],
+  "connections": [],
   "positionIndex": 7,
   "color": "#fbbf24"
 }

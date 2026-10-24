@@ -23,9 +23,7 @@
     "rhythm-of-war"
   ],
   "status": "fallen",
-  "connections": [
-    "lift"
-  ],
+  "connections": [],
   "positionIndex": 3,
   "color": "#34d399"
 }

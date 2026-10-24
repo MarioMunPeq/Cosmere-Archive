@@ -23,9 +23,7 @@
     "rhythm-of-war"
   ],
   "status": "fallen",
-  "connections": [
-    "shallan"
-  ],
+  "connections": [],
   "positionIndex": 2,
   "color": "#fb923c"
 }

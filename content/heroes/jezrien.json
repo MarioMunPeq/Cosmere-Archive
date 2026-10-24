@@ -26,10 +26,7 @@
   ],
   "status": "fallen",
   "connections": [
-    "shalash",
-    "szeth",
-    "gavilar",
-    "moash"
+    "shalash"
   ],
   "positionIndex": 0,
   "color": "#60a5fa"

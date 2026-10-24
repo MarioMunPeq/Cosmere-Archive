@@ -27,8 +27,7 @@
   ],
   "status": "standing",
   "connections": [
-    "shalash",
-    "dalinar"
+    "shalash"
   ],
   "positionIndex": 8,
   "color": "#f97316"

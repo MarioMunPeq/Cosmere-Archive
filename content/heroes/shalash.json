@@ -26,9 +26,7 @@
   ],
   "status": "fallen",
   "connections": [
-    "jezrien",
-    "taln",
-    "hoid"
+    "jezrien"
   ],
   "positionIndex": 5,
   "color": "#a78bfa"

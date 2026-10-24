@@ -25,10 +25,7 @@
     "wind-and-truth"
   ],
   "status": "fallen",
-  "connections": [
-    "szeth",
-    "nightblood"
-  ],
+  "connections": [],
   "positionIndex": 1,
   "color": "#f87171"
 }
