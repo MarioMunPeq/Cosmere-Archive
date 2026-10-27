@@ -26,10 +26,9 @@ const ROUTES: { hash: string; name: string; heading: RegExp }[] = [
   { hash: '/taravangian', name: 'diagram', heading: /diagram|taravangian/i },
   { hash: '/aharietiam', name: 'aharietiam', heading: /aharietiam|honorblade/i },
   { hash: '/magic', name: 'ars arcanum', heading: /contents/i },
-  { hash: '/chronology', name: 'chronology', heading: /chronology|history/i },
+  { hash: '/chronology', name: 'chronology', heading: /chronicon|chronology|history/i },
   { hash: '/mind-map', name: 'mind map', heading: /mind map|knowledge/i },
   { hash: '/about', name: 'about', heading: /about/i },
-  { hash: '/books', name: 'books', heading: /books|volumes/i },
   { hash: '/celestial-charts', name: 'celestial charts', heading: /celestial|chart|atlas/i },
   { hash: '/historical', name: 'historical index', heading: /historical archive/i },
 ]
@@ -160,6 +159,25 @@ test('an unknown route shows the archive 404', async ({ page }) => {
   await page.goto('/#/no-such-page')
   await expect(page.getByRole('heading').first()).toBeVisible({ timeout: 10000 })
   await expect(page.getByText(/not found|record lost/i).first()).toBeVisible()
+})
+
+/**
+ * `/books` was retired when the Library absorbed the volume index, but the
+ * address had been published. Both forms resolve into the Library rather than
+ * 404-ing, and the id-carrying form opens the volume itself.
+ */
+test.describe('retired volume route', () => {
+  test('/books lands on the library shelf', async ({ page }) => {
+    await page.goto('/#/books')
+    await expect(page).toHaveURL(/#\/library$/)
+    await expect(page.locator('[data-library-shelves]')).toBeVisible()
+  })
+
+  test('/books/:id opens that volume in the library', async ({ page }) => {
+    await page.goto('/#/books/the_way_of_kings')
+    await expect(page).toHaveURL(/#\/library\?book=the_way_of_kings$/)
+    await expect(page.getByRole('dialog', { name: /reading the way of kings/i })).toBeVisible()
+  })
 })
 
 test('the shell is present on every route', async ({ page }) => {

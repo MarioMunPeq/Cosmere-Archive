@@ -1,10 +1,10 @@
 /**
  * Skeleton — a loading placeholder that reserves the real layout.
  *
- * The three page skeletons that already existed (CelestialChartsSkeleton,
- * BooksPageSkeleton, CharactersPageSkeleton) were hand-drawn rectangles sized
- * for one breakpoint; on a narrow screen they were visibly the wrong shape,
- * which is the main way a skeleton gives away that it is fake.
+ * The page skeletons that already existed (CelestialChartsSkeleton,
+ * CharactersPageSkeleton) were hand-drawn rectangles sized for one breakpoint;
+ * on a narrow screen they were visibly the wrong shape, which is the main way a
+ * skeleton gives away that it is fake.
  *
  * `Skeleton` here is layout-aware: the size props are fractions, so the same
  * definition holds at 375px and at 1440px.

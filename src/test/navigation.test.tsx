@@ -40,7 +40,6 @@ const ROUTED = [
   '/about',
   '/magic',
   '/aharietiam',
-  '/books',
   '/characters',
   '/taravangian',
   '/stats',

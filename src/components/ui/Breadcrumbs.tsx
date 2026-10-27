@@ -1,5 +1,4 @@
 import { useLocation, Link } from 'react-router-dom'
-import { getBookById } from '@/data/static'
 
 const SEGMENT_NAMES: Record<string, string> = {
   '': 'Map',
@@ -8,7 +7,7 @@ const SEGMENT_NAMES: Record<string, string> = {
   characters: 'Characters',
   magic: 'Ars Arcanum',
   aharietiam: 'Aharietiam',
-  books: 'Books',
+  library: 'Library',
   stats: 'Taravangian Diagram',
   chronology: 'Chronology',
   'celestial-charts': 'Celestial Charts',
@@ -29,14 +28,6 @@ function buildCrumbs(segments: string[]): Crumb[] {
     if (i === 0) {
       crumbs.push({ label: SEGMENT_NAMES[seg] ?? seg, to: accumulated })
       continue
-    }
-
-    if (i === segments.length - 1 && segments.length === 2 && segments[0] === 'books') {
-      const book = getBookById(seg)
-      if (book) {
-        crumbs.push({ label: book.title, to: accumulated })
-        continue
-      }
     }
 
     crumbs.push({ label: SEGMENT_NAMES[seg] ?? seg.replace(/-/g, ' '), to: accumulated })

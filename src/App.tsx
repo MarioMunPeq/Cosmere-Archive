@@ -23,8 +23,6 @@ const KhrissAtlas = lazy(() => import('@/pages/KhrissAtlas'))
 const About = lazy(() => import('@/pages/About'))
 const ArcanumRedirect = lazy(() => import('@/pages/ArcanumRedirect'))
 const AharietiamPage = lazy(() => import('@/pages/AharietiamPage'))
-const BookPage = lazy(() => import('@/pages/BookPage'))
-const StandaloneBooksPage = lazy(() => import('@/pages/StandaloneBooksPage'))
 const BiographicalArchivesPage = lazy(() => import('@/pages/BiographicalArchivesPage'))
 const StandaloneChronologyPage = lazy(() => import('@/pages/StandaloneChronologyPage'))
 const LibraryPage = lazy(() => import('@/pages/LibraryPage'))
@@ -49,14 +47,24 @@ function CharacterRecordRedirect() {
   return <Navigate to={`/characters?character=${encodeURIComponent(id ?? '')}`} replace />
 }
 
+/**
+ * The old volume address. `/books` was retired once the Library absorbed it, so
+ * a published link still lands on the volume itself: the Library opens whatever
+ * `?book=` names.
+ */
+function BookVolumeRedirect() {
+  const { id } = useParams()
+  return <Navigate to={`/library?book=${encodeURIComponent(id ?? '')}`} replace />
+}
+
 const ROUTES = [
   { path: '/', element: page(<LandingPage />) },
   { path: '/celestial-charts', element: page(<KhrissAtlas />) },
   { path: '/about', element: page(<About />) },
   { path: '/magic', element: page(<ArcanumRedirect />) },
   { path: '/aharietiam', element: page(<AharietiamPage />) },
-  { path: '/books/:id', element: page(<BookPage />) },
-  { path: '/books', element: page(<StandaloneBooksPage />) },
+  { path: '/books/:id', element: page(<BookVolumeRedirect />) },
+  { path: '/books', element: <Navigate to={'/library'} replace /> },
   { path: '/characters', element: page(<BiographicalArchivesPage />) },
   { path: '/records/:id', element: page(<CharacterRecordRedirect />) },
   { path: '/taravangian', element: page(<TaravangianPage />) },

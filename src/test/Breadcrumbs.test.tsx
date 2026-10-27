@@ -18,32 +18,31 @@ describe('Breadcrumbs', () => {
   })
 
   it('renders nothing for a single-segment path', () => {
-    const { container } = renderAt('/books')
+    const { container } = renderAt('/library')
     expect(container).toBeEmptyDOMElement()
   })
 
   it('shows breadcrumb trail for a nested path', () => {
-    renderAt('/books/the_final_empire')
-    expect(screen.getByText('Books')).toBeInTheDocument()
-    expect(screen.getByText('The Final Empire')).toBeInTheDocument()
+    renderAt('/records/shards/honor')
+    expect(screen.getByText('records')).toBeInTheDocument()
+    expect(screen.getByText('honor')).toBeInTheDocument()
     expect(screen.getByLabelText('Breadcrumb')).toBeInTheDocument()
   })
 
   it('links the parent segment to the correct path', () => {
-    renderAt('/books/the_final_empire')
-    const link = screen.getByText('Books')
-    expect(link.closest('a')).toHaveAttribute('href', '/books')
+    renderAt('/records/shards/honor')
+    const link = screen.getByText('records')
+    expect(link.closest('a')).toHaveAttribute('href', '/records')
   })
 
   it('marks the current page with aria-current', () => {
-    renderAt('/books/the_final_empire')
-    const current = screen.getByText('The Final Empire')
+    renderAt('/records/shards/honor')
+    const current = screen.getByText('honor')
     expect(current).toHaveAttribute('aria-current', 'page')
   })
 
-  it('shows breadcrumbs for a non-book nested path', () => {
-    renderAt('/magic')
-    const { container } = renderAt('/magic')
-    expect(container).toBeEmptyDOMElement()
+  it('names the library in the trail when nested', () => {
+    renderAt('/library/archive')
+    expect(screen.getByText('Library')).toBeInTheDocument()
   })
 })

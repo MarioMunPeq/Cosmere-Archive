@@ -13,14 +13,14 @@ function renderLink(to: string, label: string) {
 
 describe('TransitionLink', () => {
   it('renders an anchor with the given href', () => {
-    renderLink('/books', 'Books')
-    const link = screen.getByText('Books')
-    expect(link.closest('a')).toHaveAttribute('href', '/books')
+    renderLink('/library', 'Library')
+    const link = screen.getByText('Library')
+    expect(link.closest('a')).toHaveAttribute('href', '/library')
   })
 
   it('prevents default on click and navigates', () => {
-    renderLink('/books', 'Books')
-    const link = screen.getByText('Books')
+    renderLink('/library', 'Library')
+    const link = screen.getByText('Library')
     const clickEvent = new MouseEvent('click', { bubbles: true, cancelable: true })
     const prevented = !link.dispatchEvent(clickEvent)
     expect(prevented).toBe(true)

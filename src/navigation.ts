@@ -226,19 +226,11 @@ export const HISTORICAL_DESTINATIONS: Destination[] = [
  * Routes that are real and live but are not one of the five core pieces and do
  * not belong under Historical.
  *
- * `/books` is the standalone volume index; it is absorbed into the Library in
- * M3 and disappears then. `/compare` is the side-by-side character tool and is
- * reached from Records. They are listed here rather than dropped so that no
- * route becomes unreachable when the drawer is retired.
+ * `/compare` is the side-by-side character tool and is reached from Records.
+ * They are listed here rather than dropped so that no route becomes unreachable
+ * when the drawer is retired.
  */
 export const SECONDARY_DESTINATIONS: Destination[] = [
-  {
-    id: 'books',
-    label: 'Volumes',
-    description: 'Every book, novella and novella series in order.',
-    to: '/books',
-    icon: 'book',
-  },
   {
     id: 'compare',
     label: 'Compare',

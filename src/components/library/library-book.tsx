@@ -382,7 +382,7 @@ function ColophonLeaf({ book }: { book: Book }) {
   )
 }
 
-function ConnectionsLeaf({ book, related }: { book: Book; related: Book[] }) {
+function ConnectionsLeaf({ related }: { related: Book[] }) {
   return (
     <article className="library-connections-leaf">
       <h2 className="library-page-title">On This Shelf</h2>
@@ -401,14 +401,6 @@ function ConnectionsLeaf({ book, related }: { book: Book; related: Book[] }) {
           </li>
         ))}
       </ol>
-
-      <p className="library-connections__note">
-        Full catalogue entry:{' '}
-        <Link to={`/books/${book.id}`} className="record-link">
-          {book.title}
-        </Link>
-        .
-      </p>
     </article>
   )
 }
@@ -506,7 +498,7 @@ export function buildLibraryLeaves(book: Book, options: LibraryLeafOptions = {})
       title: 'On This Shelf',
       header: series,
       folio: String(synopsis.length + characterPages.length + worldPages.length + systemPages.length + 2),
-      node: <ConnectionsLeaf book={book} related={related} />,
+      node: <ConnectionsLeaf related={related} />,
     })
   }
 

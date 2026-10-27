@@ -532,13 +532,13 @@ export function PlanetLeftPage({ planetId, onNavigate, onNavigatePage }: PlanetL
                       tabIndex={0}
                       onClick={(e: MouseEvent) => {
                         e.stopPropagation()
-                        onNavigatePage(`/books/${bookId}`)
+                        onNavigatePage(`/library?book=${bookId}`)
                       }}
                       onKeyDown={(e: KeyboardEvent) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault()
                           e.stopPropagation()
-                          onNavigatePage(`/books/${bookId}`)
+                          onNavigatePage(`/library?book=${bookId}`)
                         }
                       }}
                       className="cursor-pointer transition-opacity hover:opacity-60"

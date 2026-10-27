@@ -410,8 +410,8 @@ test.describe('the record card', () => {
     // with underscores, so these were links to nothing.
     await links.first().click()
     await page.waitForTimeout(500)
-    expect(page.url()).toContain('/books/')
-    await expect(page.locator('h1')).toBeVisible()
+    expect(page.url()).toMatch(/\/library\?book=/)
+    await expect(page.getByRole('dialog', { name: /^Reading /i })).toBeVisible()
   })
 })
 

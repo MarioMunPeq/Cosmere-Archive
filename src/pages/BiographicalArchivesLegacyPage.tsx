@@ -218,7 +218,7 @@ export default function BiographicalArchivesLegacyPage() {
         locked={spoiler.enabled && !spoiler.isCharacterVisible(selected)}
         onUnlock={() => spoiler.setPanelOpen(true)}
         onOpenCharacter={openCharacter}
-        onOpenBook={(id) => navigate(`/books/${id}`)}
+        onOpenBook={(id) => navigate(`/library?book=${id}`)}
         onOpenPlanet={(id) => navigate(`/celestial-charts?focus=planet&id=${id}`)}
       />
     </div>

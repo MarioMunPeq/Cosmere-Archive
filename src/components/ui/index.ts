@@ -12,7 +12,7 @@ export { default as LoadingSpinner } from './LoadingSpinner'
 export { default as Overlay } from './Overlay'
 export { default as PageLayout } from './PageLayout'
 export { default as RouteFallback } from './RouteFallback'
-export { CelestialChartsSkeleton, BooksPageSkeleton, CharactersPageSkeleton } from './Skeleton'
+export { CelestialChartsSkeleton, CharactersPageSkeleton } from './Skeleton'
 export { default as ThemeToggle } from './ThemeToggle'
 export { default as TransitionLink } from './TransitionLink'
 

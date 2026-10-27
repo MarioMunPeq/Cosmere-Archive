@@ -33,7 +33,7 @@ describe('RecordSpread', () => {
     expect(ledger).not.toBeNull()
     expect(within(ledger!).getByRole('link', { name: 'The Way of Kings' })).toHaveAttribute(
       'href',
-      '/books/the_way_of_kings',
+      '/library?book=the_way_of_kings',
     )
     expect(screen.getByRole('link', { name: 'Roshar' })).toHaveAttribute(
       'href',

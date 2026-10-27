@@ -370,7 +370,7 @@ export default function InfoMonolith({ blade, light, reducedMotion, onClose }: P
               return (
                 <span key={bookId} style={{ display: 'inline-block', transform: `rotate(${tilt}deg)` }}>
                   <Link
-                    to={`/books/${bookId}`}
+                    to={`/library?book=${bookId}`}
                     aria-label={`Open ${title} in the library`}
                     className={`inline-flex cursor-pointer items-center gap-2 no-underline transition-[transform,filter] duration-200 hover:-translate-y-0.5 hover:brightness-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none ${
                       light ? 'focus-visible:outline-[#5a3f28]' : 'focus-visible:outline-[#e6bd7e]'

@@ -153,7 +153,7 @@ function IdentityLedger({ character }: { character: Character }) {
         <dt>First appears</dt>
         <dd>
           {firstBook ? (
-            <Link to={`/books/${firstBook.id}`} className="record-link">
+            <Link to={`/library?book=${firstBook.id}`} className="record-link">
               {firstBook.title}
             </Link>
           ) : (
@@ -300,7 +300,7 @@ function RecordLockedPanel({ character, onUnlock }: RecordSpreadProps) {
           {books.map((book) =>
             book ? (
               <li key={book.id}>
-                <Link to={`/books/${book.id}`} className="record-link text-[13px]">
+                <Link to={`/library?book=${book.id}`} className="record-link text-[13px]">
                   {book.title}
                 </Link>
               </li>
@@ -365,7 +365,7 @@ export function RecordRightPage({ character, locked = false, onUnlock }: RecordS
               {books.map((book) =>
                 book ? (
                   <li key={book.id}>
-                    <Link to={`/books/${book.id}`} className="record-link text-[13px]">
+                    <Link to={`/library?book=${book.id}`} className="record-link text-[13px]">
                       {book.title}
                     </Link>
                   </li>

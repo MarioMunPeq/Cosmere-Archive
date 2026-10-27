@@ -47,7 +47,7 @@ describe('Aharietiam record', () => {
     expect(screen.queryByText(/"I have given you the sky/)).not.toBeInTheDocument()
 
     const book = screen.getByRole('link', { name: /open the way of kings in the library/i })
-    expect(book).toHaveAttribute('href', '/books/the_way_of_kings')
+    expect(book).toHaveAttribute('href', '/library?book=the_way_of_kings')
     expect(screen.getByRole('link', { name: /open words of radiance in the library/i })).toBeInTheDocument()
   })
 

@@ -15,6 +15,6 @@ describe('useViewTransitionNavigate', () => {
 
   it('navigates without throwing', () => {
     const { result } = renderHook(() => useViewTransitionNavigate(), { wrapper })
-    expect(() => result.current('/books')).not.toThrow()
+    expect(() => result.current('/library')).not.toThrow()
   })
 })
