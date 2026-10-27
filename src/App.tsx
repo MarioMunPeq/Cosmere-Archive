@@ -28,7 +28,6 @@ const StandaloneChronologyPage = lazy(() => import('@/pages/StandaloneChronology
 const LibraryPage = lazy(() => import('@/pages/LibraryPage'))
 const TaravangianPage = lazy(() => import('@/pages/TaravangianPage'))
 const ComparePage = lazy(() => import('@/pages/ComparePage'))
-const MindMapPage = lazy(() => import('@/pages/MindMapPage'))
 const ShadesmarPage = lazy(() => import('@/pages/ShadesmarPage'))
 const NotFound = lazy(() => import('@/pages/NotFound'))
 const HistoricalPage = lazy(() => import('@/pages/HistoricalPage'))
@@ -76,7 +75,7 @@ const ROUTES = [
   { path: '/library', element: page(<LibraryPage />) },
   { path: '/shadesmar', element: page(<ShadesmarPage />) },
   { path: '/compare', element: page(<ComparePage />) },
-  { path: '/mind-map', element: page(<MindMapPage />) },
+  { path: '/mind-map', element: <Navigate to="/compare" replace /> },
   // D-HIST: one index route for the archived sections, not a route per section.
   { path: '/records/shards/:shardId', element: page(<ShardPage />) },
   { path: '/historical', element: page(<HistoricalPage />) },

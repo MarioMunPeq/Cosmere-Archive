@@ -15,7 +15,6 @@ import type { Destination } from '@/navigation'
 
 const STATUS: Record<string, { note: string; tone: 'maintained' | 'legacy' }> = {
   chronology: { note: 'Legacy. Rebuilt in M6.', tone: 'legacy' },
-  'mind-map': { note: 'Legacy. Rebuilt in M6.', tone: 'legacy' },
   about: { note: 'Maintained.', tone: 'maintained' },
 }
 
