@@ -51,7 +51,11 @@ const WORLD_POS: Record<string, { x: number; y: number }> = {
   yolen: { x: 400, y: 380 },
 }
 
-function rectsOverlap(a: { x: number; y: number; w: number; h: number }, b: { x: number; y: number; w: number; h: number }, pad = 12) {
+function rectsOverlap(
+  a: { x: number; y: number; w: number; h: number },
+  b: { x: number; y: number; w: number; h: number },
+  pad = 12,
+) {
   const ax1 = a.x - a.w / 2 - pad
   const ay1 = a.y - a.h / 2 - pad
   const ax2 = a.x + a.w / 2 + pad
@@ -104,9 +108,17 @@ function CompassRose({ cx, cy }: { cx: number; cy: number }) {
         const y1 = cy + Math.sin(ang) * r1
         const x2 = cx + Math.cos(ang) * r2
         const y2 = cy + Math.sin(ang) * r2
-        return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#241811" strokeWidth={long ? 1.2 : 0.9} opacity="0.6" />
+        return (
+          <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#241811" strokeWidth={long ? 1.2 : 0.9} opacity="0.6" />
+        )
       })}
-      <path d={`M ${cx} ${cy - 44} L ${cx - 4} ${cy - 34} L ${cx} ${cy - 38} L ${cx + 4} ${cy - 34} Z`} fill="none" stroke="#241811" strokeWidth="1" opacity="0.7" />
+      <path
+        d={`M ${cx} ${cy - 44} L ${cx - 4} ${cy - 34} L ${cx} ${cy - 38} L ${cx + 4} ${cy - 34} Z`}
+        fill="none"
+        stroke="#241811"
+        strokeWidth="1"
+        opacity="0.7"
+      />
     </g>
   )
 }
@@ -115,7 +127,18 @@ export default function NazhChart() {
   const svgRef = useRef<SVGSVGElement>(null)
   const gRef = useRef<SVGGElement>(null)
   const navRef = useRef(useNavigate())
-  const camRef = useRef<Cam>({ x: CHART_W / 2, y: CHART_H / 2, z: 1.0, tx: CHART_W / 2, ty: CHART_H / 2, tz: 1.0, dragging: false, lx: 0, ly: 0, moved: 0 })
+  const camRef = useRef<Cam>({
+    x: CHART_W / 2,
+    y: CHART_H / 2,
+    z: 1.0,
+    tx: CHART_W / 2,
+    ty: CHART_H / 2,
+    tz: 1.0,
+    dragging: false,
+    lx: 0,
+    ly: 0,
+    moved: 0,
+  })
   const itemsRef = useRef<ChartPlanet[]>([])
   const [items, setItems] = useState<ChartPlanet[]>([])
   const [hover, setHover] = useState<string | null>(null)
@@ -124,7 +147,8 @@ export default function NazhChart() {
   const [drawer, setDrawer] = useState(false)
   const [activeRoute, setActiveRoute] = useState<string | null>(null)
   const [announce, setAnnounce] = useState('')
-  const reduced = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const reduced =
+    typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
   useEffect(() => {
     const list: ChartPlanet[] = PLANETS.map((p: Planet) => {
@@ -193,34 +217,37 @@ export default function NazhChart() {
     c.moved = 0
   }, [])
 
-  const onMove = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
-    const c = camRef.current
-    if (c.dragging) {
-      const dx = e.clientX - c.lx
-      const dy = e.clientY - c.ly
-      c.moved += Math.abs(dx) + Math.abs(dy)
-      c.tx += dx / c.z
-      c.ty += dy / c.z
-      c.lx = e.clientX
-      c.ly = e.clientY
-      return
-    }
-    const w = screenToWorld(e.clientX, e.clientY)
-    let best: ChartPlanet | null = null
-    let bestd = 1e9
-    for (let i = 0; i < itemsRef.current.length; i++) {
-      const it = itemsRef.current[i]
-      if (!it) continue
-      const dx = it.x - w.x
-      const dy = it.y - w.y
-      const d = dx * dx + dy * dy
-      if (d < (it.w * 0.55) ** 2 + (it.h * 0.55) ** 2 && d < bestd) {
-        bestd = d
-        best = it
+  const onMove = useCallback(
+    (e: React.PointerEvent<SVGSVGElement>) => {
+      const c = camRef.current
+      if (c.dragging) {
+        const dx = e.clientX - c.lx
+        const dy = e.clientY - c.ly
+        c.moved += Math.abs(dx) + Math.abs(dy)
+        c.tx += dx / c.z
+        c.ty += dy / c.z
+        c.lx = e.clientX
+        c.ly = e.clientY
+        return
       }
-    }
-    setHover(best ? best.planet.id : null)
-  }, [screenToWorld])
+      const w = screenToWorld(e.clientX, e.clientY)
+      let best: ChartPlanet | null = null
+      let bestd = 1e9
+      for (let i = 0; i < itemsRef.current.length; i++) {
+        const it = itemsRef.current[i]
+        if (!it) continue
+        const dx = it.x - w.x
+        const dy = it.y - w.y
+        const d = dx * dx + dy * dy
+        if (d < (it.w * 0.55) ** 2 + (it.h * 0.55) ** 2 && d < bestd) {
+          bestd = d
+          best = it
+        }
+      }
+      setHover(best ? best.planet.id : null)
+    },
+    [screenToWorld],
+  )
 
   const selectWorld = useCallback((id: string) => {
     const it = itemsRef.current.find((x) => x.planet.id === id)
@@ -235,27 +262,30 @@ export default function NazhChart() {
     setAnnounce(`Selected ${it.planet.name}`)
   }, [])
 
-  const onUp = useCallback((e: React.PointerEvent<SVGSVGElement>) => {
-    const c = camRef.current
-    if (!c.dragging) return
-    c.dragging = false
-    if (c.moved > 18) return
-    const w = screenToWorld(e.clientX, e.clientY)
-    let best: ChartPlanet | null = null
-    let bestd = 1e9
-    for (let i = 0; i < itemsRef.current.length; i++) {
-      const it = itemsRef.current[i]
-      if (!it) continue
-      const dx = it.x - w.x
-      const dy = it.y - w.y
-      const d = dx * dx + dy * dy
-      if (d < (it.w * 0.6) ** 2 + (it.h * 0.6) ** 2 && d < bestd) {
-        bestd = d
-        best = it
+  const onUp = useCallback(
+    (e: React.PointerEvent<SVGSVGElement>) => {
+      const c = camRef.current
+      if (!c.dragging) return
+      c.dragging = false
+      if (c.moved > 18) return
+      const w = screenToWorld(e.clientX, e.clientY)
+      let best: ChartPlanet | null = null
+      let bestd = 1e9
+      for (let i = 0; i < itemsRef.current.length; i++) {
+        const it = itemsRef.current[i]
+        if (!it) continue
+        const dx = it.x - w.x
+        const dy = it.y - w.y
+        const d = dx * dx + dy * dy
+        if (d < (it.w * 0.6) ** 2 + (it.h * 0.6) ** 2 && d < bestd) {
+          bestd = d
+          best = it
+        }
       }
-    }
-    if (best) selectWorld(best.planet.id)
-  }, [screenToWorld, selectWorld])
+      if (best) selectWorld(best.planet.id)
+    },
+    [screenToWorld, selectWorld],
+  )
 
   const onWheel = useCallback((e: React.WheelEvent<SVGSVGElement>) => {
     e.preventDefault()
@@ -264,61 +294,64 @@ export default function NazhChart() {
     c.tz = Math.max(0.7, Math.min(2.4, c.tz * f))
   }, [])
 
-  const onKeyDown = useCallback((e: React.KeyboardEvent<SVGSVGElement>) => {
-    if (e.key === 'Escape') {
-      if (drawer) {
-        setDrawer(false)
-        return
-      }
-      if (selected) {
-        setSelected(null)
+  const onKeyDown = useCallback(
+    (e: React.KeyboardEvent<SVGSVGElement>) => {
+      if (e.key === 'Escape') {
+        if (drawer) {
+          setDrawer(false)
+          return
+        }
+        if (selected) {
+          setSelected(null)
+          fitAll()
+          return
+        }
         fitAll()
         return
       }
-      fitAll()
-      return
-    }
-    if (e.key === 'Enter') {
-      if (hover) {
-        selectWorld(hover)
-      } else if (selected) {
-        setDrawer(true)
+      if (e.key === 'Enter') {
+        if (hover) {
+          selectWorld(hover)
+        } else if (selected) {
+          setDrawer(true)
+        }
+        return
       }
-      return
-    }
-    if (e.key === '=' || e.key === '+') {
-      camRef.current.tz = Math.min(2.5, camRef.current.tz * 1.1)
-      return
-    }
-    if (e.key === '-') {
-      camRef.current.tz = Math.max(0.7, camRef.current.tz / 1.1)
-      return
-    }
-    if (e.key === '0') {
-      fitAll()
-      return
-    }
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-      const list = itemsRef.current.filter(Boolean)
-      if (list.length === 0) return
-      const idx = list.findIndex((it) => it.planet.id === (hover || selected))
-      const next = list[(idx + 1 + list.length) % list.length]
-      if (!next) return
-      setHover(next.planet.id)
-      setAnnounce(next.planet.name)
-      return
-    }
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-      const list = itemsRef.current.filter(Boolean)
-      if (list.length === 0) return
-      const idx = list.findIndex((it) => it.planet.id === (hover || selected))
-      const prev = list[(idx - 1 + list.length) % list.length]
-      if (!prev) return
-      setHover(prev.planet.id)
-      setAnnounce(prev.planet.name)
-      return
-    }
-  }, [hover, selected, drawer, selectWorld, fitAll])
+      if (e.key === '=' || e.key === '+') {
+        camRef.current.tz = Math.min(2.5, camRef.current.tz * 1.1)
+        return
+      }
+      if (e.key === '-') {
+        camRef.current.tz = Math.max(0.7, camRef.current.tz / 1.1)
+        return
+      }
+      if (e.key === '0') {
+        fitAll()
+        return
+      }
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        const list = itemsRef.current.filter(Boolean)
+        if (list.length === 0) return
+        const idx = list.findIndex((it) => it.planet.id === (hover || selected))
+        const next = list[(idx + 1 + list.length) % list.length]
+        if (!next) return
+        setHover(next.planet.id)
+        setAnnounce(next.planet.name)
+        return
+      }
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        const list = itemsRef.current.filter(Boolean)
+        if (list.length === 0) return
+        const idx = list.findIndex((it) => it.planet.id === (hover || selected))
+        const prev = list[(idx - 1 + list.length) % list.length]
+        if (!prev) return
+        setHover(prev.planet.id)
+        setAnnounce(prev.planet.name)
+        return
+      }
+    },
+    [hover, selected, drawer, selectWorld, fitAll],
+  )
 
   const shardMap = new Map<string, string[]>()
   items.forEach((it) => {
@@ -379,30 +412,90 @@ export default function NazhChart() {
           <g ref={gRef}>
             <rect x={0} y={0} width={CHART_W} height={CHART_H} fill="#efe5d1" />
             <rect x={0} y={0} width={CHART_W} height={CHART_H} filter="url(#fox)" opacity="0.4" />
-            <rect x={SHEET_PAD} y={SHEET_PAD} width={CHART_W - SHEET_PAD * 2} height={CHART_H - SHEET_PAD * 2} fill="none" stroke="#8c7a5c" strokeWidth="2" opacity="0.6" />
+            <rect
+              x={SHEET_PAD}
+              y={SHEET_PAD}
+              width={CHART_W - SHEET_PAD * 2}
+              height={CHART_H - SHEET_PAD * 2}
+              fill="none"
+              stroke="#8c7a5c"
+              strokeWidth="2"
+              opacity="0.6"
+            />
             <g stroke="#241811" opacity="0.12">
               {[...Array(24)].map((_, i) => (
-                <line key={i} x1={SHEET_PAD + 40} y1={SHEET_PAD + 20 + i * 60} x2={CHART_W - SHEET_PAD - 40} y2={SHEET_PAD + 20 + i * 60} strokeWidth="0.8" />
+                <line
+                  key={i}
+                  x1={SHEET_PAD + 40}
+                  y1={SHEET_PAD + 20 + i * 60}
+                  x2={CHART_W - SHEET_PAD - 40}
+                  y2={SHEET_PAD + 20 + i * 60}
+                  strokeWidth="0.8"
+                />
               ))}
               {[...Array(36)].map((_, i) => (
-                <line key={'v' + i} x1={SHEET_PAD + 40 + i * 60} y1={SHEET_PAD + 20} x2={SHEET_PAD + 40 + i * 60} y2={CHART_H - SHEET_PAD - 20} strokeWidth="0.8" />
+                <line
+                  key={'v' + i}
+                  x1={SHEET_PAD + 40 + i * 60}
+                  y1={SHEET_PAD + 20}
+                  x2={SHEET_PAD + 40 + i * 60}
+                  y2={CHART_H - SHEET_PAD - 20}
+                  strokeWidth="0.8"
+                />
               ))}
             </g>
             <g stroke="#241811" opacity="0.18">
               {[...Array(12)].map((_, i) => (
-                <line key={'t' + i} x1={SHEET_PAD + i * 100} y1={SHEET_PAD} x2={SHEET_PAD + i * 100} y2={SHEET_PAD + 24} strokeWidth="1" />
+                <line
+                  key={'t' + i}
+                  x1={SHEET_PAD + i * 100}
+                  y1={SHEET_PAD}
+                  x2={SHEET_PAD + i * 100}
+                  y2={SHEET_PAD + 24}
+                  strokeWidth="1"
+                />
               ))}
               {[...Array(12)].map((_, i) => (
-                <line key={'b' + i} x1={SHEET_PAD + i * 100} y1={CHART_H - SHEET_PAD - 24} x2={SHEET_PAD + i * 100} y2={CHART_H - SHEET_PAD} strokeWidth="1" />
+                <line
+                  key={'b' + i}
+                  x1={SHEET_PAD + i * 100}
+                  y1={CHART_H - SHEET_PAD - 24}
+                  x2={SHEET_PAD + i * 100}
+                  y2={CHART_H - SHEET_PAD}
+                  strokeWidth="1"
+                />
               ))}
               {[...Array(16)].map((_, i) => (
-                <line key={'l' + i} x1={SHEET_PAD} y1={SHEET_PAD + i * 80} x2={SHEET_PAD + 24} y2={SHEET_PAD + i * 80} strokeWidth="1" />
+                <line
+                  key={'l' + i}
+                  x1={SHEET_PAD}
+                  y1={SHEET_PAD + i * 80}
+                  x2={SHEET_PAD + 24}
+                  y2={SHEET_PAD + i * 80}
+                  strokeWidth="1"
+                />
               ))}
               {[...Array(16)].map((_, i) => (
-                <line key={'r' + i} x1={CHART_W - SHEET_PAD - 24} y1={SHEET_PAD + i * 80} x2={CHART_W - SHEET_PAD} y2={SHEET_PAD + i * 80} strokeWidth="1" />
+                <line
+                  key={'r' + i}
+                  x1={CHART_W - SHEET_PAD - 24}
+                  y1={SHEET_PAD + i * 80}
+                  x2={CHART_W - SHEET_PAD}
+                  y2={SHEET_PAD + i * 80}
+                  strokeWidth="1"
+                />
               ))}
             </g>
-            <text x={CHART_W / 2} y={SHEET_PAD - 10} textAnchor="middle" fontFamily="'EB Garamond Variable', Georgia, serif" fontSize="22" letterSpacing="0.28em" style={{ textTransform: 'uppercase' }} fill="#241a12">
+            <text
+              x={CHART_W / 2}
+              y={SHEET_PAD - 10}
+              textAnchor="middle"
+              fontFamily="'EB Garamond Variable', Georgia, serif"
+              fontSize="22"
+              letterSpacing="0.28em"
+              style={{ textTransform: 'uppercase' }}
+              fill="#241a12"
+            >
               Nazh's Chart of the Cosmere
             </text>
             <CompassRose cx={SHEET_PAD + 120} cy={CHART_H - SHEET_PAD - 120} />
@@ -417,8 +510,23 @@ export default function NazhChart() {
                 return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} strokeWidth="0.8" strokeDasharray="6 10" />
               })}
             </g>
-            <line x1={SHEET_PAD + 60} y1={CHART_H / 2} x2={SHEET_PAD + 200} y2={CHART_H / 2} stroke="#241811" strokeWidth="1" opacity="0.5" />
-            <text x={SHEET_PAD + 130} y={CHART_H / 2 - 8} textAnchor="middle" fontFamily="'EB Garamond Variable', Georgia, serif" fontSize="11" fill="#4a382a">
+            <line
+              x1={SHEET_PAD + 60}
+              y1={CHART_H / 2}
+              x2={SHEET_PAD + 200}
+              y2={CHART_H / 2}
+              stroke="#241811"
+              strokeWidth="1"
+              opacity="0.5"
+            />
+            <text
+              x={SHEET_PAD + 130}
+              y={CHART_H / 2 - 8}
+              textAnchor="middle"
+              fontFamily="'EB Garamond Variable', Georgia, serif"
+              fontSize="11"
+              fill="#4a382a"
+            >
               1000 leagues
             </text>
             <g stroke="#241811" opacity="0.6" strokeDasharray="3 5">
@@ -433,37 +541,77 @@ export default function NazhChart() {
                   const my = (a.y + b.y) / 2 - 30
                   const dimLink = route ? !(routePlanets.has(a.planet.id) && routePlanets.has(b.planet.id)) : false
                   if (dimLink && route) return null
-                  return <path key={i + '-' + j} d={`M ${a.x} ${a.y} Q ${mx} ${my} ${b.x} ${b.y}`} fill="none" strokeWidth={route ? 1.6 : 1.2} opacity={dimLink ? 0.1 : route ? 0.9 : 0.5} />
+                  return (
+                    <path
+                      key={i + '-' + j}
+                      d={`M ${a.x} ${a.y} Q ${mx} ${my} ${b.x} ${b.y}`}
+                      fill="none"
+                      strokeWidth={route ? 1.6 : 1.2}
+                      opacity={dimLink ? 0.1 : route ? 0.9 : 0.5}
+                    />
+                  )
                 }),
               )}
             </g>
-            {route && routeTrack.map((mv, idx) => {
-              if (idx === 0) return null
-              const prev = routeTrack[idx - 1]
-              if (!prev) return null
-              const a = items.find((it) => it.planet.id === prev.planet)
-              const b = items.find((it) => it.planet.id === mv.planet)
-              if (!a || !b) return null
-              const mx = (a.x + b.x) / 2
-              const my = (a.y + b.y) / 2 - 60
-              return (
-                <g key={'rt-' + idx}>
-                  <path d={`M ${a.x} ${a.y} Q ${mx} ${my} ${b.x} ${b.y}`} fill="none" stroke={route.color || '#8c2b1f'} strokeWidth="1.8" strokeDasharray="6 6" opacity="0.9" />
-                  <text x={mx} y={my - 6} textAnchor="middle" fontFamily="'Caveat Variable', cursive" fontSize="11" fill="#4a382a">
-                    {mv.year < 0 ? `${Math.abs(mv.year)}bca` : mv.year}
-                  </text>
-                </g>
-              )
-            })}
+            {route &&
+              routeTrack.map((mv, idx) => {
+                if (idx === 0) return null
+                const prev = routeTrack[idx - 1]
+                if (!prev) return null
+                const a = items.find((it) => it.planet.id === prev.planet)
+                const b = items.find((it) => it.planet.id === mv.planet)
+                if (!a || !b) return null
+                const mx = (a.x + b.x) / 2
+                const my = (a.y + b.y) / 2 - 60
+                return (
+                  <g key={'rt-' + idx}>
+                    <path
+                      d={`M ${a.x} ${a.y} Q ${mx} ${my} ${b.x} ${b.y}`}
+                      fill="none"
+                      stroke={route.color || '#8c2b1f'}
+                      strokeWidth="1.8"
+                      strokeDasharray="6 6"
+                      opacity="0.9"
+                    />
+                    <text
+                      x={mx}
+                      y={my - 6}
+                      textAnchor="middle"
+                      fontFamily="'Caveat Variable', cursive"
+                      fontSize="11"
+                      fill="#4a382a"
+                    >
+                      {mv.year < 0 ? `${Math.abs(mv.year)}bca` : mv.year}
+                    </text>
+                  </g>
+                )
+              })}
             {sortedItems.map((it) => {
               const isYolen = it.planet.id === 'yolen'
               const isH = hover === it.planet.id
               const isS = selected === it.planet.id
               const dimWorld = route ? !routePlanets.has(it.planet.id) : false
               return (
-                <g key={it.planet.id} transform={`translate(${it.x},${it.y})`} style={{ cursor: 'pointer' }} opacity={dimWorld && route ? 0.25 : 1}>
-                  {isS && <circle cx={0} cy={0} r={90} fill="none" stroke="#8c2b1f" strokeWidth="2.4" strokeDasharray="10 6" />}
-                  {isH && !isS && <circle cx={0} cy={0} r={86} fill="none" stroke="#241811" strokeWidth="2" opacity="0.9" />}
+                <g
+                  key={it.planet.id}
+                  transform={`translate(${it.x},${it.y})`}
+                  style={{ cursor: 'pointer' }}
+                  opacity={dimWorld && route ? 0.25 : 1}
+                >
+                  {isS && (
+                    <circle
+                      cx={0}
+                      cy={0}
+                      r={90}
+                      fill="none"
+                      stroke="#8c2b1f"
+                      strokeWidth="2.4"
+                      strokeDasharray="10 6"
+                    />
+                  )}
+                  {isH && !isS && (
+                    <circle cx={0} cy={0} r={86} fill="none" stroke="#241811" strokeWidth="2" opacity="0.9" />
+                  )}
                   <ellipse cx={0} cy={20} rx={62} ry={18} fill="#120c06" opacity="0.1" />
                   <circle cx={0} cy={0} r={72} fill="none" stroke="#241811" strokeWidth="1.6" opacity="0.8" />
                   <circle cx={0} cy={0} r={58} fill="none" stroke="#241811" strokeWidth="1" opacity="0.6" />
@@ -473,20 +621,49 @@ export default function NazhChart() {
                     const y1 = Math.sin(ang) * 66
                     const x2 = Math.cos(ang) * 58
                     const y2 = Math.sin(ang) * 58
-                    return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#241811" strokeWidth="0.9" opacity="0.5" />
+                    return (
+                      <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#241811" strokeWidth="0.9" opacity="0.5" />
+                    )
                   })}
                   <circle cx={0} cy={0} r={46} fill="url(#hatch)" opacity="0.18" />
                   <g opacity={isYolen ? 0.6 : 1}>
                     <PlanetSigil planet={it.planet} />
                   </g>
                   <g transform="translate(0, 82)">
-                    <rect x={-78} y={-11} width={156} height={22} rx={2} fill="#f6efe2" stroke="#8c7a5c" strokeWidth="0.9" />
-                    <text x={0} y={4} textAnchor="middle" fontFamily="'EB Garamond Variable', Georgia, serif" fontSize="16" letterSpacing="0.18em" style={{ textTransform: 'uppercase' }} fill="#241a12">
+                    <rect
+                      x={-78}
+                      y={-11}
+                      width={156}
+                      height={22}
+                      rx={2}
+                      fill="#f6efe2"
+                      stroke="#8c7a5c"
+                      strokeWidth="0.9"
+                    />
+                    <text
+                      x={0}
+                      y={4}
+                      textAnchor="middle"
+                      fontFamily="'EB Garamond Variable', Georgia, serif"
+                      fontSize="16"
+                      letterSpacing="0.18em"
+                      style={{ textTransform: 'uppercase' }}
+                      fill="#241a12"
+                    >
                       {it.planet.name.length > 16 ? it.planet.name.slice(0, 14) + '...' : it.planet.name}
                     </text>
                   </g>
                   {isYolen && (
-                    <text x={0} y={-80} textAnchor="middle" fontFamily="'EB Garamond Variable', Georgia, serif" fontSize="12" fontStyle="italic" fill="#4a382a" opacity="0.8">
+                    <text
+                      x={0}
+                      y={-80}
+                      textAnchor="middle"
+                      fontFamily="'EB Garamond Variable', Georgia, serif"
+                      fontSize="12"
+                      fontStyle="italic"
+                      fill="#4a382a"
+                      opacity="0.8"
+                    >
                       lost
                     </text>
                   )}
@@ -495,8 +672,21 @@ export default function NazhChart() {
                     const arr = shardMap.get(it.planet.id) || []
                     return (
                       <g key={s} transform={`translate(${(idx - (arr.length - 1) / 2) * 28}, 96)`}>
-                        <polygon points="-6,-10 6,-10 8,0 6,10 -6,10 -8,0" fill="#f6efe2" stroke={c} strokeWidth="0.8" />
-                        <text x={0} y={3} textAnchor="middle" fontFamily="'EB Garamond Variable', Georgia, serif" fontSize="8" fontStyle="italic" fill="#241a12">
+                        <polygon
+                          points="-6,-10 6,-10 8,0 6,10 -6,10 -8,0"
+                          fill="#f6efe2"
+                          stroke={c}
+                          strokeWidth="0.8"
+                        />
+                        <text
+                          x={0}
+                          y={3}
+                          textAnchor="middle"
+                          fontFamily="'EB Garamond Variable', Georgia, serif"
+                          fontSize="8"
+                          fontStyle="italic"
+                          fill="#241a12"
+                        >
                           {s.length > 10 ? s.slice(0, 8) + '...' : s}
                         </text>
                       </g>
@@ -630,7 +820,7 @@ export default function NazhChart() {
               boxShadow: '0 4px 12px rgba(12,9,6,0.18)',
             }}
           >
-            {(items.find((i) => i.planet.id === hover)?.planet.name)}
+            {items.find((i) => i.planet.id === hover)?.planet.name}
           </div>
         )}
         {drawer && selectedPlanet && (
@@ -677,7 +867,9 @@ export default function NazhChart() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="text-[15px] text-[#241a12] truncate">{c.name}</div>
-                      {c.titles && c.titles[0] && <div className="text-[12px] text-[#4a382a] truncate">{c.titles[0]}</div>}
+                      {c.titles && c.titles[0] && (
+                        <div className="text-[12px] text-[#4a382a] truncate">{c.titles[0]}</div>
+                      )}
                     </div>
                   </button>
                 )

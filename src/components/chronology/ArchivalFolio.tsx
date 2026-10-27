@@ -27,25 +27,42 @@ export default function ArchivalFolio({ event, x, y, line, toViewport }: Props) 
           border: '1px solid rgba(110,80,50,0.4)',
         }}
       >
-        <div className="pointer-events-none absolute inset-0 opacity-[0.05]" style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(120,90,60,0.4) 0%, transparent 70%)' }} />
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.05]"
+          style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(120,90,60,0.4) 0%, transparent 70%)' }}
+        />
         <div className="relative">
           {/* Type and year line */}
           <div className="flex items-center gap-3 border-b pb-2.5" style={{ borderColor: 'rgba(90,70,45,0.18)' }}>
-            <span className="font-[var(--font-display)] text-[10px] uppercase tracking-[0.24em]" style={{ color: '#5a3d28' }}>
+            <span
+              className="font-[var(--font-display)] text-[10px] uppercase tracking-[0.24em]"
+              style={{ color: '#5a3d28' }}
+            >
               {TYPE_LABELS[event.type]}
             </span>
-            <span className="font-[var(--font-display)] text-[10px]" style={{ color: '#6b4a2a' }}>{formatJourneyYear(event.year)}</span>
+            <span className="font-[var(--font-display)] text-[10px]" style={{ color: '#6b4a2a' }}>
+              {formatJourneyYear(event.year)}
+            </span>
           </div>
 
           {/* Title */}
-          <h3 className="mt-3 font-[var(--font-display)] text-[15px] leading-snug" style={{ color: '#2a1f14' }}>{event.title}</h3>
+          <h3 className="mt-3 font-[var(--font-display)] text-[15px] leading-snug" style={{ color: '#2a1f14' }}>
+            {event.title}
+          </h3>
 
           {/* Description */}
-          <p className="mt-2 text-[12.5px] leading-relaxed line-clamp-3" style={{ color: '#3a2a1a' }}>{event.description}</p>
+          <p className="mt-2 text-[12.5px] leading-relaxed line-clamp-3" style={{ color: '#3a2a1a' }}>
+            {event.description}
+          </p>
 
           {/* Open indicator */}
           {event.importance >= 4 && (
-            <p className="mt-3 font-[var(--font-display)] text-[10px] italic tracking-[0.12em] uppercase" style={{ color: '#6b4a2a' }}>Examine record</p>
+            <p
+              className="mt-3 font-[var(--font-display)] text-[10px] italic tracking-[0.12em] uppercase"
+              style={{ color: '#6b4a2a' }}
+            >
+              Examine record
+            </p>
           )}
         </div>
       </div>

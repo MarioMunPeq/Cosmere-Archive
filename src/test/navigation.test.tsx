@@ -259,4 +259,3 @@ describe('AppShell', () => {
     expect(container.querySelector('nav[aria-label="Primary"]')).toBeNull()
   })
 })
-

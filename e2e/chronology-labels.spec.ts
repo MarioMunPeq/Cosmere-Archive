@@ -70,12 +70,7 @@ function clipToScroll(box: Box, scroll: Rect): Box | null {
   return { ...box, left, top, right, bottom, width: right - left, height: bottom - top }
 }
 
-function findCollisions(
-  first: Box[],
-  second: Box[],
-  combo: string,
-  sameSet = false,
-): Collision[] {
+function findCollisions(first: Box[], second: Box[], combo: string, sameSet = false): Collision[] {
   const collisions: Collision[] = []
   for (let i = 0; i < first.length; i++) {
     const a = first[i]!
@@ -145,9 +140,7 @@ async function snapshot(page: Page): Promise<Snapshot> {
       toBox(element, 'panel', element.getAttribute('data-chronology-panel') ?? 'panel'),
     )
 
-    const controls = [
-      ...document.querySelectorAll('[data-chronology-controls] button'),
-    ].map((element) =>
+    const controls = [...document.querySelectorAll('[data-chronology-controls] button')].map((element) =>
       toBox(element, 'control', element.getAttribute('aria-label') ?? (element.textContent ?? '').trim()),
     )
 
@@ -166,9 +159,7 @@ async function snapshot(page: Page): Promise<Snapshot> {
             ? 'panel'
             : undefined
         const ownerName = owner
-          ? (owner.getAttribute('data-chronology-bar') ??
-              owner.getAttribute('data-chronology-panel') ??
-              undefined)
+          ? (owner.getAttribute('data-chronology-bar') ?? owner.getAttribute('data-chronology-panel') ?? undefined)
           : undefined
         return { ...toBox(element, 'button', name), ownerKind, ownerName }
       })
@@ -224,9 +215,7 @@ function auditSnapshot(snapshotData: Snapshot, combo: string): Collision[] {
 }
 
 test.describe('Chronicon Cosmerae — layout collision audit', () => {
-  test('labels, buttons, panels and bars never overlap in any era or filter state', async ({
-    page,
-  }) => {
+  test('labels, buttons, panels and bars never overlap in any era or filter state', async ({ page }) => {
     test.setTimeout(180_000)
 
     await page.goto('/#/chronology')
@@ -324,10 +313,19 @@ test.describe('Chronicon Cosmerae — layout collision audit', () => {
     const lanes = new Map<number, number>()
     for (const label of labels) lanes.set(label.lane, (lanes.get(label.lane) ?? 0) + 1)
 
-    console.log(`\nLayout collision audit — ${labels.length} labels across ${new Set(labels.map((l) => l.era)).size} eras`)
-    console.log(`  ✓ labels            one per repeated year; lanes ${[...lanes.entries()].sort(([a], [b]) => a - b).map(([lane, count]) => `${lane}:${count}`).join(', ')}`)
+    console.log(
+      `\nLayout collision audit — ${labels.length} labels across ${new Set(labels.map((l) => l.era)).size} eras`,
+    )
+    console.log(
+      `  ✓ labels            one per repeated year; lanes ${[...lanes.entries()]
+        .sort(([a], [b]) => a - b)
+        .map(([lane, count]) => `${lane}:${count}`)
+        .join(', ')}`,
+    )
     console.log(`  ✓ sides             ${[...sides.entries()].map(([side, count]) => `${side}:${count}`).join(', ')}`)
-    console.log(`  ✓ points            ${String(xByYear.size).padStart(3)} distinct years — min gap ${minGap.toFixed(1)}px`)
+    console.log(
+      `  ✓ points            ${String(xByYear.size).padStart(3)} distinct years — min gap ${minGap.toFixed(1)}px`,
+    )
     expect(minGap, 'distinct years must sit at least 70px apart').toBeGreaterThanOrEqual(69.9)
 
     const eraButtons = page.locator('[data-era-button]')

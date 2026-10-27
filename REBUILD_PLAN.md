@@ -198,33 +198,33 @@ Un criterio que se responde "no" sin explicación no pasa.
 
 ### 1.2 Inventario de rutas (`src/App.tsx`)
 
-| Ruta                | Componente                     | Estado       | Observación                          |
-| ------------------- | ------------------------------ | ------------ | ------------------------------------ |
-| `/`                 | `LandingPage`                  | vivo         | Índice de 10 capítulos sobre papel   |
-| `/celestial-charts` | `KhrissAtlas`                  | vivo         | Atlas de Khriss, 12 spreads          |
-| `/about`            | `About`                        | vivo         |                                      |
-| `/magic`            | `ArcanumRedirect`              | vivo         | Ars Arcanum (redirige a `/characters`) |
-| `/aharietiam`       | `AharietiamPage`               | vivo         | Escena R3F                           |
-| `/characters`       | `BiographicalArchivesPage`     | vivo         | Manuscrito de 3 capítulos            |
-| `/chronology`       | `StandaloneChronologyPage`     | vivo         | Línea temporal SVG                   |
-| `/library`          | `LibraryPage`                  | vivo         | Estanterías + lector 3D; `?book=<id>` abre volúmenes |
-| `/compare`          | `ComparePage`                  | vivo         |                                      |
-| `/mind-map`         | `MindMapPage`                  | vivo         |                                      |
-| `/shadesmar`        | `ShadesmarPage`                | vivo         | Canvas2D                             |
-| `/records/:id`      | `CharacterRecordRedirect`      | vivo         | Redirección desde índice de búsqueda |
-| `/records/shards/:shardId` | `ShardPage`               | vivo         | Ficha de fragmento                   |
-| `/historical`       | `HistoricalPage`               | vivo         | Índice histórico                     |
-| `*`                 | `NotFound`                     | vivo         |                                      |
-| `/books`            | → `/library`                  | **redirect** | legado, sustituido por `?book=`      |
-| `/books/:id`        | → `/library?book=:id`         | **redirect** | legado, abre el volumen en la biblioteca |
-| `/map`              | → `/celestial-charts`         | **redirect** | ruta muerta                          |
-| `/locations`        | → `/celestial-charts`         | **redirect** | ruta muerta                          |
-| `/shards`           | → `/celestial-charts`         | **redirect** | ruta muerta                          |
-| `/timeline`         | → `/chronology`               | **redirect** | ruta muerta                          |
-| `/glossary`         | → `/magic`                    | **redirect** | ruta muerta (el módulo ya no existe) |
-| `/heralds`          | → `/aharietiam`               | **redirect** | ruta muerta                          |
-| `/family-tree`      | → `/characters?tab=bloodlines`| **redirect** | ruta muerta                          |
-| `/stats`            | → `/taravangian`              | **redirect** | ruta muerta                          |
+| Ruta                       | Componente                     | Estado       | Observación                                          |
+| -------------------------- | ------------------------------ | ------------ | ---------------------------------------------------- |
+| `/`                        | `LandingPage`                  | vivo         | Índice de 10 capítulos sobre papel                   |
+| `/celestial-charts`        | `KhrissAtlas`                  | vivo         | Atlas de Khriss, 12 spreads                          |
+| `/about`                   | `About`                        | vivo         |                                                      |
+| `/magic`                   | `ArcanumRedirect`              | vivo         | Ars Arcanum (redirige a `/characters`)               |
+| `/aharietiam`              | `AharietiamPage`               | vivo         | Escena R3F                                           |
+| `/characters`              | `BiographicalArchivesPage`     | vivo         | Manuscrito de 3 capítulos                            |
+| `/chronology`              | `StandaloneChronologyPage`     | vivo         | Línea temporal SVG                                   |
+| `/library`                 | `LibraryPage`                  | vivo         | Estanterías + lector 3D; `?book=<id>` abre volúmenes |
+| `/compare`                 | `ComparePage`                  | vivo         |                                                      |
+| `/mind-map`                | `MindMapPage`                  | vivo         |                                                      |
+| `/shadesmar`               | `ShadesmarPage`                | vivo         | Canvas2D                                             |
+| `/records/:id`             | `CharacterRecordRedirect`      | vivo         | Redirección desde índice de búsqueda                 |
+| `/records/shards/:shardId` | `ShardPage`                    | vivo         | Ficha de fragmento                                   |
+| `/historical`              | `HistoricalPage`               | vivo         | Índice histórico                                     |
+| `*`                        | `NotFound`                     | vivo         |                                                      |
+| `/books`                   | → `/library`                   | **redirect** | legado, sustituido por `?book=`                      |
+| `/books/:id`               | → `/library?book=:id`          | **redirect** | legado, abre el volumen en la biblioteca             |
+| `/map`                     | → `/celestial-charts`          | **redirect** | ruta muerta                                          |
+| `/locations`               | → `/celestial-charts`          | **redirect** | ruta muerta                                          |
+| `/shards`                  | → `/celestial-charts`          | **redirect** | ruta muerta                                          |
+| `/timeline`                | → `/chronology`                | **redirect** | ruta muerta                                          |
+| `/glossary`                | → `/magic`                     | **redirect** | ruta muerta (el módulo ya no existe)                 |
+| `/heralds`                 | → `/aharietiam`                | **redirect** | ruta muerta                                          |
+| `/family-tree`             | → `/characters?tab=bloodlines` | **redirect** | ruta muerta                                          |
+| `/stats`                   | → `/taravangian`               | **redirect** | ruta muerta                                          |
 
 **19 rutas públicas para 14 pantallas reales.** Los redirects son un agujero: cualquier enlace externo a `/map` lleva a un sitio que ya no significa lo que significaba.
 

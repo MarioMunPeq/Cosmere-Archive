@@ -5,29 +5,43 @@
  * resolver uses this to decide between an <img> and a <Monogram>, so a missing
  * portrait never turns into a network request. Decision D-DATA, M1 block 5.
  *
- * 24 files · regenerate with `pnpm portraits:build`
+ * 38 files · regenerate with `pnpm portraits:build`
  */
 
 export const PORTRAIT_NAMES: readonly string[] = [
   "Adolin",
+  "Aesudan",
+  "Battar",
+  "Chanarach",
   "Dalinar",
   "Elend",
   "Elhokar",
+  "Evi",
   "Gavilar",
+  "Gavinor",
+  "Ishar",
   "Jasnah",
+  "Jezrien",
   "Kaladin",
+  "Kalak",
   "Kelsier",
   "Marasi",
   "Mare",
   "Marsh",
+  "Nale",
   "Navani",
+  "Pailiah",
   "Renarin",
+  "Shalash",
   "Shallan",
   "Siri",
   "Spook",
   "Steris",
   "Straff",
   "Susebron",
+  "Taln",
+  "Taravangian",
+  "Vedel",
   "Vin",
   "Vivenna",
   "Waxillium",

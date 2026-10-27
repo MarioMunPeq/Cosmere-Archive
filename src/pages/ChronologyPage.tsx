@@ -48,8 +48,7 @@ export default function ChronologyPage() {
     () => (eventParam ? (TIMELINE_EVENTS.find((candidate) => candidate.id === eventParam) ?? null) : null),
     [eventParam],
   )
-  const expandedEvent =
-    paramEvent && paramEvent.id !== dismissedParam ? paramEvent : selectedEvent
+  const expandedEvent = paramEvent && paramEvent.id !== dismissedParam ? paramEvent : selectedEvent
   const [timelineMetrics, setTimelineMetrics] = useState<TimelineMetrics>({ height: 420, lineY: 190 })
   const [areaHeight, setAreaHeight] = useState(420)
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -89,9 +88,9 @@ export default function ChronologyPage() {
     if (!selectedEra) return
     const era = ERAS.find((candidate) => candidate.id === selectedEra)
     if (!era) return
-    const firstEvent = TIMELINE_EVENTS.filter(
-      (event) => event.year >= era.startYear && event.year <= era.endYear,
-    ).sort((a, b) => a.year - b.year)[0]
+    const firstEvent = TIMELINE_EVENTS.filter((event) => event.year >= era.startYear && event.year <= era.endYear).sort(
+      (a, b) => a.year - b.year,
+    )[0]
     const el = scrollRef.current
     if (!el) return
     const x = yearToX(firstEvent?.year ?? era.startYear)
@@ -151,9 +150,7 @@ export default function ChronologyPage() {
   )
 
   const handleMetrics = useCallback((next: TimelineMetrics) => {
-    setTimelineMetrics((prev) =>
-      prev.height === next.height && prev.lineY === next.lineY ? prev : next,
-    )
+    setTimelineMetrics((prev) => (prev.height === next.height && prev.lineY === next.lineY ? prev : next))
   }, [])
 
   /* Bring a selected record, deep-linked or clicked, into the reading window. */
@@ -186,15 +183,11 @@ export default function ChronologyPage() {
     [scrollLeft, zoom],
   )
 
-  const activeEra = useMemo(
-    () => ERAS.find((era) => era.id === selectedEra) ?? ERAS[0] ?? null,
-    [selectedEra],
-  )
+  const activeEra = useMemo(() => ERAS.find((era) => era.id === selectedEra) ?? ERAS[0] ?? null, [selectedEra])
   const activeEraCount = useMemo(() => {
     if (!activeEra) return 0
-    return TIMELINE_EVENTS.filter(
-      (event) => event.year >= activeEra.startYear && event.year <= activeEra.endYear,
-    ).length
+    return TIMELINE_EVENTS.filter((event) => event.year >= activeEra.startYear && event.year <= activeEra.endYear)
+      .length
   }, [activeEra])
 
   useEffect(() => {
@@ -411,10 +404,7 @@ export default function ChronologyPage() {
                 <span className="font-[var(--font-display)] text-[12px] italic" style={{ color: '#7a6040' }}>
                   {activeEraCount} records
                 </span>
-                <span
-                  className="ml-auto font-[var(--font-display)] text-[11px] italic"
-                  style={{ color: '#7a6040' }}
-                >
+                <span className="ml-auto font-[var(--font-display)] text-[11px] italic" style={{ color: '#7a6040' }}>
                   Select a point for full details
                 </span>
               </div>

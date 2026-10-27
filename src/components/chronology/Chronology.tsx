@@ -196,10 +196,7 @@ function Chronology({
       })
   }, [events])
 
-  const labelPlacements = useMemo(
-    () => placeLabels(labelCandidates, measuredWidths),
-    [labelCandidates, measuredWidths],
-  )
+  const labelPlacements = useMemo(() => placeLabels(labelCandidates, measuredWidths), [labelCandidates, measuredWidths])
   const placementByEvent = useMemo(
     () => new Map(labelPlacements.map((placement) => [placement.eventId, placement])),
     [labelPlacements],
@@ -328,8 +325,25 @@ function Chronology({
       {/* Jump indicators */}
       {TIMELINE_JUMPS.map((jx, i) => (
         <g key={`jump-${i}`}>
-          <line x1={jx + 10} y1={lineY} x2={jx + 40} y2={lineY} stroke="#6b4a2a" strokeWidth={1.2} strokeDasharray="4 6" opacity={0.4} />
-          <text x={jx + 25} y={lineY - 8} textAnchor="middle" fontFamily="'Caveat Variable', cursive" fontSize="12" fill="#6b4a2a" opacity={0.55}>
+          <line
+            x1={jx + 10}
+            y1={lineY}
+            x2={jx + 40}
+            y2={lineY}
+            stroke="#6b4a2a"
+            strokeWidth={1.2}
+            strokeDasharray="4 6"
+            opacity={0.4}
+          />
+          <text
+            x={jx + 25}
+            y={lineY - 8}
+            textAnchor="middle"
+            fontFamily="'Caveat Variable', cursive"
+            fontSize="12"
+            fill="#6b4a2a"
+            opacity={0.55}
+          >
             ···
           </text>
         </g>
@@ -412,7 +426,15 @@ function Chronology({
                 </g>
               )}
               {shape === 'hollow' && (
-                <circle cx={x} cy={lineY} r={r} fill="none" stroke={ink} strokeWidth={1.3} opacity={imp >= 3 ? 0.85 : 0.55} />
+                <circle
+                  cx={x}
+                  cy={lineY}
+                  r={r}
+                  fill="none"
+                  stroke={ink}
+                  strokeWidth={1.3}
+                  opacity={imp >= 3 ? 0.85 : 0.55}
+                />
               )}
             </g>
 

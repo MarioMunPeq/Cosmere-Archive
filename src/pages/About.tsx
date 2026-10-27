@@ -101,14 +101,45 @@ function Seal() {
       </defs>
       <circle cx="32" cy="32" r="28" fill="url(#sealGrad)" opacity="0.9" />
       <circle cx="32" cy="32" r="26" fill="none" stroke="#d4b884" strokeWidth="1" opacity="0.4" />
-      <circle cx="32" cy="32" r="22" fill="none" stroke="#d4b884" strokeWidth="0.8" opacity="0.3" strokeDasharray="4 4" />
-      <text x="32" y="30" textAnchor="middle" fontFamily="'EB Garamond Variable', Georgia, serif" fontSize="7" letterSpacing="0.24em" fill="#f2e6d0" style={{ textTransform: 'uppercase' }}>
+      <circle
+        cx="32"
+        cy="32"
+        r="22"
+        fill="none"
+        stroke="#d4b884"
+        strokeWidth="0.8"
+        opacity="0.3"
+        strokeDasharray="4 4"
+      />
+      <text
+        x="32"
+        y="30"
+        textAnchor="middle"
+        fontFamily="'EB Garamond Variable', Georgia, serif"
+        fontSize="7"
+        letterSpacing="0.24em"
+        fill="#f2e6d0"
+        style={{ textTransform: 'uppercase' }}
+      >
         ARCHIVVM
       </text>
-      <text x="32" y="40" textAnchor="middle" fontFamily="'EB Garamond Variable', Georgia, serif" fontSize="6" letterSpacing="0.32em" fill="#f2e6d0" style={{ textTransform: 'uppercase' }}>
+      <text
+        x="32"
+        y="40"
+        textAnchor="middle"
+        fontFamily="'EB Garamond Variable', Georgia, serif"
+        fontSize="6"
+        letterSpacing="0.32em"
+        fill="#f2e6d0"
+        style={{ textTransform: 'uppercase' }}
+      >
         COSMERE
       </text>
-      <path d="M32 14 L33.2 18 L37.5 18 L34.2 20.6 L35.4 24.6 L32 22 L28.6 24.6 L29.8 20.6 L26.5 18 L30.8 18 Z" fill="#f2e6d0" opacity="0.7" />
+      <path
+        d="M32 14 L33.2 18 L37.5 18 L34.2 20.6 L35.4 24.6 L32 22 L28.6 24.6 L29.8 20.6 L26.5 18 L30.8 18 Z"
+        fill="#f2e6d0"
+        opacity="0.7"
+      />
     </svg>
   )
 }
@@ -148,49 +179,100 @@ export default function About() {
             }}
           >
             {/* Paper stains */}
-            <div className="pointer-events-none absolute left-0 top-0 z-[2] h-[70px] w-[70px] opacity-[0.07]" style={{ background: 'radial-gradient(ellipse at 0 0, rgba(120,90,60,0.5) 0%, transparent 70%)' }} />
-            <div className="pointer-events-none absolute right-0 top-0 z-[2] h-[70px] w-[70px] opacity-[0.05]" style={{ background: 'radial-gradient(ellipse at 100% 0, rgba(120,90,60,0.4) 0%, transparent 70%)' }} />
-            <div className="pointer-events-none absolute bottom-0 left-0 z-[2] h-[80px] w-[80px] opacity-[0.06]" style={{ background: 'radial-gradient(ellipse at 0 100%, rgba(100,80,50,0.4) 0%, transparent 70%)' }} />
-            <div className="pointer-events-none absolute bottom-0 right-0 z-[2] h-[80px] w-[80px] opacity-[0.08]" style={{ background: 'radial-gradient(ellipse at 100% 100%, rgba(120,90,60,0.5) 0%, transparent 70%)' }} />
+            <div
+              className="pointer-events-none absolute left-0 top-0 z-[2] h-[70px] w-[70px] opacity-[0.07]"
+              style={{ background: 'radial-gradient(ellipse at 0 0, rgba(120,90,60,0.5) 0%, transparent 70%)' }}
+            />
+            <div
+              className="pointer-events-none absolute right-0 top-0 z-[2] h-[70px] w-[70px] opacity-[0.05]"
+              style={{ background: 'radial-gradient(ellipse at 100% 0, rgba(120,90,60,0.4) 0%, transparent 70%)' }}
+            />
+            <div
+              className="pointer-events-none absolute bottom-0 left-0 z-[2] h-[80px] w-[80px] opacity-[0.06]"
+              style={{ background: 'radial-gradient(ellipse at 0 100%, rgba(100,80,50,0.4) 0%, transparent 70%)' }}
+            />
+            <div
+              className="pointer-events-none absolute bottom-0 right-0 z-[2] h-[80px] w-[80px] opacity-[0.08]"
+              style={{ background: 'radial-gradient(ellipse at 100% 100%, rgba(120,90,60,0.5) 0%, transparent 70%)' }}
+            />
 
             {/* Central age stain */}
-            <div className="pointer-events-none absolute inset-0 z-[2] opacity-[0.035]" style={{ background: 'radial-gradient(ellipse at 50% 38%, rgba(160,130,90,0.6) 0%, transparent 62%)' }} />
+            <div
+              className="pointer-events-none absolute inset-0 z-[2] opacity-[0.035]"
+              style={{ background: 'radial-gradient(ellipse at 50% 38%, rgba(160,130,90,0.6) 0%, transparent 62%)' }}
+            />
 
             {/* Left page */}
             <div className="relative flex h-full flex-1 flex-col overflow-hidden">
-              <div className="absolute right-0 top-0 bottom-0 z-[3] w-[16px] pointer-events-none" style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(60,45,30,0.015) 30%, rgba(60,45,30,0.04) 60%, rgba(60,45,30,0.025) 100%)' }} />
+              <div
+                className="absolute right-0 top-0 bottom-0 z-[3] w-[16px] pointer-events-none"
+                style={{
+                  background:
+                    'linear-gradient(90deg, transparent 0%, rgba(60,45,30,0.015) 30%, rgba(60,45,30,0.04) 60%, rgba(60,45,30,0.025) 100%)',
+                }}
+              />
               <header className="flex shrink-0 items-center gap-4 px-[clamp(36px,6vw,72px)] pt-[clamp(28px,6vh,56px)] pb-4">
-                <span className="font-[var(--font-display)] text-[9px] uppercase tracking-[0.28em]" style={{ color: '#5a3d28' }}>About the Archive</span>
+                <span
+                  className="font-[var(--font-display)] text-[9px] uppercase tracking-[0.28em]"
+                  style={{ color: '#5a3d28' }}
+                >
+                  About the Archive
+                </span>
                 <svg className="flex-1 h-[6px]" viewBox="0 0 200 6" preserveAspectRatio="none" aria-hidden="true">
-                  <path d="M 0 3 C 20 2, 40 4, 60 3 S 100 2, 140 3 S 180 4, 200 3" stroke="rgba(90,70,45,0.18)" strokeWidth="1" fill="none" strokeLinecap="round" />
+                  <path
+                    d="M 0 3 C 20 2, 40 4, 60 3 S 100 2, 140 3 S 180 4, 200 3"
+                    stroke="rgba(90,70,45,0.18)"
+                    strokeWidth="1"
+                    fill="none"
+                    strokeLinecap="round"
+                  />
                 </svg>
               </header>
               <div className="relative flex-1 overflow-y-auto px-[clamp(36px,6vw,72px)] pb-[clamp(60px,10vh,90px)] pt-6 manuscript-scrollbar">
                 <Marginalia style={{ ['--top' as any]: '18%' }}>built for the love of it</Marginalia>
                 <Marginalia style={{ ['--top' as any]: '46%' }}>just a personal archive</Marginalia>
-                <h1 className="mb-6 font-[var(--font-display)] text-[clamp(28px,4vw,44px)] tracking-[0.12em] uppercase" style={{ color: '#2a1f14' }}>
+                <h1
+                  className="mb-6 font-[var(--font-display)] text-[clamp(28px,4vw,44px)] tracking-[0.12em] uppercase"
+                  style={{ color: '#2a1f14' }}
+                >
                   About the Archive
                 </h1>
                 <p className="mb-10 font-[var(--font-display)] text-[13px] italic" style={{ color: '#5a3d28' }}>
                   A personal project inspired by Brandon Sanderson's Cosmere.
                 </p>
                 <p className="mb-6 max-w-[var(--measure)] text-[15px] leading-[1.9] text-[#3a2a1a]">
-                  <DropCap>Most</DropCap> software projects are started to solve a problem, or to fill a gap. This one was started because I wanted to build something I genuinely care about. The Cosmere became that project.
+                  <DropCap>Most</DropCap> software projects are started to solve a problem, or to fill a gap. This one
+                  was started because I wanted to build something I genuinely care about. The Cosmere became that
+                  project.
                 </p>
                 <p className="mb-6 max-w-[var(--measure)] text-[15px] leading-[1.9] text-[#3a2a1a]">
-                  I wanted the archive I imagined as a reader — one that connects the books to the people, the people to the worlds, and the worlds to the history that shaped them — and that turned out to be the archive worth building.
+                  I wanted the archive I imagined as a reader — one that connects the books to the people, the people to
+                  the worlds, and the worlds to the history that shaped them — and that turned out to be the archive
+                  worth building.
                 </p>
                 <p className="mb-10 max-w-[var(--measure)] text-[15px] leading-[1.9] text-[#3a2a1a]">
-                  This archive was never intended to compete with the remarkable work of communities like The Coppermind. It borrows from them generously and credits them below.
+                  This archive was never intended to compete with the remarkable work of communities like The
+                  Coppermind. It borrows from them generously and credits them below.
                 </p>
                 <HandRule />
                 <section className="mt-10">
                   <Rubric>At a glance</Rubric>
                   <dl className="mt-6 grid grid-cols-1 gap-x-10 gap-y-4 sm:grid-cols-2">
                     {FACTS.map(([term, value]) => (
-                      <div key={term} className="flex items-baseline gap-4 border-b pb-2" style={{ borderColor: 'rgba(90,70,45,0.18)' }}>
-                        <dt className="w-24 shrink-0 font-[var(--font-display)] text-[9px] uppercase tracking-[0.24em]" style={{ color: '#5a3d28' }}>{term}</dt>
-                        <dd className="min-w-0 text-[15px]" style={{ color: '#2a1f14' }}>{value}</dd>
+                      <div
+                        key={term}
+                        className="flex items-baseline gap-4 border-b pb-2"
+                        style={{ borderColor: 'rgba(90,70,45,0.18)' }}
+                      >
+                        <dt
+                          className="w-24 shrink-0 font-[var(--font-display)] text-[9px] uppercase tracking-[0.24em]"
+                          style={{ color: '#5a3d28' }}
+                        >
+                          {term}
+                        </dt>
+                        <dd className="min-w-0 text-[15px]" style={{ color: '#2a1f14' }}>
+                          {value}
+                        </dd>
                       </div>
                     ))}
                   </dl>
@@ -198,15 +280,34 @@ export default function About() {
                 <div className="mt-14 text-center">
                   <Seal />
                 </div>
-                <div className="mt-16 font-[var(--font-display)] text-[11px] uppercase tracking-[0.32em] text-center" style={{ color: '#6b4a2a' }}>— Finis Primae Paginae —</div>
+                <div
+                  className="mt-16 font-[var(--font-display)] text-[11px] uppercase tracking-[0.32em] text-center"
+                  style={{ color: '#6b4a2a' }}
+                >
+                  — Finis Primae Paginae —
+                </div>
               </div>
-              <div className="absolute bottom-6 left-[clamp(36px,6vw,72px)] font-[var(--font-display)] text-[9px] italic" style={{ color: '#7a6040' }}>— i —</div>
+              <div
+                className="absolute bottom-6 left-[clamp(36px,6vw,72px)] font-[var(--font-display)] text-[9px] italic"
+                style={{ color: '#7a6040' }}
+              >
+                — i —
+              </div>
             </div>
 
             {/* Spine */}
             <div className="relative w-[26px] shrink-0 self-stretch">
-              <div className="h-full w-full" style={{ background: 'linear-gradient(180deg, rgba(80,60,40,0.06) 0%, rgba(60,45,30,0.12) 15%, rgba(50,35,20,0.16) 50%, rgba(60,45,30,0.12) 85%, rgba(80,60,40,0.06) 100%)' }} />
-              <div className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2" style={{ background: 'rgba(50,35,20,0.14)' }} />
+              <div
+                className="h-full w-full"
+                style={{
+                  background:
+                    'linear-gradient(180deg, rgba(80,60,40,0.06) 0%, rgba(60,45,30,0.12) 15%, rgba(50,35,20,0.16) 50%, rgba(60,45,30,0.12) 85%, rgba(80,60,40,0.06) 100%)',
+                }}
+              />
+              <div
+                className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2"
+                style={{ background: 'rgba(50,35,20,0.14)' }}
+              />
               <div className="absolute top-[18%] left-0 right-0 flex items-center justify-center gap-[6px]">
                 <span className="h-[6px] w-[1.5px] rotate-[8deg]" style={{ background: 'rgba(60,45,30,0.16)' }} />
                 <span className="h-[6px] w-[1.5px] rotate-[-8deg]" style={{ background: 'rgba(60,45,30,0.12)' }} />
@@ -222,12 +323,29 @@ export default function About() {
 
             {/* Right page */}
             <div className="relative flex h-full flex-1 flex-col overflow-hidden">
-              <div className="absolute left-0 top-0 bottom-0 z-[3] w-[16px] pointer-events-none" style={{ background: 'linear-gradient(270deg, transparent 0%, rgba(60,45,30,0.015) 30%, rgba(60,45,30,0.04) 60%, rgba(60,45,30,0.025) 100%)' }} />
+              <div
+                className="absolute left-0 top-0 bottom-0 z-[3] w-[16px] pointer-events-none"
+                style={{
+                  background:
+                    'linear-gradient(270deg, transparent 0%, rgba(60,45,30,0.015) 30%, rgba(60,45,30,0.04) 60%, rgba(60,45,30,0.025) 100%)',
+                }}
+              />
               <header className="flex shrink-0 items-center gap-4 px-[clamp(36px,6vw,72px)] pt-[clamp(28px,6vh,56px)] pb-4">
                 <svg className="flex-1 h-[6px]" viewBox="0 0 200 6" preserveAspectRatio="none" aria-hidden="true">
-                  <path d="M 0 3 C 30 4, 70 2, 110 3 S 170 4, 200 3" stroke="rgba(90,70,45,0.18)" strokeWidth="1" fill="none" strokeLinecap="round" />
+                  <path
+                    d="M 0 3 C 30 4, 70 2, 110 3 S 170 4, 200 3"
+                    stroke="rgba(90,70,45,0.18)"
+                    strokeWidth="1"
+                    fill="none"
+                    strokeLinecap="round"
+                  />
                 </svg>
-                <span className="font-[var(--font-display)] text-[9px] uppercase tracking-[0.28em]" style={{ color: '#5a3d28' }}>Sources & Thanks</span>
+                <span
+                  className="font-[var(--font-display)] text-[9px] uppercase tracking-[0.28em]"
+                  style={{ color: '#5a3d28' }}
+                >
+                  Sources & Thanks
+                </span>
               </header>
               <div className="relative flex-1 overflow-y-auto px-[clamp(36px,6vw,72px)] pb-[clamp(60px,10vh,90px)] pt-6 manuscript-scrollbar">
                 <Marginalia style={{ ['--top' as any]: '16%' }}>owes so much to them</Marginalia>
@@ -246,7 +364,12 @@ export default function About() {
                         >
                           {source.name}
                         </a>
-                        <p className="mt-3 max-w-[var(--measure)] text-[15px] leading-[1.9]" style={{ color: '#3a2a1a' }}>{source.note}</p>
+                        <p
+                          className="mt-3 max-w-[var(--measure)] text-[15px] leading-[1.9]"
+                          style={{ color: '#3a2a1a' }}
+                        >
+                          {source.note}
+                        </p>
                       </li>
                     ))}
                   </ul>
@@ -255,13 +378,15 @@ export default function About() {
                 <section className="mt-10">
                   <Rubric>Rights</Rubric>
                   <p className="mt-6 max-w-[var(--measure)] text-[15px] leading-[1.9]" style={{ color: '#3a2a1a' }}>
-                    This is an educational project with no commercial intent. All rights to the Cosmere, its worlds and its characters belong to Brandon Sanderson.
+                    This is an educational project with no commercial intent. All rights to the Cosmere, its worlds and
+                    its characters belong to Brandon Sanderson.
                   </p>
                 </section>
                 <section className="mt-10">
                   <Rubric>Thanks</Rubric>
                   <p className="mt-6 max-w-[var(--measure)] text-[15px] leading-[1.9]" style={{ color: '#3a2a1a' }}>
-                    Deep gratitude to the contributors of The Coppermind, whose meticulous work makes archives like this possible. Without their dedication, this project would not exist.
+                    Deep gratitude to the contributors of The Coppermind, whose meticulous work makes archives like this
+                    possible. Without their dedication, this project would not exist.
                   </p>
                 </section>
                 <HandRule />
@@ -278,7 +403,9 @@ export default function About() {
                           style={{ color: '#2a1f14' }}
                         >
                           {c.name}
-                          <span className="text-[13px] italic no-underline" style={{ color: '#5a3d28' }}>{c.handle}</span>
+                          <span className="text-[13px] italic no-underline" style={{ color: '#5a3d28' }}>
+                            {c.handle}
+                          </span>
                         </a>
                       </li>
                     ))}
@@ -287,9 +414,19 @@ export default function About() {
                     <Signature />
                   </div>
                 </section>
-                <div className="mt-16 font-[var(--font-display)] text-[11px] uppercase tracking-[0.32em] text-center" style={{ color: '#6b4a2a' }}>— Finis Secundae Paginae —</div>
+                <div
+                  className="mt-16 font-[var(--font-display)] text-[11px] uppercase tracking-[0.32em] text-center"
+                  style={{ color: '#6b4a2a' }}
+                >
+                  — Finis Secundae Paginae —
+                </div>
               </div>
-              <div className="absolute bottom-6 right-[clamp(36px,6vw,72px)] font-[var(--font-display)] text-[9px] italic" style={{ color: '#7a6040' }}>— ii —</div>
+              <div
+                className="absolute bottom-6 right-[clamp(36px,6vw,72px)] font-[var(--font-display)] text-[9px] italic"
+                style={{ color: '#7a6040' }}
+              >
+                — ii —
+              </div>
             </div>
           </div>
         </div>
