@@ -203,25 +203,28 @@ Un criterio que se responde "no" sin explicación no pasa.
 | `/`                 | `LandingPage`                  | vivo         | Índice de 10 capítulos sobre papel   |
 | `/celestial-charts` | `KhrissAtlas`                  | vivo         | Atlas de Khriss, 12 spreads          |
 | `/about`            | `About`                        | vivo         |                                      |
-| `/magic`            | `MagicSystemsPage`             | vivo         | Ars Arcanum                          |
+| `/magic`            | `ArcanumRedirect`              | vivo         | Ars Arcanum (redirige a `/characters`) |
 | `/aharietiam`       | `AharietiamPage`               | vivo         | Escena R3F                           |
-| `/books`            | `StandaloneBooksPage`          | vivo         |                                      |
-| `/books/:id`        | `BookPage`                     | vivo         |                                      |
 | `/characters`       | `BiographicalArchivesPage`     | vivo         | Manuscrito de 3 capítulos            |
 | `/chronology`       | `StandaloneChronologyPage`     | vivo         | Línea temporal SVG                   |
-| `/library`          | `LibraryPage`                  | vivo         | Estanterías 3D (CSS)                 |
-| `/stats`            | `StatsPage`                    | vivo         | Diagrama de Taravangian              |
+| `/library`          | `LibraryPage`                  | vivo         | Estanterías + lector 3D; `?book=<id>` abre volúmenes |
 | `/compare`          | `ComparePage`                  | vivo         |                                      |
 | `/mind-map`         | `MindMapPage`                  | vivo         |                                      |
 | `/shadesmar`        | `ShadesmarPage`                | vivo         | Canvas2D                             |
+| `/records/:id`      | `CharacterRecordRedirect`      | vivo         | Redirección desde índice de búsqueda |
+| `/records/shards/:shardId` | `ShardPage`               | vivo         | Ficha de fragmento                   |
+| `/historical`       | `HistoricalPage`               | vivo         | Índice histórico                     |
 | `*`                 | `NotFound`                     | vivo         |                                      |
-| `/map`              | → `/celestial-charts`          | **redirect** | ruta muerta                          |
-| `/locations`        | → `/celestial-charts`          | **redirect** | ruta muerta                          |
-| `/shards`           | → `/celestial-charts`          | **redirect** | ruta muerta                          |
-| `/timeline`         | → `/chronology`                | **redirect** | ruta muerta                          |
-| `/glossary`         | → `/magic`                     | **redirect** | ruta muerta (el módulo ya no existe) |
-| `/heralds`          | → `/aharietiam`                | **redirect** | ruta muerta                          |
-| `/family-tree`      | → `/characters?tab=bloodlines` | **redirect** | ruta muerta                          |
+| `/books`            | → `/library`                  | **redirect** | legado, sustituido por `?book=`      |
+| `/books/:id`        | → `/library?book=:id`         | **redirect** | legado, abre el volumen en la biblioteca |
+| `/map`              | → `/celestial-charts`         | **redirect** | ruta muerta                          |
+| `/locations`        | → `/celestial-charts`         | **redirect** | ruta muerta                          |
+| `/shards`           | → `/celestial-charts`         | **redirect** | ruta muerta                          |
+| `/timeline`         | → `/chronology`               | **redirect** | ruta muerta                          |
+| `/glossary`         | → `/magic`                    | **redirect** | ruta muerta (el módulo ya no existe) |
+| `/heralds`          | → `/aharietiam`               | **redirect** | ruta muerta                          |
+| `/family-tree`      | → `/characters?tab=bloodlines`| **redirect** | ruta muerta                          |
+| `/stats`            | → `/taravangian`              | **redirect** | ruta muerta                          |
 
 **19 rutas públicas para 14 pantallas reales.** Los redirects son un agujero: cualquier enlace externo a `/map` lleva a un sitio que ya no significa lo que significaba.
 
@@ -533,7 +536,7 @@ Consecuencias:
 
 ### 2.9 Rendimiento (percepción)
 
-- **Sin estados de carga por ruta.** `RouteFallback` es genérico; solo `/books` tiene `BooksPageSkeleton`. Las demás rutas lazy muestran un fallback genérico o un hueco.
+- **Sin estados de carga por ruta.** `RouteFallback` es genérico. Las rutas lazy muestran un fallback genérico o un hueco.
 - **`useSearch` no tiene índice.** 7 bucles `for` secuenciales sobre 11 + 52 + 5 + 118 + 22 + 49 + 10 = **267 objetos** en cada pulsación, con `toLowerCase()` en cada comparación (no precalculado) y un tope arbitrario de 4 resultados por categoría (`MAX_PER_CATEGORY = 4`). Buscar "a" devuelve los 4 primeros de cada categoría en orden de array, sin relevance.
 - **`PhysicsSystem` + `grid.rebuild(souls)` en cada frame** (`Canvas.tsx:131,133`) reconstruye el grid espacial completo 60 veces por segundo sobre 700+ almas, incluso cuando el cluster está congelado.
 - `Math.random()` en `initFog` sin semilla → el canvas difiere entre renders; imposible de testear visualmente.

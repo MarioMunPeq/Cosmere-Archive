@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import StandaloneChronologyPage from '@/pages/StandaloneChronologyPage'
 
@@ -14,12 +14,12 @@ function renderPage() {
 describe('StandaloneChronologyPage', () => {
   it('renders the page title', () => {
     renderPage()
-    expect(screen.getByRole('heading', { name: /cosmere chronology/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /chronicon cosmerae/i })).toBeInTheDocument()
   })
 
   it('renders the description', () => {
     renderPage()
-    expect(screen.getByText(/anonymous archivist of silverlight/i)).toBeInTheDocument()
+    expect(screen.getByText(/archives of Silverlight/i)).toBeInTheDocument()
   })
 
   it('has a back link to the map', () => {
@@ -27,13 +27,15 @@ describe('StandaloneChronologyPage', () => {
     expect(screen.getByText('Archive')).toBeInTheDocument()
   })
 
-  it('renders saga index tabs', () => {
+  it('renders one saga filter bar with every saga', () => {
     renderPage()
-    expect(screen.getByText('Mistborn Era 1')).toBeInTheDocument()
-    expect(screen.getByText('The Stormlight Archive')).toBeInTheDocument()
-    expect(screen.getByText('Elantris')).toBeInTheDocument()
-    expect(screen.getByText('Warbreaker')).toBeInTheDocument()
-    expect(screen.getByText('White Sand')).toBeInTheDocument()
+    const filters = screen.getByRole('group', { name: /saga filters/i })
+    expect(within(filters).getByText('Mistborn Era 1')).toBeInTheDocument()
+    expect(within(filters).getByText('The Stormlight Archive')).toBeInTheDocument()
+    expect(within(filters).getByText('Elantris')).toBeInTheDocument()
+    expect(within(filters).getByText('Warbreaker')).toBeInTheDocument()
+    expect(within(filters).getByText('White Sand')).toBeInTheDocument()
+    expect(screen.queryByRole('group', { name: /saga index/i })).not.toBeInTheDocument()
   })
 
   it('renders timeline events as interactive SVG groups', () => {

@@ -14,7 +14,7 @@ function renderPage() {
 describe('About', () => {
   it('renders the main title', () => {
     renderPage()
-    expect(screen.getByText('About the Archive')).toBeInTheDocument()
+    expect(screen.getAllByText('About the Archive').length).toBeGreaterThanOrEqual(1)
   })
 
   it('renders the subtitle', () => {

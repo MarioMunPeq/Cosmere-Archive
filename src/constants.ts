@@ -10,5 +10,3 @@ export const FLY_DURATION_MS = 600
 
 export const SEARCH_DEBOUNCE_MS = 200
 export const PLACEHOLDER_ROTATE_MS = 4000
-
-export const MAX_FORK_SAGAS = 5

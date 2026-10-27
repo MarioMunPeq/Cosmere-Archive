@@ -20,7 +20,6 @@ import AppShell from '@/components/layout/AppShell'
 import NavBar from '@/components/layout/NavBar'
 import BottomNav from '@/components/layout/BottomNav'
 import HistoricalMenu from '@/components/layout/HistoricalMenu'
-import PageHeader from '@/components/layout/PageHeader'
 import {
   ALL_DESTINATIONS,
   CORE_DESTINATIONS,
@@ -261,21 +260,3 @@ describe('AppShell', () => {
   })
 })
 
-describe('PageHeader', () => {
-  it('renders a single h1 with the title', () => {
-    at('/', <PageHeader title="The Library" description="Collected records." />)
-    expect(screen.getByRole('heading', { level: 1, name: 'The Library' })).toBeInTheDocument()
-  })
-
-  it('makes the heading focusable so navigation is announced', () => {
-    at('/', <PageHeader title="The Library" />)
-    // data-page-title is what the Link primitive queries for after navigation.
-    expect(document.querySelector('h1[data-page-title]')).toHaveAttribute('tabindex', '-1')
-  })
-
-  it('renders the eyebrow and the description', () => {
-    at('/', <PageHeader title="T" eyebrow="Core" description="D" />)
-    expect(screen.getByText('Core')).toBeInTheDocument()
-    expect(screen.getByText('D')).toBeInTheDocument()
-  })
-})

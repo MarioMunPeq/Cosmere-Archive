@@ -24,9 +24,7 @@
       "rhythm_of_war"
     ],
     "status": "fallen",
-    "connections": [
-      "jasnah"
-    ],
+    "connections": [],
     "positionIndex": 6,
     "color": "#f472b6"
   },
@@ -55,9 +53,7 @@
       "rhythm_of_war"
     ],
     "status": "fallen",
-    "connections": [
-      "shallan"
-    ],
+    "connections": [],
     "positionIndex": 2,
     "color": "#fb923c"
   },
@@ -86,9 +82,7 @@
       "wind_and_truth"
     ],
     "status": "fallen",
-    "connections": [
-      "dalinar"
-    ],
+    "connections": [],
     "positionIndex": 9,
     "color": "#eab308"
   },
@@ -120,10 +114,7 @@
     ],
     "status": "fallen",
     "connections": [
-      "shalash",
-      "szeth",
-      "gavilar",
-      "moash"
+      "shalash"
     ],
     "positionIndex": 0,
     "color": "#60a5fa"
@@ -154,10 +145,7 @@
       "wind_and_truth"
     ],
     "status": "fallen",
-    "connections": [
-      "jasnah",
-      "hoid"
-    ],
+    "connections": [],
     "positionIndex": 7,
     "color": "#fbbf24"
   },
@@ -188,10 +176,7 @@
       "wind_and_truth"
     ],
     "status": "fallen",
-    "connections": [
-      "szeth",
-      "nightblood"
-    ],
+    "connections": [],
     "positionIndex": 1,
     "color": "#f87171"
   },
@@ -220,9 +205,7 @@
       "oathbringer"
     ],
     "status": "fallen",
-    "connections": [
-      "jasnah"
-    ],
+    "connections": [],
     "positionIndex": 4,
     "color": "#2dd4bf"
   },
@@ -254,9 +237,7 @@
     ],
     "status": "fallen",
     "connections": [
-      "jezrien",
-      "taln",
-      "hoid"
+      "jezrien"
     ],
     "positionIndex": 5,
     "color": "#a78bfa"
@@ -290,8 +271,7 @@
     ],
     "status": "standing",
     "connections": [
-      "shalash",
-      "dalinar"
+      "shalash"
     ],
     "positionIndex": 8,
     "color": "#f97316"
@@ -321,9 +301,7 @@
       "rhythm_of_war"
     ],
     "status": "fallen",
-    "connections": [
-      "lift"
-    ],
+    "connections": [],
     "positionIndex": 3,
     "color": "#34d399"
   }

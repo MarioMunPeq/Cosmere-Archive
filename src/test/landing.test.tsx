@@ -13,7 +13,6 @@ import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 
 import ArchiveDoors, { ARCHIVE_COUNTS } from '@/components/landing/ArchiveDoors'
-import HistoricalBand from '@/components/landing/HistoricalBand'
 import HistoricalPage from '@/pages/HistoricalPage'
 import { BOOKS, SAGAS, ALL_CHARACTERS, PLANETS } from '@/data/static'
 import { TIMELINE_EVENTS, ERAS } from '@/data/static/timeline'
@@ -99,21 +98,6 @@ describe('ArchiveDoors', () => {
       expect(accessibleDescription).toBeTruthy()
       expect(accessibleDescription!.length).toBeGreaterThan(8)
     }
-  })
-})
-
-describe('HistoricalBand', () => {
-  it('lists the archived sections and links to the index', () => {
-    wrap(<HistoricalBand />)
-    for (const dest of HISTORICAL_DESTINATIONS) {
-      expect(screen.getByRole('link', { name: dest.label })).toHaveAttribute('href', dest.to)
-    }
-    expect(screen.getByRole('link', { name: 'Index' })).toHaveAttribute('href', '/historical')
-  })
-
-  it('is a labelled navigation landmark', () => {
-    wrap(<HistoricalBand />)
-    expect(screen.getByRole('navigation', { name: /archived/i })).toBeInTheDocument()
   })
 })
 

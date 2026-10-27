@@ -49,7 +49,7 @@ vi.mock('minisearch', () => {
           title: 'Ghostbloods Founded',
           subtitle: '1021',
           type: 'event',
-          route: '/historical/chronology?event=ghostbloods',
+          route: '/chronology?event=ghostbloods',
         },
       ]
       return query.trim() === '' ? [] : all

@@ -135,16 +135,16 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - Character chips use avatar‑initial + planet‑color dot in horizontal scrollable row (solves "long scroll" complaint)
 - Hoid preselected because he has the most connections (8) and is the most iconic Cosmere character
 - Relationship labels displayed both on edge midpoints in SVG and as clickable pills in bottom info bar
-- Detail panel uses right-side slide-in overlay (`w-96`) matching MagicSystemsPage panel pattern
+- Detail panel uses right-side slide-in overlay (`w-96`) matching the arcanum volume panel pattern
 - Shards tab reuses existing shard data derivation logic (parses `planet.shard` field)
 - Timeline: keep horizontal layout (made taller: 100px main line, 64px fork spacing), eras as clickable colored rect bands + separate era buttons bar, dashed straight fork connections, SVG glow filters + CSS dot-enter for staggered entrance, cosmic/cyan theme matching Locations
 - Era info shown as inline collapsible bar below eras row (name, year range, event count, description)
 - Active dots: just stronger glow + cyan stroke, no breathing ring (removed in v2 for cleanliness)
 - SVG filters need `x/y/width/height` bounds to avoid square clipping on glow
-- Books page uses flat card grid (not grouped by saga sections), renders content-only and wrapped by StandaloneBooksPage for page chrome
+- Books live inside the Library (`/library?book=<id>`); `/books` and `/books/:id` survive only as redirects to `/library`
 - Cover images stored as `.webp` in `public/images/covers/` with relative paths in `books.ts`, BookCover prepends `import.meta.env.BASE_URL`
 - Image failure falls back to SVG cover (onError handler), not broken img tag
-- Cross-reference URL params follow MagicSystemsPage `system` param pattern: CharactersPage reads `character`, PlanetsTabContent reads `planet`
+- Cross-reference URL params follow the arcanum `system` param pattern: the records route reads `character`, the atlas reads `planet`, the library reads `book`
 - Stats page uses scroll-triggered section reveals (IntersectionObserver), pure SVG for all charts, `AnimatedCounter` for number animations, star field background matching rest of site
 - Sections order: Hero → Stat Cards → Books by Saga → Characters by Planet → Word Count → Publication Timeline → Shards Grid → Magic Categories → Event Density → Aharietiam
 - BookShelf uses spine images when available (`book.spine` field), falls back to CSS gradient + initials for missing images
@@ -276,9 +276,9 @@ Redesign the Books page (cosmic/cyan aesthetic, cross-ref links), improve all sy
 - `src/index.css`: contains `animate-dot-enter`, `animate-dot-pulse`, `animate-era-glow`, `animate-fade-in-up`, `animate-slide-up`, `animate-slide-in-right`, `animate-twinkle-slow`, `animate-glow-pulse`, `animate-float`, and other cosmic keyframes
 - `src/test/StandaloneTimelinePage.test.tsx`: 5 tests (heading, description, back link, saga buttons, event SVGs)
 - `src/components/detail/PlanetForceGraph.tsx`: reference for `hashSeed()` pattern
-- `src/pages/BooksPage.tsx`: cosmic card grid for books (content only, wrapped by StandaloneBooksPage)
-- `src/pages/StandaloneBooksPage.tsx`: wrapper with gradient title, BackToMapButton
-- `src/pages/BookPage.tsx`: detail page with planets, characters, magic system cross-references
+- `src/pages/LibraryPage.tsx`: shelf + 3D reader; `?book=<id>` is the deep-link contract (all book references point here)
+- `src/components/library/library-book.tsx`: spine/volvelle entry that opens `/library?book=<id>`
+- `src/components/library/BookScene.tsx`: R3F reader scene used by the library deep link
 - `src/components/common/BookCover.tsx`: SVG fallback, gradient fills, star dots, `import.meta.env.BASE_URL` prefix
 - `src/data/static/books.ts`: all 27 books with Coppermind-style synopses, relative cover paths, and word counts
 - `src/data/generated/characters.json`: all 93 characters with Coppermind-style descriptions

@@ -1,69 +1,291 @@
-import { memo, useMemo } from 'react'
+import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { TimelineEvent } from '@/data/static/timeline'
 import { ERAS } from '@/data/static/timeline'
-import { yearToX, TOTAL_WIDTH, MAIN_LINE_Y, FORK_START_Y, FORK_SPACING } from '@/utils/timeline-layout'
-import { FALLBACK_COLOR } from '@/data/static'
+import { yearToX, TOTAL_WIDTH, TIMELINE_JUMPS } from '@/utils/timeline-layout'
 
 function formatYear(year: number): string {
   if (year < 0) return `${-year} BC`
   return `${year} AD`
 }
 
+export interface TimelineMetrics {
+  height: number
+  lineY: number
+}
+
 interface ChronologyProps {
   events: TimelineEvent[]
-  selectedSagas: string[]
-  sagaColors: Record<string, string>
-  sagaNowYears: Record<string, number>
-  sagaLabels: Record<string, string>
   hoveredEvent: string | null
   expandedEvent: string | null
   selectedEra: string | null
-  onHoverEvent: (eventId: string | null, event?: TimelineEvent, line?: 'main' | 'fork', forkSaga?: string) => void
-  onClickEvent: (eventId: string | null, event?: TimelineEvent, line?: 'main' | 'fork', forkSaga?: string) => void
+  sagaFilter: string[]
+  availableHeight: number
+  onMetrics: (metrics: TimelineMetrics) => void
+  onHoverEvent: (eventId: string | null, event?: TimelineEvent) => void
+  onClickEvent: (eventId: string | null, event?: TimelineEvent) => void
   onSelectEra: (eraId: string | null) => void
 }
 
-const MAIN_HEIGHT = MAIN_LINE_Y + 28
-const FORK_HEIGHT = 16
+const LABEL_FONT_SIZE = 17
+const LABEL_FONT_FAMILY = "'Caveat Variable', cursive"
+/** Horizontal breathing room kept between two labels in the same lane. */
+const LABEL_MARGIN_X = 14
+/** Every extra lane is 30px farther from the chronology line. */
+const LABEL_LANE_GAP = 30
+/** Space kept above the topmost label and below the bottommost label. */
+const VERTICAL_PADDING = 18
+const MIN_CONTENT_HEIGHT = 280
+
+const LABEL_ASCENT = Math.ceil(LABEL_FONT_SIZE * 0.82)
+const LABEL_DESCENT = Math.ceil(LABEL_FONT_SIZE * 0.3)
+const DIAMOND_HALF = 12 / Math.SQRT2 / 2
+
+interface LabelCandidate {
+  year: number
+  x: number
+  text: string
+  eventId: string
+  eraId: string
+  radius: number
+  estimatedWidth: number
+}
+
+interface LabelPlacement extends LabelCandidate {
+  width: number
+  lane: number
+  /** Baseline offset from the timeline line. Negative = above the line. */
+  offsetY: number
+}
+
+let measurementContext: CanvasRenderingContext2D | null | undefined
+
+/**
+ * First-pass width estimate. The real widths are taken from the rendered
+ * `<text>` elements with `getBBox()` in the layout effect below; this only
+ * gives the first paint a layout close enough that nothing jumps.
+ */
+function estimateLabelWidth(text: string): number {
+  if (typeof document === 'undefined') return text.length * 9
+  if (measurementContext === undefined) {
+    const canvas = document.createElement('canvas')
+    measurementContext = canvas.getContext('2d')
+  }
+  if (!measurementContext) return text.length * 9
+  measurementContext.font = `${LABEL_FONT_SIZE}px ${LABEL_FONT_FAMILY}`
+  return Math.ceil(measurementContext.measureText(text).width)
+}
+
+/**
+ * Greedy lane placement in visual order. Lanes alternate above/below the line:
+ * 0 = above-1, 1 = below-1, 2 = above-2, 3 = below-2, and so on. A label takes
+ * the first lane whose occupied intervals do not overlap it after adding the
+ * 14px margin to both sides.
+ */
+function placeLabels(candidates: LabelCandidate[], widths: Readonly<Record<number, number>>): LabelPlacement[] {
+  const occupied = new Map<number, Array<{ left: number; right: number }>>()
+
+  return candidates.map((candidate) => {
+    const width = widths[candidate.year] ?? candidate.estimatedWidth
+    const left = candidate.x - width / 2 - LABEL_MARGIN_X
+    const right = candidate.x + width / 2 + LABEL_MARGIN_X
+
+    let lane = 0
+    for (;;) {
+      const intervals = occupied.get(lane)
+      const collides = intervals?.some((interval) => left < interval.right && right > interval.left) ?? false
+      if (!collides) break
+      lane++
+    }
+
+    const intervals = occupied.get(lane)
+    if (intervals) intervals.push({ left, right })
+    else occupied.set(lane, [{ left, right }])
+
+    const level = Math.floor(lane / 2)
+    const above = lane % 2 === 0
+    const offsetY = above
+      ? -(candidate.radius + 18 + level * LABEL_LANE_GAP)
+      : candidate.radius + 24 + level * LABEL_LANE_GAP
+
+    return { ...candidate, width, lane, offsetY }
+  })
+}
+
+function getEventShape(imp: number): 'circle' | 'diamond' | 'hollow' {
+  if (imp >= 5) return 'circle'
+  if (imp >= 4) return 'diamond'
+  return 'hollow'
+}
+
+function pointRadius(imp: number): number {
+  if (imp >= 5) return 8
+  if (imp >= 3) return 6
+  return 4
+}
 
 function Chronology({
   events,
-  selectedSagas,
-  sagaColors,
-  sagaNowYears,
-  sagaLabels,
   hoveredEvent,
   expandedEvent,
   selectedEra,
+  sagaFilter,
+  availableHeight,
+  onMetrics,
   onHoverEvent,
   onClickEvent,
   onSelectEra,
 }: ChronologyProps) {
-  const forkCount = selectedSagas.length
-  const totalHeight = useMemo(() => MAIN_HEIGHT + FORK_HEIGHT + forkCount * FORK_SPACING + 16, [forkCount])
+  const isDimmed = (ev: TimelineEvent) => {
+    if (sagaFilter.length === 0) return false
+    if (!ev.saga) return true
+    return !sagaFilter.includes(ev.saga)
+  }
 
-  const forkEventsBySaga = useMemo(() => {
-    const map = new Map<string, TimelineEvent[]>()
-    for (const saga of selectedSagas) {
-      map.set(
-        saga,
-        events.filter((e) => e.saga === saga),
-      )
+  /*
+   * Year labels are laid out independently of the points. One label is kept
+   * per year (the most important event of that year), and its real width is
+   * measured from the rendered text before the final lane assignment.
+   */
+  const [measuredWidths, setMeasuredWidths] = useState<Record<number, number>>({})
+  const [fontEpoch, setFontEpoch] = useState(0)
+  const [measuredEpoch, setMeasuredEpoch] = useState(-1)
+  const labelRefs = useRef(new Map<number, SVGTextElement>())
+
+  const registerLabel = useCallback((node: SVGTextElement | null) => {
+    if (!node) return
+    const year = Number(node.dataset.year)
+    if (Number.isFinite(year)) labelRefs.current.set(year, node)
+  }, [])
+
+  useEffect(() => {
+    if (typeof document === 'undefined' || !document.fonts) return
+    let cancelled = false
+    const bump = () => {
+      if (!cancelled) setFontEpoch((epoch) => epoch + 1)
     }
-    return map
-  }, [events, selectedSagas])
+    void document.fonts.ready.then(bump)
+    document.fonts.addEventListener('loadingdone', bump)
+    return () => {
+      cancelled = true
+      document.fonts.removeEventListener('loadingdone', bump)
+    }
+  }, [])
 
-  const sortedEvents = useMemo(() => [...events].sort((a, b) => a.year - b.year), [events])
+  const labelCandidates = useMemo<LabelCandidate[]>(() => {
+    const representative = new Map<number, TimelineEvent>()
+    for (const event of events) {
+      if (event.importance < 3) continue
+      const current = representative.get(event.year)
+      if (!current || event.importance > current.importance) representative.set(event.year, event)
+    }
+
+    return [...representative.values()]
+      .sort((a, b) => a.year - b.year)
+      .map((event) => {
+        const era = ERAS.find((candidate) => event.year >= candidate.startYear && event.year <= candidate.endYear)
+        const text = formatYear(event.year)
+        return {
+          year: event.year,
+          x: yearToX(event.year),
+          text,
+          eventId: event.id,
+          eraId: era?.id ?? 'unplaced',
+          radius: pointRadius(event.importance),
+          estimatedWidth: estimateLabelWidth(text),
+        }
+      })
+  }, [events])
+
+  const labelPlacements = useMemo(
+    () => placeLabels(labelCandidates, measuredWidths),
+    [labelCandidates, measuredWidths],
+  )
+  const placementByEvent = useMemo(
+    () => new Map(labelPlacements.map((placement) => [placement.eventId, placement])),
+    [labelPlacements],
+  )
+
+  const selectedYear = useMemo(
+    () => events.find((event) => event.id === expandedEvent)?.year ?? null,
+    [events, expandedEvent],
+  )
+
+  useLayoutEffect(() => {
+    const liveYears = new Set(labelCandidates.map((candidate) => candidate.year))
+    for (const year of labelRefs.current.keys()) {
+      if (!liveYears.has(year)) labelRefs.current.delete(year)
+    }
+
+    /*
+     * `getBBox()` forces a layout read, so it runs in the next frame rather
+     * than synchronously inside the effect. jsdom has no implementation at
+     * all, and in that case `measured` stays at zero and no state is touched.
+     */
+    const frame = requestAnimationFrame(() => {
+      const next: Record<number, number> = {}
+      let changed = false
+      let measured = 0
+      for (const [year, node] of labelRefs.current) {
+        if (typeof node.getBBox !== 'function') continue
+        const width = node.getBBox().width
+        if (!Number.isFinite(width) || width <= 0) continue
+        measured++
+        next[year] = width
+        if (Math.abs((measuredWidths[year] ?? -1) - width) > 0.5) changed = true
+      }
+
+      if (measured === 0) return
+      if (changed) setMeasuredWidths(next)
+      setMeasuredEpoch(fontEpoch)
+    })
+
+    return () => cancelAnimationFrame(frame)
+  }, [labelCandidates, measuredWidths, fontEpoch])
+
+  const labelsReady =
+    fontEpoch > 0 &&
+    measuredEpoch === fontEpoch &&
+    labelCandidates.length > 0 &&
+    labelCandidates.every((candidate) => measuredWidths[candidate.year] != null)
+
+  /*
+   * The line is centred in the space the page gives it. If the measured lanes
+   * need more room than the viewport, the SVG grows and the reader can scroll.
+   */
+  const { contentHeight, lineY } = useMemo(() => {
+    let above = 0
+    let below = 0
+    for (const placement of labelPlacements) {
+      if (placement.offsetY < 0) above = Math.max(above, -placement.offsetY)
+      else below = Math.max(below, placement.offsetY)
+    }
+
+    const topPad = above + LABEL_ASCENT + VERTICAL_PADDING
+    const bottomPad = below + LABEL_DESCENT + VERTICAL_PADDING
+    const required = topPad + bottomPad
+    const height = Math.max(availableHeight > 0 ? availableHeight : MIN_CONTENT_HEIGHT, required, MIN_CONTENT_HEIGHT)
+    const centered = height / 2
+    return {
+      contentHeight: height,
+      lineY: Math.min(Math.max(centered, topPad), height - bottomPad),
+    }
+  }, [labelPlacements, availableHeight])
+
+  useEffect(() => {
+    onMetrics({ height: contentHeight, lineY })
+  }, [contentHeight, lineY, onMetrics])
 
   return (
     <svg
       width={TOTAL_WIDTH}
-      height={totalHeight}
+      height={contentHeight}
       xmlns="http://www.w3.org/2000/svg"
+      data-label-layout={labelsReady ? 'ready' : 'measuring'}
+      data-line-y={lineY}
       style={{ display: 'block', minWidth: TOTAL_WIDTH }}
     >
       {/* Archival background */}
-      <rect x={0} y={0} width={TOTAL_WIDTH} height={totalHeight} fill="transparent" />
+      <rect x={0} y={0} width={TOTAL_WIDTH} height={contentHeight} fill="transparent" />
 
       {/* Era bands as subtle column markers */}
       {ERAS.map((era) => {
@@ -74,6 +296,8 @@ function Chronology({
         return (
           <g
             key={era.id}
+            data-era-band={era.id}
+            data-era-name={era.name}
             role="button"
             tabIndex={0}
             aria-label={`${era.name}: ${formatYear(era.startYear)} \u2014 ${formatYear(era.endYear)}`}
@@ -86,62 +310,61 @@ function Chronology({
             onClick={() => onSelectEra(isSelected ? null : era.id)}
             style={{ cursor: 'pointer' }}
           >
-            <rect x={x1} y={0} width={w} height={MAIN_HEIGHT} fill={era.color} opacity={isSelected ? 0.06 : 0.025} />
+            <rect x={x1} y={0} width={w} height={contentHeight} fill={era.color} opacity={isSelected ? 0.06 : 0.02} />
             {isSelected && (
-              <line
-                x1={x1}
-                y1={MAIN_HEIGHT - 1}
-                x2={x2}
-                y2={MAIN_HEIGHT - 1}
+              <path
+                d={`M ${x1} ${lineY + 74} C ${x1 + 12} ${lineY + 73}, ${x2 - 12} ${lineY + 73}, ${x2} ${lineY + 74}`}
                 stroke={era.color}
-                strokeWidth={1}
+                strokeWidth={1.2}
+                fill="none"
                 opacity={0.3}
+                strokeLinecap="round"
               />
             )}
           </g>
         )
       })}
 
-      {/* Fork connection lines */}
-      {selectedSagas.map((saga, i) => {
-        const y = FORK_START_Y + i * FORK_SPACING
-        const color = sagaColors[saga] || FALLBACK_COLOR
-        const forked = forkEventsBySaga.get(saga) || []
-        return forked
-          .filter((e) => e.importance >= 4)
-          .map((event) => {
-            const ex = yearToX(event.year)
-            return (
-              <line
-                key={`conn-${event.id}`}
-                x1={ex}
-                y1={MAIN_LINE_Y + 1}
-                x2={ex}
-                y2={y - 1}
-                stroke={color}
-                strokeWidth={0.5}
-                strokeDasharray="2 4"
-                opacity={0.15}
-              />
-            )
-          })
-      })}
+      {/* Jump indicators */}
+      {TIMELINE_JUMPS.map((jx, i) => (
+        <g key={`jump-${i}`}>
+          <line x1={jx + 10} y1={lineY} x2={jx + 40} y2={lineY} stroke="#6b4a2a" strokeWidth={1.2} strokeDasharray="4 6" opacity={0.4} />
+          <text x={jx + 25} y={lineY - 8} textAnchor="middle" fontFamily="'Caveat Variable', cursive" fontSize="12" fill="#6b4a2a" opacity={0.55}>
+            ···
+          </text>
+        </g>
+      ))}
 
       {/* Main chronology line */}
-      <line x1={0} y1={MAIN_LINE_Y} x2={TOTAL_WIDTH} y2={MAIN_LINE_Y} stroke="#374151" strokeWidth={1} opacity={0.5} />
+      <path
+        d={`M 0 ${lineY} C ${TOTAL_WIDTH * 0.25} ${lineY + 0.8}, ${TOTAL_WIDTH * 0.5} ${lineY - 0.6}, ${TOTAL_WIDTH * 0.75} ${lineY + 0.6} L ${TOTAL_WIDTH} ${lineY}`}
+        stroke="#4a3524"
+        strokeWidth={3}
+        opacity={0.8}
+        fill="none"
+        strokeLinecap="round"
+      />
 
       {/* Main line events */}
-      {sortedEvents.map((event) => {
+      {events.map((event) => {
         const x = yearToX(event.year)
         const imp = event.importance
-        const fill = imp >= 5 ? '#cbd5e1' : imp >= 4 ? '#64748b' : imp >= 3 ? '#4b5563' : '#374151'
-        const r = imp >= 5 ? 8 : imp >= 4 ? 6 : imp >= 3 ? 4.5 : 3
+        const ink = imp >= 5 ? '#1f160d' : imp >= 4 ? '#2a1f14' : '#3a2a1a'
+        const r = pointRadius(imp)
         const isActive = hoveredEvent === event.id || expandedEvent === event.id
-        const isClickable = imp >= 4
+        const isClickable = imp >= 3
+        const dim = isDimmed(event)
+        const shape = getEventShape(imp)
+        const placement = placementByEvent.get(event.id)
+        const labelIsSelected = placement != null && selectedYear === placement.year
 
         return (
           <g
             key={event.id}
+            data-timeline-point={event.id}
+            data-point-year={event.year}
+            data-point-x={x}
+            data-point-y={lineY}
             role={isClickable ? 'button' : undefined}
             tabIndex={isClickable ? 0 : -1}
             aria-label={isClickable ? `${event.title} \u2014 ${formatYear(event.year)}` : undefined}
@@ -150,155 +373,97 @@ function Chronology({
                 ? (e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault()
-                      onClickEvent(expandedEvent === event.id ? null : event.id, event, 'main')
+                      onClickEvent(expandedEvent === event.id ? null : event.id, event)
                     }
                   }
                 : undefined
             }
-            onMouseEnter={() => onHoverEvent(event.id, event, 'main')}
+            onMouseEnter={() => onHoverEvent(event.id, event)}
             onMouseLeave={() => hoveredEvent === event.id && onHoverEvent(null)}
-            onClick={() =>
-              onClickEvent(isClickable ? (expandedEvent === event.id ? null : event.id) : null, event, 'main')
-            }
+            onClick={() => onClickEvent(isClickable && expandedEvent !== event.id ? event.id : null, event)}
             style={{ cursor: isClickable ? 'pointer' : 'default' }}
+            opacity={dim ? 0.18 : 1}
           >
-            {imp >= 5 && (
-              <>
-                <circle
-                  cx={x}
-                  cy={MAIN_LINE_Y}
-                  r={r + 3}
-                  fill="none"
-                  stroke="#64748b"
-                  strokeWidth={0.5}
-                  opacity={0.3}
-                />
-                <circle cx={x} cy={MAIN_LINE_Y} r={r} fill={fill} opacity={0.6} />
-                <circle cx={x} cy={MAIN_LINE_Y} r={3} fill={fill} opacity={0.9} />
-              </>
-            )}
-            {imp === 4 && (
-              <g transform={`translate(${x}, ${MAIN_LINE_Y}) rotate(45)`}>
-                <rect x={-4} y={-4} width={8} height={8} rx={1} fill={fill} opacity={0.6} />
-              </g>
-            )}
-            {imp === 3 && (
-              <>
-                <circle cx={x} cy={MAIN_LINE_Y} r={r} fill="none" stroke={fill} strokeWidth={0.5} opacity={0.5} />
-                <circle cx={x} cy={MAIN_LINE_Y} r={2} fill={fill} opacity={0.5} />
-              </>
-            )}
-            {imp < 3 && <circle cx={x} cy={MAIN_LINE_Y} r={r} fill={fill} opacity={0.3} />}
-
-            {isActive && imp >= 4 && (
-              <circle cx={x} cy={MAIN_LINE_Y} r={r + 5} fill="none" stroke="#94a3b8" strokeWidth={0.5} opacity={0.5} />
-            )}
-          </g>
-        )
-      })}
-
-      {/* Fork lanes */}
-      {selectedSagas.map((saga, i) => {
-        const y = FORK_START_Y + i * FORK_SPACING
-        const color = sagaColors[saga] || FALLBACK_COLOR
-        const label = sagaLabels[saga] || saga
-        const forked = forkEventsBySaga.get(saga) || []
-        const nowYear = sagaNowYears[saga]
-        const nowX = nowYear != null ? yearToX(nowYear) : null
-
-        return (
-          <g key={saga}>
-            {/* Fork lane line */}
-            <line x1={0} y1={y} x2={TOTAL_WIDTH} y2={y} stroke={color} strokeWidth={0.5} opacity={0.15} />
-
-            {/* Saga label */}
-            <text
-              x={8}
-              y={y - 10}
-              fill={color}
-              fontSize={11}
-              fontFamily="Georgia, 'EB Garamond', serif"
-              fontWeight={400}
-              opacity={0.5}
-              letterSpacing="0.1em"
+            <g
+              style={{
+                transformOrigin: `${x}px ${lineY}px`,
+                transform: isActive ? 'scale(1.3)' : 'scale(1)',
+                transition: 'transform 160ms ease, filter 160ms ease',
+                filter: isActive ? 'drop-shadow(0 0 5px rgba(122, 92, 52, 0.9))' : undefined,
+              }}
             >
-              {label}
-            </text>
+              {shape === 'circle' && (
+                <g>
+                  <circle cx={x} cy={lineY} r={r + 3} fill="none" stroke={ink} strokeWidth={0.8} opacity={0.3} />
+                  <circle cx={x} cy={lineY} r={r} fill={ink} opacity={0.94} />
+                </g>
+              )}
+              {shape === 'diamond' && (
+                <g transform={`translate(${x}, ${lineY}) rotate(45)`}>
+                  <rect
+                    x={-DIAMOND_HALF}
+                    y={-DIAMOND_HALF}
+                    width={DIAMOND_HALF * 2}
+                    height={DIAMOND_HALF * 2}
+                    rx={0.5}
+                    fill={ink}
+                    opacity={0.92}
+                  />
+                </g>
+              )}
+              {shape === 'hollow' && (
+                <circle cx={x} cy={lineY} r={r} fill="none" stroke={ink} strokeWidth={1.3} opacity={imp >= 3 ? 0.85 : 0.55} />
+              )}
+            </g>
 
-            {/* NOW marker */}
-            {nowX != null && (
+            {isActive && (
+              <circle cx={x} cy={lineY} r={r + 6} fill="none" stroke="#b99a5f" strokeWidth={1.1} opacity={0.45} />
+            )}
+
+            {placement && (
               <>
-                <line x1={nowX} y1={y - 8} x2={nowX} y2={y + 8} stroke={color} strokeWidth={1} opacity={0.4} />
-                <text x={nowX + 4} y={y - 2} fill={color} fontSize={9} fontFamily="Georgia, serif" opacity={0.5}>
-                  NOW
+                <path
+                  d={
+                    placement.offsetY < 0
+                      ? `M ${placement.x} ${lineY - placement.radius - 3} L ${placement.x} ${lineY + placement.offsetY + 4}`
+                      : `M ${placement.x} ${lineY + placement.radius + 3} L ${placement.x} ${lineY + placement.offsetY - LABEL_ASCENT}`
+                  }
+                  stroke="#6b4a2a"
+                  strokeWidth={0.9}
+                  opacity={0.45}
+                  fill="none"
+                />
+                <text
+                  ref={registerLabel}
+                  data-year-label={placement.year}
+                  data-year={placement.year}
+                  data-era={placement.eraId}
+                  data-lane={placement.lane}
+                  data-label-side={placement.offsetY < 0 ? 'above' : 'below'}
+                  x={placement.x}
+                  y={lineY + placement.offsetY}
+                  textAnchor="middle"
+                  fontFamily={LABEL_FONT_FAMILY}
+                  fontSize={LABEL_FONT_SIZE}
+                  fontWeight={labelIsSelected ? 600 : 500}
+                  fill={labelIsSelected ? '#140d07' : '#241a10'}
+                  opacity={1}
+                >
+                  {placement.text}
                 </text>
               </>
             )}
 
-            {/* Fork events */}
-            {forked.map((event) => {
-              const ex = yearToX(event.year)
-              const imp = event.importance
-              const isActive = hoveredEvent === event.id || expandedEvent === event.id
-              const isClickable = imp >= 4
-              const fill = imp >= 5 ? color : imp >= 4 ? color : '#4b5563'
-              const r = imp >= 5 ? 6 : imp >= 4 ? 4.5 : 3
-              const opacity = imp >= 4 ? 0.7 : 0.25
-
-              return (
-                <g
-                  key={event.id}
-                  role={isClickable ? 'button' : undefined}
-                  tabIndex={isClickable ? 0 : -1}
-                  aria-label={isClickable ? `${event.title} (${label})` : undefined}
-                  onKeyDown={
-                    isClickable
-                      ? (e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault()
-                            onClickEvent(expandedEvent === event.id ? null : event.id, event, 'fork', saga)
-                          }
-                        }
-                      : undefined
-                  }
-                  onMouseEnter={() => onHoverEvent(event.id, event, 'fork', saga)}
-                  onMouseLeave={() => hoveredEvent === event.id && onHoverEvent(null)}
-                  onClick={() =>
-                    onClickEvent(
-                      isClickable ? (expandedEvent === event.id ? null : event.id) : null,
-                      event,
-                      'fork',
-                      saga,
-                    )
-                  }
-                  style={{ cursor: isClickable ? 'pointer' : 'default' }}
-                >
-                  {imp >= 5 && (
-                    <>
-                      <circle cx={ex} cy={y} r={r + 2} fill="none" stroke={fill} strokeWidth={0.5} opacity={0.3} />
-                      <circle cx={ex} cy={y} r={r} fill={fill} opacity={opacity} />
-                      <circle cx={ex} cy={y} r={2.5} fill={fill} opacity={0.9} />
-                    </>
-                  )}
-                  {imp === 4 && (
-                    <g transform={`translate(${ex}, ${y}) rotate(45)`}>
-                      <rect x={-3.5} y={-3.5} width={7} height={7} rx={1} fill={fill} opacity={opacity} />
-                    </g>
-                  )}
-                  {imp === 3 && (
-                    <>
-                      <circle cx={ex} cy={y} r={r} fill="none" stroke={fill} strokeWidth={0.5} opacity={0.4} />
-                      <circle cx={ex} cy={y} r={1.5} fill={fill} opacity={0.4} />
-                    </>
-                  )}
-                  {imp < 3 && <circle cx={ex} cy={y} r={2.5} fill={fill} opacity={0.2} />}
-
-                  {isActive && imp >= 4 && (
-                    <circle cx={ex} cy={y} r={r + 4} fill="none" stroke="#94a3b8" strokeWidth={0.5} opacity={0.4} />
-                  )}
-                </g>
-              )
-            })}
+            {/* Generous invisible hit target so a point is easy to select. */}
+            <circle
+              data-point-hit={event.id}
+              data-point-hit-year={event.year}
+              cx={x}
+              cy={lineY}
+              r={Math.max(r + 6, 14)}
+              fill="rgba(0,0,0,0)"
+              pointerEvents="all"
+            />
           </g>
         )
       })}

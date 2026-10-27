@@ -8,28 +8,30 @@ interface Props {
 
 export default function ChapterNav({ eras, selectedEra, onSelect }: Props) {
   return (
-    <nav className="flex flex-wrap items-baseline gap-x-10 gap-y-3 px-6 py-4">
+    <nav className="flex flex-nowrap items-center gap-6 overflow-x-auto px-6 py-4">
       {eras.map((era) => {
         const active = selectedEra === era.id
         return (
           <button
             key={era.id}
+            data-era-button={era.id}
+            data-active={active ? 'true' : 'false'}
             onClick={() => onSelect(active ? null : era.id)}
-            className={`group text-left transition-all duration-500`}
+            className="group flex flex-col items-start whitespace-nowrap transition-all duration-300"
           >
             <span
-              className={`block font-serif text-xs tracking-[0.25em] uppercase transition-all duration-500 ${
-                active ? 'text-white' : 'text-gray-600 group-hover:text-gray-400'
-              }`}
-              style={{ letterSpacing: '0.25em' }}
+              className="font-[var(--font-display)] text-[13px] tracking-[0.24em] uppercase"
+              style={{ color: active ? '#2a1f14' : '#6b4a2a' }}
             >
               {era.name}
             </span>
             <span
-              className={`mt-1 block h-px transition-all duration-500 ${
-                active ? 'w-full opacity-60' : 'w-0 group-hover:w-full opacity-20'
-              }`}
-              style={{ backgroundColor: era.color }}
+              className="mt-1 h-px transition-all duration-300"
+              style={{
+                backgroundColor: era.color,
+                width: active ? '100%' : '0%',
+                opacity: active ? 0.6 : 0.25,
+              }}
             />
           </button>
         )
