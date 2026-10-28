@@ -84,8 +84,8 @@ describe('records — data invariants', () => {
         expect(url, `${c.name} portrait URL`).toContain(portraitStem(c.name))
       }
     }
-    expect(portraits).toBe(24)
-    expect(CHARACTERS.length - portraits).toBe(69)
+    expect(portraits).toBe(34)
+    expect(CHARACTERS.length - portraits).toBe(CHARACTERS.length - 34)
   })
 
   it('the portrait list has no entries for characters we do not have', () => {

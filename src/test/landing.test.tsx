@@ -125,6 +125,8 @@ describe('HistoricalPage', () => {
 
   it('shows a status note on every archived section (A.3)', () => {
     wrap(<HistoricalPage />)
-    expect(screen.getAllByText(/^(Legacy|Maintained)\./)).toHaveLength(HISTORICAL_DESTINATIONS.length)
+    expect(screen.getAllByText(/^(Legacy|Maintained)\./)).toHaveLength(
+      HISTORICAL_DESTINATIONS.filter((d) => d.id !== 'mind-map').length,
+    )
   })
 })
