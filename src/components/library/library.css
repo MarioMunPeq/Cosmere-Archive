@@ -103,19 +103,23 @@
   position: relative;
   max-width: 100%;
   margin: 0 auto;
+  overflow: visible;
 }
 
 .library-shelf__scroll {
   width: 100%;
   min-width: 0;
+  overflow: visible;
 }
 
 .library-shelf__row-wrap {
   margin: 0 auto;
+  overflow: visible;
 }
 
 .library-shelf__line {
   position: relative;
+  overflow: visible;
 }
 
 .library-shelf__row {
@@ -443,10 +447,10 @@
   position: absolute;
   bottom: calc(100% + 11px);
   left: 50%;
-  z-index: 20;
+  z-index: 80;
   display: flex;
   width: max-content;
-  max-width: 230px;
+  max-width: 260px;
   flex-direction: column;
   gap: 2px;
   padding: 7px 10px 7px;
@@ -463,10 +467,11 @@
     opacity 140ms ease,
     transform 140ms ease,
     visibility 0s linear 140ms;
+  white-space: normal;
 }
 
 .shelf-book[data-active='true'] .shelf-slip {
-  transform: translate(-50%, 0);
+  transform: translate(-50%, -6px);
   opacity: 1;
   visibility: visible;
   transition:
