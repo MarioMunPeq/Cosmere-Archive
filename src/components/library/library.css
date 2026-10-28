@@ -78,6 +78,7 @@
   min-height: 0;
   overflow-x: hidden;
   overflow-y: auto;
+  overflow-x: visible;
   padding: 0 0 clamp(30px, 5vh, 64px);
   scrollbar-color: rgb(185 154 94 / 0.34) transparent;
 }
@@ -90,6 +91,7 @@
   max-width: 1440px;
   margin: 0 auto;
   padding: 0 clamp(14px, 4vw, 64px);
+  overflow: visible;
 }
 
 /* ---- One shelf ----------------------------------------------------------- */
@@ -259,6 +261,7 @@
   display: block;
   flex: 0 0 auto;
   scroll-snap-align: start;
+  overflow: visible;
 }
 
 .shelf-book__button {
@@ -444,17 +447,19 @@
 }
 
 .shelf-slip {
-  position: absolute;
-  bottom: calc(100% + 11px);
+  position: fixed;
+  bottom: auto;
+  top: auto;
   left: 50%;
-  z-index: 80;
+  z-index: 9999;
   display: flex;
   width: max-content;
-  max-width: 260px;
+  max-width: 280px;
   flex-direction: column;
   gap: 2px;
   padding: 7px 10px 7px;
-  transform: translate(-50%, 4px);
+  transform: translate(-50%, -100%);
+  margin-top: -16px;
   border: 1px solid #b59e73;
   background: linear-gradient(180deg, #f5eddb 0%, #e9dcc1 100%);
   box-shadow:
@@ -471,7 +476,7 @@
 }
 
 .shelf-book[data-active='true'] .shelf-slip {
-  transform: translate(-50%, -6px);
+  transform: translate(-50%, -100%);
   opacity: 1;
   visibility: visible;
   transition:

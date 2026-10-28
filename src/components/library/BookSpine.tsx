@@ -10,7 +10,7 @@
  * from a hash of the id rather than from `Math.random()`.
  */
 
-import { memo } from 'react'
+import { memo, useCallback, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { SAGA_BY_ID } from '@/data/static'
 import { spineMaterial } from '@/navigation'
@@ -122,6 +122,35 @@ function BookSpineImpl({
     '--spine-art-zoom': SPINE_ART_ZOOM[book.id] ?? 1.35,
   } as CSSProperties
 
+  const slipRef = useRef<HTMLSpanElement | null>(null)
+  const [slipStyle, setSlipStyle] = useState<CSSProperties>({})
+
+  const updateSlipPosition = useCallback(() => {
+    const el = slipRef.current?.parentElement?.querySelector('.shelf-book__button')
+    if (!el) return
+    const rect = el.getBoundingClientRect()
+    setSlipStyle({
+      position: 'fixed',
+      left: `${rect.left + rect.width / 2}px`,
+      top: `${rect.top - 8}px`,
+      transform: 'translate(-50%, -100%)',
+      zIndex: 9999,
+    })
+  }, [])
+
+  const handleEnter = useCallback(() => {
+    onFocusBook(book)
+    updateSlipPosition()
+    window.addEventListener('scroll', updateSlipPosition, true)
+    window.addEventListener('resize', updateSlipPosition)
+  }, [book, onFocusBook, updateSlipPosition])
+
+  const handleLeave = useCallback(() => {
+    onBlurBook()
+    window.removeEventListener('scroll', updateSlipPosition, true)
+    window.removeEventListener('resize', updateSlipPosition)
+  }, [onBlurBook, updateSlipPosition])
+
   return (
     <span className="shelf-book" data-active={active} style={style}>
       <button
@@ -131,8 +160,8 @@ function BookSpineImpl({
         onFocus={() => onFocusBook(book)}
         onBlur={onBlurBook}
         onKeyDown={onKeyDown}
-        onMouseEnter={() => onFocusBook(book)}
-        onMouseLeave={onBlurBook}
+        onMouseEnter={handleEnter}
+        onMouseLeave={handleLeave}
         aria-label={label}
         title={label}
         data-book-id={book.id}
@@ -159,7 +188,7 @@ function BookSpineImpl({
         <span className="shelf-spine__glow" aria-hidden="true" />
       </button>
 
-      <span className="shelf-slip" aria-hidden="true">
+      <span ref={slipRef} className="shelf-slip" aria-hidden="true" style={active ? slipStyle : {}}>
         <strong>{book.title}</strong>
         <span>
           {book.year ?? 'Year unrecorded'} · {seriesLabel}
