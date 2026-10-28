@@ -7,6 +7,8 @@ import { MAGIC_SYSTEMS } from '@/data/static/magic-systems'
 import { BOOKS } from '@/data/static/books'
 import type { Planet } from '@/types/planet'
 
+type MagicWithShard = (typeof MAGIC_SYSTEMS)[number] & { shard?: string; bookIds?: string[] }
+
 export interface ShardData {
   id: string
   name: string
@@ -38,7 +40,10 @@ export function getMagicSystemsWithShard(shardId: string): typeof MAGIC_SYSTEMS 
   const target = getShardById(shardId)
   if (!target) return []
   const name = target.name
-  return MAGIC_SYSTEMS.filter((m) => (m as any).shard === name || (m as any).shard === shardId)
+  return MAGIC_SYSTEMS.filter((m) => {
+    const magic = m as MagicWithShard
+    return magic.shard === name || magic.shard === shardId
+  })
 }
 
 export function getBooksWithShard(shardId: string): typeof BOOKS {
@@ -49,7 +54,7 @@ export function getBooksWithShard(shardId: string): typeof BOOKS {
     for (const b of p.books ?? []) bookIds.add(b)
   }
   for (const m of magic) {
-    for (const b of (m as any).bookIds ?? []) bookIds.add(b)
+    for (const b of (m as MagicWithShard).bookIds ?? []) bookIds.add(b)
   }
   return BOOKS.filter((b) => bookIds.has(b.id))
 }

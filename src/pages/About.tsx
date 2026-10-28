@@ -229,8 +229,12 @@ export default function About() {
                 </svg>
               </header>
               <div className="relative flex-1 overflow-y-auto px-[clamp(36px,6vw,72px)] pb-[clamp(60px,10vh,90px)] pt-6 manuscript-scrollbar">
-                <Marginalia style={{ ['--top' as any]: '18%' }}>built for the love of it</Marginalia>
-                <Marginalia style={{ ['--top' as any]: '46%' }}>just a personal archive</Marginalia>
+                <Marginalia style={{ ['--top' as const]: '18%' } as React.CSSProperties}>
+                  built for the love of it
+                </Marginalia>
+                <Marginalia style={{ ['--top' as const]: '46%' } as React.CSSProperties}>
+                  just a personal archive
+                </Marginalia>
                 <h1
                   className="mb-6 font-[var(--font-display)] text-[clamp(28px,4vw,44px)] tracking-[0.12em] uppercase"
                   style={{ color: '#2a1f14' }}
@@ -348,8 +352,10 @@ export default function About() {
                 </span>
               </header>
               <div className="relative flex-1 overflow-y-auto px-[clamp(36px,6vw,72px)] pb-[clamp(60px,10vh,90px)] pt-6 manuscript-scrollbar">
-                <Marginalia style={{ ['--top' as any]: '16%' }}>owes so much to them</Marginalia>
-                <Marginalia style={{ ['--top' as any]: '72%' }}>no money in this</Marginalia>
+                <Marginalia style={{ ['--top' as const]: '16%' } as React.CSSProperties}>
+                  owes so much to them
+                </Marginalia>
+                <Marginalia style={{ ['--top' as const]: '72%' } as React.CSSProperties}>no money in this</Marginalia>
                 <section>
                   <Rubric>Sources</Rubric>
                   <ul className="mt-6 space-y-6">

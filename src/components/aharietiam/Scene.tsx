@@ -70,15 +70,19 @@ function SceneReadySignal({ onReady }: { onReady: () => void }) {
 const HINT_TIMEOUT = 7200
 const SWIPE_DISTANCE = 52
 
-export default memo(function Scene() {
+function SceneInner({ initialId }: { initialId: string | null }) {
   const { light, reducedMotion, maxDpr } = useSceneQuality()
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [, setSearchParams] = useSearchParams()
   const [unsupported] = useState(() => !canUseWebGL())
   const [contextLost, setContextLost] = useState(false)
   const [sceneReady, setSceneReady] = useState(false)
-  const [hintVisible, setHintVisible] = useState(true)
-  const [selectedId, setSelectedId] = useState<string | null>(null)
-  const [activeIndex, setActiveIndex] = useState(0)
+  const [hintVisible, setHintVisible] = useState(() => initialId === null)
+  const [selectedId, setSelectedId] = useState<string | null>(() => initialId)
+  const [activeIndex, setActiveIndex] = useState(() => {
+    if (!initialId) return 0
+    const idx = [...HONORBLADES].sort((a, b) => a.positionIndex - b.positionIndex).findIndex((b) => b.id === initialId)
+    return idx < 0 ? 0 : idx
+  })
   const [announcement, setAnnouncement] = useState('')
   const swipeStart = useRef<{ x: number; y: number } | null>(null)
   const sceneRootRef = useRef<HTMLDivElement>(null)
@@ -93,22 +97,6 @@ export default memo(function Scene() {
     const [x, , z] = bladePlacement(index)
     return { x, z }
   }, [ordered, selectedId])
-
-  /*
-   * `?h=` is the shareable address of one Herald. Search and a pasted URL both
-   * arrive here; Back/Forward re-selects the blade the reader left. The param is
-   * written by `selectBlade` and removed by `stepBack` so the URL always matches
-   * the inspection state.
-   */
-  useEffect(() => {
-    const id = searchParams.get('h')
-    if (!id) return
-    const index = ordered.findIndex((blade) => blade.id === id)
-    if (index < 0) return
-    setActiveIndex(index)
-    setSelectedId(id)
-    setHintVisible(false)
-  }, [ordered, searchParams])
 
   const handleContextLost = useCallback(() => setContextLost(true), [])
   const handleSceneReady = useCallback(() => setSceneReady(true), [])
@@ -381,4 +369,10 @@ export default memo(function Scene() {
       </div>
     </ErrorBoundary>
   )
+}
+
+export default memo(function Scene() {
+  const [searchParams] = useSearchParams()
+  const initialId = searchParams.get('h')
+  return <SceneInner key={initialId ?? 'none'} initialId={initialId} />
 })
