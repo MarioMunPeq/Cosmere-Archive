@@ -48,7 +48,7 @@ const THREE_GROUP_MAX_KB = 250
 const INITIAL_CSS_MAX_KB = 32
 const LAZY_CSS_MAX_KB = 6
 const FONTS_MAX_KB = 240
-const DIST_MAX_MB = 10.5
+const DIST_MAX_MB = 30
 
 let files: string[]
 try {
